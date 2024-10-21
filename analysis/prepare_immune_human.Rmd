@@ -13,17 +13,23 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
 
 First, I downloaded `Immune_ALL_human.h5ad` from
 [here](https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968)
-and extracted the contents to the "data" subdirectory of this git
-repository.
+to the "data" subdirectory of this git repository.
 
 Load the packages needed for this analysis.
 
 ```{r load-pkgs, message=FALSE}
+library(Matrix)
 library(hdf5r)
+library(uwot)
 ```
 
-Read the data...
+Load the counts and convert to a sparse matrix.
 
 ```{r load-data}
-rnorm(10)
+dat <- H5File$new("../data/Immune_ALL_human.h5ad",mode = "r")
+counts <- f[["layers"]][["counts"]][,]
+counts <- as(counts,"CsparseMatrix")
 ```
+
+TO DO: Save the data in an .Rdata file for more convenient analysis
+with the matrix factorization methods.
