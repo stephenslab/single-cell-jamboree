@@ -10,4 +10,8 @@ data sets.
 Preparation and initial examination of the data sets
 ----------------------------------------------------
 
++ Initial analysis of data set 1.
+
++ Initial analysis of data set 2.
+
 [google-sheet-data-sets]: https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing
