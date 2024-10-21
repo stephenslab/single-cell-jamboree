@@ -1,0 +1,29 @@
+---
+title: Prepare "Human Immune" data set.
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+Add overview of this data set and the analysis here.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, I downloaded `Immune_ALL_human.h5ad` from
+[here][https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968]
+and extracted the contents to the "data" subdirectory of this git
+repository.
+
+Load the packages needed for this analysis.
+
+```{r load-pkgs, message=FALSE}
+library(hdf5r)
+```
+
+Read the data...
+
+```{r load-data}
+rnorm(10)
+```
