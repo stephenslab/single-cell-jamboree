@@ -12,7 +12,7 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
 ```
 
 First, I downloaded `Immune_ALL_human.h5ad` from
-[https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968][here]
+[here](https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968)
 and extracted the contents to the "data" subdirectory of this git
 repository.
 
