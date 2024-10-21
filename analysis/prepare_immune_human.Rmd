@@ -1,5 +1,5 @@
 ---
-title: Prepare "Human Immune" data set.
+title: Prepare Human Immune data set.
 author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
