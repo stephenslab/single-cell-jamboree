@@ -7,6 +7,8 @@ output: workflowr::wflow_html
 See [here][google-sheet-data-sets] for an overview of the single-cell
 data sets.
 
+[Initial exploration of the pancreas data set][pancreas.Rmd]
+
 Preparation and initial examination of the data sets
 ----------------------------------------------------
 

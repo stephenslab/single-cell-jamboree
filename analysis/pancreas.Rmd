@@ -1,0 +1,63 @@
+---
+title: Initial exploration of the pancreas data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+"Pancreas" data set featured in in the
+[Luecken et al 2022 benchmarking paper][luecken-2022].
+Widely used to benchmark data integration methods.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, I downloaded the file `human_pancreas_norm_complexBatch.h5ad`
+from [figshare][figshare] and copied it to the "data" subdirectory of
+this git repository.
+
+Load the packages needed for this analysis.
+
+```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(hdf5r)
+library(uwot)
+```
+
+Load the counts and convert to a sparse matrix.
+
+```{r load-data}
+dat <- H5File$new("../data/human_pancreas_norm_complexBatch.h5ad",mode = "r")
+counts <- dat[["layers"]][["counts"]][,]
+counts <- as(counts,"CsparseMatrix")
+counts <- t(counts)
+sample_info <- data.frame(id          = dat[["obs"]][["_index"]][],
+                          tech        = dat[["obs"]][["tech"]][],
+						  celltype    = dat[["obs"]][["celltype"]][],
+						  size_factor = dat[["obs"]][["size_factors"]][],
+                          stringsAsFactors = FALSE)
+sample_info <- transform(sample_info,
+                         tech     = factor(tech),
+                         celltype = factor(celltype))
+genes <- dat[["var"]][["_index"]][]
+colnames(counts) <- genes
+nrow(counts)
+ncol(counts)
+mean(counts > 0)
+```
+
+Notes:
+
++ 16,382 cells.
+
++ About 18% nonzeros 
+
+TO DO: Save the data in an .Rdata file for more convenient analysis
+with the matrix factorization methods.
+
+```{r save-data}
+```
+
+[figshare]: (https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968)
+[luecken-2022]: https://doi.org/10.1038/s41592-021-01336-8
