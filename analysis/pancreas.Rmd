@@ -5,8 +5,9 @@ output: workflowr::wflow_html
 ---
 
 "Pancreas" data set featured in in the
-[Luecken et al 2022 benchmarking paper][luecken-2022].
-Widely used to benchmark data integration methods.
+[Luecken et al 2022 benchmarking paper][luecken-2022].  Widely used to
+benchmark single-cell data integration methods. See Supplementary
+Fig. 13 and Supplementary Note 3 for more info on this data set.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -40,7 +41,10 @@ sample_info <- data.frame(id          = dat[["obs"]][["_index"]][],
 sample_info <- transform(sample_info,
                          tech     = factor(tech),
                          celltype = factor(celltype))
+levels(sample_info$tech)     <- dat[["obs"]][["__categories"]][["tech"]][]
+levels(sample_info$celltype) <- dat[["obs"]][["__categories"]][["celltype"]][]
 genes <- dat[["var"]][["_index"]][]
+rownames(counts) <- sample_info$id
 colnames(counts) <- genes
 nrow(counts)
 ncol(counts)
@@ -49,9 +53,17 @@ mean(counts > 0)
 
 Notes:
 
++ Some entries are UMI counts ("UMI-count-like"), whereas others are not.
+
 + 16,382 cells.
 
-+ About 18% nonzeros 
++ About 18% nonzeros.
+
++ 13 cell types. Some are very rare.
+
++ 9 "batches"
+
++ What to do about the very large counts?
 
 TO DO: Save the data in an .Rdata file for more convenient analysis
 with the matrix factorization methods.
