@@ -24,6 +24,8 @@ Load the packages needed for this analysis.
 library(Matrix)
 library(hdf5r)
 library(uwot)
+library(ggplot2)
+library(cowplot)
 ```
 
 Load the counts and convert to a sparse matrix.
@@ -63,7 +65,13 @@ Notes:
 
 + 9 "batches"
 
-+ What to do about the very large counts?
++ What to do about the very large counts? I think it is okay.
+
+```{r temp}
+normalize_rows <- function (A)
+  A / rowSums(A)
+X <- normalize_rows(counts)
+```
 
 TO DO: Save the data in an .Rdata file for more convenient analysis
 with the matrix factorization methods.
