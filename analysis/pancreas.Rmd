@@ -7,7 +7,8 @@ output: workflowr::wflow_html
 "Pancreas" data set featured in in the
 [Luecken et al 2022 benchmarking paper][luecken-2022].  Widely used to
 benchmark single-cell data integration methods. See Supplementary
-Fig. 13 and Supplementary Note 3 for more info on this data set.
+Fig. 13, Supplementary Note 3 andSupplementary Data 7 for more info on
+this data set.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -48,6 +49,9 @@ levels(sample_info$celltype) <- dat[["obs"]][["__categories"]][["celltype"]][]
 genes <- dat[["var"]][["_index"]][]
 rownames(counts) <- sample_info$id
 colnames(counts) <- genes
+```
+
+```{r examine-data-1}
 nrow(counts)
 ncol(counts)
 mean(counts > 0)
