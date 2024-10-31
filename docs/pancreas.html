@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-10-30
+<strong>Last updated:</strong> 2024-10-31
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree6750e295dff280f3291f5f6ae373b856f5621fcetargetblank6750e29a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree886cd01bf5600732824ca58fa7e7bd43a6691ee5targetblank886cd01a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/6750e295dff280f3291f5f6ae373b856f5621fce" target="_blank">6750e29</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/886cd01bf5600732824ca58fa7e7bd43a6691ee5" target="_blank">886cd01</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree6750e295dff280f3291f5f6ae373b856f5621fcetargetblank6750e29a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree886cd01bf5600732824ca58fa7e7bd43a6691ee5targetblank886cd01a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/6750e295dff280f3291f5f6ae373b856f5621fce" target="_blank">6750e29</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/886cd01bf5600732824ca58fa7e7bd43a6691ee5" target="_blank">886cd01</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -466,11 +466,9 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
+    Untracked:  analysis/pancreas.RData
     Untracked:  data/Immune_ALL_human.h5ad
     Untracked:  data/human_pancreas_norm_complexBatch.h5ad
-
-Unstaged changes:
-    Modified:   _workflowr.yml
 
 </code></pre>
 <p>
@@ -516,6 +514,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/886cd01bf5600732824ca58fa7e7bd43a6691ee5/analysis/pancreas.Rmd" target="_blank">886cd01</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+workflowr::wflow_publish("pancreas.Rmd", verbose = TRUE, view = FALSE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/528d5efba05e45765dced804df846bd61d3a0a27/docs/pancreas.html" target="_blank">528d5ef</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-30
+</td>
+<td>
+First build of the pancreas workflowr page.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -608,25 +640,33 @@ Working on initial examination of pancreas data.
 </div>
 </div>
 </div>
-<p>“Pancreas” data set featured in in the <a
+<p>The aim of this analysis is to take an initial look at the “pancreas”
+data set that was featured in in the <a
 href="https://doi.org/10.1038/s41592-021-01336-8">Luecken et al 2022
-benchmarking paper</a>. Used in several previous papers benchmark data
-integration methods (otherwise known as “batch correction” or
-“harmonization” methods) [the Supplementary Note gives references; e.g.,
-the <a href="https://doi.org/10.1038/nbt.4091">MNN paper</a>]. See
-Supplementary Fig. 13, Supplementary Note 3 andSupplementary Data 7 for
-more info on this data set.</p>
-<p>First, I downloaded the file
-<code>human_pancreas_norm_complexBatch.h5ad</code> from <a href=""
-title="https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968">figshare</a>
-and copied it to the “data” subdirectory of this git repository.</p>
-<p>Load the packages needed for this analysis.</p>
-<pre class="r"><code>library(Matrix)
+benchmarking paper</a>, and prepare the data in a convenient form for
+subsequent analyses in R.</p>
+<p>In addition to being featured in the Luecken et al paper, it has been
+used in several papers on “data integration” methods for single-cell
+data (also known as “batch correction” or “harmonization” methods). See
+for example the <a href="https://doi.org/10.1038/nbt.4091">MNN
+paper</a>. The Supplementary Note in the Luecken et al paper has
+additional references.</p>
+<p>See Supplementary Fig. 13, Supplementary Note 3 and Supplementary
+Data 7 of the Luecken et al paper for more information on this data
+set.</p>
+<p>First, load the packages needed for this analysis.</p>
+<pre class="r"><code>library(tools)
+library(Matrix)
+library(MatrixExtra)
 library(hdf5r)
 library(uwot)
 library(ggplot2)
 library(cowplot)</code></pre>
-<p>Load the counts and convert to a sparse matrix.</p>
+<p>Download the file “human_pancreas_norm_complexBatch.h5ad” from <a
+href=""
+title="https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968">figshare</a>
+and copy it to the “data” subdirectory of this git repository. Then load
+the count data, and encode them as a sparse matrix:</p>
 <pre class="r"><code>dat &lt;- H5File$new(&quot;../data/human_pancreas_norm_complexBatch.h5ad&quot;,mode = &quot;r&quot;)
 counts &lt;- dat[[&quot;layers&quot;]][[&quot;counts&quot;]][,]
 counts &lt;- as(counts,&quot;CsparseMatrix&quot;)
@@ -644,28 +684,67 @@ levels(sample_info$celltype) &lt;- dat[[&quot;obs&quot;]][[&quot;__categories&qu
 genes &lt;- dat[[&quot;var&quot;]][[&quot;_index&quot;]][]
 rownames(counts) &lt;- sample_info$id
 colnames(counts) &lt;- genes</code></pre>
+<p>Note that some of the data are not actually counts, so perhaps
+calling this matrix “counts” is a bit misleading. Also note that in
+Luecken et al the counts were log-transformed, but here we taking the
+untransformed counts.</p>
+<p>The matrix has 16,382 rows (cells) and 19,093 columns (genes), and
+about 18% of the entries are nonzeros:</p>
 <pre class="r"><code>nrow(counts)
 ncol(counts)
 mean(counts &gt; 0)
 # [1] 16382
 # [1] 19093
 # [1] 0.1779012</code></pre>
-<p>Notes:</p>
-<ul>
-<li><p>Some entries are UMI counts (“UMI-count-like”), whereas others
-are not.</p></li>
-<li><p>16,382 cells.</p></li>
-<li><p>About 18% nonzeros.</p></li>
-<li><p>13 cell types. Some are very rare.</p></li>
-<li><p>9 “batches”</p></li>
-<li><p>What to do about the very large counts? I think it is
-okay.</p></li>
-</ul>
-<pre class="r"><code>normalize_rows &lt;- function (A)
-  A / rowSums(A)
-X &lt;- normalize_rows(counts)</code></pre>
+<p>The pancreas data are actually several scRNA-seq data sets that were
+combined together:</p>
+<pre class="r"><code>table(sample_info$tech)
+# 
+#     celseq    celseq2 fluidigmc1    inDrop1    inDrop2    inDrop3    inDrop4 
+#       1004       2285        638       1937       1724       3605       1303 
+#    smarter  smartseq2 
+#       1492       2394</code></pre>
+<p>The cells were previous annotated by cell type:</p>
+<pre class="r"><code>table(sample_info$celltype)
+# 
+#             acinar activated_stellate              alpha               beta 
+#               1669                464               5493               4169 
+#              delta             ductal        endothelial            epsilon 
+#               1055               2142                313                 32 
+#              gamma         macrophage               mast quiescent_stellate 
+#                699                 79                 42                193 
+#            schwann             t_cell 
+#                 25                  7</code></pre>
+<p>Some of the cell types occur in only a very small number of
+cells.</p>
+<p>Distribution of the size factors:</p>
+<pre class="r"><code>s &lt;- rowSums(counts)
+ggplot(data.frame(log_size_factor = log10(s)),aes(log_size_factor)) +
+  geom_histogram(bins = 64,col = &quot;black&quot;,fill = &quot;black&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/pancreas.Rmd/size-factors-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>Genes with nonzero expression:</p>
+<pre class="r"><code>p &lt;- colSums(counts)/sum(s)
+sum(p &gt; 0)
+# [1] 18771</code></pre>
+<p>Distribution of the (relative) expression levels:</p>
+<pre class="r"><code>p &lt;- p[p &gt; 0]
+ggplot(data.frame(log_rel_expression_level = log10(p)),
+                  aes(log_rel_expression_level)) +
+  geom_histogram(bins = 64,col = &quot;black&quot;,fill = &quot;black&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/pancreas.Rmd/gene-expression-levels-2-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>Now do UMAP… Compute the shifted log counts:</p>
+<pre class="r"><code>a &lt;- 1
+s &lt;- rowSums(counts)
+s &lt;- s/mean(s)
+Y &lt;- mapSparse(counts/(a*s),log1p)</code></pre>
+<p>UMAP:</p>
+<pre class="r"><code>res &lt;- umap(as.matrix(Y),n_components = 2,n_threads = 8,verbose = TRUE)</code></pre>
 <p>TO DO: Save the data in an .Rdata file for more convenient analysis
 with the matrix factorization methods.</p>
+<pre class="r"><code>save(list = c(&quot;sample_info&quot;,&quot;counts&quot;),file = &quot;pancreas.RData&quot;)
+resaveRdaFiles(&quot;pancreas.RData&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -690,25 +769,33 @@ Session information
 # tzcode source: internal
 # 
 # attached base packages:
-# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# [1] tools     stats     graphics  grDevices utils     datasets  methods  
+# [8] base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3 ggplot2_3.5.0 uwot_0.1.16   hdf5r_1.3.11  Matrix_1.6-5 
+# [1] cowplot_1.1.3      ggplot2_3.5.0      uwot_0.1.16        hdf5r_1.3.11      
+# [5] MatrixExtra_0.1.15 Matrix_1.6-5      
 # 
 # loaded via a namespace (and not attached):
-#  [1] bit_4.0.5        gtable_0.3.4     jsonlite_1.8.8   dplyr_1.1.4     
-#  [5] compiler_4.3.3   promises_1.2.1   tidyselect_1.2.1 Rcpp_1.0.12     
-#  [9] stringr_1.5.1    git2r_0.33.0     later_1.3.2      jquerylib_0.1.4 
-# [13] scales_1.3.0     yaml_2.3.8       fastmap_1.1.1    lattice_0.22-5  
-# [17] R6_2.5.1         generics_0.1.3   workflowr_1.7.1  knitr_1.45      
-# [21] tibble_3.2.1     munsell_0.5.0    rprojroot_2.0.4  bslib_0.6.1     
-# [25] pillar_1.9.0     rlang_1.1.3      utf8_1.2.4       cachem_1.0.8    
-# [29] stringi_1.8.3    httpuv_1.6.14    xfun_0.42        fs_1.6.3        
-# [33] sass_0.4.8       bit64_4.0.5      cli_3.6.2        withr_3.0.0     
-# [37] magrittr_2.0.3   digest_0.6.34    grid_4.3.3       lifecycle_1.0.4 
-# [41] vctrs_0.6.5      evaluate_0.23    glue_1.7.0       whisker_0.4.1   
-# [45] colorspace_2.1-0 fansi_1.0.6      rmarkdown_2.26   tools_4.3.3     
-# [49] pkgconfig_2.0.3  htmltools_0.5.7</code></pre>
+#  [1] sass_0.4.8          utf8_1.2.4          generics_0.1.3     
+#  [4] stringi_1.8.3       lattice_0.22-5      digest_0.6.34      
+#  [7] magrittr_2.0.3      evaluate_0.23       grid_4.3.3         
+# [10] float_0.3-2         fastmap_1.1.1       rprojroot_2.0.4    
+# [13] workflowr_1.7.1     jsonlite_1.8.8      whisker_0.4.1      
+# [16] promises_1.2.1      fansi_1.0.6         scales_1.3.0       
+# [19] RhpcBLASctl_0.23-42 jquerylib_0.1.4     cli_3.6.2          
+# [22] rlang_1.1.3         bit64_4.0.5         munsell_0.5.0      
+# [25] withr_3.0.0         cachem_1.0.8        yaml_2.3.8         
+# [28] parallel_4.3.3      dplyr_1.1.4         colorspace_2.1-0   
+# [31] httpuv_1.6.14       vctrs_0.6.5         R6_2.5.1           
+# [34] lifecycle_1.0.4     git2r_0.33.0        stringr_1.5.1      
+# [37] fs_1.6.3            bit_4.0.5           pkgconfig_2.0.3    
+# [40] pillar_1.9.0        bslib_0.6.1         later_1.3.2        
+# [43] gtable_0.3.4        glue_1.7.0          Rcpp_1.0.12        
+# [46] highr_0.10          xfun_0.42           tibble_3.2.1       
+# [49] tidyselect_1.2.1    knitr_1.45          farver_2.1.1       
+# [52] htmltools_0.5.7     labeling_0.4.3      rmarkdown_2.26     
+# [55] compiler_4.3.3</code></pre>
 </div>
 
 
