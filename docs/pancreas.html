@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree886cd01bf5600732824ca58fa7e7bd43a6691ee5targetblank886cd01a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree32cb6258d8e13598fddb24886adf78e7a37a2368targetblank32cb625a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/886cd01bf5600732824ca58fa7e7bd43a6691ee5" target="_blank">886cd01</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/32cb6258d8e13598fddb24886adf78e7a37a2368" target="_blank">32cb625</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree886cd01bf5600732824ca58fa7e7bd43a6691ee5targetblank886cd01a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree32cb6258d8e13598fddb24886adf78e7a37a2368targetblank32cb625a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/886cd01bf5600732824ca58fa7e7bd43a6691ee5" target="_blank">886cd01</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/32cb6258d8e13598fddb24886adf78e7a37a2368" target="_blank">32cb625</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -514,6 +514,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/32cb6258d8e13598fddb24886adf78e7a37a2368/analysis/pancreas.Rmd" target="_blank">32cb625</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+workflowr::wflow_publish("pancreas.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a04b2c0aa0d3167f6a0e5d0d727e751371c1f9aa/analysis/pancreas.Rmd" target="_blank">a04b2c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+A few improvements to the pancreas workflowr analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/fed31e6dbf128b29037d0085f9e21eb008ea58c8/docs/pancreas.html" target="_blank">fed31e6</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+First build of the pancreas workflowr page.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -654,11 +705,12 @@ additional references.</p>
 <p>See Supplementary Fig. 13, Supplementary Note 3 and Supplementary
 Data 7 of the Luecken et al paper for more information on this data
 set.</p>
-<p>First, load the packages needed for this analysis.</p>
+<p>First, load the packages needed for this analysis. Note that
+MatrixExtra is also used in one of the steps below.</p>
 <pre class="r"><code>library(tools)
 library(Matrix)
-library(MatrixExtra)
 library(hdf5r)
+library(rsvd)
 library(uwot)
 library(ggplot2)
 library(cowplot)</code></pre>
@@ -669,8 +721,8 @@ and copy it to the “data” subdirectory of this git repository. Then load
 the count data, and encode them as a sparse matrix:</p>
 <pre class="r"><code>dat &lt;- H5File$new(&quot;../data/human_pancreas_norm_complexBatch.h5ad&quot;,mode = &quot;r&quot;)
 counts &lt;- dat[[&quot;layers&quot;]][[&quot;counts&quot;]][,]
-counts &lt;- as(counts,&quot;CsparseMatrix&quot;)
 counts &lt;- t(counts)
+counts &lt;- as(counts,&quot;CsparseMatrix&quot;)
 sample_info &lt;- data.frame(id          = dat[[&quot;obs&quot;]][[&quot;_index&quot;]][],
                           tech        = dat[[&quot;obs&quot;]][[&quot;tech&quot;]][],
                           celltype    = dat[[&quot;obs&quot;]][[&quot;celltype&quot;]][],
@@ -723,6 +775,43 @@ ggplot(data.frame(log_size_factor = log10(s)),aes(log_size_factor)) +
   geom_histogram(bins = 64,col = &quot;black&quot;,fill = &quot;black&quot;) +
   theme_cowplot(font_size = 10)</code></pre>
 <p><img src="figure/pancreas.Rmd/size-factors-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-size-factors-1">
+Past versions of size-factors-1.png
+</button>
+</p>
+<div id="fig-size-factors-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/fed31e6dbf128b29037d0085f9e21eb008ea58c8/docs/figure/pancreas.Rmd/size-factors-1.png" target="_blank">fed31e6</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Genes with nonzero expression:</p>
 <pre class="r"><code>p &lt;- colSums(counts)/sum(s)
 sum(p &gt; 0)
@@ -734,17 +823,83 @@ ggplot(data.frame(log_rel_expression_level = log10(p)),
   geom_histogram(bins = 64,col = &quot;black&quot;,fill = &quot;black&quot;) +
   theme_cowplot(font_size = 10)</code></pre>
 <p><img src="figure/pancreas.Rmd/gene-expression-levels-2-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-gene-expression-levels-2-1">
+Past versions of gene-expression-levels-2-1.png
+</button>
+</p>
+<div id="fig-gene-expression-levels-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/fed31e6dbf128b29037d0085f9e21eb008ea58c8/docs/figure/pancreas.Rmd/gene-expression-levels-2-1.png" target="_blank">fed31e6</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now do UMAP… Compute the shifted log counts:</p>
 <pre class="r"><code>a &lt;- 1
 s &lt;- rowSums(counts)
 s &lt;- s/mean(s)
-Y &lt;- mapSparse(counts/(a*s),log1p)</code></pre>
+Y &lt;- MatrixExtra::mapSparse(counts/(a*s),log1p)</code></pre>
 <p>UMAP:</p>
-<pre class="r"><code>res &lt;- umap(as.matrix(Y),n_components = 2,n_threads = 8,verbose = TRUE)</code></pre>
-<p>TO DO: Save the data in an .Rdata file for more convenient analysis
-with the matrix factorization methods.</p>
+<pre class="r"><code>set.seed(1)
+out &lt;- rsvd(Y,k = 50)
+res &lt;- umap(out$u,n_components = 2,n_threads = 8,verbose = TRUE)
+sample_info$umap1 &lt;- res[,1]
+sample_info$umap2 &lt;- res[,2]</code></pre>
+<p>UMAP vs. cell type:</p>
+<pre class="r"><code>umap_colors &lt;- rep(c(&quot;#1b9e77&quot;,&quot;#d95f02&quot;,&quot;#7570b3&quot;,&quot;#e7298a&quot;,
+                     &quot;#66a61e&quot;,&quot;#e6ab02&quot;,&quot;#a6761d&quot;),times = 2)
+umap_shapes &lt;- rep(c(4,19),each = 7)
+ggplot(sample_info,aes(x = umap1,y = umap2,color = celltype,
+                       shape = celltype)) +
+  geom_point(size = 1) +
+  scale_color_manual(values = umap_colors) +
+  scale_shape_manual(values = umap_shapes) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/pancreas.Rmd/umap-vs-cell-type-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>UMAP vs. batch:</p>
+<pre class="r"><code>umap_colors &lt;- rep(c(&quot;#1b9e77&quot;,&quot;#d95f02&quot;,&quot;#7570b3&quot;,&quot;#e7298a&quot;,&quot;#66a61e&quot;),
+                   times = 2)
+umap_shapes &lt;- rep(c(4,19),each = 5)
+ggplot(sample_info,aes(x = umap1,y = umap2,color = tech,shape = tech)) +
+  geom_point(size = 1) +
+  scale_color_manual(values = umap_colors) +
+  scale_shape_manual(values = umap_shapes) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/pancreas.Rmd/umap-vs-batch-1.png" width="570" style="display: block; margin: auto;" /></p>
+<p>TO DO: Save the data and UMAP result in an .Rdata file for more
+convenient analyses with the matrix factorization methods.</p>
 <pre class="r"><code>save(list = c(&quot;sample_info&quot;,&quot;counts&quot;),file = &quot;pancreas.RData&quot;)
 resaveRdaFiles(&quot;pancreas.RData&quot;)</code></pre>
+<p>TO DO: Upload the prepared data file pancreas.RData to Box and add
+the <a
+href="https://uchicago.box.com/s/l0emrjcqpw5yat1zaygtr1v3akq7de1t">link</a>
+here.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -773,8 +928,8 @@ Session information
 # [8] base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3      ggplot2_3.5.0      uwot_0.1.16        hdf5r_1.3.11      
-# [5] MatrixExtra_0.1.15 Matrix_1.6-5      
+# [1] cowplot_1.1.3   ggplot2_3.5.0   uwot_0.2.2.9000 rsvd_1.0.5     
+# [5] hdf5r_1.3.11    Matrix_1.6-5   
 # 
 # loaded via a namespace (and not attached):
 #  [1] sass_0.4.8          utf8_1.2.4          generics_0.1.3     
@@ -783,19 +938,20 @@ Session information
 # [10] float_0.3-2         fastmap_1.1.1       rprojroot_2.0.4    
 # [13] workflowr_1.7.1     jsonlite_1.8.8      whisker_0.4.1      
 # [16] promises_1.2.1      fansi_1.0.6         scales_1.3.0       
-# [19] RhpcBLASctl_0.23-42 jquerylib_0.1.4     cli_3.6.2          
-# [22] rlang_1.1.3         bit64_4.0.5         munsell_0.5.0      
-# [25] withr_3.0.0         cachem_1.0.8        yaml_2.3.8         
-# [28] parallel_4.3.3      dplyr_1.1.4         colorspace_2.1-0   
-# [31] httpuv_1.6.14       vctrs_0.6.5         R6_2.5.1           
-# [34] lifecycle_1.0.4     git2r_0.33.0        stringr_1.5.1      
-# [37] fs_1.6.3            bit_4.0.5           pkgconfig_2.0.3    
-# [40] pillar_1.9.0        bslib_0.6.1         later_1.3.2        
-# [43] gtable_0.3.4        glue_1.7.0          Rcpp_1.0.12        
-# [46] highr_0.10          xfun_0.42           tibble_3.2.1       
-# [49] tidyselect_1.2.1    knitr_1.45          farver_2.1.1       
-# [52] htmltools_0.5.7     labeling_0.4.3      rmarkdown_2.26     
-# [55] compiler_4.3.3</code></pre>
+# [19] RhpcBLASctl_0.23-42 codetools_0.2-19    jquerylib_0.1.4    
+# [22] cli_3.6.2           rlang_1.1.3         RcppAnnoy_0.0.22   
+# [25] bit64_4.0.5         munsell_0.5.0       withr_3.0.0        
+# [28] cachem_1.0.8        yaml_2.3.8          parallel_4.3.3     
+# [31] dplyr_1.1.4         colorspace_2.1-0    httpuv_1.6.14      
+# [34] vctrs_0.6.5         R6_2.5.1            lifecycle_1.0.4    
+# [37] git2r_0.33.0        stringr_1.5.1       fs_1.6.3           
+# [40] bit_4.0.5           irlba_2.3.5.1       MatrixExtra_0.1.15 
+# [43] pkgconfig_2.0.3     pillar_1.9.0        bslib_0.6.1        
+# [46] later_1.3.2         gtable_0.3.4        glue_1.7.0         
+# [49] Rcpp_1.0.12         highr_0.10          xfun_0.42          
+# [52] tibble_3.2.1        tidyselect_1.2.1    knitr_1.45         
+# [55] farver_2.1.1        htmltools_0.5.7     labeling_0.4.3     
+# [58] rmarkdown_2.26      compiler_4.3.3</code></pre>
 </div>
 
 
