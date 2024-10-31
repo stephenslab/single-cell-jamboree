@@ -10,6 +10,8 @@ data sets.
 The [Human Cell Atlas][hca] is another potential source of interesting
 data sets.
 
+Note that some of the processed data sets can be downloaded from Box
+via [this link][box].
 
 Analyses:
 
@@ -17,3 +19,4 @@ Analyses:
 
 [hca]: https://data.humancellatlas.org
 [google-sheet-data-sets]: https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing
+[box]: https://uchicago.box.com/s/l0emrjcqpw5yat1zaygtr1v3akq7de1t
