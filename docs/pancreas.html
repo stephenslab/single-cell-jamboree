@@ -9,9 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Peter Carbonetto" />
 
 
-<title>Single-cell matrix factorization jamboree</title>
+<title>Initial exploration of the pancreas data set</title>
 
 <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -269,8 +270,9 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Single-cell matrix factorization
-jamboree</h1>
+<h1 class="title toc-ignore">Initial exploration of the pancreas data
+set</h1>
+<h4 class="author">Peter Carbonetto</h4>
 
 </div>
 
@@ -303,7 +305,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span> 0
 </p>
@@ -341,6 +343,90 @@ class="panel-collapse collapse">
 <p>Great! Since the R Markdown file has been committed to the Git
 repository, you know the exact version of the code that produced these
 results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed1code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(1)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed1code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(1)</code> was run prior to running the
+code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
@@ -402,10 +488,11 @@ have uncommitted changes.
 
 <p>
 These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/index.Rmd</code>) and HTML
-(<code>docs/index.html</code>) files. If you’ve configured a remote Git
-repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
-in the table below to view the files as they were in that past version.
+made to the R Markdown (<code>analysis/pancreas.Rmd</code>) and HTML
+(<code>docs/pancreas.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -434,7 +521,7 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/6750e295dff280f3291f5f6ae373b856f5621fce/analysis/index.Rmd" target="_blank">6750e29</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a1d7a174ecd729f2c3cb1da33883270b0640eb0b/analysis/pancreas.Rmd" target="_blank">a1d7a17</a>
 </td>
 <td>
 Peter Carbonetto
@@ -443,7 +530,7 @@ Peter Carbonetto
 2024-10-30
 </td>
 <td>
-workflowr::wflow_publish(c("pancreas.Rmd", "index.Rmd"))
+Added some background on the pancreas data set.
 </td>
 </tr>
 <tr>
@@ -451,7 +538,58 @@ workflowr::wflow_publish(c("pancreas.Rmd", "index.Rmd"))
 Rmd
 </td>
 <td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/c090d1d9ab24782cb6b9299f976c8939872caaa3/analysis/index.Rmd" target="_blank">c090d1d</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3fa28da165fabed976330431645f3cd90a00b395/analysis/pancreas.Rmd" target="_blank">3fa28da</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-30
+</td>
+<td>
+Small edit to pancreas.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/370a3360af1ec0dea5cdba677563b60b00056e27/analysis/pancreas.Rmd" target="_blank">370a336</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-30
+</td>
+<td>
+Still working on pancreas.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/fbe0b62dd432561ebec724b0b85b689d3b60221c/analysis/pancreas.Rmd" target="_blank">fbe0b62</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-30
+</td>
+<td>
+Made a few improvements to the pancreas analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/c090d1d9ab24782cb6b9299f976c8939872caaa3/analysis/pancreas.Rmd" target="_blank">c090d1d</a>
 </td>
 <td>
 Peter Carbonetto
@@ -463,92 +601,6 @@ Peter Carbonetto
 Working on initial examination of pancreas data.
 </td>
 </tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/76381688d2fcc9185d182243a445412f1a605b73/docs/index.html" target="_blank">7638168</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2024-10-21
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/6fcd0795833157810e87d3b8cf6e972d804d4d41/analysis/index.Rmd" target="_blank">6fcd079</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2024-10-21
-</td>
-<td>
-workflowr::wflow_publish("index.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/8a62d3252be0b4971f8115a26b455fd05950c9b4/docs/index.html" target="_blank">8a62d32</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2024-10-21
-</td>
-<td>
-Build the overview for the first time.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/db49e71a7495f7edb8ab37409cd4fccc67d931d3/analysis/index.Rmd" target="_blank">db49e71</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2024-10-21
-</td>
-<td>
-workflowr::wflow_publish("index.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/401e59742df9124284037b4672f1db1eb760f31c/analysis/index.Rmd" target="_blank">401e597</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2024-10-21
-</td>
-<td>
-Ran wflow_start(".",name = "single-cell-jamboree",existing = TRUE,git =
-FALSE).
-</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -556,10 +608,108 @@ FALSE).
 </div>
 </div>
 </div>
-<p>See <a
-href="https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing">here</a>
-for an overview of the single-cell data sets.</p>
-<p>[Initial exploration of the pancreas data set][pancreas.Rmd]</p>
+<p>“Pancreas” data set featured in in the <a
+href="https://doi.org/10.1038/s41592-021-01336-8">Luecken et al 2022
+benchmarking paper</a>. Used in several previous papers benchmark data
+integration methods (otherwise known as “batch correction” or
+“harmonization” methods) [the Supplementary Note gives references; e.g.,
+the <a href="https://doi.org/10.1038/nbt.4091">MNN paper</a>]. See
+Supplementary Fig. 13, Supplementary Note 3 andSupplementary Data 7 for
+more info on this data set.</p>
+<p>First, I downloaded the file
+<code>human_pancreas_norm_complexBatch.h5ad</code> from <a href=""
+title="https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968">figshare</a>
+and copied it to the “data” subdirectory of this git repository.</p>
+<p>Load the packages needed for this analysis.</p>
+<pre class="r"><code>library(Matrix)
+library(hdf5r)
+library(uwot)
+library(ggplot2)
+library(cowplot)</code></pre>
+<p>Load the counts and convert to a sparse matrix.</p>
+<pre class="r"><code>dat &lt;- H5File$new(&quot;../data/human_pancreas_norm_complexBatch.h5ad&quot;,mode = &quot;r&quot;)
+counts &lt;- dat[[&quot;layers&quot;]][[&quot;counts&quot;]][,]
+counts &lt;- as(counts,&quot;CsparseMatrix&quot;)
+counts &lt;- t(counts)
+sample_info &lt;- data.frame(id          = dat[[&quot;obs&quot;]][[&quot;_index&quot;]][],
+                          tech        = dat[[&quot;obs&quot;]][[&quot;tech&quot;]][],
+                          celltype    = dat[[&quot;obs&quot;]][[&quot;celltype&quot;]][],
+                          size_factor = dat[[&quot;obs&quot;]][[&quot;size_factors&quot;]][],
+                          stringsAsFactors = FALSE)
+sample_info &lt;- transform(sample_info,
+                         tech     = factor(tech),
+                         celltype = factor(celltype))
+levels(sample_info$tech)     &lt;- dat[[&quot;obs&quot;]][[&quot;__categories&quot;]][[&quot;tech&quot;]][]
+levels(sample_info$celltype) &lt;- dat[[&quot;obs&quot;]][[&quot;__categories&quot;]][[&quot;celltype&quot;]][]
+genes &lt;- dat[[&quot;var&quot;]][[&quot;_index&quot;]][]
+rownames(counts) &lt;- sample_info$id
+colnames(counts) &lt;- genes</code></pre>
+<pre class="r"><code>nrow(counts)
+ncol(counts)
+mean(counts &gt; 0)
+# [1] 16382
+# [1] 19093
+# [1] 0.1779012</code></pre>
+<p>Notes:</p>
+<ul>
+<li><p>Some entries are UMI counts (“UMI-count-like”), whereas others
+are not.</p></li>
+<li><p>16,382 cells.</p></li>
+<li><p>About 18% nonzeros.</p></li>
+<li><p>13 cell types. Some are very rare.</p></li>
+<li><p>9 “batches”</p></li>
+<li><p>What to do about the very large counts? I think it is
+okay.</p></li>
+</ul>
+<pre class="r"><code>normalize_rows &lt;- function (A)
+  A / rowSums(A)
+X &lt;- normalize_rows(counts)</code></pre>
+<p>TO DO: Save the data in an .Rdata file for more convenient analysis
+with the matrix factorization methods.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS Sonoma 14.6.1
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/Chicago
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+# [1] cowplot_1.1.3 ggplot2_3.5.0 uwot_0.1.16   hdf5r_1.3.11  Matrix_1.6-5 
+# 
+# loaded via a namespace (and not attached):
+#  [1] bit_4.0.5        gtable_0.3.4     jsonlite_1.8.8   dplyr_1.1.4     
+#  [5] compiler_4.3.3   promises_1.2.1   tidyselect_1.2.1 Rcpp_1.0.12     
+#  [9] stringr_1.5.1    git2r_0.33.0     later_1.3.2      jquerylib_0.1.4 
+# [13] scales_1.3.0     yaml_2.3.8       fastmap_1.1.1    lattice_0.22-5  
+# [17] R6_2.5.1         generics_0.1.3   workflowr_1.7.1  knitr_1.45      
+# [21] tibble_3.2.1     munsell_0.5.0    rprojroot_2.0.4  bslib_0.6.1     
+# [25] pillar_1.9.0     rlang_1.1.3      utf8_1.2.4       cachem_1.0.8    
+# [29] stringi_1.8.3    httpuv_1.6.14    xfun_0.42        fs_1.6.3        
+# [33] sass_0.4.8       bit64_4.0.5      cli_3.6.2        withr_3.0.0     
+# [37] magrittr_2.0.3   digest_0.6.34    grid_4.3.3       lifecycle_1.0.4 
+# [41] vctrs_0.6.5      evaluate_0.23    glue_1.7.0       whisker_0.4.1   
+# [45] colorspace_2.1-0 fansi_1.0.6      rmarkdown_2.26   tools_4.3.3     
+# [49] pkgconfig_2.0.3  htmltools_0.5.7</code></pre>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
