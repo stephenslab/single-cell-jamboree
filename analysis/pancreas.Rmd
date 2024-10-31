@@ -30,7 +30,7 @@ library(tools)
 library(Matrix)
 library(hdf5r)
 library(rsvd)
-library(uwot)
+library(Rtsne)
 library(ggplot2)
 library(cowplot)
 ```
@@ -61,9 +61,11 @@ colnames(counts) <- genes
 ```
 
 Note that some of the data are not actually counts, so perhaps calling
-this matrix "counts" is a bit misleading. Also note that in Luecken et
-al the counts were log-transformed, but here we taking the
-untransformed counts.
+this matrix "counts" is a bit misleading. Regardless, in some of our
+analyses we will model these data as counts.
+
+Also note that in Luecken et al the counts were log-transformed, but
+here we taking the untransformed data.
 
 The matrix has 16,382 rows (cells) and 19,093 columns (genes), and
 about 18% of the entries are nonzeros:
@@ -74,14 +76,15 @@ ncol(counts)
 mean(counts > 0)
 ```
 
-The pancreas data are actually several scRNA-seq data sets that were
-combined together:
+The pancreas data are actually a combination of several scRNA-seq data
+sets that are from different sequencing technologies or were processed
+in different ways:
 
 ```{r batches}
 table(sample_info$tech)
 ```
 
-The cells were previous annotated by cell type:
+The cells were previously annotated by cell type:
 
 ```{r cell-types}
 table(sample_info$celltype)
@@ -89,33 +92,39 @@ table(sample_info$celltype)
 
 Some of the cell types occur in only a very small number of cells.
 
-Distribution of the size factors:
+The "size factors" (here, total counts per cell) vary across a very
+wide range:
 
 ```{r size-factors, fig.height=2.5, fig.width=3.5}
 s <- rowSums(counts)
-ggplot(data.frame(log_size_factor = log10(s)),aes(log_size_factor)) +
+pdat <- data.frame(log_size_factor = log10(s))
+ggplot(pdat,aes(log_size_factor)) +
   geom_histogram(bins = 64,col = "black",fill = "black") +
+  labs(x = "log(size factor)") +
   theme_cowplot(font_size = 10)
 ```
 
-Genes with nonzero expression:
+Most genes are expressed in at least one cell:
 
 ```{r gene-expression-levels-1}
 p <- colSums(counts)/sum(s)
 sum(p > 0)
 ```
 
-Distribution of the (relative) expression levels:
+The (relative) gene expression levels also vary across a very wide
+range:
 
 ```{r gene-expression-levels-2, fig.height=2.5, fig.width=3.5}
 p <- p[p > 0]
-ggplot(data.frame(log_rel_expression_level = log10(p)),
-                  aes(log_rel_expression_level)) +
+pdat <- data.frame(log_rel_expression_level = log10(p))
+ggplot(pdat,aes(log_rel_expression_level)) +
   geom_histogram(bins = 64,col = "black",fill = "black") +
+  labs(x = "log-expression level (relative)") +
   theme_cowplot(font_size = 10)
 ```
 
-Now do UMAP... Compute the shifted log counts:
+Let's now generate a 2-d nonlinear embedding of the cells using
+*t*-SNE. First, transform the counts into "shifted log counts":
 
 ```{r shifted-log-counts}
 a <- 1
@@ -124,55 +133,59 @@ s <- s/mean(s)
 Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 ```
 
-UMAP:
+Next, project the cells onto the top 50 PCs:
 
-```{r umap, message=FALSE}
+```{r pca}
 set.seed(1)
-out <- rsvd(Y,k = 50)
-res <- umap(out$u,n_components = 2,n_threads = 8,verbose = TRUE)
-sample_info$umap1 <- res[,1]
-sample_info$umap2 <- res[,2]
+U <- rsvd(Y,k = 50)$u
 ```
 
-UMAP vs. cell type:
+Now run t-SNE on the 50 PCs:
+
+```{r embeddings, results="hide"}
+tsne <- Rtsne(U,dims = 2,perplexity = 100,pca = FALSE,
+              num_threads = 8,verbose = TRUE)
+sample_info$tsne1 <- tsne$Y[,1]
+sample_info$tsne2 <- tsne$Y[,2]
+```
+
+*t*-SNE with cells colored by cell-type:
 
 ```{r umap-vs-cell-type, fig.height=3.75, fig.width=5}
-umap_colors <- rep(c("#1b9e77","#d95f02","#7570b3","#e7298a",
-                     "#66a61e","#e6ab02","#a6761d"),times = 2)
-umap_shapes <- rep(c(4,19),each = 7)
-ggplot(sample_info,aes(x = umap1,y = umap2,color = celltype,
+tsne_colors <- rep(c("#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e"),
+                   times = 3)
+tsne_shapes <- rep(c(19,17,8),each = 5)
+ggplot(sample_info,aes(x = tsne1,y = tsne2,color = celltype,
                        shape = celltype)) +
-  geom_point(size = 1) +
-  scale_color_manual(values = umap_colors) +
-  scale_shape_manual(values = umap_shapes) +
+  geom_point(size = 2) +
+  scale_color_manual(values = tsne_colors) +
+  scale_shape_manual(values = tsne_shapes) +
+  labs(x = "tSNE 1",y = "tSNE 2") + 
   theme_cowplot(font_size = 10)
 ```
 
-UMAP vs. batch:
+*t*-SNE with cells colored by batch:
 
 ```{r umap-vs-batch, fig.height=3.75, fig.width=4.75}
-umap_colors <- rep(c("#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e"),
-                   times = 2)
-umap_shapes <- rep(c(4,19),each = 5)
-ggplot(sample_info,aes(x = umap1,y = umap2,color = tech,shape = tech)) +
-  geom_point(size = 1) +
-  scale_color_manual(values = umap_colors) +
-  scale_shape_manual(values = umap_shapes) +
+ggplot(sample_info,aes(x = tsne1,y = tsne2,color = tech,shape = tech)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = tsne_colors) +
+  scale_shape_manual(values = tsne_shapes) +
+  labs(x = "tSNE 1",y = "tSNE 2") + 
   theme_cowplot(font_size = 10)
 ```
 
-TO DO: Save the data and UMAP result in an .Rdata file for more
-convenient analyses with the matrix factorization methods.
+Both batch and cell-type contribute to structure in the data.
+
+Finally, save the data and t-SNE results in an .Rdata file for more
+convenient analysis in R:
 
 ```{r save-data, eval=FALSE}
 save(list = c("sample_info","counts"),file = "pancreas.RData")
 resaveRdaFiles("pancreas.RData")
 ```
 
-TO DO: Upload the prepared data file pancreas.RData to Box and add the
-[link][box] here.
-
 [figshare]: (https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968)
 [luecken-2022]: https://doi.org/10.1038/s41592-021-01336-8
 [mnn-paper]: https://doi.org/10.1038/nbt.4091
-[box]: https://uchicago.box.com/s/l0emrjcqpw5yat1zaygtr1v3akq7de1t
+
