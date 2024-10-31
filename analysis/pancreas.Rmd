@@ -152,12 +152,12 @@ sample_info$tsne2 <- tsne$Y[,2]
 *t*-SNE with cells colored by cell-type:
 
 ```{r umap-vs-cell-type, fig.height=3.75, fig.width=5}
-tsne_colors <- rep(c("#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e"),
-                   times = 3)
-tsne_shapes <- rep(c(19,17,8),each = 5)
+tsne_colors <- rep(c("#E69F00","#56B4E9","#009E73","#F0E442",
+                     "#0072B2","#D55E00","#CC79A7"),times = 2)
+tsne_shapes <- rep(c(19,17),each = 7)
 ggplot(sample_info,aes(x = tsne1,y = tsne2,color = celltype,
                        shape = celltype)) +
-  geom_point(size = 2) +
+  geom_point(size = 1.5) +
   scale_color_manual(values = tsne_colors) +
   scale_shape_manual(values = tsne_shapes) +
   labs(x = "tSNE 1",y = "tSNE 2") + 
@@ -168,7 +168,7 @@ ggplot(sample_info,aes(x = tsne1,y = tsne2,color = celltype,
 
 ```{r umap-vs-batch, fig.height=3.75, fig.width=4.75}
 ggplot(sample_info,aes(x = tsne1,y = tsne2,color = tech,shape = tech)) +
-  geom_point(size = 2) +
+  geom_point(size = 1.5) +
   scale_color_manual(values = tsne_colors) +
   scale_shape_manual(values = tsne_shapes) +
   labs(x = "tSNE 1",y = "tSNE 2") + 
@@ -177,7 +177,7 @@ ggplot(sample_info,aes(x = tsne1,y = tsne2,color = tech,shape = tech)) +
 
 Both batch and cell-type contribute to structure in the data.
 
-Finally, save the data and t-SNE results in an .Rdata file for more
+Finally, save the data and t-SNE results to an .Rdata file for more
 convenient analysis in R:
 
 ```{r save-data, eval=FALSE}
@@ -188,4 +188,3 @@ resaveRdaFiles("pancreas.RData")
 [figshare]: (https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968)
 [luecken-2022]: https://doi.org/10.1038/s41592-021-01336-8
 [mnn-paper]: https://doi.org/10.1038/nbt.4091
-
