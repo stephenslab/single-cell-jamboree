@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea8ffa99b330febbbfde407c468093ea329924fd5targetblanka8ffa99a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreefca056b6dd4c29da4c05118c6956d2e99a3a4a7ftargetblankfca056ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a8ffa99b330febbbfde407c468093ea329924fd5" target="_blank">a8ffa99</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/fca056b6dd4c29da4c05118c6956d2e99a3a4a7f" target="_blank">fca056b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea8ffa99b330febbbfde407c468093ea329924fd5targetblanka8ffa99a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreefca056b6dd4c29da4c05118c6956d2e99a3a4a7ftargetblankfca056ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a8ffa99b330febbbfde407c468093ea329924fd5" target="_blank">a8ffa99</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/fca056b6dd4c29da4c05118c6956d2e99a3a4a7f" target="_blank">fca056b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -465,10 +465,8 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Ignored files:
-    Ignored:    analysis/figure/
-
 Untracked files:
+    Untracked:  analysis/pancreas.RData
     Untracked:  data/Immune_ALL_human.h5ad
     Untracked:  data/human_pancreas_norm_complexBatch.h5ad
     Untracked:  data/pancreas.RData
@@ -520,6 +518,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/fca056b6dd4c29da4c05118c6956d2e99a3a4a7f/analysis/pancreas.Rmd" target="_blank">fca056b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+workflowr::wflow_publish("pancreas.Rmd", verbose = TRUE, view = FALSE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/833a14700f5838094e0086f2d237026a880103c7/docs/pancreas.html" target="_blank">833a147</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -844,6 +876,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/833a14700f5838094e0086f2d237026a880103c7/docs/figure/pancreas.Rmd/size-factors-1.png" target="_blank">833a147</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/fed31e6dbf128b29037d0085f9e21eb008ea58c8/docs/figure/pancreas.Rmd/size-factors-1.png" target="_blank">fed31e6</a>
 </td>
 <td>
@@ -894,6 +937,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/833a14700f5838094e0086f2d237026a880103c7/docs/figure/pancreas.Rmd/gene-expression-levels-2-1.png" target="_blank">833a147</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/fed31e6dbf128b29037d0085f9e21eb008ea58c8/docs/figure/pancreas.Rmd/gene-expression-levels-2-1.png" target="_blank">fed31e6</a>
 </td>
 <td>
@@ -923,12 +977,12 @@ U &lt;- rsvd(Y,k = 50)$u</code></pre>
 sample_info$tsne1 &lt;- tsne$Y[,1]
 sample_info$tsne2 &lt;- tsne$Y[,2]</code></pre>
 <p><em>t</em>-SNE with cells colored by cell-type:</p>
-<pre class="r"><code>tsne_colors &lt;- rep(c(&quot;#1b9e77&quot;,&quot;#d95f02&quot;,&quot;#7570b3&quot;,&quot;#e7298a&quot;,&quot;#66a61e&quot;),
-                   times = 3)
-tsne_shapes &lt;- rep(c(19,17,8),each = 5)
+<pre class="r"><code>tsne_colors &lt;- rep(c(&quot;#E69F00&quot;,&quot;#56B4E9&quot;,&quot;#009E73&quot;,&quot;#F0E442&quot;,
+                     &quot;#0072B2&quot;,&quot;#D55E00&quot;,&quot;#CC79A7&quot;),times = 2)
+tsne_shapes &lt;- rep(c(19,17),each = 7)
 ggplot(sample_info,aes(x = tsne1,y = tsne2,color = celltype,
                        shape = celltype)) +
-  geom_point(size = 2) +
+  geom_point(size = 1.5) +
   scale_color_manual(values = tsne_colors) +
   scale_shape_manual(values = tsne_shapes) +
   labs(x = &quot;tSNE 1&quot;,y = &quot;tSNE 2&quot;) + 
@@ -958,6 +1012,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/833a14700f5838094e0086f2d237026a880103c7/docs/figure/pancreas.Rmd/umap-vs-cell-type-1.png" target="_blank">833a147</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/25f389a7a147366e9fb9f71c43de7664c5e03611/docs/figure/pancreas.Rmd/umap-vs-cell-type-1.png" target="_blank">25f389a</a>
 </td>
 <td>
@@ -973,7 +1038,7 @@ Peter Carbonetto
 </div>
 <p><em>t</em>-SNE with cells colored by batch:</p>
 <pre class="r"><code>ggplot(sample_info,aes(x = tsne1,y = tsne2,color = tech,shape = tech)) +
-  geom_point(size = 2) +
+  geom_point(size = 1.5) +
   scale_color_manual(values = tsne_colors) +
   scale_shape_manual(values = tsne_shapes) +
   labs(x = &quot;tSNE 1&quot;,y = &quot;tSNE 2&quot;) + 
@@ -1003,6 +1068,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/833a14700f5838094e0086f2d237026a880103c7/docs/figure/pancreas.Rmd/umap-vs-batch-1.png" target="_blank">833a147</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/25f389a7a147366e9fb9f71c43de7664c5e03611/docs/figure/pancreas.Rmd/umap-vs-batch-1.png" target="_blank">25f389a</a>
 </td>
 <td>
@@ -1017,7 +1093,7 @@ Peter Carbonetto
 </div>
 </div>
 <p>Both batch and cell-type contribute to structure in the data.</p>
-<p>Finally, save the data and t-SNE results in an .Rdata file for more
+<p>Finally, save the data and t-SNE results to an .Rdata file for more
 convenient analysis in R:</p>
 <pre class="r"><code>save(list = c(&quot;sample_info&quot;,&quot;counts&quot;),file = &quot;pancreas.RData&quot;)
 resaveRdaFiles(&quot;pancreas.RData&quot;)</code></pre>
