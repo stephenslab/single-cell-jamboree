@@ -13,7 +13,7 @@ data sets.
 Note that some of the processed data sets can be downloaded from Box
 via [this link][box].
 
-Analyses:
+**Analyses:**
 
 + [Initial exploration of the pancreas data set.](pancreas.html)
 
