@@ -22,13 +22,14 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
-First, load the packages needed for this analysis.
+First, load the packages needed for this analysis. Note that
+MatrixExtra is also used in one of the steps below.
 
 ```{r load-pkgs, message=FALSE}
 library(tools)
 library(Matrix)
-library(MatrixExtra)
 library(hdf5r)
+library(rsvd)
 library(uwot)
 library(ggplot2)
 library(cowplot)
@@ -120,14 +121,44 @@ Now do UMAP... Compute the shifted log counts:
 a <- 1
 s <- rowSums(counts)
 s <- s/mean(s)
-Y <- mapSparse(counts/(a*s),log1p)
+Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 ```
 
 UMAP:
 
-```{r umap, eval=FALSE}
-Y <- as.matrix(Y)
-res <- umap(Y,n_components = 2,n_threads = 8,verbose = TRUE)
+```{r umap, message=FALSE}
+set.seed(1)
+out <- rsvd(Y,k = 50)
+res <- umap(out$u,n_components = 2,n_threads = 8,verbose = TRUE)
+sample_info$umap1 <- res[,1]
+sample_info$umap2 <- res[,2]
+```
+
+UMAP vs. cell type:
+
+```{r umap-vs-cell-type, fig.height=3.75, fig.width=5}
+umap_colors <- rep(c("#1b9e77","#d95f02","#7570b3","#e7298a",
+                     "#66a61e","#e6ab02","#a6761d"),times = 2)
+umap_shapes <- rep(c(4,19),each = 7)
+ggplot(sample_info,aes(x = umap1,y = umap2,color = celltype,
+                       shape = celltype)) +
+  geom_point(size = 1) +
+  scale_color_manual(values = umap_colors) +
+  scale_shape_manual(values = umap_shapes) +
+  theme_cowplot(font_size = 10)
+```
+
+UMAP vs. batch:
+
+```{r umap-vs-batch, fig.height=3.75, fig.width=4.75}
+umap_colors <- rep(c("#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e"),
+                   times = 2)
+umap_shapes <- rep(c(4,19),each = 5)
+ggplot(sample_info,aes(x = umap1,y = umap2,color = tech,shape = tech)) +
+  geom_point(size = 1) +
+  scale_color_manual(values = umap_colors) +
+  scale_shape_manual(values = umap_shapes) +
+  theme_cowplot(font_size = 10)
 ```
 
 TO DO: Save the data and UMAP result in an .Rdata file for more
