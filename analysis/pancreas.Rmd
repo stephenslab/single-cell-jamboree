@@ -33,6 +33,7 @@ library(rsvd)
 library(Rtsne)
 library(ggplot2)
 library(cowplot)
+library(Seurat)
 ```
 
 Download the file "human_pancreas_norm_complexBatch.h5ad" from
@@ -176,6 +177,32 @@ ggplot(sample_info,aes(x = tsne1,y = tsne2,color = tech,shape = tech)) +
 ```
 
 Both batch and cell-type contribute to structure in the data.
+
+Seurat:
+
+```{r seurat-1}
+pancreas <- CreateSeuratObject(counts = t(counts),project = "pancreas",
+                               meta.data = sample_info)
+pancreas <- NormalizeData(pancreas)
+pancreas <- ScaleData(pancreas)
+pancreas <- FindVariableFeatures(pancreas)
+pancreas <- RunPCA(pancreas,npcs = 50,features = VariableFeatures(pancreas))
+pancreas <- RunTSNE(pancreas)
+```
+
+More Seurat:
+
+```{r seurat-2, fig.height=3.75, fig.width=5}
+DimPlot(pancreas,reduction = "tsne",group.by = "celltype") +
+  scale_color_manual(values = tsne_colors) +
+  scale_shape_manual(values = tsne_shapes)
+```
+
+```{r seurat-3, fig.height=3.75, fig.width=5}
+DimPlot(pancreas,reduction = "tsne",group.by = "tech") +
+  scale_color_manual(values = tsne_colors) +
+  scale_shape_manual(values = tsne_shapes)
+```
 
 Finally, save the data and t-SNE results to an .Rdata file for more
 convenient analysis in R:
