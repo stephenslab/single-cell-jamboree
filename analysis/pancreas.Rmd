@@ -176,11 +176,12 @@ ggplot(sample_info,aes(x = tsne1,y = tsne2,color = tech,shape = tech)) +
   theme_cowplot(font_size = 10)
 ```
 
-Both batch and cell-type contribute to structure in the data.
+It is clear from these *t*-SNE plots that both batch and cell-type
+contribute to structure in the data.
 
-Seurat:
+For comparison, let's run the default *t*-SNE pipeline in Seurat:
 
-```{r seurat-1}
+```{r seurat-1, message=FALSE}
 pancreas <- CreateSeuratObject(counts = t(counts),project = "pancreas",
                                meta.data = sample_info)
 pancreas <- NormalizeData(pancreas)
@@ -190,19 +191,36 @@ pancreas <- RunPCA(pancreas,npcs = 50,features = VariableFeatures(pancreas))
 pancreas <- RunTSNE(pancreas)
 ```
 
-More Seurat:
+Seurat *t*-SNE with cells colored by cell-type:
 
 ```{r seurat-2, fig.height=3.75, fig.width=5}
-DimPlot(pancreas,reduction = "tsne",group.by = "celltype") +
+DimPlot(pancreas,reduction = "tsne",group.by = "celltype",
+        shape.by = "celltype",pt.size = 1.5) +
   scale_color_manual(values = tsne_colors) +
-  scale_shape_manual(values = tsne_shapes)
+  scale_shape_manual(values = tsne_shapes) +
+  theme_cowplot(font_size = 10) +
+  labs(title = "")
 ```
 
-```{r seurat-3, fig.height=3.75, fig.width=5}
-DimPlot(pancreas,reduction = "tsne",group.by = "tech") +
+Seurat *t*-SNE with cells colored by batch:
+
+```{r seurat-3, fig.height=3.75, fig.width=4.5}
+DimPlot(pancreas,reduction = "tsne",group.by = "tech",
+        shape.by = "tech",pt.size = 1.5) +
   scale_color_manual(values = tsne_colors) +
-  scale_shape_manual(values = tsne_shapes)
+  scale_shape_manual(values = tsne_shapes) +
+  theme_cowplot(font_size = 10) +
+  labs(title = "")
 ```
+
+The default Seurat *t*-SNE shows does not show as much structure in
+the data. This plot does not seem to pick up much batch structure
+data; on the other hand, it also does not pick up some of the more
+subtyle cell types.
+
+(Note that I had to spend some time customizing the plots; among other
+things, Seurat appears to be using the default ggplot color scheme
+which is terrible.)
 
 Finally, save the data and t-SNE results to an .Rdata file for more
 convenient analysis in R:
