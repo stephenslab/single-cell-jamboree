@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-10-31
+<strong>Last updated:</strong> 2024-11-01
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreefca056b6dd4c29da4c05118c6956d2e99a3a4a7ftargetblankfca056ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree42a24a5ec6d78983a037e8d0021884412912a85atargetblank42a24a5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/fca056b6dd4c29da4c05118c6956d2e99a3a4a7f" target="_blank">fca056b</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/42a24a5ec6d78983a037e8d0021884412912a85a" target="_blank">42a24a5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreefca056b6dd4c29da4c05118c6956d2e99a3a4a7ftargetblankfca056ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree42a24a5ec6d78983a037e8d0021884412912a85atargetblank42a24a5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/fca056b6dd4c29da4c05118c6956d2e99a3a4a7f" target="_blank">fca056b</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/42a24a5ec6d78983a037e8d0021884412912a85a" target="_blank">42a24a5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -466,13 +466,9 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  analysis/pancreas.RData
     Untracked:  data/Immune_ALL_human.h5ad
     Untracked:  data/human_pancreas_norm_complexBatch.h5ad
     Untracked:  data/pancreas.RData
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -518,6 +514,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/42a24a5ec6d78983a037e8d0021884412912a85a/analysis/pancreas.Rmd" target="_blank">42a24a5</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-11-01
+</td>
+<td>
+workflowr::wflow_publish("pancreas.Rmd", verbose = TRUE, view = FALSE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4349f73b39837f5fb9cb6a8bfd8cee72ac5dd587/analysis/pancreas.Rmd" target="_blank">4349f73</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+Added some code chunks to run seurat on the pancreas data.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/108b85391487fde70d4c859ce2e33b4bebe6e6ce/docs/pancreas.html" target="_blank">108b853</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+<td>
+Switched from umap to tsne in the pancreas analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -785,7 +832,8 @@ library(hdf5r)
 library(rsvd)
 library(Rtsne)
 library(ggplot2)
-library(cowplot)</code></pre>
+library(cowplot)
+library(Seurat)</code></pre>
 <p>Download the file “human_pancreas_norm_complexBatch.h5ad” from <a
 href=""
 title="https://figshare.com/articles/dataset/Benchmarking_atlas-level_data_integration_in_single-cell_genomics_-_integration_task_datasets_Immune_and_pancreas_/12420968">figshare</a>
@@ -1012,6 +1060,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/108b85391487fde70d4c859ce2e33b4bebe6e6ce/docs/figure/pancreas.Rmd/umap-vs-cell-type-1.png" target="_blank">108b853</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/833a14700f5838094e0086f2d237026a880103c7/docs/figure/pancreas.Rmd/umap-vs-cell-type-1.png" target="_blank">833a147</a>
 </td>
 <td>
@@ -1068,6 +1127,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/108b85391487fde70d4c859ce2e33b4bebe6e6ce/docs/figure/pancreas.Rmd/umap-vs-batch-1.png" target="_blank">108b853</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-10-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/833a14700f5838094e0086f2d237026a880103c7/docs/figure/pancreas.Rmd/umap-vs-batch-1.png" target="_blank">833a147</a>
 </td>
 <td>
@@ -1092,7 +1162,40 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Both batch and cell-type contribute to structure in the data.</p>
+<p>It is clear from these <em>t</em>-SNE plots that both batch and
+cell-type contribute to structure in the data.</p>
+<p>For comparison, let’s run the default <em>t</em>-SNE pipeline in
+Seurat:</p>
+<pre class="r"><code>pancreas &lt;- CreateSeuratObject(counts = t(counts),project = &quot;pancreas&quot;,
+                               meta.data = sample_info)
+pancreas &lt;- NormalizeData(pancreas)
+pancreas &lt;- ScaleData(pancreas)
+pancreas &lt;- FindVariableFeatures(pancreas)
+pancreas &lt;- RunPCA(pancreas,npcs = 50,features = VariableFeatures(pancreas))
+pancreas &lt;- RunTSNE(pancreas)</code></pre>
+<p>Seurat <em>t</em>-SNE with cells colored by cell-type:</p>
+<pre class="r"><code>DimPlot(pancreas,reduction = &quot;tsne&quot;,group.by = &quot;celltype&quot;,
+        shape.by = &quot;celltype&quot;,pt.size = 1.5) +
+  scale_color_manual(values = tsne_colors) +
+  scale_shape_manual(values = tsne_shapes) +
+  theme_cowplot(font_size = 10) +
+  labs(title = &quot;&quot;)</code></pre>
+<p><img src="figure/pancreas.Rmd/seurat-2-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>Seurat <em>t</em>-SNE with cells colored by batch:</p>
+<pre class="r"><code>DimPlot(pancreas,reduction = &quot;tsne&quot;,group.by = &quot;tech&quot;,
+        shape.by = &quot;tech&quot;,pt.size = 1.5) +
+  scale_color_manual(values = tsne_colors) +
+  scale_shape_manual(values = tsne_shapes) +
+  theme_cowplot(font_size = 10) +
+  labs(title = &quot;&quot;)</code></pre>
+<p><img src="figure/pancreas.Rmd/seurat-3-1.png" width="540" style="display: block; margin: auto;" /></p>
+<p>The default Seurat <em>t</em>-SNE shows does not show as much
+structure in the data. This plot does not seem to pick up much batch
+structure data; on the other hand, it also does not pick up some of the
+more subtyle cell types.</p>
+<p>(Note that I had to spend some time customizing the plots; among
+other things, Seurat appears to be using the default ggplot color scheme
+which is terrible.)</p>
 <p>Finally, save the data and t-SNE results to an .Rdata file for more
 convenient analysis in R:</p>
 <pre class="r"><code>save(list = c(&quot;sample_info&quot;,&quot;counts&quot;),file = &quot;pancreas.RData&quot;)
@@ -1125,29 +1228,52 @@ Session information
 # [8] base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3 ggplot2_3.5.0 Rtsne_0.17    rsvd_1.0.5    hdf5r_1.3.11 
-# [6] Matrix_1.6-5 
+# [1] Seurat_5.0.3       SeuratObject_5.0.1 sp_2.1-4           cowplot_1.1.3     
+# [5] ggplot2_3.5.0      Rtsne_0.17         rsvd_1.0.5         hdf5r_1.3.11      
+# [9] Matrix_1.6-5      
 # 
 # loaded via a namespace (and not attached):
-#  [1] sass_0.4.8          utf8_1.2.4          generics_0.1.3     
-#  [4] stringi_1.8.3       lattice_0.22-5      digest_0.6.34      
-#  [7] magrittr_2.0.3      evaluate_0.23       grid_4.3.3         
-# [10] float_0.3-2         fastmap_1.1.1       rprojroot_2.0.4    
-# [13] workflowr_1.7.1     jsonlite_1.8.8      whisker_0.4.1      
-# [16] promises_1.2.1      fansi_1.0.6         scales_1.3.0       
-# [19] RhpcBLASctl_0.23-42 jquerylib_0.1.4     cli_3.6.2          
-# [22] rlang_1.1.3         bit64_4.0.5         munsell_0.5.0      
-# [25] withr_3.0.0         cachem_1.0.8        yaml_2.3.8         
-# [28] parallel_4.3.3      dplyr_1.1.4         colorspace_2.1-0   
-# [31] httpuv_1.6.14       vctrs_0.6.5         R6_2.5.1           
-# [34] lifecycle_1.0.4     git2r_0.33.0        stringr_1.5.1      
-# [37] fs_1.6.3            bit_4.0.5           MatrixExtra_0.1.15 
-# [40] pkgconfig_2.0.3     pillar_1.9.0        bslib_0.6.1        
-# [43] later_1.3.2         gtable_0.3.4        glue_1.7.0         
-# [46] Rcpp_1.0.12         highr_0.10          xfun_0.42          
-# [49] tibble_3.2.1        tidyselect_1.2.1    knitr_1.45         
-# [52] farver_2.1.1        htmltools_0.5.7     labeling_0.4.3     
-# [55] rmarkdown_2.26      compiler_4.3.3</code></pre>
+#   [1] RColorBrewer_1.1-3     jsonlite_1.8.8         magrittr_2.0.3        
+#   [4] spatstat.utils_3.0-4   farver_2.1.1           rmarkdown_2.26        
+#   [7] fs_1.6.3               vctrs_0.6.5            ROCR_1.0-11           
+#  [10] spatstat.explore_3.2-7 htmltools_0.5.7        sass_0.4.8            
+#  [13] sctransform_0.4.1      parallelly_1.37.1      KernSmooth_2.23-22    
+#  [16] bslib_0.6.1            htmlwidgets_1.6.4      ica_1.0-3             
+#  [19] plyr_1.8.9             plotly_4.10.4          zoo_1.8-12            
+#  [22] cachem_1.0.8           whisker_0.4.1          igraph_2.0.3          
+#  [25] mime_0.12              lifecycle_1.0.4        pkgconfig_2.0.3       
+#  [28] R6_2.5.1               fastmap_1.1.1          fitdistrplus_1.1-11   
+#  [31] future_1.33.2          shiny_1.8.0            digest_0.6.34         
+#  [34] colorspace_2.1-0       patchwork_1.2.0        rprojroot_2.0.4       
+#  [37] tensor_1.5             RSpectra_0.16-1        irlba_2.3.5.1         
+#  [40] labeling_0.4.3         progressr_0.14.0       fansi_1.0.6           
+#  [43] spatstat.sparse_3.0-3  httr_1.4.7             polyclip_1.10-6       
+#  [46] abind_1.4-5            compiler_4.3.3         bit64_4.0.5           
+#  [49] withr_3.0.0            fastDummies_1.7.3      highr_0.10            
+#  [52] float_0.3-2            MASS_7.3-60.0.1        lmtest_0.9-40         
+#  [55] httpuv_1.6.14          future.apply_1.11.2    goftest_1.2-3         
+#  [58] glue_1.7.0             nlme_3.1-164           promises_1.2.1        
+#  [61] grid_4.3.3             cluster_2.1.6          reshape2_1.4.4        
+#  [64] generics_0.1.3         gtable_0.3.4           spatstat.data_3.0-4   
+#  [67] tidyr_1.3.1            data.table_1.15.2      utf8_1.2.4            
+#  [70] spatstat.geom_3.2-9    RcppAnnoy_0.0.22       ggrepel_0.9.5         
+#  [73] RANN_2.6.1             pillar_1.9.0           stringr_1.5.1         
+#  [76] spam_2.10-0            RcppHNSW_0.6.0         later_1.3.2           
+#  [79] splines_4.3.3          dplyr_1.1.4            lattice_0.22-5        
+#  [82] survival_3.5-8         bit_4.0.5              deldir_2.0-4          
+#  [85] tidyselect_1.2.1       miniUI_0.1.1.1         pbapply_1.7-2         
+#  [88] knitr_1.45             git2r_0.33.0           gridExtra_2.3         
+#  [91] scattermore_1.2        RhpcBLASctl_0.23-42    xfun_0.42             
+#  [94] matrixStats_1.2.0      stringi_1.8.3          workflowr_1.7.1       
+#  [97] lazyeval_0.2.2         yaml_2.3.8             evaluate_0.23         
+# [100] codetools_0.2-19       tibble_3.2.1           cli_3.6.2             
+# [103] uwot_0.2.2.9000        xtable_1.8-4           reticulate_1.36.1     
+# [106] munsell_0.5.0          jquerylib_0.1.4        Rcpp_1.0.12           
+# [109] globals_0.16.3         spatstat.random_3.2-3  png_0.1-8             
+# [112] parallel_4.3.3         ellipsis_0.3.2         dotCall64_1.1-1       
+# [115] listenv_0.9.1          viridisLite_0.4.2      MatrixExtra_0.1.15    
+# [118] scales_1.3.0           ggridges_0.5.6         leiden_0.4.3.1        
+# [121] purrr_1.0.2            rlang_1.1.3</code></pre>
 </div>
 
 
