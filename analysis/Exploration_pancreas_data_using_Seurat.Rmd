@@ -1,21 +1,16 @@
 
 ---
-title: "Pancreas Data Analysis"
+title: "Enhanced Visualization and Exploration of Pancreas Data using Seurat"
 author: "Sagnik Nandy"
-output:
-  pdf_document: default
-  html_document: default
-  word_document: default
+output: workflowr::wflow_html
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+In this analysis, we aim to generate an improved visualization of pancreas data from the 2022 benchmarking study by [Luecken et al.][luecken-2022] using the Seurat package in R. This analysis uses the pre-processed dataset, `pancreas.RData`.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold",
+                      fig.align = "center", dpi = 120)
 ```
-
-
-
-
-pancreas.RData
 
 ## 1. Load Libraries
 
