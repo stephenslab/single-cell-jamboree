@@ -280,7 +280,7 @@ Pancreas Data using Seurat</h1>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -291,8 +291,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -305,9 +305,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -328,6 +328,24 @@ versions</em> tab lists the development history.
 </div>
 <div id="checks" class="tab-pane fade">
 <div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
@@ -415,18 +433,50 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongnoversioncontrol">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>Repository version:</strong> no
-version control </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong7667043">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong> 7667043
+</a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongnoversioncontrol"
+<div id="strongRepositoryversionstrong7667043"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Tracking code development and connecting the code version to the
-results is critical for reproducibility. To start using Git, open the
-Terminal and type <code>git init</code> in your project directory.</p>
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version 7667043.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rproj.user/3DA36548/bibliography-index/
+    Ignored:    .Rproj.user/3DA36548/ctx/
+    Ignored:    .Rproj.user/3DA36548/explorer-cache/
+    Ignored:    .Rproj.user/3DA36548/presentation/
+    Ignored:    .Rproj.user/3DA36548/profiles-cache/
+    Ignored:    .Rproj.user/3DA36548/tutorial/
+    Ignored:    .Rproj.user/3DA36548/viewer-cache/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
 </div>
 </div>
 </div>
@@ -434,11 +484,75 @@ Terminal and type <code>git init</code> in your project directory.</p>
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-This project is not being versioned with Git. To obtain the full
-reproducibility benefits of using workflowr, please see
-<code>?wflow_start</code>.
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/Exploration_pancreas_data_using_Seurat.Rmd</code>) and
+HTML (<code>docs/Exploration_pancreas_data_using_Seurat.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -738,6 +852,43 @@ ggplot(pdat, aes(log_size_factor)) +
   labs(x = &quot;Log(Size Factor)&quot;) +
   theme_cowplot(font_size = 10)</code></pre>
 <p><img src="figure/Exploration_pancreas_data_using_Seurat.Rmd/size-factors-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-size-factors-1">
+Past versions of size-factors-1.png
+</button>
+</p>
+<div id="fig-size-factors-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="study-gene-expression-levels" class="section level2">
 <h2>5. Study Gene Expression Levels</h2>
@@ -750,6 +901,43 @@ ggplot(pdat, aes(log_rel_expression_level)) +
   labs(x = &quot;Log-Expression Level (Relative)&quot;) +
   theme_cowplot(font_size = 10)</code></pre>
 <p><img src="figure/Exploration_pancreas_data_using_Seurat.Rmd/gene-expression-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-gene-expression-1">
+Past versions of gene-expression-1.png
+</button>
+</p>
+<div id="fig-gene-expression-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="create-seurat-object" class="section level2">
 <h2>6. Create Seurat Object</h2>
@@ -769,6 +957,43 @@ pancreas &lt;- NormalizeData(pancreas, normalization.method = &quot;LogNormalize
 VariableFeaturePlot(pancreas)
 # Warning in scale_x_log10(): log-10 transformation introduced infinite values.</code></pre>
 <p><img src="figure/Exploration_pancreas_data_using_Seurat.Rmd/find-variable-features-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-find-variable-features-1">
+Past versions of find-variable-features-1.png
+</button>
+</p>
+<div id="fig-find-variable-features-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="elbow-plot-of-variable-features" class="section level2">
 <h2>8. Elbow Plot of Variable Features</h2>
@@ -776,6 +1001,43 @@ VariableFeaturePlot(pancreas)
 features.</p>
 <pre class="r"><code>create_elbow_plot(object = pancreas, assay = &quot;RNA&quot;, k = 5000)</code></pre>
 <p><img src="figure/Exploration_pancreas_data_using_Seurat.Rmd/elbow-plot-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-elbow-plot-1">
+Past versions of elbow-plot-1.png
+</button>
+</p>
+<div id="fig-elbow-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="select-top-1000-variable-features" class="section level2">
 <h2>9. Select Top 1,000 Variable Features</h2>
@@ -825,6 +1087,43 @@ pancreas &lt;- RunPCA(pancreas, assay = &quot;RNA&quot;, features = desired_gene
 #      CXCL6, DDIT4, CTGF, KRT17, PLAUR, SERINC2, PRSS8, CXCL1, IGFBP7, VTCN1
 ElbowPlot(pancreas, ndims = 50)</code></pre>
 <p><img src="figure/Exploration_pancreas_data_using_Seurat.Rmd/scale-data-pca-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-scale-data-pca-1">
+Past versions of scale-data-pca-1.png
+</button>
+</p>
+<div id="fig-scale-data-pca-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="run-umap" class="section level2">
 <h2>11. Run UMAP</h2>
@@ -833,20 +1132,20 @@ ElbowPlot(pancreas, ndims = 50)</code></pre>
 # Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 # To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 # This message will be shown once per session
-# 18:17:36 UMAP embedding parameters a = 0.9922 b = 1.112
-# 18:17:36 Read 16382 rows and found 25 numeric columns
-# 18:17:36 Using Annoy for neighbor search, n_neighbors = 30
-# 18:17:36 Building Annoy index with metric = cosine, n_trees = 50
+# 18:26:34 UMAP embedding parameters a = 0.9922 b = 1.112
+# 18:26:34 Read 16382 rows and found 25 numeric columns
+# 18:26:34 Using Annoy for neighbor search, n_neighbors = 30
+# 18:26:34 Building Annoy index with metric = cosine, n_trees = 50
 # 0%   10   20   30   40   50   60   70   80   90   100%
 # [----|----|----|----|----|----|----|----|----|----|
 # **************************************************|
-# 18:17:37 Writing NN index file to temp file /var/folders/wc/v_nfs9816z5gz9p6y3_q53pm0000gn/T//Rtmp4prGTy/filead2032ed9278
-# 18:17:37 Searching Annoy index using 1 thread, search_k = 3000
-# 18:17:40 Annoy recall = 100%
-# 18:17:40 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-# 18:17:41 Initializing from normalized Laplacian + noise (using RSpectra)
-# 18:17:41 Commencing optimization for 200 epochs, with 716942 positive edges
-# 18:17:45 Optimization finished
+# 18:26:35 Writing NN index file to temp file /var/folders/wc/v_nfs9816z5gz9p6y3_q53pm0000gn/T//RtmpAk3hOz/fileae544d87419c
+# 18:26:35 Searching Annoy index using 1 thread, search_k = 3000
+# 18:26:38 Annoy recall = 100%
+# 18:26:38 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+# 18:26:38 Initializing from normalized Laplacian + noise (using RSpectra)
+# 18:26:39 Commencing optimization for 200 epochs, with 716942 positive edges
+# 18:26:43 Optimization finished
 umap_embeddings &lt;- Embeddings(object = pancreas, reduction = &quot;umap&quot;)</code></pre>
 </div>
 <div id="define-colors-for-cell-types" class="section level2">
@@ -875,6 +1174,43 @@ p2 &lt;- DimPlot(umap_embeddings, group.by = sample_info$tech, pt.size = 0.04, c
 combined_plot &lt;- p1 + p2 + plot_layout(ncol = 2)
 combined_plot</code></pre>
 <p><img src="figure/Exploration_pancreas_data_using_Seurat.Rmd/umap-plot-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umap-plot-1">
+Past versions of umap-plot-1.png
+</button>
+</p>
+<div id="fig-umap-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+7667043
+</td>
+<td>
+Sagnik
+</td>
+<td>
+2024-11-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(
   filename = &quot;combined_umap_plot.png&quot;,    # File name and format
   plot = combined_plot,                   # The plot object to save
@@ -945,26 +1281,26 @@ Session information
 #  [70] tensor_1.5             spatstat.data_3.1-2    diptest_0.77-1        
 #  [73] utf8_1.2.4             generics_0.1.3         data.table_1.16.2     
 #  [76] robustbase_0.99-4-1    class_7.3-22           httr_1.4.7            
-#  [79] htmlwidgets_1.6.4      uwot_0.2.2             pkgconfig_2.0.3       
-#  [82] gtable_0.3.6           modeltools_0.2-23      workflowr_1.7.1       
-#  [85] lmtest_0.9-40          htmltools_0.5.8.1      carData_3.0-5         
-#  [88] dotCall64_1.2          scales_1.3.0           png_0.1-8             
-#  [91] spatstat.univar_3.0-1  knitr_1.48             rstudioapi_0.17.1     
-#  [94] tzdb_0.4.0             reshape2_1.4.4         nlme_3.1-166          
-#  [97] proxy_0.4-27           cachem_1.1.0           zoo_1.8-12            
-# [100] KernSmooth_2.23-24     parallel_4.4.1         miniUI_0.1.1.1        
-# [103] pillar_1.9.0           grid_4.4.1             vctrs_0.6.5           
-# [106] RANN_2.6.2             promises_1.3.0         car_3.1-3             
-# [109] xtable_1.8-4           evaluate_1.0.1         cli_3.6.3             
-# [112] compiler_4.4.1         rlang_1.1.4            future.apply_1.11.3   
-# [115] ggsignif_0.6.4         labeling_0.4.3         mclust_6.1.1          
-# [118] plyr_1.8.9             fs_1.6.5               stringi_1.8.4         
-# [121] viridisLite_0.4.2      deldir_2.0-4           munsell_0.5.1         
-# [124] lazyeval_0.2.2         spatstat.geom_3.3-3    Matrix_1.7-1          
-# [127] RcppHNSW_0.6.0         hms_1.1.3              future_1.34.0         
-# [130] shiny_1.9.1            highr_0.11             kernlab_0.9-33        
-# [133] ROCR_1.0-11            igraph_2.1.1           broom_1.0.7           
-# [136] bslib_0.8.0            DEoptimR_1.1-3</code></pre>
+#  [79] htmlwidgets_1.6.4      whisker_0.4.1          uwot_0.2.2            
+#  [82] pkgconfig_2.0.3        gtable_0.3.6           modeltools_0.2-23     
+#  [85] workflowr_1.7.1        lmtest_0.9-40          htmltools_0.5.8.1     
+#  [88] carData_3.0-5          dotCall64_1.2          scales_1.3.0          
+#  [91] png_0.1-8              spatstat.univar_3.0-1  knitr_1.48            
+#  [94] rstudioapi_0.17.1      tzdb_0.4.0             reshape2_1.4.4        
+#  [97] nlme_3.1-166           proxy_0.4-27           cachem_1.1.0          
+# [100] zoo_1.8-12             KernSmooth_2.23-24     parallel_4.4.1        
+# [103] miniUI_0.1.1.1         pillar_1.9.0           grid_4.4.1            
+# [106] vctrs_0.6.5            RANN_2.6.2             promises_1.3.0        
+# [109] car_3.1-3              xtable_1.8-4           evaluate_1.0.1        
+# [112] cli_3.6.3              compiler_4.4.1         rlang_1.1.4           
+# [115] future.apply_1.11.3    ggsignif_0.6.4         labeling_0.4.3        
+# [118] mclust_6.1.1           plyr_1.8.9             fs_1.6.5              
+# [121] stringi_1.8.4          viridisLite_0.4.2      deldir_2.0-4          
+# [124] munsell_0.5.1          lazyeval_0.2.2         spatstat.geom_3.3-3   
+# [127] Matrix_1.7-1           RcppHNSW_0.6.0         hms_1.1.3             
+# [130] future_1.34.0          shiny_1.9.1            highr_0.11            
+# [133] kernlab_0.9-33         ROCR_1.0-11            igraph_2.1.1          
+# [136] broom_1.0.7            bslib_0.8.0            DEoptimR_1.1-3</code></pre>
 </div>
 </div>
 
