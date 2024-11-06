@@ -51,3 +51,7 @@ fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
 t1 <- proc.time()
 print(t1 - t0)
+
+# Save the model fits to an .Rdata file.
+fl_nmf$flash_fit["Y"] <- NULL
+save(list = c("nmf","fl_nmf"),file = "pancreas_factors.RData")
