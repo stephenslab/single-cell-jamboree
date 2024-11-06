@@ -30,6 +30,7 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Fit an NMF using NNLM.
+# I set k = 23 to match the flash() call.
 Y_dense <- as.matrix(Y)
 t0  <- proc.time()
 nmf <- nnmf(Y_dense,k = 23,loss = "mse",method = "scd",max.iter = 200,
@@ -38,6 +39,8 @@ t1  <- proc.time()
 print(t1 - t0)
 
 # Fit an NMF using flashier.
+# Note that I set var_type = 0 to increase the number of factors
+# discovered.
 t0 <- proc.time()
 fl0 <- flash(Y,ebnm_fn = ebnm_point_exponential,var_type = 0,
              greedy_Kmax = 40,nullcheck = FALSE,backfit = FALSE,
