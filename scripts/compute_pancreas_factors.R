@@ -1,9 +1,8 @@
 # sinteractive --mem=16G -c 8 --time=24:00:00
 # module load R/4.2.0
-# .libPaths()
-# 
+# .libPaths()[1]
+# /home/pcarbo/R_libs_4_20
 library(Matrix)
-library(sparseMatrixStats)
 library(NNLM)
 library(flashier)
 load("../data/pancreas.RData")
@@ -16,9 +15,14 @@ s <- s/mean(s)
 Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 
 # Remove genes with very low variance in expression.
-x <- colSds(Y)
+x <- sparseMatrixStats::colSds(Y)
 j <- which(x > 0.01)
 Y <- Y[,j]
+
+# *** TESTING ***
+# x <- sparseMatrixStats::colSds(Y)
+# j <- which(x > 2)
+# Y <- Y[,j]
 
 # Set lower bound on variances.
 n  <- nrow(counts)
