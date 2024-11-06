@@ -5,7 +5,10 @@ author: "Sagnik Nandy"
 output: workflowr::wflow_html
 ---
 
-In this analysis, we aim to generate an improved visualization of pancreas data from the 2022 benchmarking study by [Luecken et al.][luecken-2022] using the Seurat package in R. This analysis uses the pre-processed dataset, `pancreas.RData`.
+In this analysis, we aim to generate an improved visualization of
+pancreas data from the 2022 benchmarking study by
+[Luecken et al.][luecken-2022] using the Seurat package in R. This
+analysis uses the pre-processed dataset, `pancreas.RData`.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold", 
@@ -14,9 +17,10 @@ knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold",
 
 ## 1. Load Libraries
 
-Load the necessary libraries for data analysis, plotting, and Seurat analysis.
+Load the necessary libraries for data analysis, plotting, and Seurat
+analysis.
 
-```{r libraries}
+```{r libraries, message=FALSE}
 library(Seurat)
 library(tidyverse)
 library(patchwork)
@@ -31,7 +35,10 @@ library(gridExtra)
 
 ## 2. Define Custom Functions
 
-Define any custom functions for the analysis. This includes a customized plotting function for dimensional reduction (e.g., UMAP or PCA) and a function to create an elbow plot of the top variable features in a Seurat object.
+Define any custom functions for the analysis. This includes a
+customized plotting function for dimensional reduction (e.g., UMAP or
+PCA) and a function to create an elbow plot of the top variable
+features in a Seurat object.
 
 ```{r custom-functions}
 # Customized dimensional reduction plot function (e.g., UMAP or PCA)
@@ -143,7 +150,6 @@ DimPlotSagnik <- function(
   return(plots)
 }
 
-
 create_elbow_plot <- function(object, assay = "RNA", k = 5000) {
   # Get the high variable feature information
   hvf.info <- HVFInfo(object = object, assay = assay)
@@ -189,7 +195,8 @@ create_elbow_plot <- function(object, assay = "RNA", k = 5000) {
 
 ## 3. Set Working Directory and Load Data
 
-Set the working directory to the location of the `pancreas.RData` file, and load the dataset, which contains "counts" and "sample_info".
+Set the working directory to the location of the `pancreas.RData`
+file, and load the dataset, which contains "counts" and "sample_info".
 
 ```{r load-data}
 # Load the pancreas data from the data directory
@@ -198,7 +205,8 @@ load("../data/pancreas.RData")
 
 ## 4. Study Size Factors
 
-Visualize the distribution of total counts (size factors) per cell in log scale.
+Visualize the distribution of total counts (size factors) per cell in
+log scale.
 
 ```{r size-factors}
 s <- rowSums(counts)
@@ -224,7 +232,9 @@ ggplot(pdat, aes(log_rel_expression_level)) +
 
 ## 6. Create Seurat Object
 
-Create a Seurat object from the counts data, using `sample_info` as metadata. Normalize the data with a custom scale factor based on the mean size factor.
+Create a Seurat object from the counts data, using `sample_info` as
+metadata. Normalize the data with a custom scale factor based on the
+mean size factor.
 
 ```{r create-seurat-object}
 pancreas <- CreateSeuratObject(counts = t(counts), project = "pancreas", meta.data = sample_info)
@@ -290,7 +300,8 @@ col_vector <- c(
 
 ## 13. Create UMAP Plots by Cell Type and Technology
 
-Generate UMAP plots where cell types are represented by colors and technology by shapes.
+Generate UMAP plots where cell types are represented by colors and
+technology by shapes.
 
 ```{r umap-plot, fig.width = 12}
 # Create UMAP Plots by Cell Type and Technology
@@ -312,3 +323,5 @@ ggsave(
   dpi = 300                               # Resolution in dots per inch (for high-quality output)
 )
 ```
+
+[luecken-2022]: https://doi.org/10.1038/s41592-021-01336-8
