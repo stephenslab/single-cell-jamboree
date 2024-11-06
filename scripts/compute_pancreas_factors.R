@@ -26,7 +26,7 @@ s1 <- sd(log(x + 1))
 # Fit an NMF using NNLM.
 Y_dense <- as.matrix(Y)
 t0  <- proc.time()
-nmf <- nnmf(Y_dense,k = 25,loss = "mse",method = "scd",max.iter = 200,
+nmf <- nnmf(Y_dense,k = 23,loss = "mse",method = "scd",max.iter = 200,
             verbose = 2,n.threads = 8)
 t1  <- proc.time()
 print(t1 - t0)
