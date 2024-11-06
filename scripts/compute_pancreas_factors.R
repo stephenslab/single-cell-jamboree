@@ -1,10 +1,12 @@
-# sinteractive 
+# sinteractive --mem=16G -c 8 --time=24:00:00
+# module load R/4.2.0
+# .libPaths()
+# 
 library(Matrix)
 library(sparseMatrixStats)
 library(NNLM)
 library(flashier)
 load("../data/pancreas.RData")
-
 set.seed(1)
 
 # Compute the shifted log counts.
