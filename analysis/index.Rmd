@@ -19,7 +19,7 @@ via [this link][box].
 
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
 
-+ [Exploratory analysis of human brain data, committed OPC cells](human_brain_OPC_cells.html)
++ [Exploratory analysis of human brain data, committed OPC cells.](human_brain_OPC_cells.html)
 
 [hca]: https://data.humancellatlas.org
 [google-sheet-data-sets]: https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing
