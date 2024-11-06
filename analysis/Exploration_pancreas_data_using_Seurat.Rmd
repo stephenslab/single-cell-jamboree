@@ -8,8 +8,8 @@ output: workflowr::wflow_html
 In this analysis, we aim to generate an improved visualization of pancreas data from the 2022 benchmarking study by [Luecken et al.][luecken-2022] using the Seurat package in R. This analysis uses the pre-processed dataset, `pancreas.RData`.
 
 ```{r knitr-opts, include=FALSE}
-knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold",
-                      fig.align = "center", dpi = 120)
+knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold", 
+                      fig.align = "center", dpi = 120, message = FALSE)
 ```
 
 ## 1. Load Libraries
@@ -35,7 +35,7 @@ Define any custom functions for the analysis. This includes a customized plottin
 
 ```{r custom-functions}
 # Customized dimensional reduction plot function (e.g., UMAP or PCA)
-DimPlot <- function(
+DimPlotSagnik <- function(
     data,
     dims = c(1, 2),         # Dimensions to plot (e.g., UMAP1 and UMAP2)
     cells = NULL,           # Subset of cells to plot
@@ -192,8 +192,8 @@ create_elbow_plot <- function(object, assay = "RNA", k = 5000) {
 Set the working directory to the location of the `pancreas.RData` file, and load the dataset, which contains "counts" and "sample_info".
 
 ```{r load-data}
-#setwd("/path/to/directory") # Replace with your directory path
-load("/Users/sagnik/Dropbox/Research Projects/Mathew Stephens/EBNMF/Pancreas/pancreas.RData")
+# Load the pancreas data from the data directory
+load("../data/pancreas.RData")
 ```
 
 ## 4. Study Size Factors
@@ -294,10 +294,10 @@ Generate UMAP plots where cell types are represented by colors and technology by
 
 ```{r umap-plot, fig.width = 12}
 # Create UMAP Plots by Cell Type and Technology
-p1 <- DimPlot(umap_embeddings, group.by = sample_info$celltype, pt.size = 0.04, cols = col_vector) +
+p1 <- DimPlotSagnik(umap_embeddings, group.by = sample_info$celltype, pt.size = 0.04, cols = col_vector) +
   theme(plot.title = element_text(hjust = 0.5)) +
   ggtitle("UMAP of Pancreas Cells by Cell Type")
-p2 <- DimPlot(umap_embeddings, group.by = sample_info$tech, pt.size = 0.04, cols = col_vector) +
+p2 <- DimPlotSagnik(umap_embeddings, group.by = sample_info$tech, pt.size = 0.04, cols = col_vector) +
   theme(plot.title = element_text(hjust = 0.5)) +
   ggtitle("UMAP of Pancreas Cells by Technology")
 
