@@ -11,7 +11,11 @@ knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold",
 
 ### Introduction
 
-This single-nucleus RNA seq dataset is from the paper "Transcriptomic diversity of cell types across the adult human brain" (Siletti, 2023). around 3 millions nuclei were collected from around 100 dissections from the following areas of brains of 3 donors:
+This single-nucleus RNA seq dataset is from the paper "Transcriptomic
+diversity of cell types across the adult human brain"
+([Siletti 2023][siletti-2023]). Around 3 millions nuclei were
+collected from around 100 dissections from the following areas of
+brains of 3 donors:
 
 -   Forebrain:
 
@@ -37,9 +41,15 @@ This single-nucleus RNA seq dataset is from the paper "Transcriptomic diversity 
 
 -   Spinal cord
 
-The authors performed hierarchical graph-based clustering, grouping the cells into superclusters, clusters, and subclusters. The data can be accessed [here](https://data.humancellatlas.org/hca-bio-networks/nervous-system/atlases/brain-v1-0), with files organized by supercluster or by dissection.
+The authors performed hierarchical graph-based clustering, grouping
+the cells into superclusters, clusters, and subclusters. The data can
+be accessed [here][hca-brain-data], with files organized by
+supercluster or by dissection.
 
-This exploratory analysis focuses on cells within the supercluster called committed oligodendrocyte precursor (OPC), which consists of non-neuron cells. There are 4720 cells and 59236 genes (31720 genes with at least one nonzero count) in the dataset.
+This exploratory analysis focuses on cells within the supercluster
+called" committed oligodendrocyte precursor" (OPC), which consists of
+non-neuron cells. There are 4,720 cells and 59,236 genes (31,720 genes
+with at least one nonzero count) in the dataset.
 
 ```{r load-pkg, message=FALSE}
 library(Matrix)
@@ -52,7 +62,7 @@ library(dplyr)
 ```
 
 ```{r load-data, message=FALSE}
-data <- readRDS('../data/human_brain_OPC_cells.rds')
+data <- readRDS("../data/human_brain_OPC_cells.rds")
 counts <- t(data$RNA$data)
 ```
 
@@ -79,7 +89,9 @@ regions <- sapply(data$tissue, map_tissue)
 
 ### t-SNE and UMAP
 
-The dataset includes precomputed tSNE and UMAP embeddings, allowing us to plot them directly. We can color the cells by tissue, by region, or by cluster.
+The dataset includes precomputed tSNE and UMAP embeddings, allowing us
+to plot them directly. We can color the cells by tissue, by region, or
+by cluster.
 
 #### t-SNE
 
@@ -125,7 +137,8 @@ ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, color = data$cluster_
 
 ### Flashier
 
-Before applying matrix factorization methods, we first remove genes without nonzero counts.
+Before applying matrix factorization methods, we first remove genes
+without nonzero counts.
 
 ```{r reduce-count}
 cols_to_keep <- colSums(counts != 0, na.rm = TRUE) > 0
@@ -240,12 +253,10 @@ ggplot(pdat,aes(x = loglik,fill = subpop)) +
   theme_cowplot(font_size = 10)
 ```
 
-
 ```{r fasttopics-struc-plot, message=FALSE, results='hide',fig.keep='all'}
 structure_plot(fasttopics_fit, grouping = data$cluster_id, gap = 25)
 structure_plot(fasttopics_fit, grouping = data$tissue, gap = 25)
 ```
-
 
 ### GBCD
 
@@ -260,3 +271,6 @@ TODO
 #                                          scale = 0.04),
 #                       extrapolate = FALSE)
 ```
+
+[silleti-2023]: https://doi.org/10.1126/science.add7046
+[hca-brain-data]: https://data.humancellatlas.org/hca-bio-networks/nervous-system/atlases/brain-v1-0
