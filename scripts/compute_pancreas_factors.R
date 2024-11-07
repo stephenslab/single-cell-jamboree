@@ -53,5 +53,4 @@ t1 <- proc.time()
 print(t1 - t0)
 
 # Save the model fits to an .Rdata file.
-fl_nmf$flash_fit["Y"] <- NULL
 save(list = c("nmf","fl_nmf"),file = "pancreas_factors.RData")
