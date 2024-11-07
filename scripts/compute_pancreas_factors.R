@@ -2,6 +2,7 @@
 # module load R/4.2.0
 # .libPaths()[1]
 # /home/pcarbo/R_libs_4_20
+library(tools)
 library(Matrix)
 library(NNLM)
 library(flashier)
@@ -53,4 +54,6 @@ t1 <- proc.time()
 print(t1 - t0)
 
 # Save the model fits to an .Rdata file.
-save(list = c("nmf","fl_nmf"),file = "pancreas_factors.RData")
+fl_nmf_ldf <- ldf(fl_nmf,type = "i")
+save(list = c("nmf","fl_nmf_ldf"),file = "pancreas_factors.RData")
+resaveRdaFiles("pancreas_factors.RData")
