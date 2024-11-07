@@ -53,7 +53,20 @@ fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
 t1 <- proc.time()
 print(t1 - t0)
 
+# Fit a semi-NMF using flashier.
+t0 <- proc.time()
+fl0 <- flash(Y,ebnm_fn = c(ebnm_point_exponential,ebnm_point_normal),
+             var_type = 0,greedy_Kmax = 40,nullcheck = FALSE,
+             backfit = FALSE,verbose = 3)
+fl_snmf <- flash_init(Y,var_type = 2,S = s1)
+fl_snmf <- flash_factors_init(fl_snmf,fl0,ebnm_point_exponential)
+fl_snmf <- flash_backfit(fl_snmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
+fl_snmf <- flash_backfit(fl_snmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
+t1 <- proc.time()
+print(t1 - t0)
+
 # Save the model fits to an .Rdata file.
-fl_nmf_ldf <- ldf(fl_nmf,type = "i")
-save(list = c("nmf","fl_nmf_ldf"),file = "pancreas_factors.RData")
+fl_nmf_ldf  <- ldf(fl_nmf,type = "i")
+fl_snmf_ldf <- ldf(fl_snmf,type = "i")
+save(list = c("nmf","fl_nmf_ldf","fl_snmf"),file = "pancreas_factors.RData")
 resaveRdaFiles("pancreas_factors.RData")
