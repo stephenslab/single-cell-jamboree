@@ -28,18 +28,13 @@ k <- ncol(W)
 d <- apply(W,2,max)
 W <- scale.cols(W,1/d)
 colnames(W) <- paste0("k",1:k)
-# celseq = k17
-# celseq2 = k13
-# fluidigmc1 = k14
-# inDrop1:4 = k7
-# smarter = k6
-# smartseq2 = k1
 batch_topics <- c(1,6,7,10,13,14,16,17)
-p1 <- structure_plot(W[,batch_topics],grouping = sample_info$tech,gap = 10)
+p1 <- structure_plot(W[,batch_topics],grouping = sample_info$tech,gap = 10,
+                     perplexity = 70)
 celltype_topics <- c(2,5,8,9,11,12,15,20,21,22,23)
 p2 <- structure_plot(W[cells,celltype_topics],
                      grouping = sample_info[cells,"celltype"],
-                     gap = 20,n = Inf)
+                     gap = 20,n = Inf,perplexity = 70)
 
 # flashier, NMF
 # TO DO.
@@ -48,9 +43,10 @@ p2 <- structure_plot(W[cells,celltype_topics],
 L <- fl_snmf_ldf$L
 colnames(L) <- paste0("k",1:k)
 batch_topics <- c(4,5,6,11,22)
-p1 <- structure_plot([,batch_topics],grouping = sample_info$tech,gap = 10)
+p1 <- structure_plot(L[,batch_topics],grouping = sample_info$tech,gap = 10,
+                     perplexity = 70)
 celltype_topics <- c(3,7,8,9,10,12,13,14,15,16,17,18,19,20,21,23)
 p2 <- structure_plot(L[cells,celltype_topics],
                      grouping = sample_info[cells,"celltype"],
-                     gap = 40,n = Inf)
+                     gap = 40,n = Inf,perplexity = 70)
 
