@@ -72,6 +72,6 @@ print(t1 - t0)
 fl_nmf_ldf   <- ldf(fl_nmf,type = "i")
 fl_snmf_ldf  <- ldf(fl_snmf,type = "i")
 session_info <- sessionInfo()
-save(list = c("nmf","fl_nmf_ldf","fl_snmf","session_info"),
+save(list = c("nmf","fl_nmf_ldf","fl_snmf_ldf","session_info"),
      file = "pancreas_factors.RData")
 resaveRdaFiles("pancreas_factors.RData")
