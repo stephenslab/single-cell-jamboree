@@ -1,0 +1,489 @@
+---
+title: "Initial exploration of the human brain dataset: committed OPC cells"
+author: Junming Guan
+output: workflowr::wflow_html
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold",
+                      fig.align = "center", dpi = 120)
+```
+
+TODO: UMAP by factors
+
+### Introduction
+
+This single-nucleus RNA seq dataset is from the paper "Transcriptomic diversity of cell types across the adult human brain" (Siletti, 2023). around 3 millions nuclei were collected from around 100 dissections from the following areas of brains of 3 donors:
+
+-   Forebrain:
+
+    -   cerebral cortex
+
+    -   cerebral nuclei
+
+    -   hypothalamus
+
+    -   hippocampus formation
+
+    -   thalamus complex
+
+-   Midbrain
+
+-   Hindbrain:
+
+    -   pons
+
+    -   cerebellum
+
+    -   Myelencephalon (Medulla)
+
+-   Spinal cord
+
+The authors performed hierarchical graph-based clustering, grouping the cells into superclusters, clusters, and subclusters. The data can be accessed [here](https://data.humancellatlas.org/hca-bio-networks/nervous-system/atlases/brain-v1-0), with files organized by supercluster or by dissection.
+
+This exploratory analysis focuses on committed oligodendrocyte precursor (COP) cells (see https://cellxgene.cziscience.com/e/f16f4108-7873-4035-9989-3748da1a7ff1.cxg/). There are 4,720 cells and 2,1462 genes (after QC) in the dataset.
+
+```{r load-pkg, message=FALSE}
+library(Matrix)
+# library(MatrixExtra)
+library(flashier)
+library(fastTopics)
+library(ggplot2)
+library(cowplot)
+library(dplyr)
+library(readr)
+```
+
+Load data and fit
+```{r load-data, message=FALSE}
+# Taken from https://github.com/stephenslab/pathways/blob/master/inst/code/read_gene_set_data.R
+read_gene_info <- function (file) {
+  
+  # Read the data into a data frame.
+  out <- suppressMessages(read_delim(file,delim = "\t",col_names = TRUE))
+  class(out) <- "data.frame"
+  dbXrefs    <- out$dbXrefs
+  out        <- out[c("GeneID","Symbol","Synonyms","chromosome")]
+  
+  # Set any entries with a single hyphen to NA, and convert the
+  # "chromosome" column to a factor.
+  out$chromosome[out$chromosome == "-"] <- NA
+  out$Synonyms[out$Synonyms == "-"]     <- NA
+  dbXrefs[dbXrefs == "-"]               <- NA
+  out <- transform(out,chromosome = factor(chromosome))
+  
+  # Extract the Ensembl ids. Note that a small number of genes map to
+  # more than one Ensembl id; in those cases, we retain the first
+  # Ensembl id only.
+  dbXrefs <- strsplit(dbXrefs,"|",fixed = TRUE)
+  out$Ensembl <- sapply(dbXrefs,function (x) {
+    i <- which(substr(x,1,8) == "Ensembl:")
+    if (length(i) > 0)
+      return(substr(x[i[1]],9,nchar(x[i[1]])))
+    else
+      return(as.character(NA))
+  })
+  
+  # For human genes, extract the HGNC (HUGO Gene Nomenclature
+  # Committee) ids.
+  out$HGNC <- sapply(dbXrefs,function (x) {
+    i <- which(substr(x,1,10) == "HGNC:HGNC:")
+    if (length(i) > 0)
+      return(substr(x[i[1]],6,nchar(x[i[1]])))
+    else
+      return(as.character(NA))
+  })
+  
+  # Return the processed gene data.
+  return(out)
+}
+
+homo_sapien_geno_info <- read_gene_info('../data/Homo_sapiens.gene_info.gz')
+data <- readRDS('../data/human_brain_COP_cells.rds')
+counts <- t(data$RNA$data)
+
+# Keep only protein-coding genes and remove those without nonzero counts
+reduced_counts <- 
+  counts[, colnames(counts) %in% homo_sapien_geno_info$Ensembl]
+cols_to_keep <- colSums(reduced_counts != 0, na.rm = TRUE) > 0
+reduced_counts <- reduced_counts[, cols_to_keep]
+load('../data/human_brain_COP_cells_fit_protein_coding.RData')
+```
+
+
+
+```{r custom-func}
+map_tissue <- function(tissue) {
+  if (tissue %in% c("cerebral cortex", "cerebral nuclei", "hypothalamus", 
+                    "hippocampal formation", "thalamic complex")) {
+    return("forebrain")
+  } else if (tissue == "midbrain") {
+    return("midbrain")
+  } else if (tissue %in% c("pons", "cerebellum", "myelencephalon")) {
+    return("hindbrain")
+  } else if (tissue == "spinal cord") {
+    return("spinal cord")
+  } else {
+    return(NA)
+  }
+}
+
+regions <- sapply(data$tissue, map_tissue)
+
+```
+
+
+### t-SNE and UMAP
+
+The dataset includes precomputed tSNE and UMAP embeddings, allowing us to plot them directly. We can color the cells by tissue, by region, or by cluster.
+
+#### t-SNE
+
+```{r tsne}
+# colors <- brewer.pal(length(unique(data$tissue)), "Paired")
+colors <-  c('#756bb1', '#1c9099', '#d95f0e', '#edf8b1', '#dd1c77', '#636363', '#a1d99b', '#fa9fb5', '#fec44f', '#de2d26')
+ggplot(Embeddings(data$tSNE) , aes(x = TSNE_1, y = TSNE_2, color = data$tissue)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "t-SNE Plot Colored by Tissue Type", x = "t-SNE 1", y = "t-SNE 2") +
+  theme_minimal() +
+  scale_color_manual(values = colors)
+
+# colors <- brewer.pal(length(unique(regions)), "Set1")
+# ggplot(Embeddings(data$tSNE) , aes(x = TSNE_1, y = TSNE_2, color = regions)) +
+#   geom_point(alpha = 0.7) +
+#   labs(title = "t-SNE Plot Colored by Tissue Type", x = "t-SNE 1", y = "t-SNE 2") +
+#   theme_minimal() +
+#   scale_color_manual(values = colors)
+
+# colors <- brewer.pal(length(unique(data$cluster_id)), "Paired")
+colors <-  c('#756bb1', '#1c9099', '#d95f0e', '#edf8b1', '#dd1c77', '#636363', '#a1d99b')
+ggplot(Embeddings(data$tSNE) , aes(x = TSNE_1, y = TSNE_2, color = data$cluster_id)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "t-SNE Plot Colored by Cluster", x = "t-SNE 1", y = "t-SNE 2") +
+  theme_minimal() +
+  scale_color_manual(values = colors)
+```
+#### UMAP
+
+```{r umap}
+# colors <- brewer.pal(length(unique(data$tissue)), "Paired")
+colors <-  c('#756bb1', '#1c9099', '#d95f0e', '#edf8b1', '#dd1c77', '#636363', '#a1d99b', '#fa9fb5', '#fec44f', '#de2d26')
+ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, color = data$tissue)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "UMAP Plot Colored by Tissue Type", x = "UMAP 1", y = "UMAP 2") +
+  theme_minimal() +
+  scale_color_manual(values = colors)
+
+# ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, color = regions)) +
+#   geom_point(alpha = 0.7) +
+#   labs(title = "UMAP Plot Colored by Tissue Type", x = "UMAP 1", y = "UMAP 2") +
+#   theme_minimal() +
+#   scale_color_manual(values = rainbow(length(unique(regions))))
+
+# colors <- brewer.pal(length(unique(data$cluster_id)), "Paired")
+colors <-  c('#756bb1', '#1c9099', '#d95f0e', '#edf8b1', '#dd1c77', '#636363', '#a1d99b')
+ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, color = data$cluster_id)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "UMAP Plot Colored by Cluster", x = "UMAP 1", y = "UMAP 2") +
+  theme_minimal() +
+  scale_color_manual(values = colors)
+```
+
+### Flashier
+
+#### NMF
+
+
+Redefine subcluster ids so that the hierarchical structure is clearer
+
+```{r subclaster-ids}
+# M <- table(data$subcluster_id, data$cluster_id)
+# M
+subcluster_id <- as.vector(data$subcluster_id)
+subcluster_id[subcluster_id == '3033'] <- '37.1'
+subcluster_id[subcluster_id == '3035'] <- '37.2'
+subcluster_id[subcluster_id == '3036'] <- '37.3'
+subcluster_id[subcluster_id == '3037'] <- '37.4'
+subcluster_id[subcluster_id == '3038'] <- '37.5'
+
+subcluster_id[subcluster_id == '3030'] <- '38.1'
+subcluster_id[subcluster_id == '3031'] <- '38.2'
+subcluster_id[subcluster_id == '3032'] <- '38.3'
+subcluster_id[subcluster_id == '3034'] <- '38.4'
+
+subcluster_id[subcluster_id == '3027'] <- '39.1'
+subcluster_id[subcluster_id == '3028'] <- '39.2'
+subcluster_id[subcluster_id == '3029'] <- '39.3'
+
+subcluster_id[subcluster_id == '3014'] <- '41.1'
+subcluster_id[subcluster_id == '3015'] <- '42.2'
+
+subcluster_id[subcluster_id == '3007'] <- '42.1'
+subcluster_id[subcluster_id == '3008'] <- '42.2'
+subcluster_id[subcluster_id == '3009'] <- '42.3'
+subcluster_id[subcluster_id == '3010'] <- '42.4'
+
+subcluster_id[subcluster_id == '3006'] <- '43.1'
+
+subcluster_id[subcluster_id == '3195'] <- '75.1'
+subcluster_id[subcluster_id == '3196'] <- '75.2'
+subcluster_id <- factor(subcluster_id)
+```
+
+
+```{r flashier-plot, message=FALSE, results='hide',fig.keep='all'}
+flash_plot_scree(flashier_fit)
+
+
+plot(flashier_fit, 
+     plot_type = "heatmap",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     gap = 25)
+
+plot(flashier_fit, 
+     plot_type = "histogram",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 25)
+```
+
+
+
+```{r flashier-struc-plot, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+plot(flashier_fit, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = subcluster_id,
+     bins = 60, gap = 100)
+```
+
+```{r examine-factors}
+vals <- ldf(flashier_fit,type="m")
+ncells <- colSums(vals$L>0.1)
+ncells
+```
+
+Several factors are load on only a small number of cells. 
+
+Removing those factors from the structure plots:
+```{r flashier-struc-plot-reduced, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit, 
+     kset = which(ncells > 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+plot(flashier_fit, 
+     kset = which(ncells > 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = subcluster_id,
+     bins = 60, gap = 100)
+```
+
+Showing those factors in the structure plots:
+```{r flashier-struc-plot-reduced-outlier, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit, 
+     kset = which(ncells <= 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+plot(flashier_fit, 
+     kset = which(ncells <= 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = subcluster_id,
+     bins = 60, gap = 100)
+```
+
+
+##### UMAP by factor
+
+```{r umap-by-factor}
+# library(gridExtra)
+# plot_list <- list()
+# i <- 1
+# for (f in 1:flashier_fit$n_factors) {
+# plot_list[[i]] <- 
+  # ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, size = vals$L[,f])) +
+  # geom_point(alpha = 0.7) +
+  # labs(title = paste("factor ", f) , x = "UMAP 1", y = "UMAP 2") +
+  # theme_minimal() +
+  # scale_color_manual(values = '#f0f0f0')
+# i <- i + 1
+# }
+# grid.arrange(grobs=plot_list)
+```
+
+
+#### Semi-NMF
+
+
+```{r flashier-plot-cluster, message=FALSE, results='hide',fig.keep='all'}
+flash_plot_scree(flashier_fit_semi)
+
+
+plot(flashier_fit_semi, 
+     plot_type = "heatmap",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     gap = 25)
+
+plot(flashier_fit_semi, 
+     plot_type = "histogram",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 25)
+```
+
+
+```{r flashier-seminmf-struc-plot, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit_semi, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+plot(flashier_fit_semi, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = subcluster_id,
+     bins = 60, gap = 100)
+```
+
+```{r examine-factors-semi}
+vals_semi <- ldf(flashier_fit_semi, type="m")
+ncells_semi <- colSums(vals_semi$L>0.1)
+ncells_semi
+```
+
+
+Several factors are load on only a small number of cells.
+
+Removing those factors from the structure plots:
+```{r flashier-struc-plot-reduced-semi, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit_semi, 
+     kset = which(ncells_semi > 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+plot(flashier_fit_semi, 
+     kset = which(ncells_semi > 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = subcluster_id,
+     bins = 60, gap = 100)
+```
+
+Showing factors that are only loaded on a small number of cells:
+```{r flashier-struc-plot-reduced-outlier-semi, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit_semi, 
+     kset = which(ncells_semi <= 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+plot(flashier_fit_semi, 
+     kset = which(ncells_semi <= 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = subcluster_id,
+     bins = 60, gap = 100)
+```
+
+
+#### Comparison
+
+```{r struc-plot-compare, message=FALSE, results='hide',fig.keep='all'}
+
+plot(flashier_fit, 
+     kset = which(ncells > 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+plot(flashier_fit_semi, 
+     kset = which(ncells_semi > 5),
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = data$cluster_id,
+     bins = 30, gap = 70)
+
+# plot_grid(p1, p2, ncol = 1, align = "v", axis = "lr", rel_heights = c(1, 1))
+```
+
+
+
+
+### FastTopics
+
+
+<!-- ```{r fit-fasttopics} -->
+<!-- # reduced_counts <- as(reduced_counts, "dgCMatrix") -->
+<!-- fasttopics_fit <- fit_topic_model(reduced_counts, k = 50) -->
+<!-- ``` -->
+
+```{r fasttopics-plot-progress, message=FALSE, results='hide',fig.keep='all'}
+plot_progress(fasttopics_fit,x = "iter",add.point.every = 10,colors = "black") +
+  theme_cowplot(font_size = 10)
+
+```
+
+```{r fasttopics-loglik-plot, message=FALSE, results='hide',fig.keep='all'}
+loglik <- loglik_multinom_topic_model(reduced_counts, fasttopics_fit)
+pdat <- data.frame(loglik)
+ggplot(pdat,aes(loglik)) +
+  geom_histogram(bins = 64,color = "white",fill = "black",size = 0.25) +
+  labs(y = "number of cells") +
+  theme_cowplot(font_size = 10)
+
+# subpop_colors <- c("dodgerblue","forestgreen","darkmagenta","skyblue","gold", )
+subpop_colors <- c("red", "blue", "green", "purple", "orange", "pink", "cyan", "brown", "yellow", "darkgreen")
+
+pdat <- data.frame(loglik = loglik,subpop = data$tissue)
+ggplot(pdat,aes(x = loglik,fill = subpop)) +
+  geom_histogram(bins = 64,color = "white",size = 0.25) +
+  scale_fill_manual(values = subpop_colors) +
+  labs(y = "number of cells") +
+  theme_cowplot(font_size = 10)
+```
+
+
+```{r fasttopics-struc-plot, message=FALSE, results='hide',fig.keep='all'}
+structure_plot(fasttopics_fit, grouping = data$cluster_id, gap = 70)
+structure_plot(fasttopics_fit, grouping = subcluster_id, gap = 70)
+```
+```{r examine-factors-fasttopics}
+ncells_ft <- colSums(fasttopics_fit$L>0.1)
+ncells_ft
+```
+No factors that are loaded on a single cells. Still there are a couple that are loaded on a small number of cells, e.g., k8.
+
+
+### GBCD
+
+TODO
+
+```{r fit-gbcd}
+# source("../code/fit_cov_ebnmf.R")
+# 
+# fit.gbcd <-
+#   flash_fit_cov_ebnmf(Y = reduced_counts, Kmax = 7,
+#                       prior = flash_ebnm(prior_family = "generalized_binary",
+#                                          scale = 0.04),
+#                       extrapolate = FALSE)
+```
