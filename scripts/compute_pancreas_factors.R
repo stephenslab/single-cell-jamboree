@@ -15,6 +15,8 @@ s <- rowSums(counts)
 s <- s/mean(s)
 Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 
+# TO DO: Check that this step ensures the entries are non-negative.
+
 # Remove genes with very low variance in expression.
 x <- sparseMatrixStats::colSds(Y)
 j <- which(x > 0.01)
@@ -67,6 +69,8 @@ fl_snmf <- flash_backfit(fl_snmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
 fl_snmf <- flash_backfit(fl_snmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
 t1 <- proc.time()
 print(t1 - t0)
+
+# TO DO: Run fastTopics on these data.
 
 # Save the model fits to an .Rdata file.
 fl_nmf_ldf   <- ldf(fl_nmf,type = "i")
