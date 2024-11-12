@@ -46,14 +46,18 @@ set.seed(1)
 L <- fl_nmf_ldf$L
 colnames(L) <- paste0("k",1:k)
 print(colSums(L > 0.1))
-batch_topics <- paste0("k",c(1,2,3,4,5,7,8,10,20))
+batch_topics    <- paste0("k",c(2,3,4,5,7,8,20))
+celltype_topics <- paste0("k",c(6,11:19,21))
+other_topics    <- paste0("k",c(1,9:10,22:23))
 p1 <- structure_plot(L,topics = batch_topics,grouping = sample_info$tech,
                      gap = 10,perplexity = 70)
-celltype_topics <- paste0("k",c(6,11:19,21))
 p2 <- structure_plot(L[cells,],topics = celltype_topics,
                      grouping = sample_info[cells,"celltype"],
                      gap = 20,n = Inf,perplexity = 70)
-plot_grid(p1,p2,nrow = 2,ncol = 1)
+p3 <- structure_plot(L[cells,],topics = other_topics,
+                     grouping = sample_info[cells,"celltype"],
+                     gap = 20,n = Inf,perplexity = 70)
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 
 # flashier, semi-NMF.
 L <- fl_snmf_ldf$L
