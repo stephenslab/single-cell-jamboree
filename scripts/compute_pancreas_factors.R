@@ -5,6 +5,7 @@
 library(tools)
 library(Matrix)
 library(NNLM)
+library(fastTopics)
 library(flashier)
 load("../data/pancreas.RData")
 set.seed(1)
@@ -14,8 +15,6 @@ a <- 1
 s <- rowSums(counts)
 s <- s/mean(s)
 Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
-
-# TO DO: Check that this step ensures the entries are non-negative.
 
 # Remove genes with very low variance in expression.
 x <- sparseMatrixStats::colSds(Y)

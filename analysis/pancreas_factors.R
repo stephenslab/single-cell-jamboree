@@ -1,5 +1,7 @@
 library(Matrix)
 library(fastTopics)
+library(ggplot2)
+library(cowplot)
 set.seed(1)
 load("../data/pancreas.RData")
 load("../output/pancreas_factors.RData")
@@ -21,6 +23,8 @@ subsample <- function (x, n = 1000) {
   return(sort(rows))
 }
 
+# TO DO: fastTopics.
+
 # NMF.
 cells <- subsample(sample_info$celltype,n = 500)
 W <- nmf$W
@@ -35,11 +39,23 @@ celltype_topics <- c(2,5,8,9,11,12,15,20,21,22,23)
 p2 <- structure_plot(W[cells,celltype_topics],
                      grouping = sample_info[cells,"celltype"],
                      gap = 20,n = Inf,perplexity = 70)
+plot_grid(p1,p2,nrow = 2,ncol = 1)
 
-# flashier, NMF
-# TO DO.
+# flashier, NMF.
+set.seed(1)
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:k)
+print(colSums(L > 0.1))
+batch_topics <- paste0("k",c(1,2,3,4,5,7,8,10,20))
+p1 <- structure_plot(L,topics = batch_topics,grouping = sample_info$tech,
+                     gap = 10,perplexity = 70)
+celltype_topics <- paste0("k",c(6,11:19,21))
+p2 <- structure_plot(L[cells,],topics = celltype_topics,
+                     grouping = sample_info[cells,"celltype"],
+                     gap = 20,n = Inf,perplexity = 70)
+plot_grid(p1,p2,nrow = 2,ncol = 1)
 
-# flashier, semi-NMF
+# flashier, semi-NMF.
 L <- fl_snmf_ldf$L
 colnames(L) <- paste0("k",1:k)
 batch_topics <- c(4,5,6,11,22)
