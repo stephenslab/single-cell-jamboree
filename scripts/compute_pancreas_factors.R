@@ -75,7 +75,8 @@ fl_snmf <- flash_factors_init(fl_snmf,fl0,
                                 ebnm_point_normal))
 fl_snmf <- flash_backfit(fl_snmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
 fl_snmf <- flash_backfit(fl_snmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
-timings$fl_nmf <- t1 - t0
+t1 <- proc.time()
+timings$fl_snmf <- t1 - t0
 print(timings$fl_snmf)
 
 # Fit a Poisson NMF using fastTopics.
