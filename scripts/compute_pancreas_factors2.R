@@ -61,6 +61,6 @@ print(timings$fl_nmf_cc)
 # Save the model fit to an .Rdata file.
 fl_nmf_cc_ldf <- ldf(fl_nmf_cc,type = "i")
 session_info <- sessionInfo()
-save(list = c("fl_nmf_cc_ldf""timings","session_info"),
+save(list = c("fl_nmf_cc_ldf","timings","session_info"),
      file = "pancreas_factors2.RData")
 resaveRdaFiles("pancreas_factors2.RData")
