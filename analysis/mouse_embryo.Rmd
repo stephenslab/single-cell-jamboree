@@ -1,0 +1,196 @@
+---
+title: "Analysis of Single-cell (Spatial) Transcriptomics From Mouse Embryos"
+author: "Ziang Zhang"
+date: "2024-11-15"
+output: workflowr::wflow_html
+---
+
+## Data
+
+This single cell RNA data is available [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE166692), as studied in [Srivatsan et al, 2021](https://www.science.org/doi/10.1126/science.abb9536).
+
+The dataset considers $108725$ cells and $39198$ genes (after QC), measured with spatial locations in the mouse embryo. 
+
+```{r eval=T, message=FALSE, warning=FALSE}
+library(Seurat)
+library(Matrix)
+library(data.table)
+library(flashier)
+library(ggplot2)
+library(patchwork)
+library(cowplot)
+library(RColorBrewer)
+library(Biobase)
+library(ggpubr)
+library(gridExtra)
+seurat_object <- readRDS("../data/mouse_embryo/processed_seurat/seurat_object.rds")
+Y <- t(seurat_object$RNA$data)
+```
+
+The data contains the UMAP information that we can directly use for visualization, and compare with the "anatomical annotation" and the "cluster label" in [Srivatsan et al, 2021](https://www.science.org/doi/10.1126/science.abb9536).
+
+```{r eval=T, fig.width=12, fig.height=5}
+source("../code/Customized_Plots.R")
+umap_original_embeddings <- cbind(seurat_object$umap1, seurat_object$umap2)
+p1 <- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$anatomical_annotation, pt.size = 1) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("UMAP by Anatomical Annotation")
+
+p2 <- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$final_cluster_label, pt.size = 1) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("UMAP by Cluster Label")
+
+# Combine plots side-by-side
+combined_plot <- p1 + p2 + plot_layout(ncol = 2)
+combined_plot
+```
+
+
+## Trying EBMF
+
+Let's try to implement the EBMF algorithm with the `flashier` package, with different constraints and prior distributions.
+
+Considering the large computational cost, we will first try to run the EBMF algorithm without backfitting.
+
+```{r eval=FALSE}
+cols_to_keep <- colSums(Y != 0, na.rm = TRUE) > 0
+Y <- Y[, cols_to_keep]
+n  <- nrow(Y)
+x  <- rpois(1e7, 1/n)
+s1 <- sd(log(x + 1))
+a <- 1
+size_factors <- rowSums(Y)
+size_factors <- size_factors / mean(size_factors)
+shifted_log_counts <- log1p(Y / (a * size_factors))
+```
+
+### Non-Negative EBMF
+
+For the first EBMF problem, we consider non-negative EBMF with `point_exponential` priors:
+
+```{r eval=FALSE}
+flashier_fit_nn <- flash(shifted_log_counts,
+                      ebnm_fn = ebnm_point_exponential,
+                      var_type = 2,
+                      greedy_Kmax = 25,
+                      S = s1,
+                      backfit = F)
+plot(flashier_fit_nn, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = seurat_object$final_cluster_label,
+     bins = 20, gap = 25)
+```
+
+```{r, eval=T, message=FALSE, results='hide',fig.keep='all'}
+flashier_fit_nn <- readRDS("../output/mouse_embryo/flashier_fit_nn.rds")
+plot(flashier_fit_nn, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = seurat_object$final_cluster_label,
+     bins = 20, gap = 25)
+```
+
+
+### Semi Non-Negative EBMF
+
+```{r eval=FALSE}
+ebnm_fn_list <- list()
+ebnm_fn_list[[1]] <- flash_ebnm(
+  prior_family = "point_exponential"
+)
+ebnm_fn_list[[2]] <- flash_ebnm(
+  prior_family = "point_normal",
+  mode = "estimate"
+)
+flashier_fit_semi <- flash(shifted_log_counts,
+                      ebnm_fn = ebnm_fn_list,
+                      var_type = 2,
+                      greedy_Kmax = 25,
+                      S = s1,
+                      backfit = F)
+plot(flashier_fit_semi, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = seurat_object$final_cluster_label,
+     bins = 20, gap = 25)
+```
+
+```{r eval=T, message=FALSE, results='hide',fig.keep='all'}
+flashier_fit_semi <- readRDS("../output/mouse_embryo/flashier_fit_semi.rds")
+ebnm_fn_list <- list()
+ebnm_fn_list[[1]] <- flash_ebnm(
+  prior_family = "point_exponential"
+)
+ebnm_fn_list[[2]] <- flash_ebnm(
+  prior_family = "point_normal",
+  mode = "estimate"
+)
+plot(flashier_fit_semi, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = seurat_object$final_cluster_label,
+     bins = 20, gap = 25)
+```
+
+
+### GBCD
+
+```{r eval=FALSE}
+ebnm_fn_list <- list()
+ebnm_fn_list[[1]] <- flash_ebnm(
+  prior_family = "generalized_binary"
+)
+ebnm_fn_list[[2]] <- flash_ebnm(
+  prior_family = "point_laplace",
+  mode = "estimate"
+)
+flashier_fit_gbcd <- flash(shifted_log_counts,
+                      ebnm_fn = ebnm_fn_list,
+                      var_type = 2,
+                      greedy_Kmax = 25,
+                      S = s1,
+                      backfit = F)
+plot(flashier_fit_gbcd, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = seurat_object$final_cluster_label,
+     bins = 20, gap = 25)
+```
+
+```{r eval=T, message=FALSE, results='hide',fig.keep='all'}
+flashier_fit_gbcd <- readRDS("../output/mouse_embryo/flashier_fit_gbcd.rds")
+ebnm_fn_list <- list()
+ebnm_fn_list[[1]] <- flash_ebnm(
+  prior_family = "generalized_binary"
+)
+ebnm_fn_list[[2]] <- flash_ebnm(
+  prior_family = "point_laplace",
+  mode = "estimate"
+)
+plot(flashier_fit_gbcd, 
+     plot_type = "structure",
+     pm_which = "loadings", 
+     pm_groups = seurat_object$final_cluster_label,
+     bins = 20, gap = 25)
+```
+
+
+## Trying Topic Models
+
+Then, let's try fitting a topic model to this dataset using `FastTopics`.
+
+```{r eval = FALSE}
+library(fastTopics)
+fasttopics_fit <- fit_topic_model(Y, k = 25)
+```
+
+(This requires larger amount of RAM than I expected... Will do this on the server and add the results later.)
+
+
+
+
+
+
+
+
