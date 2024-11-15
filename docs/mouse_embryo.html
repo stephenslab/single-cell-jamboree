@@ -435,15 +435,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree90cbbb9fbe86fe0b5d5a07e04e89c97a944d8922targetblank90cbbb9a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree074ea5c2fff7ebc1e20caa84eaf044767a035ab7targetblank074ea5ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/90cbbb9fbe86fe0b5d5a07e04e89c97a944d8922" target="_blank">90cbbb9</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/074ea5c2fff7ebc1e20caa84eaf044767a035ab7" target="_blank">074ea5c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree90cbbb9fbe86fe0b5d5a07e04e89c97a944d8922targetblank90cbbb9a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree074ea5c2fff7ebc1e20caa84eaf044767a035ab7targetblank074ea5ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -453,7 +453,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/90cbbb9fbe86fe0b5d5a07e04e89c97a944d8922" target="_blank">90cbbb9</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/074ea5c2fff7ebc1e20caa84eaf044767a035ab7" target="_blank">074ea5c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -527,6 +527,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/074ea5c2fff7ebc1e20caa84eaf044767a035ab7/analysis/mouse_embryo.Rmd" target="_blank">074ea5c</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-15
+</td>
+<td>
+workflowr::wflow_publish("analysis/mouse_embryo.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/4a0968804299baa24fae6e408049b02025d4d094/docs/mouse_embryo.html" target="_blank">4a09688</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/90cbbb9fbe86fe0b5d5a07e04e89c97a944d8922/analysis/mouse_embryo.Rmd" target="_blank">90cbbb9</a>
 </td>
 <td>
@@ -578,18 +612,53 @@ al, 2021</a>.</p>
 umap_original_embeddings &lt;- cbind(seurat_object$umap1, seurat_object$umap2)
 p1 &lt;- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$anatomical_annotation, pt.size = 1) +
   theme(plot.title = element_text(hjust = 0.5)) +
-  ggtitle(&quot;UMAP by Anatomical Annotation&quot;)</code></pre>
-<pre><code>Rasterizing points since number of points exceeds 100,000.
-To disable this behavior set `raster=FALSE`</code></pre>
-<pre class="r"><code>p2 &lt;- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$final_cluster_label, pt.size = 1) +
+  ggtitle(&quot;UMAP by Anatomical Annotation&quot;)
+
+p2 &lt;- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$final_cluster_label, pt.size = 1) +
   theme(plot.title = element_text(hjust = 0.5)) +
-  ggtitle(&quot;UMAP by Cluster Label&quot;)</code></pre>
-<pre><code>Rasterizing points since number of points exceeds 100,000.
-To disable this behavior set `raster=FALSE`</code></pre>
-<pre class="r"><code># Combine plots side-by-side
+  ggtitle(&quot;UMAP by Cluster Label&quot;)
+
+# Combine plots side-by-side
 combined_plot &lt;- p1 + p2 + plot_layout(ncol = 2)
 combined_plot</code></pre>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-2-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4a0968804299baa24fae6e408049b02025d4d094/docs/figure/mouse_embryo.Rmd/unnamed-chunk-2-1.png" target="_blank">4a09688</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="trying-ebmf" class="section level2">
 <h2>Trying EBMF</h2>
@@ -622,13 +691,44 @@ plot(flashier_fit_nn,
      pm_which = &quot;loadings&quot;, 
      pm_groups = seurat_object$final_cluster_label,
      bins = 20, gap = 25)</code></pre>
-<pre class="r"><code>flashier_fit_nn &lt;- readRDS(&quot;../output/mouse_embryo/flashier_fit_nn.rds&quot;)
-plot(flashier_fit_nn, 
-     plot_type = &quot;structure&quot;,
-     pm_which = &quot;loadings&quot;, 
-     pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)</code></pre>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4a0968804299baa24fae6e408049b02025d4d094/docs/figure/mouse_embryo.Rmd/unnamed-chunk-5-1.png" target="_blank">4a09688</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="semi-non-negative-ebmf" class="section level3">
 <h3>Semi Non-Negative EBMF</h3>
@@ -651,21 +751,44 @@ plot(flashier_fit_semi,
      pm_which = &quot;loadings&quot;, 
      pm_groups = seurat_object$final_cluster_label,
      bins = 20, gap = 25)</code></pre>
-<pre class="r"><code>flashier_fit_semi &lt;- readRDS(&quot;../output/mouse_embryo/flashier_fit_semi.rds&quot;)
-ebnm_fn_list &lt;- list()
-ebnm_fn_list[[1]] &lt;- flash_ebnm(
-  prior_family = &quot;point_exponential&quot;
-)
-ebnm_fn_list[[2]] &lt;- flash_ebnm(
-  prior_family = &quot;point_normal&quot;,
-  mode = &quot;estimate&quot;
-)
-plot(flashier_fit_semi, 
-     plot_type = &quot;structure&quot;,
-     pm_which = &quot;loadings&quot;, 
-     pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)</code></pre>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4a0968804299baa24fae6e408049b02025d4d094/docs/figure/mouse_embryo.Rmd/unnamed-chunk-7-1.png" target="_blank">4a09688</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="gbcd" class="section level3">
 <h3>GBCD</h3>
@@ -688,21 +811,44 @@ plot(flashier_fit_gbcd,
      pm_which = &quot;loadings&quot;, 
      pm_groups = seurat_object$final_cluster_label,
      bins = 20, gap = 25)</code></pre>
-<pre class="r"><code>flashier_fit_gbcd &lt;- readRDS(&quot;../output/mouse_embryo/flashier_fit_gbcd.rds&quot;)
-ebnm_fn_list &lt;- list()
-ebnm_fn_list[[1]] &lt;- flash_ebnm(
-  prior_family = &quot;generalized_binary&quot;
-)
-ebnm_fn_list[[2]] &lt;- flash_ebnm(
-  prior_family = &quot;point_laplace&quot;,
-  mode = &quot;estimate&quot;
-)
-plot(flashier_fit_gbcd, 
-     plot_type = &quot;structure&quot;,
-     pm_which = &quot;loadings&quot;, 
-     pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)</code></pre>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4a0968804299baa24fae6e408049b02025d4d094/docs/figure/mouse_embryo.Rmd/unnamed-chunk-9-1.png" target="_blank">4a09688</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="trying-topic-models" class="section level2">
