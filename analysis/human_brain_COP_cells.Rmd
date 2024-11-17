@@ -9,7 +9,6 @@ knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold",
                       fig.align = "center", dpi = 120)
 ```
 
-TODO: UMAP by factors
 
 ### Introduction
 
@@ -52,6 +51,7 @@ library(ggplot2)
 library(cowplot)
 library(dplyr)
 library(readr)
+library(knitr)
 ```
 
 Load data and fit
@@ -107,7 +107,7 @@ reduced_counts <-
   counts[, colnames(counts) %in% homo_sapien_geno_info$Ensembl]
 cols_to_keep <- colSums(reduced_counts != 0, na.rm = TRUE) > 0
 reduced_counts <- reduced_counts[, cols_to_keep]
-load('../data/human_brain_COP_cells_fit_protein_coding.RData')
+load('../data/human_brain_COP_cells_fit.RData')
 ```
 
 
@@ -305,24 +305,41 @@ plot(flashier_fit,
      pm_groups = subcluster_id,
      bins = 60, gap = 100)
 ```
+Top 10 driving genes for factors that are loading on a small number of cells
+
+```{r driving-genes, message=FALSE, results='hide',fig.keep='all'}
+low_factors <- which(ncells <= 5)
+top10_genes <- list()
+for (f in low_factors) {
+  factor_name <- paste('Factor', f)
+  genes <- head(sort(vals$F[, f], decreasing = T), 10)
+  top10_ensembl <- names(genes)
+  top10_symbol <- homo_sapien_geno_info$Symbol[match(top10_ensembl, homo_sapien_geno_info$Ensembl)]
+  top10_genes[[factor_name]] <- top10_symbol
+  
+  factor_name <- paste('Factor', f, 'score')
+  top10_genes[[factor_name]] <- as.vector(genes)
+  
+}
+top10_genes %>% as.data.frame() %>% kable()
+```
 
 
-##### UMAP by factor
 
-```{r umap-by-factor}
-# library(gridExtra)
-# plot_list <- list()
-# i <- 1
-# for (f in 1:flashier_fit$n_factors) {
-# plot_list[[i]] <- 
-  # ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, size = vals$L[,f])) +
-  # geom_point(alpha = 0.7) +
-  # labs(title = paste("factor ", f) , x = "UMAP 1", y = "UMAP 2") +
-  # theme_minimal() +
-  # scale_color_manual(values = '#f0f0f0')
-# i <- i + 1
-# }
-# grid.arrange(grobs=plot_list)
+##### loadings on UMAP by factor
+
+Factor 2, 3 and 4 are heavily loaded, whereas factor 8 and 9 are loaded on a single cell.
+
+```{r umap-by-factor, message=FALSE, results='hide',fig.keep='all'}
+umap <- Embeddings(data$UMAP)
+source('../code/plot_loadings_on_umap.R')
+
+for (f in c(2, 3, 4, 8, 9)) {
+  loading <- vals$L[, f]
+  p <- plot_loadings_on_umap(umap, loading, f)
+  print(p)
+}
+
 ```
 
 
@@ -405,6 +422,42 @@ plot(flashier_fit_semi,
 ```
 
 
+Top 10 driving genes for factors that are loading on a small number of cells
+
+```{r driving-genes-semi, message=FALSE, results='hide',fig.keep='all'}
+low_factors <- which(ncells_semi <= 5)
+top10_genes <- list()
+for (f in low_factors) {
+  factor_name <- paste('Factor', f)
+  genes <- head(sort(vals_semi$F[, f], decreasing = T), 10)
+  top10_ensembl <- names(genes)
+  top10_symbol <- homo_sapien_geno_info$Symbol[match(top10_ensembl, homo_sapien_geno_info$Ensembl)]
+  top10_genes[[factor_name]] <- top10_symbol
+  
+  factor_name <- paste('Factor', f, 'score')
+  top10_genes[[factor_name]] <- as.vector(genes)
+  
+}
+top10_genes %>% as.data.frame() %>% kable()
+```
+
+##### loadings on UMAP by factor
+
+Factor 2 and 3 are heavily loaded, whereas factor 4 and 4 are loaded on a few cells.
+
+```{r umap-by-factor-semi, message=FALSE, results='hide',fig.keep='all'}
+umap <- Embeddings(data$UMAP)
+source('../code/plot_loadings_on_umap.R')
+
+for (f in c(2, 3, 4, 8)) {
+  loading <- vals_semi$L[, f]
+  p <- plot_loadings_on_umap(umap, loading, f)
+  print(p)
+}
+
+```
+
+
 #### Comparison
 
 ```{r struc-plot-compare, message=FALSE, results='hide',fig.keep='all'}
@@ -431,11 +484,6 @@ plot(flashier_fit_semi,
 
 ### FastTopics
 
-
-<!-- ```{r fit-fasttopics} -->
-<!-- # reduced_counts <- as(reduced_counts, "dgCMatrix") -->
-<!-- fasttopics_fit <- fit_topic_model(reduced_counts, k = 50) -->
-<!-- ``` -->
 
 ```{r fasttopics-plot-progress, message=FALSE, results='hide',fig.keep='all'}
 plot_progress(fasttopics_fit,x = "iter",add.point.every = 10,colors = "black") +
