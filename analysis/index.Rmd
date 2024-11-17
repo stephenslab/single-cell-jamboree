@@ -19,7 +19,7 @@ via [this link][box].
 
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
 
-+ [Exploratory analysis of human brain data, committed OPC cells.](human_brain_OPC_cells.html)
++ [Exploratory analysis of human brain data, COP cells.](human_brain_COP_cells.html)
 
 + [Analysis of Single-Cell (Spatial) Transcriptomics From Mouse Embryos](mouse_embryo.html)
 
