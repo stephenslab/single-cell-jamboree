@@ -23,6 +23,9 @@ library(RColorBrewer)
 library(Biobase)
 library(ggpubr)
 library(gridExtra)
+library(fastTopics)
+source('../code/plot_loadings_on_umap.R')
+source("../code/Customized_Plots.R")
 seurat_object <- readRDS("../data/mouse_embryo/processed_seurat/seurat_object.rds")
 Y <- t(seurat_object$RNA$data)
 ```
@@ -30,7 +33,6 @@ Y <- t(seurat_object$RNA$data)
 The data contains the UMAP information that we can directly use for visualization, and compare with the "anatomical annotation" and the "cluster label" in [Srivatsan et al, 2021](https://www.science.org/doi/10.1126/science.abb9536).
 
 ```{r eval=T, fig.width=12, fig.height=5, message=FALSE, results='hide', warning=FALSE}
-source("../code/Customized_Plots.R")
 umap_original_embeddings <- cbind(seurat_object$umap1, seurat_object$umap2)
 p1 <- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$anatomical_annotation, pt.size = 1) +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -79,7 +81,7 @@ plot(flashier_fit_nn,
      plot_type = "structure",
      pm_which = "loadings", 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)
+     bins = 20, gap = 70)
 ```
 
 ```{r, eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
@@ -88,7 +90,7 @@ plot(flashier_fit_nn,
      plot_type = "structure",
      pm_which = "loadings", 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)
+     bins = 20, gap = 70)
 ```
 
 
@@ -113,7 +115,7 @@ plot(flashier_fit_semi,
      plot_type = "structure",
      pm_which = "loadings", 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)
+     bins = 20, gap = 70)
 ```
 
 ```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
@@ -130,11 +132,11 @@ plot(flashier_fit_semi,
      plot_type = "structure",
      pm_which = "loadings", 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)
+     bins = 20, gap = 70)
 ```
 
 
-### GBCD
+### GB Semi Non-Negative EBMF
 
 ```{r eval=FALSE}
 ebnm_fn_list <- list()
@@ -155,7 +157,7 @@ plot(flashier_fit_gbcd,
      plot_type = "structure",
      pm_which = "loadings", 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)
+     bins = 20, gap = 70)
 ```
 
 ```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
@@ -172,8 +174,28 @@ plot(flashier_fit_gbcd,
      plot_type = "structure",
      pm_which = "loadings", 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)
+     bins = 20, gap = 70)
 ```
+
+### GBCD
+
+```{r eval=FALSE}
+res.gbcd <- fit_gbcd(Y = Y, Kmax = 25, maxiter1 = 100,
+                     maxiter2 = 50, maxiter3 = 50, 
+                     prior = flash_ebnm(prior_family = "generalized_binary",
+                                        scale = 0.04))
+saveRDS(res.gbcd, "../output/mouse_embryo/res.gbcd.rds")
+```
+
+```{r include=FALSE}
+# res.gbcd <- readRDS("../output/mouse_embryo/res.gbcd.rds")
+# anno <- data.frame(sample = seurat_object$sample, subtype = seurat_object$final_cluster_label)
+# rownames(anno) <- rownames(res.gbcd$L)
+# anno_colors <- list(sample = seurat_object$sample, subtype = seurat_object$final_cluster_label)
+# cols <- colorRampPalette(c("gray96", "red"))(50)
+# brks <- seq(0, 1, 0.02)
+```
+
 
 
 ## Trying Topic Models
@@ -181,15 +203,115 @@ plot(flashier_fit_gbcd,
 Then, let's try fitting a topic model to this dataset using `FastTopics`.
 
 ```{r eval = FALSE}
-library(fastTopics)
 fasttopics_fit <- fit_topic_model(Y, k = 25)
 ```
 
-(This requires larger amount of RAM than I expected... Will do this on the server and add the results later.)
+```{r include=FALSE}
+fasttopics_fit <- readRDS("../output/mouse_embryo/fasttopics_fit.rds")
+```
+
+```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+structure_plot(fasttopics_fit, grouping = seurat_object$final_cluster_label, gap = 70)
+```
+
+
+## Summarize Structures from Loadings
+
+There are some interesting structures of the loading based on the result of EBMF and FastTopics, that add new insights to the original UMAP visualization.
+
+### Non-negative EBMF
+
+First, based on the non-negative EBMF result, there are some factors that are shared across multiple cell types.
+For example, the factors $k10$ and $k3$ are shared across multiple types of neurons and glial cells. 
+The factor $k5$ is shared across Chondrocytes and Connective Tissue Progenitors.
+The factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+On the other hand, there are also factors that are more specific to certain cell types, such as $k9$ for Endothelial Cells and $k7$ for White Blood Cells.
+
+Let's take a look at how the UMAF plot looks if we color each cell based on its composition of these factors.
+
+```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+library(patchwork) 
+
+# Collect all plots in a list
+plots <- list()
+colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
+
+for (f in c(2, 3, 5, 7, 9, 10)) {
+  loading <- flashier_fit_nn$L_pm[, f]
+  p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 2)
+
+# Display the combined plot
+print(combined_plot)
+```
+ 
+
+### Semi-negative EBMF
+
+The loadings from the semi-negative EBMF are more diverse, where each cell is composed of a larger number of factors.
+However, there are still both "unique" factor and "shared" factors across different cell types.
+
+For example, the factor $k4$ is shared across multiple types of neurons and glial cells.
+The factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+The factor $k3$ are "mostly" unique to Myocytes and Cardiac Muscle, and $k12$ is unique to Chondrocytes.
+
+```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+# Collect all plots in a list
+plots <- list()
+colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
+
+for (f in c(2,3,4,12)) {
+  loading <- flashier_fit_semi$L_pm[, f]
+  p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 2, nrow = 2)
+
+# Display the combined plot
+print(combined_plot)
+```
+
+### FastTopics
+
+The result from FastTopics looks quite similar to the semi-negative EBMF, where each cell is composed of a larger number of factors.
+
+There are shared factors like $k13$ for Erythroid Progenitors and Hepatocytes, and $k10$ for Epithelial Cells and Developing Gut, as well as unique factors like $k3$ for Hepatocytes and $k8$ for White Blood Cells.
+
+```{r eval=T, message=FALSE, results='hide', fig.keep='all', echo=FALSE}
+# Collect all plots in a list
+plots <- list()
+colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
+
+for (f in c(13, 10, 3, 8)) {
+  loading <- fasttopics_fit$L[, f]
+  p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 2, nrow = 2)
+
+# Display the combined plot
+print(combined_plot)
+```
 
 
 
 
+## Compare these methods
+
+- The non-negative EBMF provides a kind of "cleaner composition" of each cell, where each cell is mostly composed of one base line factor and another factor that is " kind of specific" to the cell type. This in a way demonstrates the advantage of the part-based representation (plus sparsity).
+
+- The semi non-negative EBMF provides a more "diverse" composition of each cell, where each cell is composed of a base line factor and multiple other factors that may appear in different cell types. The compensate of the "diversity" is the computation of this problem tends to be a bit more stable than the non-negative EBMF.
+
+- The FastTopics also provides a kind of diverse composition of each cell, where each cell is composed of multiple factors. This might be due to there is no sparsity constraint in the FastTopics model.
+
+- Overall, they all found some quite interesting structures (shared or unique) that are not obvious from the original UMAP visualization. 
 
 
 
