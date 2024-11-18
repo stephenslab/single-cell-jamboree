@@ -303,7 +303,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-11-15
+<strong>Last updated:</strong> 2024-11-18
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -435,15 +435,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree074ea5c2fff7ebc1e20caa84eaf044767a035ab7targetblank074ea5ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea70fb60a7ec2592fb7a02dfbafd40581573dff31targetblanka70fb60a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/074ea5c2fff7ebc1e20caa84eaf044767a035ab7" target="_blank">074ea5c</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a70fb60a7ec2592fb7a02dfbafd40581573dff31" target="_blank">a70fb60</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree074ea5c2fff7ebc1e20caa84eaf044767a035ab7targetblank074ea5ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea70fb60a7ec2592fb7a02dfbafd40581573dff31targetblanka70fb60a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -453,7 +453,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/074ea5c2fff7ebc1e20caa84eaf044767a035ab7" target="_blank">074ea5c</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a70fb60a7ec2592fb7a02dfbafd40581573dff31" target="_blank">a70fb60</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -468,6 +468,7 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
 Untracked files:
@@ -522,6 +523,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a70fb60a7ec2592fb7a02dfbafd40581573dff31/analysis/mouse_embryo.Rmd" target="_blank">a70fb60</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+workflowr::wflow_publish("analysis/mouse_embryo.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/070d27ca300bc5b1d13d24daf0e9169fca6e3994/docs/mouse_embryo.html" target="_blank">070d27c</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -601,6 +636,9 @@ library(RColorBrewer)
 library(Biobase)
 library(ggpubr)
 library(gridExtra)
+library(fastTopics)
+source(&#39;../code/plot_loadings_on_umap.R&#39;)
+source(&quot;../code/Customized_Plots.R&quot;)
 seurat_object &lt;- readRDS(&quot;../data/mouse_embryo/processed_seurat/seurat_object.rds&quot;)
 Y &lt;- t(seurat_object$RNA$data)</code></pre>
 <p>The data contains the UMAP information that we can directly use for
@@ -608,8 +646,7 @@ visualization, and compare with the “anatomical annotation” and the
 “cluster label” in <a
 href="https://www.science.org/doi/10.1126/science.abb9536">Srivatsan et
 al, 2021</a>.</p>
-<pre class="r"><code>source(&quot;../code/Customized_Plots.R&quot;)
-umap_original_embeddings &lt;- cbind(seurat_object$umap1, seurat_object$umap2)
+<pre class="r"><code>umap_original_embeddings &lt;- cbind(seurat_object$umap1, seurat_object$umap2)
 p1 &lt;- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$anatomical_annotation, pt.size = 1) +
   theme(plot.title = element_text(hjust = 0.5)) +
   ggtitle(&quot;UMAP by Anatomical Annotation&quot;)
@@ -690,7 +727,7 @@ plot(flashier_fit_nn,
      plot_type = &quot;structure&quot;,
      pm_which = &quot;loadings&quot;, 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)</code></pre>
+     bins = 20, gap = 70)</code></pre>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
@@ -750,7 +787,7 @@ plot(flashier_fit_semi,
      plot_type = &quot;structure&quot;,
      pm_which = &quot;loadings&quot;, 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)</code></pre>
+     bins = 20, gap = 70)</code></pre>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
@@ -790,8 +827,8 @@ Ziang Zhang
 </div>
 </div>
 </div>
-<div id="gbcd" class="section level3">
-<h3>GBCD</h3>
+<div id="gb-semi-non-negative-ebmf" class="section level3">
+<h3>GB Semi Non-Negative EBMF</h3>
 <pre class="r"><code>ebnm_fn_list &lt;- list()
 ebnm_fn_list[[1]] &lt;- flash_ebnm(
   prior_family = &quot;generalized_binary&quot;
@@ -810,7 +847,7 @@ plot(flashier_fit_gbcd,
      plot_type = &quot;structure&quot;,
      pm_which = &quot;loadings&quot;, 
      pm_groups = seurat_object$final_cluster_label,
-     bins = 20, gap = 25)</code></pre>
+     bins = 20, gap = 70)</code></pre>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
@@ -850,15 +887,94 @@ Ziang Zhang
 </div>
 </div>
 </div>
+<div id="gbcd" class="section level3">
+<h3>GBCD</h3>
+<pre class="r"><code>res.gbcd &lt;- fit_gbcd(Y = Y, Kmax = 25, maxiter1 = 100,
+                     maxiter2 = 50, maxiter3 = 50, 
+                     prior = flash_ebnm(prior_family = &quot;generalized_binary&quot;,
+                                        scale = 0.04))
+saveRDS(res.gbcd, &quot;../output/mouse_embryo/res.gbcd.rds&quot;)</code></pre>
+</div>
 </div>
 <div id="trying-topic-models" class="section level2">
 <h2>Trying Topic Models</h2>
 <p>Then, let’s try fitting a topic model to this dataset using
 <code>FastTopics</code>.</p>
-<pre class="r"><code>library(fastTopics)
-fasttopics_fit &lt;- fit_topic_model(Y, k = 25)</code></pre>
-<p>(This requires larger amount of RAM than I expected… Will do this on
-the server and add the results later.)</p>
+<pre class="r"><code>fasttopics_fit &lt;- fit_topic_model(Y, k = 25)</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="summarize-structures-from-loadings" class="section level2">
+<h2>Summarize Structures from Loadings</h2>
+<p>There are some interesting structures of the loading based on the
+result of EBMF and FastTopics, that add new insights to the original
+UMAP visualization.</p>
+<div id="non-negative-ebmf-1" class="section level3">
+<h3>Non-negative EBMF</h3>
+<p>First, based on the non-negative EBMF result, there are some factors
+that are shared across multiple cell types. For example, the factors
+<span class="math inline">\(k10\)</span> and <span
+class="math inline">\(k3\)</span> are shared across multiple types of
+neurons and glial cells. The factor <span
+class="math inline">\(k5\)</span> is shared across Chondrocytes and
+Connective Tissue Progenitors. The factor <span
+class="math inline">\(k2\)</span> is shared across Erythroid Progenitors
+and Hepatocytes. On the other hand, there are also factors that are more
+specific to certain cell types, such as <span
+class="math inline">\(k9\)</span> for Endothelial Cells and <span
+class="math inline">\(k7\)</span> for White Blood Cells.</p>
+<p>Let’s take a look at how the UMAF plot looks if we color each cell
+based on its composition of these factors.</p>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="semi-negative-ebmf" class="section level3">
+<h3>Semi-negative EBMF</h3>
+<p>The loadings from the semi-negative EBMF are more diverse, where each
+cell is composed of a larger number of factors. However, there are still
+both “unique” factor and “shared” factors across different cell
+types.</p>
+<p>For example, the factor <span class="math inline">\(k4\)</span> is
+shared across multiple types of neurons and glial cells. The factor
+<span class="math inline">\(k2\)</span> is shared across Erythroid
+Progenitors and Hepatocytes. The factor <span
+class="math inline">\(k3\)</span> are “mostly” unique to Myocytes and
+Cardiac Muscle, and <span class="math inline">\(k12\)</span> is unique
+to Chondrocytes.</p>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="fasttopics" class="section level3">
+<h3>FastTopics</h3>
+<p>The result from FastTopics looks quite similar to the semi-negative
+EBMF, where each cell is composed of a larger number of factors.</p>
+<p>There are shared factors like <span
+class="math inline">\(k13\)</span> for Erythroid Progenitors and
+Hepatocytes, and <span class="math inline">\(k10\)</span> for Epithelial
+Cells and Developing Gut, as well as unique factors like <span
+class="math inline">\(k3\)</span> for Hepatocytes and <span
+class="math inline">\(k8\)</span> for White Blood Cells.</p>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="compare-these-methods" class="section level2">
+<h2>Compare these methods</h2>
+<ul>
+<li><p>The non-negative EBMF provides a kind of “cleaner composition” of
+each cell, where each cell is mostly composed of one base line factor
+and another factor that is ” kind of specific” to the cell type. This in
+a way demonstrates the advantage of the part-based representation (plus
+sparsity).</p></li>
+<li><p>The semi non-negative EBMF provides a more “diverse” composition
+of each cell, where each cell is composed of a base line factor and
+multiple other factors that may appear in different cell types. The
+compensate of the “diversity” is the computation of this problem tends
+to be a bit more stable than the non-negative EBMF.</p></li>
+<li><p>The FastTopics also provides a kind of diverse composition of
+each cell, where each cell is composed of multiple factors. This might
+be due to there is no sparsity constraint in the FastTopics
+model.</p></li>
+<li><p>Overall, they all found some quite interesting structures (shared
+or unique) that are not obvious from the original UMAP
+visualization.</p></li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -886,11 +1002,12 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] gridExtra_2.3       ggpubr_0.6.0        Biobase_2.62.0     
- [4] BiocGenerics_0.48.1 RColorBrewer_1.1-3  cowplot_1.1.3      
- [7] patchwork_1.3.0     ggplot2_3.5.1       flashier_1.0.54    
-[10] ebnm_1.1-34         data.table_1.16.2   Matrix_1.6-4       
-[13] Seurat_5.1.0        SeuratObject_5.0.2  sp_2.1-4           
+ [1] fastTopics_0.6-192  gridExtra_2.3       ggpubr_0.6.0       
+ [4] Biobase_2.62.0      BiocGenerics_0.48.1 RColorBrewer_1.1-3 
+ [7] cowplot_1.1.3       patchwork_1.3.0     ggplot2_3.5.1      
+[10] flashier_1.0.54     ebnm_1.1-34         data.table_1.16.2  
+[13] Matrix_1.6-4        Seurat_5.1.0        SeuratObject_5.0.2 
+[16] sp_2.1-4           
 
 loaded via a namespace (and not attached):
   [1] RcppAnnoy_0.0.22       splines_4.3.1          later_1.3.2           
@@ -903,44 +1020,44 @@ loaded via a namespace (and not attached):
  [22] sctransform_0.4.1      spam_2.11-0            spatstat.sparse_3.1-0 
  [25] reticulate_1.39.0      pbapply_1.7-2          abind_1.4-8           
  [28] Rtsne_0.17             quadprog_1.5-8         purrr_1.0.2           
- [31] git2r_0.33.0           fastTopics_0.6-192     ggrepel_0.9.6         
- [34] irlba_2.3.5.1          listenv_0.9.1          spatstat.utils_3.1-0  
- [37] goftest_1.2-3          RSpectra_0.16-2        spatstat.random_3.3-2 
- [40] fitdistrplus_1.2-1     parallelly_1.38.0      leiden_0.4.3.1        
- [43] codetools_0.2-20       tidyselect_1.2.1       farver_2.1.2          
- [46] matrixStats_1.4.1      spatstat.explore_3.3-3 jsonlite_1.8.9        
- [49] progressr_0.14.0       Formula_1.2-5          ggridges_0.5.6        
- [52] survival_3.7-0         tools_4.3.1            progress_1.2.3        
- [55] ica_1.0-3              Rcpp_1.0.13            glue_1.8.0            
- [58] xfun_0.48              dplyr_1.1.4            withr_3.0.1           
- [61] fastmap_1.2.0          fansi_1.0.6            digest_0.6.37         
- [64] truncnorm_1.0-9        R6_2.5.1               mime_0.12             
- [67] colorspace_2.1-1       scattermore_1.2        gtools_3.9.5          
- [70] tensor_1.5             spatstat.data_3.1-2    RhpcBLASctl_0.23-42   
- [73] utf8_1.2.4             tidyr_1.3.1            generics_0.1.3        
- [76] prettyunits_1.2.0      httr_1.4.7             htmlwidgets_1.6.4     
- [79] scatterplot3d_0.3-44   deconvolveR_1.2-1      whisker_0.4.1         
- [82] uwot_0.1.16            pkgconfig_2.0.3        gtable_0.3.5          
- [85] workflowr_1.7.1        lmtest_0.9-40          htmltools_0.5.8.1     
- [88] carData_3.0-5          dotCall64_1.2          horseshoe_0.2.0       
- [91] scales_1.3.0           png_0.1-8              spatstat.univar_3.0-1 
- [94] ashr_2.2-66            knitr_1.48             rstudioapi_0.16.0     
- [97] reshape2_1.4.4         nlme_3.1-166           cachem_1.1.0          
-[100] zoo_1.8-12             Polychrome_1.5.1       stringr_1.5.1         
-[103] KernSmooth_2.23-24     parallel_4.3.1         miniUI_0.1.1.1        
-[106] softImpute_1.4-1       pillar_1.9.0           grid_4.3.1            
-[109] vctrs_0.6.5            RANN_2.6.2             promises_1.3.0        
-[112] car_3.1-3              xtable_1.8-4           cluster_2.1.6         
-[115] evaluate_1.0.1         invgamma_1.1           cli_3.6.3             
-[118] compiler_4.3.1         rlang_1.1.4            crayon_1.5.3          
-[121] SQUAREM_2021.1         future.apply_1.11.2    ggsignif_0.6.4        
-[124] labeling_0.4.3         plyr_1.8.9             fs_1.6.4              
-[127] stringi_1.8.4          viridisLite_0.4.2      deldir_2.0-4          
-[130] munsell_0.5.1          lazyeval_0.2.2         spatstat.geom_3.3-3   
-[133] RcppHNSW_0.6.0         hms_1.1.3              future_1.34.0         
-[136] shiny_1.9.1            highr_0.11             trust_0.1-8           
-[139] ROCR_1.0-11            igraph_2.1.1           broom_1.0.7           
-[142] RcppParallel_5.1.9     bslib_0.8.0           </code></pre>
+ [31] git2r_0.33.0           ggrepel_0.9.6          irlba_2.3.5.1         
+ [34] listenv_0.9.1          spatstat.utils_3.1-0   goftest_1.2-3         
+ [37] RSpectra_0.16-2        spatstat.random_3.3-2  fitdistrplus_1.2-1    
+ [40] parallelly_1.38.0      leiden_0.4.3.1         codetools_0.2-20      
+ [43] tidyselect_1.2.1       farver_2.1.2           matrixStats_1.4.1     
+ [46] spatstat.explore_3.3-3 jsonlite_1.8.9         progressr_0.14.0      
+ [49] Formula_1.2-5          ggridges_0.5.6         survival_3.7-0        
+ [52] tools_4.3.1            progress_1.2.3         ica_1.0-3             
+ [55] Rcpp_1.0.13-1          glue_1.8.0             xfun_0.48             
+ [58] dplyr_1.1.4            withr_3.0.2            fastmap_1.2.0         
+ [61] fansi_1.0.6            digest_0.6.37          truncnorm_1.0-9       
+ [64] R6_2.5.1               mime_0.12              colorspace_2.1-1      
+ [67] scattermore_1.2        gtools_3.9.5           tensor_1.5            
+ [70] spatstat.data_3.1-2    RhpcBLASctl_0.23-42    utf8_1.2.4            
+ [73] tidyr_1.3.1            generics_0.1.3         prettyunits_1.2.0     
+ [76] httr_1.4.7             htmlwidgets_1.6.4      scatterplot3d_0.3-44  
+ [79] deconvolveR_1.2-1      whisker_0.4.1          uwot_0.1.16           
+ [82] pkgconfig_2.0.3        gtable_0.3.6           workflowr_1.7.1       
+ [85] lmtest_0.9-40          htmltools_0.5.8.1      carData_3.0-5         
+ [88] dotCall64_1.2          horseshoe_0.2.0        scales_1.3.0          
+ [91] png_0.1-8              spatstat.univar_3.0-1  ashr_2.2-66           
+ [94] knitr_1.48             rstudioapi_0.16.0      reshape2_1.4.4        
+ [97] nlme_3.1-166           cachem_1.1.0           zoo_1.8-12            
+[100] Polychrome_1.5.1       stringr_1.5.1          KernSmooth_2.23-24    
+[103] parallel_4.3.1         miniUI_0.1.1.1         softImpute_1.4-1      
+[106] pillar_1.9.0           grid_4.3.1             vctrs_0.6.5           
+[109] RANN_2.6.2             promises_1.3.0         car_3.1-3             
+[112] xtable_1.8-4           cluster_2.1.6          evaluate_1.0.1        
+[115] invgamma_1.1           cli_3.6.3              compiler_4.3.1        
+[118] rlang_1.1.4            crayon_1.5.3           SQUAREM_2021.1        
+[121] future.apply_1.11.2    ggsignif_0.6.4         labeling_0.4.3        
+[124] plyr_1.8.9             fs_1.6.4               stringi_1.8.4         
+[127] viridisLite_0.4.2      deldir_2.0-4           munsell_0.5.1         
+[130] lazyeval_0.2.2         spatstat.geom_3.3-3    RcppHNSW_0.6.0        
+[133] hms_1.1.3              future_1.34.0          shiny_1.9.1           
+[136] highr_0.11             trust_0.1-8            ROCR_1.0-11           
+[139] igraph_2.1.1           broom_1.0.7            RcppParallel_5.1.9    
+[142] bslib_0.8.0           </code></pre>
 </div>
 </div>
 </div>
