@@ -221,11 +221,17 @@ There are some interesting structures of the loading based on the result of EBMF
 
 ### Non-negative EBMF
 
-First, based on the non-negative EBMF result, there are some factors that are shared across multiple cell types.
-For example, the factors $k10$ and $k3$ are shared across multiple types of neurons and glial cells. 
-The factor $k5$ is shared across Chondrocytes and Connective Tissue Progenitors.
-The factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
-On the other hand, there are also factors that are more specific to certain cell types, such as $k9$ for Endothelial Cells and $k7$ for White Blood Cells.
+First, based on the non-negative EBMF result, there are some factors that are shared across multiple cell types. For example:
+
+- The factors $k10$ and $k3$ are shared across multiple types of neurons and glial cells.
+
+- The factor $k5$ is shared across Chondrocytes and Connective Tissue Progenitors.
+
+- The factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+
+- The factor $k9$ is unique to Endothelial Cells.
+
+- The factor $k7$ is unique to White Blood Cells.
 
 Let's take a look at how the UMAF plot looks if we color each cell based on its composition of these factors.
 
@@ -252,11 +258,15 @@ print(combined_plot)
 ### Semi-negative EBMF
 
 The loadings from the semi-negative EBMF are more diverse, where each cell is composed of a larger number of factors.
-However, there are still both "unique" factor and "shared" factors across different cell types.
+However, there are still both "unique" and "shared" factors across different cell types. For examples:
 
-For example, the factor $k4$ is shared across multiple types of neurons and glial cells.
-The factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
-The factor $k3$ are "mostly" unique to Myocytes and Cardiac Muscle, and $k12$ is unique to Chondrocytes.
+- Factor $k4$ is shared across multiple types of neurons and glial cells.
+
+- Factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+
+- Factor $k3$ is mostly unique to Myocytes and Cardiac Muscle. 
+
+- Factor $k12$ is unique to Chondrocytes.
 
 ```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
 # Collect all plots in a list
@@ -278,9 +288,14 @@ print(combined_plot)
 
 ### FastTopics
 
-The result from FastTopics looks quite similar to the semi-negative EBMF, where each cell is composed of a larger number of factors.
+The result from FastTopics looks quite similar to the semi-negative EBMF, where each cell is composed of a larger number of factors. For examples:
 
-There are shared factors like $k13$ for Erythroid Progenitors and Hepatocytes, and $k10$ for Epithelial Cells and Developing Gut, as well as unique factors like $k3$ for Hepatocytes and $k8$ for White Blood Cells.
+- Factors $k13$ and $k10$ are shared across Erythroid Progenitors and Hepatocytes.
+
+- Factor $k3$ is unique to Hepatocytes.
+
+- Factor $k8$ is unique to White Blood Cells.
+
 
 ```{r eval=T, message=FALSE, results='hide', fig.keep='all', echo=FALSE}
 # Collect all plots in a list
