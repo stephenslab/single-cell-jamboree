@@ -1,5 +1,5 @@
 ---
-title: "Single-cell matrix factorization jamboree"
+title: Single-cell matrix factorization jamboree
 site: workflowr::wflow_site
 output: workflowr::wflow_html
 ---
@@ -16,6 +16,8 @@ via [this link][box].
 **Analyses:**
 
 + [Initial exploration of the pancreas data set.](pancreas.html)
+
++ [First attempts at factorizing the pancreas data set.](pancreas_factors.html)
 
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
 
