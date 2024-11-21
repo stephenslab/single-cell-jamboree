@@ -1,3 +1,5 @@
+# This script should be run after running compute_pancreas_factors.R.
+#
 # sinteractive --mem=16G -c 8 --time=24:00:00
 # module load R/4.2.0
 # .libPaths()[1]
@@ -22,17 +24,12 @@ x <- sparseMatrixStats::colSds(Y)
 j <- which(x > 0.01)
 Y <- Y[,j]
 
-# Set lower bound on variances.
+# Set alower bound on the variances.
 n  <- nrow(counts)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
-# *** TESTING ***
-# x <- sparseMatrixStats::colSds(Y)
-# j <- which(x > 2)
-# Y <- Y[,j]
-
-# Fit an NMF with cross-cutting factors using flashier.
+# (5) Fit an NMF with *cross-cutting factors* using flashier ("NMF-CC").
 k <- 23
 batch_topics <- c(2,3,4,5,7,8,20)
 other_topics <- setdiff(1:k,batch_topics)

@@ -21,16 +21,10 @@ x <- sparseMatrixStats::colSds(Y)
 j <- which(x > 0.01)
 Y <- Y[,j]
 
-# Set lower bound on variances.
+# Set a lower bound on the variances.
 n  <- nrow(counts)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
-
-# *** TESTING ***
-# x <- sparseMatrixStats::colSds(Y)
-# j <- which(x > 2)
-# Y <- Y[,j]
-# counts <- counts[,j]
 
 # Set up the "timings" data structure.
 timings <- list(nmf        = 0,
@@ -38,19 +32,19 @@ timings <- list(nmf        = 0,
                 fl_snmf    = 0,
                 fasttopics = 0)
 
-# Fit an NMF using NNLM.
-# I set k = 23 to match the flash() call.
+# (1) Fit an NMF using NNLM.
+# I use k = 23 to match the flash() call immediately below.
 Y_dense <- as.matrix(Y)
 t0  <- proc.time()
-nmf <- nnmf(Y_dense,k = 23,loss = "mse",method = "scd",max.iter = 200,
-            verbose = 2,n.threads = 8)
+nmf <- nnmf(Y_dense,k = 23,loss = "mse",method = "scd",
+            max.iter = 200,verbose = 2,n.threads = 8)
 t1  <- proc.time()
 timings$nmf <- t1 - t0
 print(timings$nmf)
 
-# Fit an NMF using flashier.
-# Note that I set var_type = 0 to increase the number of factors
-# discovered.
+# (2) Fit an NMF using flashier.
+# I initially set var_type = 0 to increase the number of
+# factors discovered.
 t0 <- proc.time()
 fl0 <- flash(Y,ebnm_fn = ebnm_point_exponential,var_type = 0,
              greedy_Kmax = 40,nullcheck = FALSE,backfit = FALSE,
@@ -63,8 +57,9 @@ t1 <- proc.time()
 timings$fl_nmf <- t1 - t0
 print(timings$fl_nmf)
 
-# Fit a semi-NMF using flashier.
-# I set greedy_Kmax = 23 to align with the NMF flashier fit.
+# (3) Fit a semi-NMF using flashier.
+# Here I set greedy_Kmax = 23 to align with the NMF flashier fit
+# immediately above.
 t0 <- proc.time()
 fl0 <- flash(Y,ebnm_fn = c(ebnm_point_exponential,ebnm_point_normal),
              var_type = 0,greedy_Kmax = 23,nullcheck = FALSE,
@@ -79,7 +74,7 @@ t1 <- proc.time()
 timings$fl_snmf <- t1 - t0
 print(timings$fl_snmf)
 
-# Fit a Poisson NMF using fastTopics.
+# (4) Fit a Poisson NMF using fastTopics.
 # I set k = 23 to align with the NMF flashier fit.
 t0 <- proc.time()
 pnmf0 <- fit_poisson_nmf(counts,k = 23,numiter = 100,method = "em",
