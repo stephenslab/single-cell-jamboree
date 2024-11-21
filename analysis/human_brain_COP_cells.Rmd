@@ -9,8 +9,6 @@ knitr::opts_chunk$set(comment = "#", collapse = TRUE, results = "hold",
                       fig.align = "center", dpi = 120)
 ```
 
-TODO: UMAP by factors
-
 ### Introduction
 
 This single-nucleus RNA seq dataset is from the paper "Transcriptomic diversity of cell types across the adult human brain" (Siletti, 2023). around 3 millions nuclei were collected from around 100 dissections from the following areas of brains of 3 donors:
@@ -41,7 +39,7 @@ This single-nucleus RNA seq dataset is from the paper "Transcriptomic diversity 
 
 The authors performed hierarchical graph-based clustering, grouping the cells into superclusters, clusters, and subclusters. The data can be accessed [here](https://data.humancellatlas.org/hca-bio-networks/nervous-system/atlases/brain-v1-0), with files organized by supercluster or by dissection.
 
-This exploratory analysis focuses on committed oligodendrocyte precursor (COP) cells (see https://cellxgene.cziscience.com/e/f16f4108-7873-4035-9989-3748da1a7ff1.cxg/). There are 4,720 cells and 2,1462 genes (after QC) in the dataset.
+This exploratory analysis focuses on committed oligodendrocyte precursor (COP) cells (see <https://cellxgene.cziscience.com/e/f16f4108-7873-4035-9989-3748da1a7ff1.cxg/>). There are 4,720 cells and 2,1462 genes (after QC) in the dataset.
 
 ```{r load-pkg, message=FALSE}
 library(Matrix)
@@ -52,9 +50,11 @@ library(ggplot2)
 library(cowplot)
 library(dplyr)
 library(readr)
+library(knitr)
 ```
 
 Load data and fit
+
 ```{r load-data, message=FALSE}
 # Taken from https://github.com/stephenslab/pathways/blob/master/inst/code/read_gene_set_data.R
 read_gene_info <- function (file) {
@@ -102,15 +102,13 @@ homo_sapien_geno_info <- read_gene_info('../data/Homo_sapiens.gene_info.gz')
 data <- readRDS('../data/human_brain_COP_cells.rds')
 counts <- t(data$RNA$data)
 
-# Keep only protein-coding genes and remove those without nonzero counts
+# Keep only genes that match those in homo sapien gene info and remove those without nonzero counts
 reduced_counts <- 
   counts[, colnames(counts) %in% homo_sapien_geno_info$Ensembl]
 cols_to_keep <- colSums(reduced_counts != 0, na.rm = TRUE) > 0
 reduced_counts <- reduced_counts[, cols_to_keep]
-load('../data/human_brain_COP_cells_fit_protein_coding.RData')
+load('../data/human_brain_COP_cells_fit.RData')
 ```
-
-
 
 ```{r custom-func}
 map_tissue <- function(tissue) {
@@ -131,7 +129,6 @@ map_tissue <- function(tissue) {
 regions <- sapply(data$tissue, map_tissue)
 
 ```
-
 
 ### t-SNE and UMAP
 
@@ -163,6 +160,7 @@ ggplot(Embeddings(data$tSNE) , aes(x = TSNE_1, y = TSNE_2, color = data$cluster_
   theme_minimal() +
   scale_color_manual(values = colors)
 ```
+
 #### UMAP
 
 ```{r umap}
@@ -192,7 +190,6 @@ ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, color = data$cluster_
 ### Flashier
 
 #### NMF
-
 
 Redefine subcluster ids so that the hierarchical structure is clearer
 
@@ -230,7 +227,6 @@ subcluster_id[subcluster_id == '3196'] <- '75.2'
 subcluster_id <- factor(subcluster_id)
 ```
 
-
 ```{r flashier-plot, message=FALSE, results='hide',fig.keep='all'}
 flash_plot_scree(flashier_fit)
 
@@ -247,8 +243,6 @@ plot(flashier_fit,
      pm_groups = data$cluster_id,
      bins = 25)
 ```
-
-
 
 ```{r flashier-struc-plot, message=FALSE, results='hide',fig.keep='all'}
 plot(flashier_fit, 
@@ -270,9 +264,10 @@ ncells <- colSums(vals$L>0.1)
 ncells
 ```
 
-Several factors are load on only a small number of cells. 
+Several factors are load on only a small number of cells.
 
 Removing those factors from the structure plots:
+
 ```{r flashier-struc-plot-reduced, message=FALSE, results='hide',fig.keep='all'}
 plot(flashier_fit, 
      kset = which(ncells > 5),
@@ -290,6 +285,7 @@ plot(flashier_fit,
 ```
 
 Showing those factors in the structure plots:
+
 ```{r flashier-struc-plot-reduced-outlier, message=FALSE, results='hide',fig.keep='all'}
 plot(flashier_fit, 
      kset = which(ncells <= 5),
@@ -306,28 +302,84 @@ plot(flashier_fit,
      bins = 60, gap = 100)
 ```
 
+Top 5 driving genes for factors that are loading on a small number of cells
 
-##### UMAP by factor
+```{r driving-genes, message=FALSE, results='hide',fig.keep='all'}
+F <- with(vals, F %*% diag(D))
+rownames(F) <- homo_sapien_geno_info$Symbol[match(rownames(F), 
+                                            homo_sapien_geno_info$Ensembl)]
+head(sort(F[,8], decreasing = TRUE), n = 16)
 
-```{r umap-by-factor}
-# library(gridExtra)
-# plot_list <- list()
-# i <- 1
-# for (f in 1:flashier_fit$n_factors) {
-# plot_list[[i]] <- 
-  # ggplot(Embeddings(data$UMAP) , aes(x = UMAP_1, y = UMAP_2, size = vals$L[,f])) +
-  # geom_point(alpha = 0.7) +
-  # labs(title = paste("factor ", f) , x = "UMAP 1", y = "UMAP 2") +
-  # theme_minimal() +
-  # scale_color_manual(values = '#f0f0f0')
-# i <- i + 1
-# }
-# grid.arrange(grobs=plot_list)
+
+top_genes <- apply(F, 2, order, decreasing = TRUE)[1:5, which(ncells<=5)]
+top_genes <- rownames(flashier_fit$F_pm)[top_genes]
+
+plot(flashier_fit,
+     plot_type = "heatmap",
+     pm_which = "factors",
+     pm_subset = top_genes,
+     pm_groups = factor(top_genes),
+     kset = which(ncells<=5),
+     gap = 0.5)
 ```
 
+Plot of mean shifted log expression vs. change for factor 8, with top 5 genes (by largest increase)
+
+```{r mean-log-count-vs-change-for-factor-8, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit,
+     plot_type = "scatter",
+     pm_which = "factors",
+     kset = 8,
+     labels = TRUE,
+     n_labels = 5,
+     label_size = 2.5) +
+  labs(x = "increase in shifted log expression",
+       y = "mean shifted log expression") 
+```
+
+Symbols of top 5 driving genes for
+
+```{r top-5-genes-factor-8}
+top5_genes_factor_8 <- 
+  sort(with(vals, F %*% diag(D))[, 8], decreasing = TRUE) %>% 
+  head(., 5) %>%
+  names()
+homo_sapien_geno_info[match(top5_genes_factor_8, homo_sapien_geno_info$Ensembl),
+                      c('Symbol', 'Ensembl')]
+```
+
+For factor 8
+
+-   MALAT1 (Metastasis-Associated Lung Adenocarcinoma Transcript 1)
+    -   Long non-coding RNA (lncRNA)
+-   MEF2C (Myocyte Enhancer Factor 2C)
+    -   Transcription factor
+-   LPAR6 (Lysophosphatidic Acid Receptor 6)
+    -   G-protein-coupled receptor
+-   SLC1A3 (Solute Carrier Family 1 Member 3)
+    -   Glutamate transporter
+-   OGFRL1 (Opioid Growth Factor Receptor-Like 1)
+    -   Putative receptor
+
+From chatGPT
+
+##### Loadings on UMAP by factor
+
+Factor 2, 3 and 4 are heavily loaded, whereas factor 8 and 9 are loaded on a single cell.
+
+```{r umap-by-factor, message=FALSE, results='hide',fig.keep='all'}
+umap <- Embeddings(data$UMAP)
+source('../code/plot_loadings_on_umap.R')
+
+for (f in c(2, 3, 4, 8, 9)) {
+  loading <- vals$L[, f]
+  p <- plot_loadings_on_umap(umap, loading, f)
+  print(p)
+}
+
+```
 
 #### Semi-NMF
-
 
 ```{r flashier-plot-cluster, message=FALSE, results='hide',fig.keep='all'}
 flash_plot_scree(flashier_fit_semi)
@@ -345,7 +397,6 @@ plot(flashier_fit_semi,
      pm_groups = data$cluster_id,
      bins = 25)
 ```
-
 
 ```{r flashier-seminmf-struc-plot, message=FALSE, results='hide',fig.keep='all'}
 plot(flashier_fit_semi, 
@@ -367,10 +418,10 @@ ncells_semi <- colSums(vals_semi$L>0.1)
 ncells_semi
 ```
 
-
 Several factors are load on only a small number of cells.
 
 Removing those factors from the structure plots:
+
 ```{r flashier-struc-plot-reduced-semi, message=FALSE, results='hide',fig.keep='all'}
 plot(flashier_fit_semi, 
      kset = which(ncells_semi > 5),
@@ -388,6 +439,7 @@ plot(flashier_fit_semi,
 ```
 
 Showing factors that are only loaded on a small number of cells:
+
 ```{r flashier-struc-plot-reduced-outlier-semi, message=FALSE, results='hide',fig.keep='all'}
 plot(flashier_fit_semi, 
      kset = which(ncells_semi <= 5),
@@ -404,6 +456,80 @@ plot(flashier_fit_semi,
      bins = 60, gap = 100)
 ```
 
+Top 5 driving genes for factors that are loading on a small number of cells
+
+```{r driving-genes-semi, message=FALSE, results='hide',fig.keep='all'}
+F <- with(vals_semi, F %*% diag(D))
+rownames(F) <- homo_sapien_geno_info$Symbol[match(rownames(F), 
+                                            homo_sapien_geno_info$Ensembl)]
+head(sort(F[,8], decreasing = TRUE), n = 16)
+# top_genes <- apply(F, 2, order, decreasing = TRUE)[1:5, c(8, 11)]
+# top_genes <- rownames(flashier_fit_semi$F_pm)[top_genes]
+# 
+# plot(flashier_fit_semi,
+#      plot_type = "heatmap",
+#      pm_which = "factors",
+#      pm_subset = top_genes,
+#      pm_groups = factor(top_genes),
+#      kset = c(8, 11),
+#      gap = 0.5)
+```
+
+Plot of mean shifted log expression vs. change for factor 8, with top 5 genes (by largest increase)
+
+```{r mean-log-count-vs-change-for-factor-8-11-16-semi, message=FALSE, results='hide',fig.keep='all'}
+plot(flashier_fit_semi,
+     plot_type = "scatter",
+     pm_which = "factors",
+     kset = c(8, 11, 16),
+     labels = TRUE,
+     n_labels = 5,
+     label_size = 2.5) +
+  labs(x = "increase in shifted log expression",
+       y = "mean shifted log expression") 
+```
+
+Symbols of top 5 driving genes for factor 11
+
+```{r top-5-genes-factor-11}
+top5_genes_factor_11 <- 
+  sort(with(vals_semi, F %*% diag(D))[, 11], decreasing = TRUE) %>% 
+  head(., 5) %>%
+  names()
+homo_sapien_geno_info[match(top5_genes_factor_11, homo_sapien_geno_info$Ensembl),
+                      c('Symbol', 'Ensembl')]
+```
+
+For factor 8
+
+-   MALAT1 (Metastasis-Associated Lung Adenocarcinoma Transcript 1)
+    -   Long non-coding RNA (lncRNA)
+-   OGFRL1 (Opioid Growth Factor Receptor-Like 1)
+    -   Putative receptor
+-   HIF1A-AS3
+    -   Associated with hypoxia regulation and cancer biology
+    -   Long non-coding RNA (lncRNA)
+-   LPAR6 (Lysophosphatidic Acid Receptor 6)
+    -   G-protein-coupled receptor
+-   SLC1A3 (Solute Carrier Family 1 Member 3)
+    -   Glutamate transporter
+From chatGPT
+
+##### Loadings on UMAP by factor
+
+Factor 2 and 3 are heavily loaded, whereas factor 4, 8 and 11 are loaded on a few cells.
+
+```{r umap-by-factor-semi, message=FALSE, results='hide',fig.keep='all'}
+umap <- Embeddings(data$UMAP)
+source('../code/plot_loadings_on_umap.R')
+
+for (f in c(2, 3, 4, 8, 11)) {
+  loading <- vals_semi$L[, f]
+  p <- plot_loadings_on_umap(umap, loading, f)
+  print(p)
+}
+
+```
 
 #### Comparison
 
@@ -423,38 +549,36 @@ plot(flashier_fit_semi,
      pm_groups = data$cluster_id,
      bins = 30, gap = 70)
 
-# plot_grid(p1, p2, ncol = 1, align = "v", axis = "lr", rel_heights = c(1, 1))
 ```
 
+```{r}
+which.max(vals$L[, 8])
+which.max(vals_semi$L[, 11])
+```
 
-
+Both actor 8 from Flashier NMF and factor 11 from Flashier semi-NMF seem to be loaded on the same cell.
 
 ### FastTopics
 
+## K = 50
 
-<!-- ```{r fit-fasttopics} -->
-<!-- # reduced_counts <- as(reduced_counts, "dgCMatrix") -->
-<!-- fasttopics_fit <- fit_topic_model(reduced_counts, k = 50) -->
-<!-- ``` -->
-
-```{r fasttopics-plot-progress, message=FALSE, results='hide',fig.keep='all'}
-plot_progress(fasttopics_fit,x = "iter",add.point.every = 10,colors = "black") +
+```{r fasttopics-plot-progress-50, message=FALSE, results='hide',fig.keep='all'}
+plot_progress(fasttopics_fit_50,x = "iter",add.point.every = 10,colors = "black") +
   theme_cowplot(font_size = 10)
 
 ```
 
-```{r fasttopics-loglik-plot, message=FALSE, results='hide',fig.keep='all'}
-loglik <- loglik_multinom_topic_model(reduced_counts, fasttopics_fit)
+```{r fasttopics-loglik-plot-50, message=FALSE, results='hide',fig.keep='all'}
+loglik <- loglik_multinom_topic_model(reduced_counts, fasttopics_fit_50)
 pdat <- data.frame(loglik)
 ggplot(pdat,aes(loglik)) +
   geom_histogram(bins = 64,color = "white",fill = "black",size = 0.25) +
   labs(y = "number of cells") +
   theme_cowplot(font_size = 10)
 
-# subpop_colors <- c("dodgerblue","forestgreen","darkmagenta","skyblue","gold", )
 subpop_colors <- c("red", "blue", "green", "purple", "orange", "pink", "cyan", "brown", "yellow", "darkgreen")
 
-pdat <- data.frame(loglik = loglik,subpop = data$tissue)
+pdat <- data.frame(loglik = loglik,subpop = data$cluster_id)
 ggplot(pdat,aes(x = loglik,fill = subpop)) +
   geom_histogram(bins = 64,color = "white",size = 0.25) +
   scale_fill_manual(values = subpop_colors) +
@@ -462,17 +586,138 @@ ggplot(pdat,aes(x = loglik,fill = subpop)) +
   theme_cowplot(font_size = 10)
 ```
 
-
-```{r fasttopics-struc-plot, message=FALSE, results='hide',fig.keep='all'}
-structure_plot(fasttopics_fit, grouping = data$cluster_id, gap = 70)
-structure_plot(fasttopics_fit, grouping = subcluster_id, gap = 70)
+```{r fasttopics-struc-plot-50, message=FALSE, results='hide',fig.keep='all'}
+structure_plot(fasttopics_fit_50, grouping = data$cluster_id, gap = 70)
+structure_plot(fasttopics_fit_50, grouping = subcluster_id, gap = 70)
 ```
-```{r examine-factors-fasttopics}
-ncells_ft <- colSums(fasttopics_fit$L>0.1)
-ncells_ft
-```
-No factors that are loaded on a single cells. Still there are a couple that are loaded on a small number of cells, e.g., k8.
 
+```{r examine-factors-fasttopics-50}
+ncells_ft_50 <- colSums(fasttopics_fit_50$L>0.1)
+ncells_ft_50
+```
+
+No factors that are loaded on a single cells. Still there are a couple that are loaded on a small number of cells, e.g., k11.
+
+Removing factors that are loading on few than 200.
+
+```{r, fasttopics-struc-plot-50-reduced, message=FALSE, results='hide',fig.keep='all'}
+structure_plot(fasttopics_fit_50, topics = which(ncells_ft_50 >200),
+               grouping = data$cluster_id, gap = 70)
+
+```
+
+```{r, fasttopics-struc-plot-50-pca, message=FALSE, results='hide',fig.keep='all'}
+pca_plot(fasttopics_fit_50,fill = data$cluster_id)
+pca_hexbin_plot(fasttopics_fit_50,bins = 24)
+```
+
+Top 5 driving genes for factors loaded on a few cells
+
+```{r fasttopics-10-top-5-genes}
+top5_genes_factor_7 <- 
+  sort(fasttopics_fit_50$F[, 7], decreasing = TRUE) %>% 
+  head(., 5) %>%
+  names()
+homo_sapien_geno_info[match(top5_genes_factor_7, homo_sapien_geno_info$Ensembl),
+                      c('Symbol', 'Ensembl')]
+sort(fasttopics_fit_50$F[, 7], decreasing = TRUE) %>% 
+  head(., 5)
+
+top5_genes_factor_8 <- 
+  sort(fasttopics_fit_50$F[, 8], decreasing = TRUE) %>% 
+  head(., 5) %>%
+  names()
+homo_sapien_geno_info[match(top5_genes_factor_8, homo_sapien_geno_info$Ensembl),
+                      c('Symbol', 'Ensembl')]
+sort(fasttopics_fit_50$F[, 8], decreasing = TRUE) %>% 
+  head(., 5)
+
+top5_genes_factor_11 <- 
+  sort(fasttopics_fit_50$F[, 11], decreasing = TRUE) %>% 
+  head(., 5) %>%
+  names()
+homo_sapien_geno_info[match(top5_genes_factor_11, homo_sapien_geno_info$Ensembl),
+                      c('Symbol', 'Ensembl')]
+
+sort(fasttopics_fit_50$F[, 11], decreasing = TRUE) %>% 
+  head(., 5)
+```
+
+-   ERBB4 (Receptor Tyrosine-Protein Kinase ErbB-4):
+    -   Part of the EGFR family.
+    -   Involved in cell growth, survival, and differentiation.
+    -   Dysregulation is linked to cancer and neurodevelopmental disorders.
+-   PDE4B (Phosphodiesterase 4B):
+    -   Degrades cAMP, a secondary messenger in cellular signaling.
+    -   Implicated in psychiatric conditions, including schizophrenia and depression.
+-   PPP2R2B (Protein Phosphatase 2 Regulatory Subunit Bbeta):
+    -   Regulates protein dephosphorylation.
+    -   Associated with spinocerebellar ataxias and neurodegeneration.
+From chatgpt
+
+## K = 10
+
+```{r fasttopics-plot-progress-10, message=FALSE, results='hide',fig.keep='all'}
+plot_progress(fasttopics_fit_10,x = "iter",add.point.every = 10,colors = "black") +
+  theme_cowplot(font_size = 10)
+
+```
+
+```{r fasttopics-loglik-plot-10, message=FALSE, results='hide',fig.keep='all'}
+loglik <- loglik_multinom_topic_model(reduced_counts, fasttopics_fit_10)
+pdat <- data.frame(loglik)
+ggplot(pdat,aes(loglik)) +
+  geom_histogram(bins = 64,color = "white",fill = "black",size = 0.25) +
+  labs(y = "number of cells") +
+  theme_cowplot(font_size = 10)
+
+subpop_colors <- c("red", "blue", "green", "purple", "orange", "pink", "cyan", "brown", "yellow", "darkgreen")
+
+pdat <- data.frame(loglik = loglik,subpop = data$cluster_id)
+ggplot(pdat,aes(x = loglik,fill = subpop)) +
+  geom_histogram(bins = 64,color = "white",size = 0.25) +
+  scale_fill_manual(values = subpop_colors) +
+  labs(y = "number of cells") +
+  theme_cowplot(font_size = 10)
+```
+
+```{r fasttopics-struc-plot-10, message=FALSE, results='hide',fig.keep='all'}
+structure_plot(fasttopics_fit_10, grouping = data$cluster_id, gap = 70)
+structure_plot(fasttopics_fit_10, grouping = subcluster_id, gap = 70)
+```
+
+```{r examine-factors-fasttopics-10}
+ncells_ft_10 <- colSums(fasttopics_fit_10$L>0.1)
+ncells_ft_10
+```
+
+Removing factor 9
+
+```{r, fasttopics-struc-plot-10-reduced, message=FALSE, results='hide',fig.keep='all'}
+structure_plot(fasttopics_fit_10, topics = which(ncells_ft_10 > 61),
+               grouping = data$cluster_id, gap = 70)
+structure_plot(fasttopics_fit_10, topics = which(ncells_ft_10 > 61),
+               grouping = subcluster_id, gap = 70)
+```
+
+```{r, fasttopics-struc-plot-10-pca, message=FALSE, results='hide',fig.keep='all'}
+pca_plot(fasttopics_fit_10,fill = data$cluster_id)
+pca_hexbin_plot(fasttopics_fit_10,bins = 24)
+```
+
+```{r fasttopics-10-factor-9-top-5-genes}
+top5_genes_factor_9 <- 
+  sort(fasttopics_fit_10$F[, 9], decreasing = TRUE) %>% 
+  head(., 5) %>%
+  names()
+homo_sapien_geno_info[match(top5_genes_factor_9, homo_sapien_geno_info$Ensembl),
+                      c('Symbol', 'Ensembl')]
+sort(fasttopics_fit_10$F[, 9], decreasing = TRUE) %>% 
+  head(., 5)
+```
+
+"**TTR** encodes **Transthyretin**, a protein primarily synthesized in the **liver** and **choroid plexus** of the brain."
+From chatGPT
 
 ### GBCD
 
