@@ -1,0 +1,27 @@
+---
+title: First attempts at factorizing the pancreas data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+ADD TEXT HERE.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages needed for this analysis.
+
+```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(fastTopics)
+library(ggplot2)
+library(cowplot)
+```
+
+Set the seed for reproducibility.
+
+```{r set-seed}
+set.seed(1)
+```
