@@ -77,17 +77,18 @@ flashier_fit <- flash(shifted_log_counts,
                       var_type = 2,
                       greedy_Kmax = 50,
                       S = s1,
-                      backfit = T)
+                      backfit = TRUE)
 
 flashier_fit_semi <- flash(shifted_log_counts,
                            ebnm_fn = c(ebnm_point_exponential, ebnm_point_laplace),
                            var_type = 2,
                            greedy_Kmax = 50,
                            S = s1,
-                           backfit = T)
+                           backfit = TRUE)
 
 
-fasttopics_fit <- fit_topic_model(reduced_counts, k = 50)
+fasttopics_fit_50 <- fit_topic_model(reduced_counts, k = 50)
+fasttopics_fit_10 <- fit_topic_model(reduced_counts, k = 10)
 
-save(flashier_fit, flashier_fit_semi, fasttopics_fit,
+save(flashier_fit, flashier_fit_semi, fasttopics_fit_50, fasttopics_fit_10,
      file = '../data/human_brain_COP_cells_fit.RData')
