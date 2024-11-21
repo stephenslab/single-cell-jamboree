@@ -1,15 +1,3 @@
-library(Matrix)
-library(fastTopics)
-library(ggplot2)
-library(cowplot)
-set.seed(1)
-load("../data/pancreas.RData")
-load("../output/pancreas_factors.RData")
-timings0 <- timings
-load("../output/pancreas_factors2.RData")
-rm(session_info)
-timings <- c(timings0,timings)
-
 # scale.cols(A,b) scales each column A[,i] by b[i].
 scale.cols <- function (A, b)
   t(t(A) * b)

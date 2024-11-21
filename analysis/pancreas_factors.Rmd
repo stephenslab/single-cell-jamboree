@@ -25,3 +25,26 @@ Set the seed for reproducibility.
 ```{r set-seed}
 set.seed(1)
 ```
+
+Load the pancreas data set and the outputs generated from running the
+compute_pancreas_factors.R and compute_pancreas_factors2.R scripts.
+
+```{r load-data}
+load("../data/pancreas.RData")
+load("../output/pancreas_factors.RData")
+timings0 <- timings
+load("../output/pancreas_factors2.RData")
+timings <- c(timings0,timings)
+```
+
+This is a summary of the running times (in hours) for the model
+fitting (focus on the "elapsed" column):
+
+```{r compare-timings}
+do.call(rbind,timings)/360
+```
+
+Fitting the topic model ("fasttopics") and the three flashier models
+("NMF", "semi-NMF", "NMF-CC") each took 1-2 hours. Fitting the NMF
+model using the NNLM package was much, much faster (about 2 minutes).
+*Note:* Below I'll explain what is the "NMF-CC" model.
