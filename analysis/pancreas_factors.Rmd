@@ -4,7 +4,9 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-ADD TEXT HERE.
+This goal of this analysis is to apply a few different matrix
+factorization approaches to the [pancreas data set](pancreas.html) and
+assess how well they work for this data set.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
