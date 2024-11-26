@@ -2,19 +2,6 @@
 scale.cols <- function (A, b)
   t(t(A) * b)
 
-# Function to subsample the cell types.
-subsample <- function (x, n = 1000) {
-  rows <- NULL
-  groups <- levels(x)
-  for (g in groups) {
-    i  <-  which(x == g)
-    n0 <- min(n,length(i))
-    i  <- sample(i,n0)
-    rows <- c(rows,i)
-  }
-  return(sort(rows))
-}
-
 # fastTopics.
 cells <- subsample(sample_info$celltype,n = 500)
 L <- poisson2multinom(pnmf)$L
@@ -30,8 +17,6 @@ p3 <- structure_plot(L[cells,celltype_topics2],
                      grouping = sample_info[cells,"celltype"],
                      gap = 20,perplexity = 70,n = Inf)
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
-
-stop()
 
 W <- nmf$W
 k <- ncol(W)
@@ -62,25 +47,6 @@ p2 <- structure_plot(W[cells,celltype_topics],
                      gap = 20,n = Inf,perplexity = 70)
 plot_grid(p1,p2,nrow = 2,ncol = 1)
 
-# flashier, NMF.
-set.seed(1)
-L <- fl_nmf_ldf$L
-k <- ncol(L)
-colnames(L) <- paste0("k",1:k)
-print(colSums(L > 0.1))
-batch_topics    <- paste0("k",c(2,3,4,5,7,8,20))
-celltype_topics <- paste0("k",c(6,11:19,21))
-other_topics    <- paste0("k",c(1,9:10,22:23))
-p1 <- structure_plot(L,topics = batch_topics,grouping = sample_info$tech,
-                     gap = 10,perplexity = 70)
-p2 <- structure_plot(L[cells,],topics = celltype_topics,
-                     grouping = sample_info[cells,"celltype"],
-                     gap = 20,n = Inf,perplexity = 70)
-p3 <- structure_plot(L[cells,],topics = other_topics,
-                     grouping = sample_info[cells,"celltype"],
-                     gap = 20,n = Inf,perplexity = 70)
-plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
-
 # flashier, semi-NMF.
 L <- fl_snmf_ldf$L
 colnames(L) <- paste0("k",1:k)
@@ -91,7 +57,7 @@ celltype_topics <- c(3,7,8,9,10,12,13,14,15,16,17,18,19,20,21,23)
 p2 <- structure_plot(L[cells,celltype_topics],
                      grouping = sample_info[cells,"celltype"],
                      gap = 40,n = Inf,perplexity = 70)
-
+plot_grid(p1,p2,nrow = 2,ncol = 1)
 
 # flashier, NMF with cross-cutting factors (NMF-CC).
 set.seed(1)

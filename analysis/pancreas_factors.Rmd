@@ -26,8 +26,26 @@ Set the seed for reproducibility.
 set.seed(1)
 ```
 
+This is a function I will use below to subsample the cell types that
+have a lot of cells so that the rare cell types are more visible in
+the Structure plots.
+
+```{r subsample-cell-types}
+subsample_cell_types <- function (x, n = 1000) {
+  cells <- NULL
+  groups <- levels(x)
+  for (g in groups) {
+    i  <-  which(x == g)
+    n0 <- min(n,length(i))
+    i  <- sample(i,n0)
+    cells <- c(cells,i)
+  }
+  return(sort(cells))
+}
+```
+
 Load the pancreas data set and the outputs generated from running the
-compute_pancreas_factors.R and compute_pancreas_factors2.R scripts.
+`compute_pancreas_factors.R` and `compute_pancreas_factors2.R` scripts.
 
 ```{r load-data}
 load("../data/pancreas.RData")
@@ -48,3 +66,46 @@ Fitting the topic model ("fasttopics") and the three flashier models
 ("NMF", "semi-NMF", "NMF-CC") each took 1-2 hours. Fitting the NMF
 model using the NNLM package was much, much faster (about 2 minutes).
 *Note:* Below I'll explain what is the "NMF-CC" model.
+
+## flashier NMF
+
+The empirical Bayes NMF compellingly identifies several factors
+corresponding very well to both cell type and sequencing technology:
+
+```{r structure-plots-flashier-nmf, results="hide", message=FALSE, fig.height=5.5, fig.width=8}
+cells <- subsample_cell_types(sample_info$celltype,n = 500)
+L <- fl_nmf_ldf$L
+k <- ncol(L)
+colnames(L) <- paste0("k",1:k)
+batch_factors    <- c(2:5,7:8,20)
+celltype_factors <- c(6,11:19,21)
+other_factors    <- c(1,9:10,22:23)
+celltype <- sample_info$celltype
+celltype <-
+ factor(celltype,
+        c("acinar","activated_stellate","quiescent_stellate","alpha","beta",
+	  	  "delta","gamma","epsilon","ductal","endothelial","macrophage",
+		  "mast","schwann","t_cell"))
+p1 <- structure_plot(L,topics = batch_factors,grouping = sample_info$tech,
+                     gap = 10,perplexity = 70) +
+  labs(y = "membership",title = "data-set factors",
+       fill = "factor",color = "factor")
+p2 <- structure_plot(L[cells,],topics = celltype_factors,
+                     grouping = celltype[cells],gap = 20,
+					 n = Inf,perplexity = 70) +
+  labs(y = "membership",title = "cell-type factors",
+       fill = "factor",color = "factor")
+p3 <- structure_plot(L[cells,],topics = other_factors,
+                     grouping = celltype[cells],gap = 20,
+					 n = Inf,perplexity = 70) +
+  labs(y = "membership",title = "other factors",
+       fill = "factor",color = "factor")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+Note that the number of factors, 23, was automatically determined by
+flashier. Some structure was missed by this factorization and it is
+possible that forcing flashier to estimate more factors would have
+also picked up other intersting structure. Nonetheless, the flashier
+NMF seems to cope well here with separating the cell types from the
+batch effects.
