@@ -1,5 +1,5 @@
 ---
-title: First attempts at factorizing the pancreas data set
+title: Various attempts at factorizing the pancreas data set
 author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
@@ -152,4 +152,34 @@ ggplot(pdat,aes(x = nnlm,y = flashier)) +
   geom_point() +
   geom_abline(slope = 1,intercept = 0,color = "magenta",linetype = "dotted") +
   theme_cowplot(font_size = 10)
+```
+
+The topic model (again with 23 factors/topics) has more difficulty
+than NMF separating the cell types from the batch/data-set effects:
+
+```{r structure-plots-fasttopics, results="hide", message=FALSE, fig.height=5.5, fig.width=8}
+L <- poisson2multinom(pnmf)$L
+batch_topics     <- c(2,5,6,11,12)
+celltype_topics  <- c(4,9,8,15,16,17,18,19,20)
+celltype_topics2 <- c(1,3,7,10,13,14,21,22,23)
+p1 <- structure_plot(L[,batch_topics],grouping = sample_info[,"tech"],
+                     gap = 10,perplexity = 70) +
+  ggtitle("data-set topics")
+p2 <- structure_plot(L[cells,celltype_topics],grouping = celltype[cells],
+                     gap = 25,perplexity = 70,n = Inf) +
+  ggtitle("cell-type topics")					 
+p3 <- structure_plot(L[cells,celltype_topics2],grouping = celltype[cells],
+                     gap = 25,perplexity = 70,n = Inf) +
+  ggtitle("more cell-type topics")					 
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+For example, topics 3, 10 and 23 have identified cell types specific
+to the Fluidigm C1 data only, whereas it would be preferrable to
+separate these data-set effects from the cell types:
+
+```{r structure-plots-fasttopics-fluidicmg1, results="hide", message=FALSE, fig.height=1.9, fig.width=6}
+i <- which(sample_info$tech == "fluidigmc1")
+structure_plot(L[i,celltype_topics2],grouping = celltype[i],
+               gap = 5,perplexity = 30,n = Inf)
 ```
