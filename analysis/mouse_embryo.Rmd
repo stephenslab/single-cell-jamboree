@@ -225,18 +225,18 @@ There are some interesting structures of the loading based on the result of EBMF
 
 First, based on the non-negative EBMF result, there are some factors that are unique to certain cell types. For example:
 
-- The factor $k7$ (and $k15$) is unique to White Blood Cells.
-
-- The factor $k9$ is unique to Endothelial Cells.
+- The factor $k9$ (mostly) is unique to Endothelial Cells.
 
 - The factor $k13$ is unique to Choroid Plexus.
+
+- The factor $k15$ is unique to White Blood Cells.
 
 ```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
 # Collect all plots in a list
 plots <- list()
 colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
 
-for (f in c(7, 9, 13, 15)) {
+for (f in c(9, 13, 15)) {
   loading <- flashier_fit_nn$L_pm[, f]
   p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
   plots[[length(plots) + 1]] <- ggplotGrob(p)
@@ -258,19 +258,23 @@ Shared factors include:
 
 - The factor $k4$ is shared across Cardiac Muscle lineages and Myocytes.
 
+- The factor $k7$ is shared across Erythroid Progenitors and White Blood Cells.
+
+
+
 ```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
 # Collect all plots in a list
 plots <- list()
 colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
 
-for (f in c(2, 3, 4, 10)) {
+for (f in c(2, 3, 4, 7, 10)) {
   loading <- flashier_fit_nn$L_pm[, f]
   p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
   plots[[length(plots) + 1]] <- ggplotGrob(p)
 }
 
-# Combine the plots in a 2x2 grid
-combined_plot <- wrap_plots(plots, ncol = 2, nrow = 2)
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 2)
 
 # Display the combined plot
 print(combined_plot)
@@ -285,9 +289,9 @@ However, there are still both "unique" and "shared" factors across different cel
 
 Specific factors include $k3$, $k12$, $k14$, $k16$, $k19$, $k23$:
 
-- Factor $k3$ is mostly unique to Myocytes.
+- Factor $k3$ is (mostly) unique to Myocytes.
 
-- Factor $k12$ is unique to Chondrocytes (also appears in Connective Tissue Progenitors).
+- Factor $k12$ is (mostly) unique to Chondrocytes (also appears in Connective Tissue Progenitors).
 
 - Factor $k14$ is unique to Hepatocytes.
 
@@ -427,6 +431,22 @@ print(combined_plot)
 - Overall, they all found some quite interesting structures (shared or unique) that are not obvious from the original UMAP visualization. 
 
 
+At the same time, non-negative EBMF also has smaller number of "interpretable" factors compared to the semi-negative EBMF and FastTopics. For example, if we count the number of factors that appear (with loading value greater than say 1e-10) at least in $10$ cells, we have:
+
+```{r}
+nn_factors <- colSums(abs(flashier_fit_nn$L_pm) > 1e-10) > 10
+table(nn_factors)
+
+semi_factors <- colSums(abs(flashier_fit_semi$L_pm) > 1e-10) > 10
+table(semi_factors)
+
+ft_factors <- colSums(abs(fasttopics_fit$L) > 1e-10) > 10
+table(ft_factors)
+```
+
+This is a good thing if we want factors and loadings with very clear interpretation. However, it might also lead to a loss of information for some more subtle structures in the data.
+
+
 ## More detailed explored of NN-EBMF
 
 ```{r}
@@ -442,7 +462,7 @@ For now, let's focus on the result from the non-negative EBMF. First, let's take
 
 
 ```{r}
-factor_of_interest <- c(2, 3, 5, 7, 9, 10)
+factor_of_interest <- c(2, 3, 9, 13, 15)
 top_genes_mat <- apply(F, 2, order, decreasing = TRUE)[1:4, factor_of_interest]
 top_genes <- unique(rownames(flashier_fit_nn$F_pm)[top_genes_mat])
 plot(flashier_fit_nn,
@@ -454,19 +474,22 @@ plot(flashier_fit_nn,
      gap = 0.2)
 ```
 
-For the factor `k7` that is almost unique to white blood cells, the leading gene is ENSMUSG00000002985.
-This gene corresponds to the Apolipoprotein E (Apoe) gene in Mus musculus (mouse).
-There seems to be some literature that relates Apoe to white blood cells, but still is kind of suprising to see this gene is the leading gene for this factor.
-
+For the factor `k2` that is shared across Erythroid Progenitors and Hepatocytes, the leading gene is ENSMUSG00000052305, which corresponds to the Hbb-bs gene in Mus musculus (mouse), encoding the hemoglobin, beta adult s chain. 
+This gene is a part of the beta-globin cluster and plays a crucial role in oxygen transport from the lungs to peripheral tissues. It is predominantly expressed in tissues involved in hematopoiesis.
+It is reasonable that this gene is highly expressed in Erythroid Progenitors, but it is kind of surprising that it is also highly expressed in Hepatocytes. Maybe this implies there exists some annotation error in the cell types of the original data.
 
 For the factor `k3` that is shared across multiple types of neurons and glial cells, the leading gene is ENSMUSG00000072235.
 ENSMUSG00000072235, corresponds to Tuba1a, encoding the alpha tubulin protein in Mus musculus (mouse).
 This gene is known for its ubiquitous expression, with particularly high levels in brain and lungs.
 
+For the factor `k9` that is unique to Endothelial Cells, the leading gene is ENSMUSG00000031502, which corresponds to the Col4a1 gene in Mus musculus (mouse), encoding the collagen, type IV, alpha 1 protein.
+This protein is a crucial component of the basement membrane.
 
+For the factor `k13` that is unique to Choroid Plexus, the leading gene is ENSMUSG00000061808.
+It corresponds to the Ttr gene in Mus musculus (mouse), encoding the protein transthyretin, a transport protein primarily involved in the distribution of the thyroid hormone thyroxine and retinol (vitamin A). It is predominantly synthesized in the liver and the choroid plexus of the brain.
 
-
-
+For the factor `k15` that is unique to White Blood Cells, the leading gene is ENSMUSG00000049744, which corresponds to the ArhGAP15 gene in Mus musculus (mouse), encoding the Rho GTPase-activating protein 15.
+Existing literature has reported that "Knock-out of Arhgap15 function demonstrates that this gene is required to regulate multiple functions in macrophages and neutrophils."
 
 
 
