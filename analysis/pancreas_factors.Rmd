@@ -61,7 +61,7 @@ This is a summary of the running times (in hours) for the model
 fitting (focus on the "elapsed" column):
 
 ```{r compare-timings}
-do.call(rbind,timings)/360
+round(do.call(rbind,timings)/60^2,digits = 2)
 ```
 
 Fitting the topic model ("fasttopics") and the three flashier models
