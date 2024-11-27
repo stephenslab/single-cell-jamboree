@@ -11,7 +11,7 @@ This single cell RNA data is available [here](https://www.ncbi.nlm.nih.gov/geo/q
 
 The dataset considers $108725$ cells and $39198$ genes (after QC), measured with spatial locations in the mouse embryo. 
 
-```{r eval=T, message=FALSE, warning=FALSE}
+```{r eval=TRUE, message=FALSE, warning=FALSE}
 library(Seurat)
 library(Matrix)
 library(data.table)
@@ -32,7 +32,7 @@ Y <- t(seurat_object$RNA$data)
 
 The data contains the UMAP information that we can directly use for visualization, and compare with the "anatomical annotation" and the "cluster label" in [Srivatsan et al, 2021](https://www.science.org/doi/10.1126/science.abb9536).
 
-```{r eval=T, fig.width=12, fig.height=5, message=FALSE, results='hide', warning=FALSE}
+```{r eval=TRUE, fig.width=12, fig.height=5, message=FALSE, results='hide', warning=FALSE}
 umap_original_embeddings <- cbind(seurat_object$umap1, seurat_object$umap2)
 p1 <- DimPlotSagnik(umap_original_embeddings, group.by = seurat_object$anatomical_annotation, pt.size = 1) +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -52,8 +52,6 @@ combined_plot
 
 Let's try to implement the EBMF algorithm with the `flashier` package, with different constraints and prior distributions.
 
-Considering the large computational cost, we will first try to run the EBMF algorithm without backfitting.
-
 ```{r eval=FALSE,message=FALSE, warning=FALSE}
 cols_to_keep <- colSums(Y != 0, na.rm = TRUE) > 0
 Y <- Y[, cols_to_keep]
@@ -63,7 +61,8 @@ s1 <- sd(log(x + 1))
 a <- 1
 size_factors <- rowSums(Y)
 size_factors <- size_factors / mean(size_factors)
-shifted_log_counts <- log1p(Y / (a * size_factors))
+# shifted_log_counts <- log1p(Y / (a * size_factors))
+shifted_log_counts <- MatrixExtra::mapSparse(Y/(a*size_factors),log1p)
 ```
 
 ### Non-Negative EBMF
@@ -76,7 +75,7 @@ flashier_fit_nn <- flash(shifted_log_counts,
                       var_type = 2,
                       greedy_Kmax = 25,
                       S = s1,
-                      backfit = F)
+                      backfit = T)
 plot(flashier_fit_nn, 
      plot_type = "structure",
      pm_which = "loadings", 
@@ -84,8 +83,9 @@ plot(flashier_fit_nn,
      bins = 20, gap = 70)
 ```
 
-```{r, eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
-flashier_fit_nn <- readRDS("../output/mouse_embryo/flashier_fit_nn.rds")
+```{r, eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+# flashier_fit_nn <- readRDS("../output/mouse_embryo/flashier_fit_nn.rds")
+flashier_fit_nn <- readRDS("../output/mouse_embryo/flashier_fit_nn_backfit.rds")
 plot(flashier_fit_nn, 
      plot_type = "structure",
      pm_which = "loadings", 
@@ -110,7 +110,7 @@ flashier_fit_semi <- flash(shifted_log_counts,
                       var_type = 2,
                       greedy_Kmax = 25,
                       S = s1,
-                      backfit = F)
+                      backfit = T)
 plot(flashier_fit_semi, 
      plot_type = "structure",
      pm_which = "loadings", 
@@ -118,8 +118,9 @@ plot(flashier_fit_semi,
      bins = 20, gap = 70)
 ```
 
-```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
-flashier_fit_semi <- readRDS("../output/mouse_embryo/flashier_fit_semi.rds")
+```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+# flashier_fit_semi <- readRDS("../output/mouse_embryo/flashier_fit_semi.rds")
+flashier_fit_semi <- readRDS("../output/mouse_embryo/flashier_fit_semi_backfit.rds")
 ebnm_fn_list <- list()
 ebnm_fn_list[[1]] <- flash_ebnm(
   prior_family = "point_exponential"
@@ -152,7 +153,7 @@ flashier_fit_gbcd <- flash(shifted_log_counts,
                       var_type = 2,
                       greedy_Kmax = 25,
                       S = s1,
-                      backfit = F)
+                      backfit = T)
 plot(flashier_fit_gbcd, 
      plot_type = "structure",
      pm_which = "loadings", 
@@ -160,8 +161,9 @@ plot(flashier_fit_gbcd,
      bins = 20, gap = 70)
 ```
 
-```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
-flashier_fit_gbcd <- readRDS("../output/mouse_embryo/flashier_fit_gbcd.rds")
+```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+# flashier_fit_gbcd <- readRDS("../output/mouse_embryo/flashier_fit_gbcd.rds")
+flashier_fit_gbcd <- readRDS("../output/mouse_embryo/flashier_fit_gbcd_backfit.rds")
 ebnm_fn_list <- list()
 ebnm_fn_list[[1]] <- flash_ebnm(
   prior_family = "generalized_binary"
@@ -210,7 +212,7 @@ fasttopics_fit <- fit_topic_model(Y, k = 25)
 fasttopics_fit <- readRDS("../output/mouse_embryo/fasttopics_fit.rds")
 ```
 
-```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
 structure_plot(fasttopics_fit, grouping = seurat_object$final_cluster_label, gap = 70)
 ```
 
@@ -221,100 +223,196 @@ There are some interesting structures of the loading based on the result of EBMF
 
 ### Non-negative EBMF
 
-First, based on the non-negative EBMF result, there are some factors that are shared across multiple cell types. For example:
+First, based on the non-negative EBMF result, there are some factors that are unique to certain cell types. For example:
 
-- The factors $k10$ and $k3$ are shared across multiple types of neurons and glial cells.
-
-- The factor $k5$ is shared across Chondrocytes and Connective Tissue Progenitors.
-
-- The factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+- The factor $k7$ (and $k15$) is unique to White Blood Cells.
 
 - The factor $k9$ is unique to Endothelial Cells.
 
-- The factor $k7$ is unique to White Blood Cells.
+- The factor $k13$ is unique to Choroid Plexus.
 
-Let's take a look at how the UMAF plot looks if we color each cell based on its composition of these factors.
-
-```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
-library(patchwork) 
-
+```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
 # Collect all plots in a list
 plots <- list()
 colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
 
-for (f in c(2, 3, 5, 7, 9, 10)) {
+for (f in c(7, 9, 13, 15)) {
   loading <- flashier_fit_nn$L_pm[, f]
   p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
   plots[[length(plots) + 1]] <- ggplotGrob(p)
 }
 
-combined_plot <- wrap_plots(plots, ncol = 3, nrow = 2)
+# Combine the plots in a 2x2 grid
+combined_plot <- wrap_plots(plots, ncol = 2, nrow = 2)
 
 # Display the combined plot
 print(combined_plot)
 ```
- 
+
+
+Shared factors include:
+
+- The factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+
+- The factors $k3$ and $k10$ are shared across multiple types of neurons and glial cells.
+
+- The factor $k4$ is shared across Cardiac Muscle lineages and Myocytes.
+
+```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+# Collect all plots in a list
+plots <- list()
+colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
+
+for (f in c(2, 3, 4, 10)) {
+  loading <- flashier_fit_nn$L_pm[, f]
+  p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+
+# Combine the plots in a 2x2 grid
+combined_plot <- wrap_plots(plots, ncol = 2, nrow = 2)
+
+# Display the combined plot
+print(combined_plot)
+```
+
+
 
 ### Semi-negative EBMF
 
 The loadings from the semi-negative EBMF are more diverse, where each cell is composed of a larger number of factors.
 However, there are still both "unique" and "shared" factors across different cell types. For examples:
 
-- Factor $k4$ is shared across multiple types of neurons and glial cells.
+Specific factors include $k3$, $k12$, $k14$, $k16$, $k19$, $k23$:
 
-- Factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+- Factor $k3$ is mostly unique to Myocytes.
 
-- Factor $k3$ is mostly unique to Myocytes and Cardiac Muscle. 
+- Factor $k12$ is unique to Chondrocytes (also appears in Connective Tissue Progenitors).
 
-- Factor $k12$ is unique to Chondrocytes.
+- Factor $k14$ is unique to Hepatocytes.
 
-```{r eval=T, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+- Factor $k16$ is unique to Cardiac Muscle lineages.
+
+- Factor $k19$ is unique to Choroid Plexus.
+
+- Factor $k23$ is unique to White Blood Cells.
+
+
+```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
 # Collect all plots in a list
 plots <- list()
 colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
 
-for (f in c(2,3,4,12)) {
+for (f in c(3, 12, 14, 16, 19, 23)) {
   loading <- flashier_fit_semi$L_pm[, f]
   p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
   plots[[length(plots) + 1]] <- ggplotGrob(p)
 }
 
 # Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 2)
+
+# Display the combined plot
+print(combined_plot)
+```
+
+
+Shared factors include $k2$, $k4$, $k9$, $k11$:
+
+- Factor $k2$ is shared across Erythroid Progenitors and Hepatocytes.
+
+- Factor $k4$ (as well as $k11$) is shared across multiple types of neurons and glial cells.
+
+- Factor $k9$ is shared across some clusters of the white blood cells and Erythroid cells.
+
+
+```{r eval=TRUE, message=FALSE, results='hide',fig.keep='all', echo=FALSE}
+# Collect all plots in a list
+plots <- list()
+colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
+
+for (f in c(2, 4, 9, 11)) {
+  loading <- flashier_fit_semi$L_pm[, f]
+  p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+
+# Combine the plots in a 2x2 grid
 combined_plot <- wrap_plots(plots, ncol = 2, nrow = 2)
 
 # Display the combined plot
 print(combined_plot)
 ```
 
+
+
 ### FastTopics
 
-The result from FastTopics looks quite similar to the semi-negative EBMF, where each cell is composed of a larger number of factors. For examples:
+The result from FastTopics looks quite similar to the semi-negative EBMF, where each cell is composed of a larger number of factors. 
 
-- Factors $k13$ and $k10$ are shared across Erythroid Progenitors and Hepatocytes.
+For examples, some shared factors include:
 
-- Factor $k3$ is unique to Hepatocytes.
+- Factor $k3$ is shared between Erythroid Lineage and Hepatocytes.
 
-- Factor $k8$ is unique to White Blood Cells.
+- Factor $k7$ is shared between Peripheral Neuron and Schwann Cells.
 
+- Factors $k10$ is shared between Developing Guts and Epithelial Cells.
 
-```{r eval=T, message=FALSE, results='hide', fig.keep='all', echo=FALSE}
+- Factor $k13$ is shared between Erythroid Progenitors, Hepatocytes and White blood cells.
+
+- Factor $k15$ is shared between Chondrocytes and Connective Tissue Progenitors.
+
+- Factor $k16$ is shared between Glial cells and Peripheral Neuron.
+
+```{r eval=TRUE, message=FALSE, results='hide', fig.keep='all', echo=FALSE}
 # Collect all plots in a list
 plots <- list()
 colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
 
-for (f in c(13, 10, 3, 8)) {
+for (f in c(3,7,10,13,15,16)) {
   loading <- fasttopics_fit$L[, f]
   p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
   plots[[length(plots) + 1]] <- ggplotGrob(p)
 }
 
 # Combine the plots in a 2x3 grid
-combined_plot <- wrap_plots(plots, ncol = 2, nrow = 2)
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 2)
 
 # Display the combined plot
 print(combined_plot)
 ```
 
+For unique factors, we can see:
+
+- Factor $k4$ is (mostly) unique to Myocytes.
+
+- Factor $k5$ is (mostly) unique to Neuron.
+
+- Factor $k8$ is unique to White Blood Cells.
+
+- Factor $k9$ is unique to Endothelial Cells.
+
+- Factor $k14$ is unique to Neuron.
+
+- Factor $k18$ is unique to Cardiac Muscle lineages.
+
+```{r eval=TRUE, message=FALSE, results='hide', fig.keep='all', echo=FALSE}
+# Collect all plots in a list
+plots <- list()
+colnames(umap_original_embeddings) <- c("UMAP_1", "UMAP_2")
+
+for (f in c(4,5,8,9,14,18)) {
+  loading <- fasttopics_fit$L[, f]
+  p <- plot_loadings_on_umap(umap = umap_original_embeddings, loading = loading, factor_num = f, size = 1)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 2)
+
+# Display the combined plot
+print(combined_plot)
+```
 
 
 
@@ -327,6 +425,52 @@ print(combined_plot)
 - The FastTopics also provides a kind of diverse composition of each cell, where each cell is composed of multiple factors. This might be due to there is no sparsity constraint in the FastTopics model.
 
 - Overall, they all found some quite interesting structures (shared or unique) that are not obvious from the original UMAP visualization. 
+
+
+## More detailed explored of NN-EBMF
+
+```{r}
+gene_ids <- rownames(flashier_fit_nn$F_pm)
+res <- ldf(flashier_fit_nn, type = "i")
+F <- with(res, F %*% diag(D))
+# let's make the gene names more readable
+# gene_ids <- gsub("\\..*", "", gene_ids)
+rownames(flashier_fit_nn$F_pm) <- gene_ids
+```
+
+For now, let's focus on the result from the non-negative EBMF. First, let's take a look at the structure plot of each factor from nn-EBMF. To make the visualization more clear, we only show the top 4 genes that contribute the most to each factor.
+
+
+```{r}
+factor_of_interest <- c(2, 3, 5, 7, 9, 10)
+top_genes_mat <- apply(F, 2, order, decreasing = TRUE)[1:4, factor_of_interest]
+top_genes <- unique(rownames(flashier_fit_nn$F_pm)[top_genes_mat])
+plot(flashier_fit_nn,
+     plot_type = "heatmap",
+     pm_which = "factors",
+     pm_subset = top_genes,
+     pm_groups = factor(top_genes, levels = rev(top_genes)),
+     kset = factor_of_interest,
+     gap = 0.2)
+```
+
+For the factor `k7` that is almost unique to white blood cells, the leading gene is ENSMUSG00000002985.
+This gene corresponds to the Apolipoprotein E (Apoe) gene in Mus musculus (mouse).
+There seems to be some literature that relates Apoe to white blood cells, but still is kind of suprising to see this gene is the leading gene for this factor.
+
+
+For the factor `k3` that is shared across multiple types of neurons and glial cells, the leading gene is ENSMUSG00000072235.
+ENSMUSG00000072235, corresponds to Tuba1a, encoding the alpha tubulin protein in Mus musculus (mouse).
+This gene is known for its ubiquitous expression, with particularly high levels in brain and lungs.
+
+
+
+
+
+
+
+
+
 
 
 
