@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-11-26
+<strong>Last updated:</strong> 2024-11-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb58c81a1cc93d93c927e14cbf02d5179aed24ff2targetblankb58c81aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree0a324298d57885f6d4417faed4f8902a553b41cctargetblank0a32429a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b58c81a1cc93d93c927e14cbf02d5179aed24ff2" target="_blank">b58c81a</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/0a324298d57885f6d4417faed4f8902a553b41cc" target="_blank">0a32429</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb58c81a1cc93d93c927e14cbf02d5179aed24ff2targetblankb58c81aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree0a324298d57885f6d4417faed4f8902a553b41cctargetblank0a32429a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b58c81a1cc93d93c927e14cbf02d5179aed24ff2" target="_blank">b58c81a</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/0a324298d57885f6d4417faed4f8902a553b41cc" target="_blank">0a32429</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,6 +467,7 @@ were generated:
 <pre><code>
 Untracked files:
     Untracked:  data/Immune_ALL_human.h5ad
+    Untracked:  scripts/.DS_Store
 
 </code></pre>
 <p>
@@ -512,6 +513,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/0a324298d57885f6d4417faed4f8902a553b41cc/analysis/pancreas_factors.Rmd" target="_blank">0a32429</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-11-27
+</td>
+<td>
+workflowr::wflow_publish("pancreas_factors.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/d20a98559d64785db97f32f24b19de4eb45bef97/docs/pancreas_factors.html" target="_blank">d20a985</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-11-26
+</td>
+<td>
+Added some summary text to the beginning of the pancreas_factors
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -724,13 +759,13 @@ load(&quot;../output/pancreas_factors2.RData&quot;)
 timings &lt;- c(timings0,timings)</code></pre>
 <p>This is a summary of the running times (in hours) for the model
 fitting (focus on the “elapsed” column):</p>
-<pre class="r"><code>do.call(rbind,timings)/360
-#            user.self  sys.self   elapsed user.child sys.child
-# nmf         1.655392 0.1943056  1.153683          0         0
-# fl_nmf     83.250156 0.1916528 14.335119          0         0
-# fl_snmf    83.117786 0.1812750 13.770986          0         0
-# fasttopics 49.718497 4.1776694 18.083764          0         0
-# fl_nmf_cc  84.422650 0.6511083 15.049047          0         0</code></pre>
+<pre class="r"><code>round(do.call(rbind,timings)/60^2,digits = 2)
+#            user.self sys.self elapsed user.child sys.child
+# nmf             0.17     0.02    0.12          0         0
+# fl_nmf          8.33     0.02    1.43          0         0
+# fl_snmf         8.31     0.02    1.38          0         0
+# fasttopics      4.97     0.42    1.81          0         0
+# fl_nmf_cc       8.44     0.07    1.50          0         0</code></pre>
 <p>Fitting the topic model (“fasttopics”) and the three flashier models
 (“NMF”, “semi-NMF”, “NMF-CC”) each took 1-2 hours. Fitting the NMF model
 using the NNLM package was much, much faster (about 2 minutes).
