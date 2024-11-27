@@ -303,7 +303,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-11-18
+<strong>Last updated:</strong> 2024-11-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -435,15 +435,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree47d0693b6a0bc9690b5b19f773a7084c94c012e3targetblank47d0693a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree61587ca8446ffd26449021f245be77e61c3f6fe0targetblank61587caa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/47d0693b6a0bc9690b5b19f773a7084c94c012e3" target="_blank">47d0693</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/61587ca8446ffd26449021f245be77e61c3f6fe0" target="_blank">61587ca</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree47d0693b6a0bc9690b5b19f773a7084c94c012e3targetblank47d0693a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree61587ca8446ffd26449021f245be77e61c3f6fe0targetblank61587caa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -453,7 +453,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/47d0693b6a0bc9690b5b19f773a7084c94c012e3" target="_blank">47d0693</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/61587ca8446ffd26449021f245be77e61c3f6fe0" target="_blank">61587ca</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -523,6 +523,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/61587ca8446ffd26449021f245be77e61c3f6fe0/analysis/mouse_embryo.Rmd" target="_blank">61587ca</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-27
+</td>
+<td>
+workflowr::wflow_publish("analysis/mouse_embryo.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/3f6c4707ce2d02c4e6429261c11331703419f32e/docs/mouse_embryo.html" target="_blank">3f6c470</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -736,8 +770,6 @@ Ziang Zhang
 <p>Let’s try to implement the EBMF algorithm with the
 <code>flashier</code> package, with different constraints and prior
 distributions.</p>
-<p>Considering the large computational cost, we will first try to run
-the EBMF algorithm without backfitting.</p>
 <pre class="r"><code>cols_to_keep &lt;- colSums(Y != 0, na.rm = TRUE) &gt; 0
 Y &lt;- Y[, cols_to_keep]
 n  &lt;- nrow(Y)
@@ -746,7 +778,8 @@ s1 &lt;- sd(log(x + 1))
 a &lt;- 1
 size_factors &lt;- rowSums(Y)
 size_factors &lt;- size_factors / mean(size_factors)
-shifted_log_counts &lt;- log1p(Y / (a * size_factors))</code></pre>
+# shifted_log_counts &lt;- log1p(Y / (a * size_factors))
+shifted_log_counts &lt;- MatrixExtra::mapSparse(Y/(a*size_factors),log1p)</code></pre>
 <div id="non-negative-ebmf" class="section level3">
 <h3>Non-Negative EBMF</h3>
 <p>For the first EBMF problem, we consider non-negative EBMF with
@@ -756,7 +789,7 @@ shifted_log_counts &lt;- log1p(Y / (a * size_factors))</code></pre>
                       var_type = 2,
                       greedy_Kmax = 25,
                       S = s1,
-                      backfit = F)
+                      backfit = T)
 plot(flashier_fit_nn, 
      plot_type = &quot;structure&quot;,
      pm_which = &quot;loadings&quot;, 
@@ -827,7 +860,7 @@ flashier_fit_semi &lt;- flash(shifted_log_counts,
                       var_type = 2,
                       greedy_Kmax = 25,
                       S = s1,
-                      backfit = F)
+                      backfit = T)
 plot(flashier_fit_semi, 
      plot_type = &quot;structure&quot;,
      pm_which = &quot;loadings&quot;, 
@@ -898,7 +931,7 @@ flashier_fit_gbcd &lt;- flash(shifted_log_counts,
                       var_type = 2,
                       greedy_Kmax = 25,
                       S = s1,
-                      backfit = F)
+                      backfit = T)
 plot(flashier_fit_gbcd, 
      plot_type = &quot;structure&quot;,
      pm_which = &quot;loadings&quot;, 
@@ -1015,22 +1048,16 @@ UMAP visualization.</p>
 <div id="non-negative-ebmf-1" class="section level3">
 <h3>Non-negative EBMF</h3>
 <p>First, based on the non-negative EBMF result, there are some factors
-that are shared across multiple cell types. For example:</p>
+that are unique to certain cell types. For example:</p>
 <ul>
-<li><p>The factors <span class="math inline">\(k10\)</span> and <span
-class="math inline">\(k3\)</span> are shared across multiple types of
-neurons and glial cells.</p></li>
-<li><p>The factor <span class="math inline">\(k5\)</span> is shared
-across Chondrocytes and Connective Tissue Progenitors.</p></li>
-<li><p>The factor <span class="math inline">\(k2\)</span> is shared
-across Erythroid Progenitors and Hepatocytes.</p></li>
+<li><p>The factor <span class="math inline">\(k7\)</span> (and <span
+class="math inline">\(k15\)</span>) is unique to White Blood
+Cells.</p></li>
 <li><p>The factor <span class="math inline">\(k9\)</span> is unique to
 Endothelial Cells.</p></li>
-<li><p>The factor <span class="math inline">\(k7\)</span> is unique to
-White Blood Cells.</p></li>
+<li><p>The factor <span class="math inline">\(k13\)</span> is unique to
+Choroid Plexus.</p></li>
 </ul>
-<p>Let’s take a look at how the UMAF plot looks if we color each cell
-based on its composition of these factors.</p>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
@@ -1069,22 +1096,15 @@ Ziang Zhang
 </table>
 </div>
 </div>
-</div>
-<div id="semi-negative-ebmf" class="section level3">
-<h3>Semi-negative EBMF</h3>
-<p>The loadings from the semi-negative EBMF are more diverse, where each
-cell is composed of a larger number of factors. However, there are still
-both “unique” and “shared” factors across different cell types. For
-examples:</p>
+<p>Shared factors include:</p>
 <ul>
-<li><p>Factor <span class="math inline">\(k4\)</span> is shared across
-multiple types of neurons and glial cells.</p></li>
-<li><p>Factor <span class="math inline">\(k2\)</span> is shared across
-Erythroid Progenitors and Hepatocytes.</p></li>
-<li><p>Factor <span class="math inline">\(k3\)</span> is mostly unique
-to Myocytes and Cardiac Muscle.</p></li>
-<li><p>Factor <span class="math inline">\(k12\)</span> is unique to
-Chondrocytes.</p></li>
+<li><p>The factor <span class="math inline">\(k2\)</span> is shared
+across Erythroid Progenitors and Hepatocytes.</p></li>
+<li><p>The factors <span class="math inline">\(k3\)</span> and <span
+class="math inline">\(k10\)</span> are shared across multiple types of
+neurons and glial cells.</p></li>
+<li><p>The factor <span class="math inline">\(k4\)</span> is shared
+across Cardiac Muscle lineages and Myocytes.</p></li>
 </ul>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1125,19 +1145,31 @@ Ziang Zhang
 </div>
 </div>
 </div>
-<div id="fasttopics" class="section level3">
-<h3>FastTopics</h3>
-<p>The result from FastTopics looks quite similar to the semi-negative
-EBMF, where each cell is composed of a larger number of factors. For
+<div id="semi-negative-ebmf" class="section level3">
+<h3>Semi-negative EBMF</h3>
+<p>The loadings from the semi-negative EBMF are more diverse, where each
+cell is composed of a larger number of factors. However, there are still
+both “unique” and “shared” factors across different cell types. For
 examples:</p>
+<p>Specific factors include <span class="math inline">\(k3\)</span>,
+<span class="math inline">\(k12\)</span>, <span
+class="math inline">\(k14\)</span>, <span
+class="math inline">\(k16\)</span>, <span
+class="math inline">\(k19\)</span>, <span
+class="math inline">\(k23\)</span>:</p>
 <ul>
-<li><p>Factors <span class="math inline">\(k13\)</span> and <span
-class="math inline">\(k10\)</span> are shared across Erythroid
-Progenitors and Hepatocytes.</p></li>
-<li><p>Factor <span class="math inline">\(k3\)</span> is unique to
+<li><p>Factor <span class="math inline">\(k3\)</span> is mostly unique
+to Myocytes.</p></li>
+<li><p>Factor <span class="math inline">\(k12\)</span> is unique to
+Chondrocytes (also appears in Connective Tissue Progenitors).</p></li>
+<li><p>Factor <span class="math inline">\(k14\)</span> is unique to
 Hepatocytes.</p></li>
-<li><p>Factor <span class="math inline">\(k8\)</span> is unique to White
-Blood Cells.</p></li>
+<li><p>Factor <span class="math inline">\(k16\)</span> is unique to
+Cardiac Muscle lineages.</p></li>
+<li><p>Factor <span class="math inline">\(k19\)</span> is unique to
+Choroid Plexus.</p></li>
+<li><p>Factor <span class="math inline">\(k23\)</span> is unique to
+White Blood Cells.</p></li>
 </ul>
 <p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1177,6 +1209,57 @@ Ziang Zhang
 </table>
 </div>
 </div>
+<p>Shared factors include <span class="math inline">\(k2\)</span>, <span
+class="math inline">\(k4\)</span>, <span
+class="math inline">\(k9\)</span>, <span
+class="math inline">\(k11\)</span>:</p>
+<ul>
+<li><p>Factor <span class="math inline">\(k2\)</span> is shared across
+Erythroid Progenitors and Hepatocytes.</p></li>
+<li><p>Factor <span class="math inline">\(k4\)</span> (as well as <span
+class="math inline">\(k11\)</span>) is shared across multiple types of
+neurons and glial cells.</p></li>
+<li><p>Factor <span class="math inline">\(k9\)</span> is shared across
+some clusters of the white blood cells and Erythroid cells.</p></li>
+</ul>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="fasttopics" class="section level3">
+<h3>FastTopics</h3>
+<p>The result from FastTopics looks quite similar to the semi-negative
+EBMF, where each cell is composed of a larger number of factors.</p>
+<p>For examples, some shared factors include:</p>
+<ul>
+<li><p>Factor <span class="math inline">\(k3\)</span> is shared between
+Erythroid Lineage and Hepatocytes.</p></li>
+<li><p>Factor <span class="math inline">\(k7\)</span> is shared between
+Peripheral Neuron and Schwann Cells.</p></li>
+<li><p>Factors <span class="math inline">\(k10\)</span> is shared
+between Developing Guts and Epithelial Cells.</p></li>
+<li><p>Factor <span class="math inline">\(k13\)</span> is shared between
+Erythroid Progenitors, Hepatocytes and White blood cells.</p></li>
+<li><p>Factor <span class="math inline">\(k15\)</span> is shared between
+Chondrocytes and Connective Tissue Progenitors.</p></li>
+<li><p>Factor <span class="math inline">\(k16\)</span> is shared between
+Glial cells and Peripheral Neuron.</p></li>
+</ul>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>For unique factors, we can see:</p>
+<ul>
+<li><p>Factor <span class="math inline">\(k4\)</span> is (mostly) unique
+to Myocytes.</p></li>
+<li><p>Factor <span class="math inline">\(k5\)</span> is (mostly) unique
+to Neuron.</p></li>
+<li><p>Factor <span class="math inline">\(k8\)</span> is unique to White
+Blood Cells.</p></li>
+<li><p>Factor <span class="math inline">\(k9\)</span> is unique to
+Endothelial Cells.</p></li>
+<li><p>Factor <span class="math inline">\(k14\)</span> is unique to
+Neuron.</p></li>
+<li><p>Factor <span class="math inline">\(k18\)</span> is unique to
+Cardiac Muscle lineages.</p></li>
+</ul>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="compare-these-methods" class="section level2">
@@ -1200,6 +1283,41 @@ model.</p></li>
 or unique) that are not obvious from the original UMAP
 visualization.</p></li>
 </ul>
+</div>
+<div id="more-detailed-explored-of-nn-ebmf" class="section level2">
+<h2>More detailed explored of NN-EBMF</h2>
+<pre class="r"><code>gene_ids &lt;- rownames(flashier_fit_nn$F_pm)
+res &lt;- ldf(flashier_fit_nn, type = &quot;i&quot;)
+F &lt;- with(res, F %*% diag(D))
+# let&#39;s make the gene names more readable
+# gene_ids &lt;- gsub(&quot;\\..*&quot;, &quot;&quot;, gene_ids)
+rownames(flashier_fit_nn$F_pm) &lt;- gene_ids</code></pre>
+<p>For now, let’s focus on the result from the non-negative EBMF. First,
+let’s take a look at the structure plot of each factor from nn-EBMF. To
+make the visualization more clear, we only show the top 4 genes that
+contribute the most to each factor.</p>
+<pre class="r"><code>factor_of_interest &lt;- c(2, 3, 5, 7, 9, 10)
+top_genes_mat &lt;- apply(F, 2, order, decreasing = TRUE)[1:4, factor_of_interest]
+top_genes &lt;- unique(rownames(flashier_fit_nn$F_pm)[top_genes_mat])
+plot(flashier_fit_nn,
+     plot_type = &quot;heatmap&quot;,
+     pm_which = &quot;factors&quot;,
+     pm_subset = top_genes,
+     pm_groups = factor(top_genes, levels = rev(top_genes)),
+     kset = factor_of_interest,
+     gap = 0.2)</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>For the factor <code>k7</code> that is almost unique to white blood
+cells, the leading gene is ENSMUSG00000002985. This gene corresponds to
+the Apolipoprotein E (Apoe) gene in Mus musculus (mouse). There seems to
+be some literature that relates Apoe to white blood cells, but still is
+kind of suprising to see this gene is the leading gene for this
+factor.</p>
+<p>For the factor <code>k3</code> that is shared across multiple types
+of neurons and glial cells, the leading gene is ENSMUSG00000072235.
+ENSMUSG00000072235, corresponds to Tuba1a, encoding the alpha tubulin
+protein in Mus musculus (mouse). This gene is known for its ubiquitous
+expression, with particularly high levels in brain and lungs.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
