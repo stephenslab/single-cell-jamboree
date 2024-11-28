@@ -17,7 +17,7 @@ via [this link][box].
 
 + [Initial exploration of the pancreas data set.](pancreas.html)
 
-+ [First attempts at factorizing the pancreas data set.](pancreas_factors.html)
++ [Various attempts at factorizing the pancreas data set.](pancreas_factors.html)
 
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
 

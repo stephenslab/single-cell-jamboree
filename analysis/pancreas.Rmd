@@ -12,7 +12,8 @@ data in a convenient form for subsequent analyses in R.
 In addition to being featured in the Luecken et al paper, it has been
 used in several papers on "data integration" methods for single-cell
 data (also known as "batch correction" or "harmonization" methods).
-See for example the [MNN paper][mnn-paper]. The Supplementary Note in the Luecken et al paper has additional references.
+See for example the [MNN paper][mnn-paper]. The Supplementary Note in
+the Luecken et al paper has additional references.
 
 See Supplementary Fig. 13, Supplementary Note 3 and Supplementary Data
 7 of the Luecken et al paper for more information on this data set.

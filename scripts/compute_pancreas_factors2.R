@@ -31,7 +31,7 @@ s1 <- sd(log(x + 1))
 
 # (5) Fit an NMF with *cross-cutting factors* using flashier ("NMF-CC").
 k <- 23
-batch_topics <- c(2,3,4,5,7,8,20)
+batch_topics <- c(2:5,7:8,20)
 other_topics <- setdiff(1:k,batch_topics)
 timings   <- list(fl_nmf_cc = 0)
 t0        <- proc.time()
