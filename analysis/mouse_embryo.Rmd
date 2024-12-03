@@ -447,7 +447,7 @@ table(ft_factors)
 This is a good thing if we want factors and loadings with very clear interpretation. However, it might also lead to a loss of information for some more subtle structures in the data.
 
 
-## More detailed explored of NN-EBMF
+## More detailed exploration of NN-EBMF
 
 ```{r}
 gene_ids <- rownames(flashier_fit_nn$F_pm)
