@@ -68,3 +68,12 @@ fl_snmf <- flash_factors_init(fl_snmf,fl0,
                                 ebnm_point_normal))
 fl_snmf <- flash_backfit(fl_snmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
 fl_snmf <- flash_backfit(fl_snmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
+
+# Save the model fits to an .Rdata file.
+fl_nmf_ldf   <- ldf(fl_nmf,type = "i")
+fl_snmf_ldf  <- ldf(fl_snmf,type = "i")
+session_info <- sessionInfo()
+save(list = c("nmf","fl_nmf_ldf","fl_snmf_ldf","pnmf",
+              "session_info"),
+     file = "pancreas_smartseq2_factors.RData")
+resaveRdaFiles("pancreas_smartseq2_factors.RData")
