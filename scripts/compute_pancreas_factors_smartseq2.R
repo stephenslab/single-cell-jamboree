@@ -8,6 +8,9 @@ library(fastTopics)
 load("../data/pancreas.RData")
 set.seed(1)
 
+# All the matrix factorizations will have this many topics or factors.
+k <- 9
+
 # Select the Smart-seq2 data (Segerstolpe et al, 2016).
 # This should select 2,394 cells.
 i           <- which(sample_info$tech == "smartseq2")
@@ -31,14 +34,12 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # (1) Fit an NMF using NNLM.
-# I use k = 13 to match the flash() call below.
 Y_dense <- as.matrix(Y)
-nmf <- nnmf(Y_dense,k = 13,loss = "mse",method = "scd",
+nmf <- nnmf(Y_dense,k = k,loss = "mse",method = "scd",
             max.iter = 200,verbose = 2,n.threads = 8)
 
 # (2) Fit an NMF using fastTopics.
-# I set k = 13 to align with the NMF flashier fit.
-pnmf0 <- fit_poisson_nmf(counts,k = 13,numiter = 100,method = "em",
+pnmf0 <- fit_poisson_nmf(counts,k = k,numiter = 100,method = "em",
                         control = list(numiter = 4,nc = 8,extrapolate = FALSE),
                         init.method = "random",verbose = "detailed")
 pnmf <- fit_poisson_nmf(counts,fit0 = pnmf0,numiter = 100,method = "scd",
@@ -49,7 +50,7 @@ pnmf <- fit_poisson_nmf(counts,fit0 = pnmf0,numiter = 100,method = "scd",
 # I initially set var_type = 0 to increase the number of
 # factors discovered.
 fl0 <- flash(Y,ebnm_fn = ebnm_point_exponential,var_type = 0,
-             greedy_Kmax = 40,nullcheck = FALSE,backfit = FALSE,
+             greedy_Kmax = k,nullcheck = FALSE,backfit = FALSE,
              verbose = 3)
 fl_nmf <- flash_init(Y,var_type = 2,S = s1)
 fl_nmf <- flash_factors_init(fl_nmf,fl0,ebnm_point_exponential)
@@ -57,10 +58,8 @@ fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
 
 # (4) Fit a semi-NMF using flashier.
-# Here I set greedy_Kmax = 13 to align with the NMF flashier fit
-# immediately above.
 fl0 <- flash(Y,ebnm_fn = c(ebnm_point_exponential,ebnm_point_normal),
-             var_type = 0,greedy_Kmax = 13,nullcheck = FALSE,
+             var_type = 0,greedy_Kmax = 9,nullcheck = FALSE,
              backfit = FALSE,verbose = 3)
 fl_snmf <- flash_init(Y,var_type = 2,S = s1)
 fl_snmf <- flash_factors_init(fl_snmf,fl0,
