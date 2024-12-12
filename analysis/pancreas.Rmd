@@ -12,8 +12,12 @@ data in a convenient form for subsequent analyses in R.
 In addition to being featured in the Luecken et al paper, it has been
 used in several papers on "data integration" methods for single-cell
 data (also known as "batch correction" or "harmonization" methods).
-See for example the [MNN paper][mnn-paper]. The Supplementary Note in
-the Luecken et al paper has additional references.
+See for example the [MNN paper][mnn-paper], which also contains other
+helpful details about the pancreas data set (noting that this isn't
+exactly the same data set since the MNN paper combined only 4 pancreas
+data sets, whereas the Luecken et al paper combined 6 pancreas data
+sets). The Supplementary Note in the Luecken et al paper has
+additional references.
 
 See Supplementary Fig. 13, Supplementary Note 3 and Supplementary Data
 7 of the Luecken et al paper for more information on this data set.
