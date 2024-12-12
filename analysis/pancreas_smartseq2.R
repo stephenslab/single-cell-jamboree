@@ -1,4 +1,4 @@
-# This is just a first draft of the analysis that will go into
+# This is just a first draft of some analysis code that will go into
 # pancreas_closer_look.Rmd.
 library(Matrix)
 library(fastTopics)

@@ -1,4 +1,4 @@
-# Analysis the pancreas smartseq2 data using various matrix
+# Analysis the pancreas celseq2 data using various matrix
 # factorization methods (flashier, fastTopics, etc)
 library(tools)
 library(Matrix)
@@ -11,9 +11,9 @@ set.seed(1)
 # All the matrix factorizations will have this many topics or factors.
 k <- 9
 
-# Select the Smart-seq2 data (Segerstolpe et al, 2016).
-# This should select 2,394 cells.
-i           <- which(sample_info$tech == "smartseq2")
+# Select the CEL-seq2 data (Muraro et al, 2016).
+# This should select 2,285 cells.
+i           <- which(sample_info$tech == "celseq2")
 sample_info <- sample_info[i,]
 counts      <- counts[i,]
 
@@ -74,5 +74,5 @@ fl_snmf_ldf  <- ldf(fl_snmf,type = "i")
 session_info <- sessionInfo()
 save(list = c("nmf","fl_nmf_ldf","fl_snmf_ldf","pnmf",
               "session_info"),
-     file = "pancreas_smartseq2_factors.RData")
-resaveRdaFiles("pancreas_smartseq2_factors.RData")
+     file = "pancreas_celseq2_factors.RData")
+resaveRdaFiles("pancreas_celseq2_factors.RData")
