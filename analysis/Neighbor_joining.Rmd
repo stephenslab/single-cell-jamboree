@@ -1,0 +1,201 @@
+---
+title: Exploring Neighbor joining in factorization
+author: William Denault
+output: workflowr::wflow_html
+---
+
+This goal of this analysis is to apply Neighbor joining to  different matrix
+factorization approaches to the [pancreas data set](pancreas.html) and
+assess how well it works for this data set.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages needed for this analysis.
+
+```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(fastTopics)
+library(ggplot2)
+library(cowplot)
+library(ape)
+```
+
+Set the seed for reproducibility.
+
+```{r set-seed}
+set.seed(1)
+```
+
+This is a function I will use below to subsample the cell types that
+have a lot of cells so that the rare cell types are more visible in
+the Structure plots.
+
+```{r subsample-cell-types}
+subsample_cell_types <- function (x, n = 1000) {
+  cells <- NULL
+  groups <- levels(x)
+  for (g in groups) {
+    i  <-  which(x == g)
+    n0 <- min(n,length(i))
+    i  <- sample(i,n0)
+    cells <- c(cells,i)
+  }
+  return(sort(cells))
+}
+```
+
+Load the pancreas data set and the outputs generated from running the
+`compute_pancreas_factors.R` and `compute_pancreas_factors2.R` scripts.
+
+```{r load-data}
+load("../data/pancreas.RData")
+load("../output/pancreas_factors.RData")
+timings0 <- timings
+load("../output/pancreas_factors2.RData")
+timings <- c(timings0,timings)
+```
+ 
+
+### flashier NMF
+
+Reproduction of Peter resulst
+
+```{r structure-plots-flashier-nmf, results="hide", message=FALSE, fig.height=5.5, fig.width=8}
+cells <- subsample_cell_types(sample_info$celltype,n = 500)
+L <- fl_nmf_ldf$L
+k <- ncol(L)
+colnames(L) <- paste0("k",1:k)
+batch_factors    <- c(2:5,7:8,20)
+celltype_factors <- c(6,11:19,21)
+other_factors    <- c(1,9:10,22:23)
+celltype <- sample_info$celltype
+celltype <-
+ factor(celltype,
+        c("acinar","ductal","activated_stellate","quiescent_stellate",
+		  "endothelial","macrophage","mast","schwann","t_cell","alpha",
+		  "beta","delta","gamma","epsilon"))
+p1 <- structure_plot(L,topics = batch_factors,grouping = sample_info$tech,
+                     gap = 10,perplexity = 70) +
+  labs(y = "membership",title = "data-set factors",
+       fill = "factor",color = "factor")
+p2 <- structure_plot(L[cells,],topics = celltype_factors,
+                     grouping = celltype[cells],gap = 25,
+					 n = Inf,perplexity = 70) +
+  labs(y = "membership",title = "cell-type factors",
+       fill = "factor",color = "factor")
+p3 <- structure_plot(L[cells,],topics = other_factors,
+                     grouping = celltype[cells],gap = 25,
+					 n = Inf,perplexity = 70) +
+  labs(y = "membership",title = "other factors",
+       fill = "factor",color = "factor")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+
+Let's start by applying NJ to all the factor together.
+It generates a couple of negative edge length that we correct
+
+
+```{r NJ NMF_all}
+
+dist_mat= t(fl_nmf_ldf$F)%*%fl_nmf_ldf$F
+dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
+check_tree=nj(dist_mat )
+plot(check_tree, main="NMF +NJ")
+check_tree$edge.length=abs(check_tree$edge.length)
+plot(check_tree)
+ 
+
+```
+
+
+Lets now focus just on the so called celltype_factors and apply NJ
+
+```{r}
+celltype_factors <-c(6,11:19,21)
+
+check_tree=nj(dist_mat[celltype_factors, celltype_factors] )
+plot(check_tree, main="Cell factor + NMF +NJ")
+check_tree$edge.length=abs(check_tree$edge.length)
+check_tree
+plot(check_tree)
+
+```
+In this case there are no negative edge 
+
+Note that factors that are close on the tree tend not to appear together
+in the "factor plot" above (eg. 11 and 6 or 14 and 15)
+
+In other words if a cell is loaded in one of the branch it tends not to be
+loaded in a branch within its vicinity.  
+
+ 
+### Topic model (fastTopics)
+ Peter script
+
+```{r structure-plots-fasttopics, results="hide", message=FALSE, fig.height=5.5, fig.width=8}
+L <- poisson2multinom(pnmf)$L
+batch_topics     <- c(2,5,6,11,12)
+celltype_topics  <- c(4,9,8,15,16,17,18,19,20)
+celltype_topics2 <- c(1,3,7,10,13,14,21,22,23)
+p1 <- structure_plot(L[,batch_topics],grouping = sample_info[,"tech"],
+                     gap = 10,perplexity = 70) +
+  ggtitle("data-set topics")
+p2 <- structure_plot(L[cells,celltype_topics],grouping = celltype[cells],
+                     gap = 25,perplexity = 70,n = Inf) +
+  ggtitle("cell-type topics")					 
+p3 <- structure_plot(L[cells,celltype_topics2],grouping = celltype[cells],
+                     gap = 25,perplexity = 70,n = Inf) +
+  ggtitle("more cell-type topics")					 
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+ 
+Same let's run NJ on all the factor and then let's focus of the cell topic 
+ 
+ 
+ 
+```{r}
+dist_mat=  t(pnmf$F)%*% pnmf$F
+dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
+check_tree=nj(dist_mat   )
+ 
+plot(check_tree, main="Topic +NJ")
+check_tree$edge.length=abs(check_tree$edge.length)
+check_tree
+plot(check_tree)
+
+
+
+
+
+
+```
+ 
+Clearly the tree do not make sens.
+Let's look at the celltopic only 
+
+
+ 
+```{r}
+
+check_tree=nj( dist_mat[celltype_topics, celltype_topics]    )
+ 
+plot(check_tree, main="Cell topic + FastTopic +NJ")
+check_tree$edge.length=abs(check_tree$edge.length)
+check_tree
+plot(check_tree)
+
+```
+ 
+ 
+Unfortunately this tree still has some problem.
+However we notice the same pattern as before.
+What is close on the tree tend not to co-occur on the "factor plot"
+In other words if a cell is loaded in one of the branch it tend not to be
+loaded in a branch within its vicinity. (eg 4 and 9  or  18 and 19)
+ 
+  
