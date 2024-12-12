@@ -280,7 +280,7 @@ factorization</h1>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -291,8 +291,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -305,9 +305,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -331,21 +331,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -436,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree06856f38d0034d4ab5ac466986f62a39c8106ef3targetblank06856f3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreede003c4a841f40e9ae9db590bd1c245631a02cedtargetblankde003c4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/06856f38d0034d4ab5ac466986f62a39c8106ef3" target="_blank">06856f3</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/de003c4a841f40e9ae9db590bd1c245631a02ced" target="_blank">de003c4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree06856f38d0034d4ab5ac466986f62a39c8106ef3targetblank06856f3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreede003c4a841f40e9ae9db590bd1c245631a02cedtargetblankde003c4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -454,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/06856f38d0034d4ab5ac466986f62a39c8106ef3" target="_blank">06856f3</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/de003c4a841f40e9ae9db590bd1c245631a02ced" target="_blank">de003c4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -474,7 +471,9 @@ Ignored files:
 
 Untracked files:
     Untracked:  .gitignore
-    Untracked:  analysis/Neighbor_joining.Rmd
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -490,9 +489,55 @@ have uncommitted changes.
 </div>
 <div id="versions" class="tab-pane fade">
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Neighbor_joining.Rmd</code>) and
+HTML (<code>docs/Neighbor_joining.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/de003c4a841f40e9ae9db590bd1c245631a02ced/analysis/Neighbor_joining.Rmd" target="_blank">de003c4</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+<td>
+wflow_publish("analysis/Neighbor_joining.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -705,20 +750,21 @@ Session information
 # [28] htmltools_0.5.8.1   sass_0.4.9          yaml_2.3.10        
 # [31] lazyeval_0.2.2      plotly_4.10.4       crayon_1.5.3       
 # [34] later_1.4.1         pillar_1.9.0        jquerylib_0.1.4    
-# [37] tidyr_1.3.1         uwot_0.2.2          cachem_1.1.0       
-# [40] nlme_3.1-164        gtools_3.9.5        tidyselect_1.2.1   
-# [43] digest_0.6.37       Rtsne_0.17          stringi_1.8.4      
-# [46] dplyr_1.1.4         purrr_1.0.2         ashr_2.2-63        
-# [49] labeling_0.4.3      rprojroot_2.0.4     fastmap_1.2.0      
-# [52] grid_4.4.1          colorspace_2.1-1    cli_3.6.3          
-# [55] invgamma_1.1        magrittr_2.0.3      utf8_1.2.4         
-# [58] withr_3.0.2         prettyunits_1.2.0   scales_1.3.0       
-# [61] promises_1.3.2      rmarkdown_2.29      httr_1.4.7         
-# [64] workflowr_1.7.1     hms_1.1.3           pbapply_1.7-2      
-# [67] evaluate_1.0.1      knitr_1.49          irlba_2.3.5.1      
-# [70] viridisLite_0.4.2   rlang_1.1.4         Rcpp_1.0.13        
-# [73] mixsqp_0.3-54       glue_1.7.0          rstudioapi_0.17.1  
-# [76] jsonlite_1.8.8      R6_2.5.1            fs_1.6.5</code></pre>
+# [37] whisker_0.4.1       tidyr_1.3.1         uwot_0.2.2         
+# [40] cachem_1.1.0        nlme_3.1-164        gtools_3.9.5       
+# [43] tidyselect_1.2.1    digest_0.6.37       Rtsne_0.17         
+# [46] stringi_1.8.4       dplyr_1.1.4         purrr_1.0.2        
+# [49] ashr_2.2-63         labeling_0.4.3      rprojroot_2.0.4    
+# [52] fastmap_1.2.0       grid_4.4.1          colorspace_2.1-1   
+# [55] cli_3.6.3           invgamma_1.1        magrittr_2.0.3     
+# [58] utf8_1.2.4          withr_3.0.2         prettyunits_1.2.0  
+# [61] scales_1.3.0        promises_1.3.2      rmarkdown_2.29     
+# [64] httr_1.4.7          workflowr_1.7.1     hms_1.1.3          
+# [67] pbapply_1.7-2       evaluate_1.0.1      knitr_1.49         
+# [70] viridisLite_0.4.2   irlba_2.3.5.1       rlang_1.1.4        
+# [73] Rcpp_1.0.13         mixsqp_0.3-54       glue_1.7.0         
+# [76] rstudioapi_0.17.1   jsonlite_1.8.8      R6_2.5.1           
+# [79] fs_1.6.5</code></pre>
 </div>
 </div>
 </div>
