@@ -13,16 +13,22 @@ library(flashier)
 load("../data/pancreas.RData")
 set.seed(1)
 
+# Remove genes that are expressed in fewer than 10 cells.
+x      <- colSums(counts > 0)
+j      <- which(x > 9)
+counts <- counts[,j]
+
 # Compute the shifted log counts.
 a <- 1
 s <- rowSums(counts)
 s <- s/mean(s)
 Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 
-# Remove genes with very low variance in expression.
+# Remove genes with very low variance in expression (based on Y).
 x <- sparseMatrixStats::colSds(Y)
 j <- which(x > 0.01)
 Y <- Y[,j]
+counts <- counts[,j]
 
 # Set a lower bound on the variances.
 n  <- nrow(counts)
