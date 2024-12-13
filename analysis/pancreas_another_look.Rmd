@@ -35,7 +35,7 @@ Set the seed for reproducibility.
 set.seed(1)
 ```
 
-### CEL-Seq2 data
+## CEL-Seq2 data
 
 Let's start with the "CEL-Seq2" data from [the Muraro et al 2016
 paper][muraro-2016]. (The data were generated using the CEL-Seq2
@@ -51,6 +51,74 @@ i           <- which(sample_info$tech == "celseq2")
 sample_info <- sample_info[i,]
 counts      <- counts[i,]
 sample_info <- transform(sample_info,celltype = factor(celltype))
+```
+
+For fair comparison all the matrix factorizations were generated with
+9 factors or topics.
+
+### Topic model (fastTopics)
+
+Here is the topic model with $K = 9$ topics:
+
+```{r structure-plot-fasttopics, fig.height=2, fig.width=8, results="hide", message=FALSE}
+celltype <- sample_info$celltype
+celltype <-
+ factor(celltype,
+        c("acinar","ductal","activated_stellate","quiescent_stellate",
+		  "endothelial","macrophage","mast","schwann","t_cell","alpha",
+		  "beta","delta","gamma","epsilon"))
+L <- poisson2multinom(pnmf)$L
+structure_plot(L,grouping = celltype,gap = 15,perplexity = 70,n = Inf)
+```
+
+Most of the topics identify individual cell types or subsets of
+similar cell types. The topics also identify some substructures within
+and across cell types, e.g., topics 2 and 7. Most of the smaller cell
+types are not captured as a separate topic.
+
+### Flashier NMF
+
+Let's now compare the topic model to the empirical Bayes NMF result. I
+omit the first factor because it is a "baseline" factor, and therefore
+not interesting to look at.
+
+```{r structure-plot-flashier-nmf, fig.height=2, fig.width=8, results="hide", message=FALSE}
+L <- fl_nmf_ldf$L
+k <- ncol(L)
+colnames(L) <- paste0("k",1:k)
+structure_plot(L[,-1],grouping = celltype,gap = 15,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+```
+
+It is interesting that the EBNMF factors distinguish some of the rare
+cell types, but do not distinguish as well among some of the islet
+cells (e.g., delta and gamma), even though they are quite abundant.
+
+### NMF (NNLM)
+
+ADD NOTES HERE.
+
+```{r structure-plot-nnlm, fig.height=2, fig.width=8, results="hide", message=FALSE}
+scale_cols <- function (A, b)
+  t(t(A) * b)
+W <- nmf$W
+k <- ncol(W)
+d <- apply(W,2,max)
+W <- scale_cols(W,1/d)
+colnames(W) <- paste0("k",1:k)
+structure_plot(W,grouping = celltype,gap = 15,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+```
+
+ADD MORE NOTES HERE.
+
+### Flashier semi-NMF
+
+```{r structure-plot-flashier-semi-nmf, fig.height=2, fig.width=8, results="hide", message=FALSE}
+L <- fl_snmf_ldf$L
+k <- ncol(L)
+colnames(L) <- paste0("k",1:k)
+p <- structure_plot(L,grouping = celltype,gap = 15,perplexity = 70,n = Inf)
 ```
 
 [muraro-2016]: https://doi.org/10.1016/j.cels.2016.09.002
