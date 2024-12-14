@@ -58,7 +58,7 @@ For fair comparison all the matrix factorizations were generated with
 
 ### Topic model (fastTopics)
 
-Here is the topic model with $K = 9$ topics:
+Here is the topic model with 9 topics:
 
 ```{r structure-plot-fasttopics, fig.height=2, fig.width=8, results="hide", message=FALSE}
 celltype <- sample_info$celltype
@@ -68,7 +68,7 @@ celltype <-
 		  "endothelial","macrophage","mast","schwann","t_cell","alpha",
 		  "beta","delta","gamma","epsilon"))
 L <- poisson2multinom(pnmf)$L
-structure_plot(L,grouping = celltype,gap = 15,perplexity = 70,n = Inf)
+structure_plot(L,grouping = celltype,gap = 20,perplexity = 70,n = Inf)
 ```
 
 Most of the topics identify individual cell types or subsets of
@@ -78,25 +78,30 @@ types are not captured as a separate topic.
 
 ### Flashier NMF
 
-Let's now compare the topic model to the empirical Bayes NMF result. I
-omit the first factor because it is a "baseline" factor, and therefore
-not interesting to look at.
+Let's now compare the topic model to the empirical Bayes NMF result
+(with 9 factors).
+
+I omit the first factor from the Structure plot because it is a
+"baseline" factor, and therefore not interesting to look at:
 
 ```{r structure-plot-flashier-nmf, fig.height=2, fig.width=8, results="hide", message=FALSE}
 L <- fl_nmf_ldf$L
 k <- ncol(L)
 colnames(L) <- paste0("k",1:k)
-structure_plot(L[,-1],grouping = celltype,gap = 15,perplexity = 70,n = Inf) +
+structure_plot(L[,-1],grouping = celltype,gap = 20,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 ```
 
 It is interesting that the EBNMF factors distinguish some of the rare
 cell types, but do not distinguish as well among some of the islet
 cells (e.g., delta and gamma), even though they are quite abundant.
+It seems that these methods are each adept at identifying different
+types of structure.
 
 ### NMF (NNLM)
 
-ADD NOTES HERE.
+Let's now have a look at the "vanilla" NMF (produced by the NNLM
+package). As before, this NMF has 9 factors.
 
 ```{r structure-plot-nnlm, fig.height=2, fig.width=8, results="hide", message=FALSE}
 scale_cols <- function (A, b)
@@ -106,19 +111,38 @@ k <- ncol(W)
 d <- apply(W,2,max)
 W <- scale_cols(W,1/d)
 colnames(W) <- paste0("k",1:k)
-structure_plot(W,grouping = celltype,gap = 15,perplexity = 70,n = Inf) +
+structure_plot(W,grouping = celltype,gap = 20,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 ```
 
-ADD MORE NOTES HERE.
+Unlike the EBNMF results, there is no single factor that acts as a
+"baseline". Some of the rarer cell types are missed by this NMF. It is
+also interesting that it has identified a single factor (k = 4)
+corresponding to all islet cells. Oddly, it seems to have identified
+factors that are active in the same cells, such as factors 3 and 6, as
+well as 7 and 8. So the NMF and EBNMF results are surprisingly
+different.
 
 ### Flashier semi-NMF
+
+The semi-NMF decomposition produced by flashier is interesting because
+it identifies not only cell-type-specific factors (e.g., factors 6,
+7, 9), but also factors capturing expression programs common to several
+similar cell types (e.g., factors 2, 4, 8). 
 
 ```{r structure-plot-flashier-semi-nmf, fig.height=2, fig.width=8, results="hide", message=FALSE}
 L <- fl_snmf_ldf$L
 k <- ncol(L)
 colnames(L) <- paste0("k",1:k)
-p <- structure_plot(L,grouping = celltype,gap = 15,perplexity = 70,n = Inf)
+structure_plot(L[,-c(1,5)],grouping = celltype,gap = 20,
+               perplexity = 70,n = Inf)
 ```
+
+In other words, the semi-NMF is capturing structure at different
+levels of cell-type-specifity, achieving a cell-type "hierarchy" of
+sorts. Note that I removed two factors (1 and 5) from the Structure
+plot because they were active to varying degreees in all cells.
+
+## Smart-seq2 data
 
 [muraro-2016]: https://doi.org/10.1016/j.cels.2016.09.002
