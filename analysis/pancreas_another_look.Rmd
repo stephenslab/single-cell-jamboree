@@ -130,12 +130,13 @@ it identifies not only cell-type-specific factors (e.g., factors 6,
 7, 9), but also factors capturing expression programs common to several
 similar cell types (e.g., factors 2, 4, 8). 
 
-```{r structure-plot-flashier-semi-nmf, fig.height=2, fig.width=8, results="hide", message=FALSE}
+```{r structure-plot-flashier-semi-nmf, fig.height=3, fig.width=8, results="hide", message=FALSE}
 L <- fl_snmf_ldf$L
 k <- ncol(L)
 colnames(L) <- paste0("k",1:k)
 structure_plot(L[,-c(1,5)],grouping = celltype,gap = 20,
-               perplexity = 70,n = Inf)
+               perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
 ```
 
 In other words, the semi-NMF is capturing structure at different
