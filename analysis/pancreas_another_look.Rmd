@@ -118,7 +118,7 @@ types of structure.
 
 ```{r  }
 dist_mat= t(fl_nmf_ldf$F[,-1])%*%fl_nmf_ldf$F[,-1]
-dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
+dimnames(dist_mat)= list(2:ncol(fl_nmf_ldf$F), 2:ncol(fl_nmf_ldf$F))
 check_tree=nj(dist_mat )
 plot(check_tree, main="EBNMF +NJ")
 check_tree$edge.length=abs(check_tree$edge.length)
@@ -186,8 +186,8 @@ plot because they were active to varying degreees in all cells.
 
 
 ```{r  }
-dist_mat= t(fl_snmf_ldf$F )%*%fl_snmf_ldf$F 
-dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
+dist_mat= t(fl_snmf_ldf$F[,-c(1,5)] )%*%fl_snmf_ldf$F [,-c(1,5)]
+dimnames(dist_mat)= list((1:ncol(fl_snmf_ldf$F))[-c(1,5)], (1:ncol(fl_snmf_ldf$F))[-c(1,5)])
 check_tree=nj(dist_mat )
 plot(check_tree, main="EBsNMF +NJ")
 check_tree$edge.length=abs(check_tree$edge.length)
@@ -292,7 +292,7 @@ plot_grid(p1,p2,nrow = 2,ncol = 1)
 
 ```{r }
 dist_mat= t(fl_nmf_ldf$F[,celltype_topics])%*%fl_nmf_ldf$F[,celltype_topics]
-dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
+dimnames(dist_mat)= list(2:7, 2:7)
 check_tree=nj(dist_mat )
 plot(check_tree, main="EBNMF +NJ")
 check_tree$edge.length=abs(check_tree$edge.length)
@@ -335,7 +335,7 @@ plot_grid(p1,p2,nrow = 2,ncol = 1)
 
 ```{r }
 dist_mat=  (nmf$H[ celltype_topics,])%*%t(nmf$H[ celltype_topics,])
-dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
+dimnames(dist_mat)= list(celltype_topics, celltype_topics)
 check_tree=nj(dist_mat )
 plot(check_tree, main="NMF +NJ")
 check_tree$edge.length=abs(check_tree$edge.length)
@@ -376,7 +376,7 @@ plot_grid(p1,p2,nrow = 2,ncol = 1)
 
 ```{r }
 dist_mat= t(fl_snmf_ldf$F[,celltype_topics])%*%fl_snmf_ldf$F[,celltype_topics]
-dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
+dimnames(dist_mat)= list(celltype_topics,celltype_topics)
 check_tree=nj(dist_mat )
 plot(check_tree, main="sNMF +NJ")
 check_tree$edge.length=abs(check_tree$edge.length)
