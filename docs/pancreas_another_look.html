@@ -436,15 +436,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree9b5463e958825d8959a2f123e6ed9a4be9851f1dtargetblank9b5463ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb5fae7ac311c4c63506abb553945e7c6a2e84339targetblankb5fae7aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/9b5463e958825d8959a2f123e6ed9a4be9851f1d" target="_blank">9b5463e</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b5fae7ac311c4c63506abb553945e7c6a2e84339" target="_blank">b5fae7a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree9b5463e958825d8959a2f123e6ed9a4be9851f1dtargetblank9b5463ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb5fae7ac311c4c63506abb553945e7c6a2e84339targetblankb5fae7aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -454,7 +454,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/9b5463e958825d8959a2f123e6ed9a4be9851f1d" target="_blank">9b5463e</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b5fae7ac311c4c63506abb553945e7c6a2e84339" target="_blank">b5fae7a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -471,6 +471,9 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/figure/
 
 Unstaged changes:
     Modified:   analysis/pancreas_another_look.Rmd
@@ -518,6 +521,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/analysis/pancreas_another_look.Rmd" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+<td>
+correct branch name in NJ for additional experiment
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/pancreas_another_look.html" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+<td>
+correct branch name in NJ for additional experiment
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -834,7 +871,7 @@ similar cell types. The topics also identify some substructures within
 and across cell types, e.g., topics 2 and 7. Most of the smaller cell
 types are not captured as a separate topic.</p>
 <p>Lets just have a look at the distance between topic</p>
-<pre class="r"><code>dist_mat= t(pnmf$F)%*%pnmf$F
+<pre class="r"><code>dist_mat= as.matrix(dist(t(pnmf$F)))#t(pnmf$F)%*%pnmf$F
 dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;TM +NJ&quot;)</code></pre>
@@ -982,7 +1019,7 @@ cell types, but do not distinguish as well among some of the islet cells
 (e.g., delta and gamma), even though they are quite abundant. It seems
 that these methods are each adept at identifying different types of
 structure.</p>
-<pre class="r"><code>dist_mat= t(fl_nmf_ldf$F[,-1])%*%fl_nmf_ldf$F[,-1]
+<pre class="r"><code>dist_mat= as.matrix(dist(t(fl_nmf_ldf$F[,-1]))) # t(fl_nmf_ldf$F[,-1])%*%fl_nmf_ldf$F[,-1]
 dimnames(dist_mat)= list(2:ncol(fl_nmf_ldf$F), 2:ncol(fl_nmf_ldf$F))
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;EBNMF +NJ&quot;)</code></pre>
@@ -1009,6 +1046,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-2-1.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-2-1.png" target="_blank">9b5463e</a>
@@ -1049,6 +1097,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-2-2.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-2-2.png" target="_blank">9b5463e</a>
@@ -1134,7 +1193,7 @@ corresponding to all islet cells. Oddly, it seems to have identified
 factors that are active in the same cells, such as factors 3 and 6, as
 well as 7 and 8. So the NMF and EBNMF results are surprisingly
 different.</p>
-<pre class="r"><code>dist_mat=  (nmf$H )%*%t(nmf$H )
+<pre class="r"><code>dist_mat=  as.matrix(dist(nmf$H )) # (nmf$H )%*%t(nmf$H )
 dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;NMF +NJ&quot;)</code></pre>
@@ -1282,7 +1341,7 @@ Peter Carbonetto
 levels of cell-type-specifity, achieving a cell-type “hierarchy” of
 sorts. Note that I removed two factors (1 and 5) from the Structure plot
 because they were active to varying degreees in all cells.</p>
-<pre class="r"><code>dist_mat= t(fl_snmf_ldf$F[,-c(1,5)] )%*%fl_snmf_ldf$F [,-c(1,5)]
+<pre class="r"><code>dist_mat=   as.matrix(dist( t(fl_snmf_ldf$F[,-c(1,5)] ))) # t(fl_snmf_ldf$F[,-c(1,5)] )%*%fl_snmf_ldf$F [,-c(1,5)]
 dimnames(dist_mat)= list((1:ncol(fl_snmf_ldf$F))[-c(1,5)], (1:ncol(fl_snmf_ldf$F))[-c(1,5)])
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;EBsNMF +NJ&quot;)</code></pre>
@@ -1309,6 +1368,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-4-1.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-4-1.png" target="_blank">9b5463e</a>
@@ -1349,6 +1419,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-4-2.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-4-2.png" target="_blank">9b5463e</a>
@@ -1453,7 +1534,7 @@ represents some additional variation in expression. <em>It is possible
 that this additional variation in expression is due to differences in
 sex, age, BMI and/or disease status (T2D vs. healthy) among the 10
 donors.</em></p>
-<pre class="r"><code>dist_mat= t(pnmf$F )%*%pnmf$F 
+<pre class="r"><code>dist_mat=   as.matrix(dist( t(fl_snmf_ldf$F[,-c(1,5)] ))) # t(fl_snmf_ldf$F[,-c(1,5)] ) t(pnmf$F )%*%pnmf$F 
 dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;TM +NJ&quot;)</code></pre>
@@ -1612,7 +1693,7 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<pre class="r"><code>dist_mat= t(fl_nmf_ldf$F[,celltype_topics])%*%fl_nmf_ldf$F[,celltype_topics]
+<pre class="r"><code>dist_mat= as.matrix(dist(t(fl_nmf_ldf$F[,celltype_topics]))) #   t(fl_nmf_ldf$F[,celltype_topics])%*%fl_nmf_ldf$F[,celltype_topics]
 dimnames(dist_mat)= list(2:7, 2:7)
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;EBNMF +NJ&quot;)</code></pre>
@@ -1639,6 +1720,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-6-1.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-6-1.png" target="_blank">9b5463e</a>
@@ -1679,6 +1771,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-6-2.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-6-2.png" target="_blank">9b5463e</a>
@@ -1768,7 +1871,7 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<pre class="r"><code>dist_mat=  (nmf$H[ celltype_topics,])%*%t(nmf$H[ celltype_topics,])
+<pre class="r"><code>dist_mat=   as.matrix(dist((nmf$H[ celltype_topics,])))  #(nmf$H[ celltype_topics,])%*%t(nmf$H[ celltype_topics,])
 dimnames(dist_mat)= list(celltype_topics, celltype_topics)
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;NMF +NJ&quot;)</code></pre>
@@ -1795,6 +1898,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-7-1.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-7-1.png" target="_blank">9b5463e</a>
@@ -1835,6 +1949,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-7-2.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-7-2.png" target="_blank">9b5463e</a>
@@ -1925,7 +2050,7 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<pre class="r"><code>dist_mat= t(fl_snmf_ldf$F[,celltype_topics])%*%fl_snmf_ldf$F[,celltype_topics]
+<pre class="r"><code>dist_mat=   as.matrix(dist(t(fl_snmf_ldf$F[,celltype_topics])))   #  t(fl_snmf_ldf$F[,celltype_topics])%*%fl_snmf_ldf$F[,celltype_topics]
 dimnames(dist_mat)= list(celltype_topics,celltype_topics)
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;sNMF +NJ&quot;)</code></pre>
@@ -1952,6 +2077,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-8-1.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-8-1.png" target="_blank">9b5463e</a>
@@ -1992,6 +2128,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b5fae7ac311c4c63506abb553945e7c6a2e84339/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-8-2.png" target="_blank">b5fae7a</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/9b5463e958825d8959a2f123e6ed9a4be9851f1d/docs/figure/pancreas_another_look.Rmd/unnamed-chunk-8-2.png" target="_blank">9b5463e</a>
