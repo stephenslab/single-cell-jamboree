@@ -1,3 +1,5 @@
+# This file was downloaded from here:
+# https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-5061
 dat <- read.table("../data/E-MTAB-5061.sdrf.txt.gz",sep = "\t",header = TRUE,
                   check.names = FALSE,stringsAsFactors = FALSE)
 cols <- c("Source Name",
