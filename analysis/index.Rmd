@@ -21,7 +21,7 @@ via [this link][box].
 
 + [Another look at matrix factorization for the pancreas data.](pancreas_another_look.html)
 
-+ [Tree-based representations of the pancreas data][pancreas_trees.html]
++ [Tree-based representations of the pancreas data.](pancreas_trees.html)
 
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
 
