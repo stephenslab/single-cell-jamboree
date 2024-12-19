@@ -1,6 +1,9 @@
 library(tools)
 library(Matrix)
 library(flashier)
+library(fastTopics)
+library(ggplot2)
+library(cowplot)
 load("../data/pancreas.RData")
 set.seed(1)
 
@@ -40,3 +43,19 @@ fl <- flash_factors_init(fl,fl0,ebnm_point_exponential)
 fl <- flash_backfit(fl,extrapolate = FALSE,maxiter = 100,verbose = 3)
 fl <- flash_backfit(fl,extrapolate = TRUE,maxiter = 100,verbose = 3)
 
+# Visualize the factors with a Structure plot.
+# I omit the first factor from the Structure plot because it is a
+# "baseline" factor.
+celltype <- sample_info$celltype
+celltype <-
+ factor(celltype,
+        c("acinar","ductal","activated_stellate","quiescent_stellate",
+		  "endothelial","macrophage","mast","schwann","alpha","beta",
+		  "delta","gamma","epsilon"))
+fl_ldf <- ldf(fl,type = "i")
+L <- fl_ldf$L
+colnames(L) <- paste0("k",1:k)
+p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
+                     perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+print(p1)
