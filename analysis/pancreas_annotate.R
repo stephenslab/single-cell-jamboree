@@ -1,5 +1,6 @@
 library(tools)
 library(Matrix)
+library(ebnm)
 library(flashier)
 library(fastTopics)
 library(ggplot2)
@@ -59,3 +60,50 @@ p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
                      perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 print(p1)
+
+# We can view the entries of the F matrix in the non-negative matrix
+# factorization as LFCs (or, more correctly, log-fold *increases* in
+# expression). What I'd like to do now is re-estimate the LFCs without
+# the variational approximation, using lm() followed by ebnm().
+m <- ncol(Y)
+F <- matrix(0,m,k)
+factors     <- colnames(L)
+rownames(F) <- colnames(Y)
+colnames(F) <- factors
+fl_stats <- list(F_lse  = F,
+                 F_se   = F,
+                 F_pm   = F,
+                 F_psd  = F,
+                 F_lfsr = F)
+
+# TO DO:
+# + Explain why we rescale the memberships to be between 0 and 1.
+# + Extract the 
+fl_ldf <- ldf(fl,type = "i")
+L <- fl_ldf$L
+colnames(L) <- paste0("k",1:k)
+for (i in 1:m) {
+  y     <- Y[,i]
+  dat   <- as.data.frame(cbind(y,L))
+  # TO DO:
+  # + Check these calculations.
+  # + Remove the intercept.
+  fit   <- lm(y ~ .,dat) 
+  coefs <- summary(fit)$coefficients
+  fl_stats$F_est[i,] <- coefs[factors,"Estimate"]
+  fl_stats$F_se[i,]  <- coefs[factors,"Std. Error"]
+}
+for (j in 1:k) {
+  x  <- fl_stats$F_est[,j]
+  se <- fl_stats$F_se[,j]
+  fit <- ebnm(x,se,prior_family = "point_exponential")
+  fl_stats$F_pm[,j]  <- fit$posterior$mean
+  fl_stats$F_psd[,j] <- fit$posterior$sd
+}
+k <- 2
+plot(fl$F_pm[,k],fl_stats$F_pm[,k],pch = 20)
+plot(fl$F_psd[,k],fl_stats$F_psd[,k],pch = 20,log = "xy")
+# TO DO:
+# + Fix the scaling for these comparisons.
+# + Compute and store the lfsr's, too.
+# + Compare the z-scores.
