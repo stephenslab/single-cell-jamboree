@@ -1,5 +1,6 @@
 library(Matrix)
 library(flashier)
+library(fastTopics)
 library(ggplot2)
 library(cowplot)
 load("../data/pancreas.RData")
@@ -53,12 +54,14 @@ celltype <-
 fl_ldf <- ldf(fl,type = "i")
 L <- fl_ldf$L
 colnames(L) <- paste0("k",1:k)
-p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,perplexity = 70,
-                     n = Inf) +
+p1 <- structure_plot(L[,-c(1,5)],grouping = celltype,gap = 20,
+                     perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 print(p1)
 
-# Create scatterplots to explore the "driving genes" for the beta cells.
-k <- 9
+# Create scatterplots to explore the "driving genes" for each factor.
 F <- with(fl_ldf,F %*% diag(D))
+# TO DO.
+
+# Create heatmaps to summarize the "driving genes" for each factor.
 # TO DO.
