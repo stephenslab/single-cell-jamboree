@@ -51,8 +51,8 @@ celltype <- sample_info$celltype
 celltype <-
  factor(celltype,
         c("acinar","ductal","activated_stellate","quiescent_stellate",
-		  "endothelial","macrophage","mast","schwann","alpha","beta",
-		  "delta","gamma","epsilon"))
+          "endothelial","macrophage","mast","schwann","alpha","beta",
+          "delta","gamma","epsilon"))
 fl_ldf <- ldf(fl,type = "i")
 L <- fl_ldf$L
 colnames(L) <- paste0("k",1:k)
@@ -60,6 +60,42 @@ p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
                      perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 print(p1)
+
+# Create a scatterplot to explore the "driving genes" for the beta cells.
+
+# Create a heatmap to explore the "driving genes" for the beta cells
+# factor (k = 4).
+#
+# TO DO: Work this into a function that we can use to annotate the
+# topics.
+# 
+k <- 9
+F <- with(fl_ldf,F %*% diag(D))
+genes       <- colnames(Y)
+rownames(F) <- genes
+colnames(F) <- paste0("k",1:k)
+k    <- 4
+pdat <- cbind(data.frame(gene = genes,stringsAsFactors = FALSE),
+              F)
+x    <- F[,k] # - apply(F[,c(2,3,5:9)],1,max)
+rows <- order(x,decreasing = TRUE)
+pdat <- pdat[rows,]
+pdat$gene <- factor(pdat$gene,rev(pdat$gene))
+i    <- 1:20
+pdat2 <- melt(pdat[i,],id.vars = "gene",variable.name = "factor",
+              value.name = "lfc")
+p2 <- ggplot(pdat2,aes(x = factor,y = gene,size = lfc)) +
+  geom_point(color = "white",fill = "royalblue",shape = 21) +
+  scale_size(range = c(0.5,6)) +
+  labs(x = "",y = "") +
+  theme_cowplot(font_size = 9)
+
+# TO DO: Produce a similar function for annotating the fastTopics and
+# flashier semi-NMF results.
+
+#
+# *** OLD STUFF BELOW ***
+#
 
 # We can view the entries of the F matrix in the non-negative matrix
 # factorization as LFCs (or, more correctly, log-fold *increases* in
