@@ -1,8 +1,10 @@
 library(Matrix)
 library(flashier)
 library(fastTopics)
+library(reshape2)
 library(ggplot2)
 library(cowplot)
+source("../code/annotation_plots.R")
 load("../data/pancreas.RData")
 set.seed(1)
 
@@ -59,9 +61,23 @@ p1 <- structure_plot(L[,-c(1,5)],grouping = celltype,gap = 20,
   labs(y = "membership",fill = "factor",color = "factor")
 print(p1)
 
-# Create scatterplots to explore the "driving genes" for each factor.
-F <- with(fl_ldf,F %*% diag(D))
-# TO DO.
+# TO DO: Explain what this function does, and how to use it.
+driving_genes_heatmap <- function (effects_matrix,
+                                   factors = 1:ncol(effects_matrix),
+                                   n = 3,
+                                   genes = NULL) {
+}
 
 # Create heatmaps to summarize the "driving genes" for each factor.
-# TO DO.
+F <- with(fl_ldf,F %*% diag(D))
+colnames(F) <- paste0("k",1:k)
+genes <- NULL
+ks <- c(2:4,6:9)
+for (i in ks) {
+  genes <- c(genes,
+             head(order(F[,i],decreasing = TRUE),n = 3),
+             head(order(F[,i],decreasing = FALSE),n = 3))
+}
+genes <- rownames(F)[genes]
+genes <- unique(genes)
+p2 <- effect_plot(F[genes,])
