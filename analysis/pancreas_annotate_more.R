@@ -61,15 +61,8 @@ p1 <- structure_plot(L[,-c(1,5)],grouping = celltype,gap = 20,
   labs(y = "membership",fill = "factor",color = "factor")
 print(p1)
 
-# TO DO: Explain what this function does, and how to use it.
-driving_genes_heatmap <- function (effects_matrix,
-                                   factors = 1:ncol(effects_matrix),
-                                   n = 3,
-                                   genes = NULL) {
-}
-
 # Create heatmaps to summarize the "driving genes" for each factor.
 F <- with(fl_ldf,F %*% diag(D))
 colnames(F) <- paste0("k",1:k)
-driving_genes <- select_driving_genes(F,dims = c(2:4,6:9),n = 3)
-p2 <- effect_plot(F[driving_genes,])
+p2 <- driving_genes_heatmap(F,dims = c(2:4,6:9),n = 3)
+
