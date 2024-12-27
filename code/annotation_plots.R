@@ -1,6 +1,6 @@
 # This function creates an "effect plot". The effects_matrix input
-# should be a matrix in which rows are to features and columns are
-# dimension (e.g., factors in a matrix factorization). Effects
+# should be a matrix in which rows are features and columns are
+# dimensions (e.g., factors in a matrix factorization). Effects
 # smaller than zero_value in magnitude are not included in the plot.
 effect_plot <- function (effects_matrix, font_size = 9,
                          zero_value = 0.01) {
@@ -29,4 +29,23 @@ effect_plot <- function (effects_matrix, font_size = 9,
          labs(x = "dimension",y = "feature name",
               fill = "effect sign",size = "effect size") +
          theme_cowplot(font_size = font_size))
+}
+
+# This function selects the top "driving" genes for the selected
+# dimensions ("dims"). The effects_matrix input should be a matrix in
+# which rows are genes and columns are dimensions. It is assumed the
+# names of the rows give the names or ids of the genes. If
+# select_down_effects = TRUE, the genes with the largest negative
+# effects are also included. Note that a gene is never selected more
+# than once.
+select_driving_genes <- function (effect_matrix, dims, n,
+                                  select_down_effects = TRUE) {
+  genes <- NULL
+  for (i in dims) {
+    genes <- c(genes,head(order(effect_matrix[,i],decreasing = TRUE),n))
+    if (select_down_effects)
+      genes <- c(genes,head(order(effect_matrix[,i],decreasing = FALSE),n))
+  }
+  genes <- unique(genes)
+  return(rownames(effect_matrix)[genes])
 }

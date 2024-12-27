@@ -71,13 +71,5 @@ driving_genes_heatmap <- function (effects_matrix,
 # Create heatmaps to summarize the "driving genes" for each factor.
 F <- with(fl_ldf,F %*% diag(D))
 colnames(F) <- paste0("k",1:k)
-genes <- NULL
-ks <- c(2:4,6:9)
-for (i in ks) {
-  genes <- c(genes,
-             head(order(F[,i],decreasing = TRUE),n = 3),
-             head(order(F[,i],decreasing = FALSE),n = 3))
-}
-genes <- rownames(F)[genes]
-genes <- unique(genes)
-p2 <- effect_plot(F[genes,])
+driving_genes <- select_driving_genes(F,dims = c(2:4,6:9),n = 3)
+p2 <- effect_plot(F[driving_genes,])
