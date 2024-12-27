@@ -22,7 +22,7 @@ effect_plot <- function (effects_matrix, font_size = 9,
                     breaks = range(pdat$effect_size,na.rm = TRUE),
                     labels = round(range(pdat$effect_size,na.rm = TRUE),
                                    digits = 2)) +
-         scale_fill_manual(values = c("darkblue","gray","tomato"),
+         scale_fill_manual(values = c("navy","gray","orangered"),
                            drop = FALSE) +
          guides(size = guide_legend(override.aes = list(fill = "black")),
                 fill = guide_legend(override.aes = list(size = 3))) +
