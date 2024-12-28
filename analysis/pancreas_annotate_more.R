@@ -64,5 +64,12 @@ print(p1)
 # Create heatmaps to summarize the "driving genes" for each factor.
 F <- with(fl_ldf,F %*% diag(D))
 colnames(F) <- paste0("k",1:k)
-p2 <- driving_genes_heatmap(F,dims = c(2:4,6:9),n = 3)
+p2 <- driving_genes_heatmap(F,dims = c(2:4,6:9),n = 5)
 
+# driving_genes <-    
+#     c(                                            # k = 2 (islets?)
+#       "GCG","LOXL4","PLCE1","TM4SF4",             # k = 3 (alpha)
+#       # k = 6 (stellate?)
+#       "SPP1","KRT19","ANXA4","ANXA2","SERPING1",  # k = 7 (ductal)
+#       "SST","LEPR","PPY","AQP3","ETV1", # k = 8 (delta, etc)
+#     )
