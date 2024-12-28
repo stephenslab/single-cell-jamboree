@@ -1,6 +1,8 @@
 # NOTES:
 #
-# Point to the original source code on GitHub. 
+# This script is adapted from the Jupyter notebook
+# scRNA_seq_qc_preprocessing_clustering.ipynb at
+# https://github.com/theislab/pancreatic-endocrinogenesis
 #
 # Downloaded and extracted files from GSE132188_RAW.tar at
 # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE132188
@@ -89,16 +91,16 @@ alldays.obs['n_counts']   = alldays.X.sum(1)
 alldays.obs['log_counts'] = np.log(alldays.obs['n_counts'])
 alldays.obs['n_genes']    = (alldays.X > 0).sum(1)
 
-# mitochondrial gene fraction
+# Mitochondrial gene fraction.
 mt_gene_mask = [gene.startswith('mt-') for gene in alldays.var_names]
 mt_gene_index = np.where(mt_gene_mask)[0]
 alldays.obs['mt_frac'] = alldays.X[:,mt_gene_index].sum(1) / alldays.X.sum(1)
 
-#Sample quality plots
-sc.pl.violin(alldays,['n_counts','mt_frac'],groupby = 'day',size = 1,
-             log = False,cut = 0)
+# Sample quality plots.
+# sc.pl.violin(alldays,['n_counts','mt_frac'],groupby = 'day',size = 1,
+#              log = False,cut = 0)
 
-# Filter cells according to identified QC thresholds
+# Filter cells according to identified QC thresholds.
 print('Total number of cells: {:d}'.format(alldays.n_obs))
 alldays = alldays[alldays.obs['mt_frac'] < 0.2]
 print('Number of cells after MT filter: {:d}'.format(alldays.n_obs))
@@ -107,8 +109,8 @@ sc.pp.filter_cells(alldays,min_genes = 1200)
 print('Number of cells after gene filter: {:d}'.format(alldays.n_obs))
 print('Total number of genes: {:d}'.format(alldays.n_vars))
 
-sc.pp.filter_genes(alldays, min_cells = 20)
+sc.pp.filter_genes(alldays,min_cells = 20)
 print('Number of genes after cell filter: {:d}'.format(alldays.n_vars))
 
-# Keep a copy of the raw, filtered data in a separate anndata object.
-alldays_counts = alldays.copy()
+# Write the filtered data.
+alldays.write('pancreas_endocrine_alldays.h5ad')
