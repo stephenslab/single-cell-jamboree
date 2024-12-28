@@ -51,10 +51,12 @@ select_driving_genes <- function (effect_matrix, dims, n,
 }
 
 
-# This creates an effect plot, but adds a layer of automation by
-# handpicking the genes (features) to show in the effect plot.
-# This may be overriden with the "genes" argument.
+# This creates an effect plot for a matrix factorization model, and
+# adds a layer of automation by handpicking the genes (features) to
+# show in the effect plot.  This may be overriden with the "genes"
+# argument.
 driving_genes_heatmap <-
   function (effects_matrix, dims = 1:ncol(effects_matrix), n = 3,
             genes = select_driving_genes(effects_matrix,dims = dims,n = n))
-  effect_plot(F[genes,])
+  effect_plot(F[genes,]) +
+    labs(x = "factor",y = "gene",size = "size",fill = "sign")
