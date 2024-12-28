@@ -50,7 +50,6 @@ select_driving_genes <- function (effect_matrix, dims, n,
   return(rownames(effect_matrix)[genes])
 }
 
-
 # This creates an effect plot for a matrix factorization model, and
 # adds a layer of automation by handpicking the genes (features) to
 # show in the effect plot.  This may be overriden with the "genes"
