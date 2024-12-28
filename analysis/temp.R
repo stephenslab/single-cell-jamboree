@@ -13,6 +13,7 @@
 library(Matrix)
 library(anndata)
 library(reticulate)
+library(tools)
 use_python("/Users/pcarbo/miniforge3/bin/python")
 
 # Retrieve the count data prepared using the Python script.
@@ -37,8 +38,18 @@ obs1   <- dat1$obs[rows,]
 print(all(ids1 == ids2))
 print(all(rownames(dat1$var) == rownames(dat2$var)))
 
-stop()
+# Extract the gene info.
+gene_info <- dat2$var
+gene_info <- cbind(gene = rownames(gene_info),gene_info)
+rownames(gene_info) <- NULL
 
-pca  <- dat$obsm$X_pca
-umap <- dat$obsm$X_umap
-sample_info <- cbind(obs,pca,umap)
+# Extract the sample info.
+sample_info <- dat2$obs
+umap <- dat2$obsm$X_umap
+colnames(umap) <- c("umap1","umap2")
+sample_info <- cbind(umap,sample_info)
+
+# Write the data to an .RData file.
+save(list = c("gene_info","sample_info","counts"),
+     file = "pancreas_endocrine.RData")
+resaveRdaFiles("pancreas_endocrine.RData")
