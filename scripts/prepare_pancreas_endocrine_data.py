@@ -62,3 +62,38 @@ del e125
 del e135
 del e145
 del e155
+
+# Quality control - calculate QC covariates for all anndata objects
+print(alldays.obs['day'].value_counts()) # number of cells per sample (day)
+
+# #counts per cell
+alldays.obs['n_counts'] = alldays.X.sum(1)
+# #logcounts per cell
+alldays.obs['log_counts'] = np.log(alldays.obs['n_counts'])
+# #genes per cell
+alldays.obs['n_genes'] = (alldays.X > 0).sum(1)
+# mitochondrial gene fraction
+mt_gene_mask = [gene.startswith('mt-') for gene in alldays.var_names]
+mt_gene_index = np.where(mt_gene_mask)[0]
+alldays.obs['mt_frac'] = alldays.X[:,mt_gene_index].sum(1) / alldays.X.sum(1)
+
+#Sample quality plots
+sc.pl.violin(alldays, ['n_counts', 'mt_frac'], groupby='day', size=1, log=False, cut=0)
+#sc.pl.violin(alldays, 'mt_frac', groupby='day')
+
+# Filter cells according to identified QC thresholds
+print('Total number of cells: {:d}'.format(alldays.n_obs))
+alldays = alldays[alldays.obs['mt_frac'] < 0.2]
+print('Number of cells after MT filter: {:d}'.format(alldays.n_obs))
+
+sc.pp.filter_cells(alldays, min_genes = 1200)
+print('Number of cells after gene filter: {:d}'.format(alldays.n_obs))
+#Filter genes:
+print('Total number of genes: {:d}'.format(alldays.n_vars))
+
+# Min 20 cells - filters out 0 count genes
+sc.pp.filter_genes(alldays, min_cells=20)
+print('Number of genes after cell filter: {:d}'.format(alldays.n_vars))
+
+# Keep a copy of the raw, filtered data in a separate anndata object.
+alldays_counts = alldays.copy()
