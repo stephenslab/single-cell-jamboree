@@ -15,18 +15,6 @@ import scipy as sci
 import scanpy as sc
 from anndata import AnnData
 import anndata as ad
-# import matplotlib.pyplot as pl
-# import pandas as pd
-# from scanpy.tools import rna_velocity
-# import seaborn as sns
-# from scipy.sparse import csr_matrix
-# import networkx as nx
-# import xlsxwriter
-# from matplotlib import rcParams
-# import seaborn as sns
-# import gseapy as gp
-# sc.settings.verbosity = 3
-# sc.logging.print_versions()
 
 # Read cellranger files for all four samples.
 filename = '../data/GSE132188_RAW/E12_5_counts/mm10/matrix.mtx'
@@ -61,7 +49,7 @@ e155 = sc.read(filename).transpose()
 e155.var_names = np.genfromtxt(filename_genes,dtype = str)[:, 1]
 e155.obs_names = 'e155-' + np.genfromtxt(filename_barcodes,dtype = str)
 
-# Add dev. timepoint label for each sample
+# Add dev. timepoint label for each sample.
 e125.obs['day'] = '12.5'
 e135.obs['day'] = '13.5'
 e145.obs['day'] = '14.5'
@@ -78,7 +66,7 @@ e145.var_names_make_unique()
 e155.var_names_make_unique()
 alldays = ad.concat([e125, e135, e145, e155])
 
-# Deleting individual day arrays
+# Deleting individual day arrays.
 del e125
 del e135
 del e145
@@ -95,10 +83,6 @@ alldays.obs['n_genes']    = (alldays.X > 0).sum(1)
 mt_gene_mask = [gene.startswith('mt-') for gene in alldays.var_names]
 mt_gene_index = np.where(mt_gene_mask)[0]
 alldays.obs['mt_frac'] = alldays.X[:,mt_gene_index].sum(1) / alldays.X.sum(1)
-
-# Sample quality plots.
-# sc.pl.violin(alldays,['n_counts','mt_frac'],groupby = 'day',size = 1,
-#              log = False,cut = 0)
 
 # Filter cells according to identified QC thresholds.
 print('Total number of cells: {:d}'.format(alldays.n_obs))
