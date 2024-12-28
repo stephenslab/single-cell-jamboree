@@ -61,6 +61,11 @@ p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
   labs(y = "membership",fill = "factor",color = "factor")
 print(p1)
 
+# TO DO: Explain here what this function does, and how to use it.
+distinctive_genes_scatterplot <- function () {
+
+}
+
 stop()
 
 # Create a scatterplot to explore the "driving genes" for the beta cells.
