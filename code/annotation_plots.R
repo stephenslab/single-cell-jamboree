@@ -59,3 +59,24 @@ driving_genes_heatmap <-
             genes = select_driving_genes(effects_matrix,dims = dims,n = n))
   effect_plot(F[genes,]) +
     labs(x = "factor",y = "gene",size = "size",fill = "sign")
+
+# Compute the "least extreme" (l.e.) effect differences. The
+# l.e. effect difference for dimension k is defined as the smallest
+# difference between the effect of dimension k and the effect of any
+# other dimension compared (as specified by the "compare_dims"
+# argument). Note that this only works for a non-negative effects
+# matrix, e.g., a non-negative matrix factorization.
+compute_le_diff <- function (effects_matrix,
+                              compare_dims = 1:ncol(effects_matrix)) {
+  n <- nrow(effects_matrix)
+  k <- ncol(effects_matrix)
+  le_effects <- matrix(0,n,k)
+  rownames(le_effects) <- rownames(effects_matrix)
+  colnames(le_effects) <- colnames(effects_matrix)
+  for (i in 1:k) {
+    le_effects[,i] <-
+      effects_matrix[,i] -
+        apply(effects_matrix[,setdiff(compare_dims,i)],1,max)
+  }
+  return(le_effects)
+}

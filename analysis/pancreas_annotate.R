@@ -62,11 +62,15 @@ p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
 print(p1)
 
 # TO DO: Explain here what this function does, and how to use it.
-distinctive_genes_scatterplot <- function () {
+distinctive_genes_scatterplot <- function (effects_matrix, compare_dims) {
 
 }
 
 stop()
+
+F <- with(fl_ldf,F %*% diag(D))
+colnames(F) <- paste0("k",1:k)
+le_lfc <- compute_le_diff(F,compare_dims = c(2:3,5:9))
 
 # Create a scatterplot to explore the "driving genes" for the beta cells.
 
@@ -76,8 +80,6 @@ stop()
 # TO DO: Work this into a function that we can use to annotate the
 # topics.
 # 
-k <- 9
-F <- with(fl_ldf,F %*% diag(D))
 genes       <- colnames(Y)
 rownames(F) <- genes
 colnames(F) <- paste0("k",1:k)
