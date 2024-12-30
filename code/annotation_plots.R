@@ -67,7 +67,7 @@ driving_genes_heatmap <-
 # argument). Note that this only works for a non-negative effects
 # matrix, e.g., a non-negative matrix factorization.
 compute_le_diff <- function (effects_matrix,
-                              compare_dims = 1:ncol(effects_matrix)) {
+                             compare_dims = 1:ncol(effects_matrix)) {
   n <- nrow(effects_matrix)
   k <- ncol(effects_matrix)
   le_effects <- matrix(0,n,k)

@@ -4,6 +4,7 @@ library(ebnm)
 library(flashier)
 library(fastTopics)
 library(ggplot2)
+library(ggrepel)
 library(cowplot)
 load("../data/pancreas.RData")
 set.seed(1)
@@ -62,14 +63,40 @@ p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
 print(p1)
 
 # TO DO: Explain here what this function does, and how to use it.
-distinctive_genes_scatterplot <- function (effects_matrix, compare_dims) {
-
+distinctive_genes_scatterplot <-
+  function (effects_matrix, k,
+            compare_dims = 1:ncol(effects_matrix),
+            font_size = 12,
+            max_overlaps = Inf,
+            label_gene = function (x, y) rep(FALSE,length(x))) {
+  le_diff <- compute_le_diff(effects_matrix,compare_dims)
+  genes   <- rownames(effects_matrix)
+  pdat    <- data.frame(gene    = genes,
+                        effect  = effects_matrix[,k],
+                        le_diff = le_diff[,k])
+  i <- which(!label_gene(pdat$effect,pdat$le_diff))
+  pdat[i,"gene"] <- NA
+  return(ggplot(pdat,aes(x = effect,y = le_diff,label = gene)) +
+         geom_point(color = "darkblue") +
+         geom_hline(yintercept = 0,color = "firebrick",linetype = "dotted",
+                    linewidth = 0.5) +
+         geom_text_repel(color = "firebrick",size = 2.25,fontface = "italic",
+                         segment.color = "firebrick",segment.size = 0.25,
+                         min.segment.length = 0,max.overlaps = max_overlaps,
+                         na.rm = TRUE) +
+         labs(x = "estimate",y = "least extreme difference") +
+         theme_cowplot(font_size = font_size))
 }
 
 stop()
 
 F <- with(fl_ldf,F %*% diag(D))
 colnames(F) <- paste0("k",1:k)
+p1 <- distinctive_genes_scatterplot(F,k = 4,compare_dims = c(2:3,5:9),
+                                    label_gene = function(x,y) x > 3 | y > 2)
+p2 <- distinctive_genes_scatterplot(F,k = 6,compare_dims = c(2:3,5:9),
+                                    label_gene = function(x,y) x > 3 | y > 2)
+
 le_lfc <- compute_le_diff(F,compare_dims = c(2:3,5:9))
 
 # Create a scatterplot to explore the "driving genes" for the beta cells.
