@@ -62,40 +62,32 @@ p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
   labs(y = "membership",fill = "factor",color = "factor")
 print(p1)
 
-# TO DO: Explain here what this function does, and how to use it.
-distinctive_genes_scatterplot <-
-  function (effects_matrix, k,
-            compare_dims = 1:ncol(effects_matrix),
-            font_size = 12,
-            max_overlaps = Inf,
-            label_gene = function (x, y) rep(FALSE,length(x))) {
-  le_diff <- compute_le_diff(effects_matrix,compare_dims)
-  genes   <- rownames(effects_matrix)
-  pdat    <- data.frame(gene    = genes,
-                        effect  = effects_matrix[,k],
-                        le_diff = le_diff[,k])
-  i <- which(!label_gene(pdat$effect,pdat$le_diff))
-  pdat[i,"gene"] <- NA
-  return(ggplot(pdat,aes(x = effect,y = le_diff,label = gene)) +
-         geom_point(color = "darkblue") +
-         geom_hline(yintercept = 0,color = "firebrick",linetype = "dotted",
-                    linewidth = 0.5) +
-         geom_text_repel(color = "firebrick",size = 2.25,fontface = "italic",
-                         segment.color = "firebrick",segment.size = 0.25,
-                         min.segment.length = 0,max.overlaps = max_overlaps,
-                         na.rm = TRUE) +
-         labs(x = "estimate",y = "least extreme difference") +
-         theme_cowplot(font_size = font_size))
-}
-
-stop()
-
+# Interpret the factors with "distinctive genes" scatterplots.
 F <- with(fl_ldf,F %*% diag(D))
 colnames(F) <- paste0("k",1:k)
-p1 <- distinctive_genes_scatterplot(F,k = 4,compare_dims = c(2:3,5:9),
+compare_dims <- c(2:3,5:9)
+p1 <- distinctive_genes_scatterplot(F,k = 2,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 4 | y > 4,
+                                    font_size = 9,label_size = 2) +
+  ggtitle("factor 2 (acinar cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
+p2 <- distinctive_genes_scatterplot(F,k = 9,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 3.5 | y > 3,
+                                    font_size = 9,label_size = 2) +
+  ggtitle("factor 9 (ductal cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
+p3 <- distinctive_genes_scatterplot(F,k = 3,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 3.5 | y > 3,
+                                    font_size = 9,label_size = 2) +
+  ggtitle("factor 3 (stellate cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
+plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
+p1 <- distinctive_genes_scatterplot(F,k = 4,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 3 | y > 2,
+                                    font_size = 9)
+p2 <- distinctive_genes_scatterplot(F,k = 6,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3 | y > 2)
-p2 <- distinctive_genes_scatterplot(F,k = 6,compare_dims = c(2:3,5:9),
-                                    label_gene = function(x,y) x > 3 | y > 2)
+plot_grid()
 
 le_lfc <- compute_le_diff(F,compare_dims = c(2:3,5:9))
 

@@ -80,3 +80,28 @@ compute_le_diff <- function (effects_matrix,
   }
   return(le_effects)
 }
+
+# TO DO: Explain here what this function does, and how to use it.
+distinctive_genes_scatterplot <-
+  function (effects_matrix, k, compare_dims = 1:ncol(effects_matrix),
+            font_size = 12, label_size = 2.25, max_overlaps = Inf,
+            label_gene = function (x, y) rep(FALSE,length(x))) {
+  le_diff <- compute_le_diff(effects_matrix,compare_dims)
+  genes   <- rownames(effects_matrix)
+  pdat    <- data.frame(gene    = genes,
+                        effect  = effects_matrix[,k],
+                        le_diff = le_diff[,k])
+  i <- which(!label_gene(pdat$effect,pdat$le_diff))
+  pdat[i,"gene"] <- NA
+  return(ggplot(pdat,aes(x = effect,y = le_diff,label = gene)) +
+         geom_point(color = "darkblue") +
+         geom_hline(yintercept = 0,color = "firebrick",linetype = "dotted",
+                    linewidth = 0.5) +
+         geom_text_repel(color = "firebrick",size = label_size,
+                         fontface = "italic",segment.color = "firebrick",
+                         segment.size = 0.25,min.segment.length = 0,
+                         max.overlaps = max_overlaps,na.rm = TRUE) +
+         labs(x = "estimate",y = "least extreme difference") +
+         theme_cowplot(font_size = font_size))
+}
+
