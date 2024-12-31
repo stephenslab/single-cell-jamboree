@@ -94,11 +94,11 @@ distinctive_genes_scatterplot <-
   i <- which(!label_gene(pdat$effect,pdat$le_diff))
   pdat[i,"gene"] <- NA
   return(ggplot(pdat,aes(x = effect,y = le_diff,label = gene)) +
-         geom_point(color = "darkblue") +
+         geom_point(color = "dodgerblue") +
          geom_hline(yintercept = 0,color = "firebrick",linetype = "dotted",
                     linewidth = 0.5) +
-         geom_text_repel(color = "firebrick",size = label_size,
-                         fontface = "italic",segment.color = "firebrick",
+         geom_text_repel(color = "black",size = label_size,
+                         fontface = "italic",segment.color = "black",
                          segment.size = 0.25,min.segment.length = 0,
                          max.overlaps = max_overlaps,na.rm = TRUE) +
          labs(x = "estimate",y = "least extreme difference") +

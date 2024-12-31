@@ -63,40 +63,47 @@ p1 <- structure_plot(L[,-1],grouping = celltype,gap = 20,
 print(p1)
 
 # Interpret the factors with "distinctive genes" scatterplots.
-F <- with(fl_ldf,F %*% diag(D))
 colnames(F) <- paste0("k",1:k)
+F <- with(fl_ldf,F %*% diag(D))
 compare_dims <- 2:9
 p2 <- distinctive_genes_scatterplot(F,k = 2,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 4 | y > 4,
-                                    font_size = 9,label_size = 2) +
+                                    font_size = 8,label_size = 1.8) +
   ggtitle("factor 2 (acinar cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p3 <- distinctive_genes_scatterplot(F,k = 3,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3.5 | y > 3,
-                                    font_size = 9,label_size = 2) +
+                                    font_size = 8,label_size = 1.8) +
   ggtitle("factor 3 (stellate cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p4 <- distinctive_genes_scatterplot(F,k = 4,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3 | y > 2,
-                                    font_size = 9,label_size = 2) +
+                                    font_size = 8,label_size = 1.8) +
   ggtitle("factor 4 (beta cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p5 <- distinctive_genes_scatterplot(F,k = 5,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3.5 | y > 3,
-                                    font_size = 9,label_size = 2) +
+                                    font_size = 8,label_size = 1.8) +
   ggtitle("factor 5 (alpha cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p6 <- distinctive_genes_scatterplot(F,k = 6,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3 | y > 2,
-                                    font_size = 9,label_size = 2) +
+                                    font_size = 8,label_size = 1.8) +
   ggtitle("factor 6 (delta + gamma cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
-#
-# TO DO: Add scatterplots for factors 7 and 8.
-#
+p7 <- distinctive_genes_scatterplot(F,k = 7,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 4 | y > 3,
+                                    font_size = 8,label_size = 1.8) +
+  ggtitle("factor 7 (endothelial cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
+p8 <- distinctive_genes_scatterplot(F,k = 8,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 4 | y > 3,
+                                    font_size = 8,label_size = 1.8) +
+  ggtitle("factor 8 (endothelial cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
 p9 <- distinctive_genes_scatterplot(F,k = 9,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3.5 | y > 3,
-                                    font_size = 9,label_size = 2) +
+                                    font_size = 8,label_size = 1.8) +
   ggtitle("factor 9 (ductal cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 plot_grid(p2,p3,p4,p5,p6,p7,p8,p9,nrow = 3,ncol = 3)
