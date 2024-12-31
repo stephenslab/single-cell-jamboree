@@ -69,42 +69,50 @@ compare_dims <- 2:9
 p2 <- distinctive_genes_scatterplot(F,k = 2,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 4 | y > 4,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 2 (acinar cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 2 (acinar cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p3 <- distinctive_genes_scatterplot(F,k = 3,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3.5 | y > 3,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 3 (stellate cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 3 (stellate cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p4 <- distinctive_genes_scatterplot(F,k = 4,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3 | y > 2,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 4 (beta cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 4 (beta cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p5 <- distinctive_genes_scatterplot(F,k = 5,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3.5 | y > 3,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 5 (alpha cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 5 (alpha cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p6 <- distinctive_genes_scatterplot(F,k = 6,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3 | y > 2,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 6 (delta + gamma cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 6 (delta + gamma cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p7 <- distinctive_genes_scatterplot(F,k = 7,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 4 | y > 3,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 7 (endothelial cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 7 (endothelial cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p8 <- distinctive_genes_scatterplot(F,k = 8,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 4 | y > 3,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 8 (endothelial cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 8 (macrophages?)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 p9 <- distinctive_genes_scatterplot(F,k = 9,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3.5 | y > 3,
                                     font_size = 8,label_size = 1.8) +
-  ggtitle("factor 9 (ductal cells)") +
+  labs(x = "LFC estimate",y = "l.e. diff. in LFCs",
+       title = "factor 9 (ductal cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
 plot_grid(p2,p3,p4,p5,p6,p7,p8,p9,nrow = 3,ncol = 3)
 

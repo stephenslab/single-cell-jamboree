@@ -81,7 +81,14 @@ compute_le_diff <- function (effects_matrix,
   return(le_effects)
 }
 
-# TO DO: Explain here what this function does, and how to use it.
+# This creates a "distinctive genes plot"; this is a plot in which the
+# effect estimate is shown on the x axis and the "least extreme"
+# difference between the estimated effects is shown on the y axis. The
+# idea is that these scatterplots should better highlight the
+# "interesting" genes for a given dimension/factor. The "label_gene"
+# input argument is a function that returns TRUE when the gene should
+# be labeled in the plot; the default is that it always returns FALSE
+# (so that no genes are labeled in the plot).
 distinctive_genes_scatterplot <-
   function (effects_matrix, k, compare_dims = 1:ncol(effects_matrix),
             font_size = 12, label_size = 2.25, max_overlaps = Inf,
@@ -95,13 +102,13 @@ distinctive_genes_scatterplot <-
   pdat[i,"gene"] <- NA
   return(ggplot(pdat,aes(x = effect,y = le_diff,label = gene)) +
          geom_point(color = "dodgerblue") +
-         geom_hline(yintercept = 0,color = "firebrick",linetype = "dotted",
+         geom_hline(yintercept = 0,color = "magenta",linetype = "dotted",
                     linewidth = 0.5) +
          geom_text_repel(color = "black",size = label_size,
                          fontface = "italic",segment.color = "black",
                          segment.size = 0.25,min.segment.length = 0,
                          max.overlaps = max_overlaps,na.rm = TRUE) +
-         labs(x = "estimate",y = "least extreme difference") +
+         labs(x = "effect estimate",y = "least extreme difference") +
          theme_cowplot(font_size = font_size))
 }
 
