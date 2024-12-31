@@ -81,13 +81,22 @@ p3 <- distinctive_genes_scatterplot(F,k = 3,compare_dims = compare_dims,
                                     font_size = 9,label_size = 2) +
   ggtitle("factor 3 (stellate cells)") +
   theme(plot.title = element_text(size = 9,face = "plain"))
-plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
-p1 <- distinctive_genes_scatterplot(F,k = 4,compare_dims = compare_dims,
+p4 <- distinctive_genes_scatterplot(F,k = 5,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 3.5 | y > 3,
+                                    font_size = 9,label_size = 2) +
+  ggtitle("factor 5 (alpha cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
+p5 <- distinctive_genes_scatterplot(F,k = 4,compare_dims = compare_dims,
                                     label_gene = function(x,y) x > 3 | y > 2,
-                                    font_size = 9)
-p2 <- distinctive_genes_scatterplot(F,k = 6,compare_dims = compare_dims,
-                                    label_gene = function(x,y) x > 3 | y > 2)
-plot_grid()
+                                    font_size = 9,label_size = 2) +
+  ggtitle("factor 4 (beta cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
+p6 <- distinctive_genes_scatterplot(F,k = 6,compare_dims = compare_dims,
+                                    label_gene = function(x,y) x > 3 | y > 2,
+                                    font_size = 9,label_size = 2) +
+  ggtitle("factor 6 (delta + gamma cells)") +
+  theme(plot.title = element_text(size = 9,face = "plain"))
+plot_grid(p1,p2,p3,p4,p5,p6,nrow = 2,ncol = 3)
 
 le_lfc <- compute_le_diff(F,compare_dims = c(2:3,5:9))
 
