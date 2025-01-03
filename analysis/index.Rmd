@@ -29,7 +29,6 @@ via [this link][box].
 
 + [Analysis of Single-Cell (Spatial) Transcriptomics From Mouse Embryos](mouse_embryo.html)
 
-+ [Neighbor joining on pancreas cells](Neighbor_joining.html)
 
 
 [hca]: https://data.humancellatlas.org
