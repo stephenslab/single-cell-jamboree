@@ -1,5 +1,6 @@
 # remotes::install_github("stephenslab/gbcd@form-YYT-option")
 # packageVersion("gbcd")
+# 0.2.2
 # 
 library(Matrix)
 library(ebnm)
@@ -34,8 +35,9 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Fit a semi-NMF using GBCD.
+# Note that Kmax = 5 results in a factorization with at most 9 factors.
 #
 # TO DO: Switch to using point-exponential prior.
 #
-fl_gbcd <- fit_gbcd(Y, Kmax = 9, form_YYT = TRUE, maxiter1 = 100,
-                    maxiter2 = 100, maxiter3 = 100, verbose = 3)
+fl_gbcd <- fit_gbcd(Y,Kmax = 5,form_YYT = TRUE,maxiter1 = 100,
+                    maxiter2 = 100,maxiter3 = 100,verbose = 3)
