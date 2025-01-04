@@ -59,7 +59,7 @@ fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
 
 # (4) Fit a semi-NMF using flashier.
 fl0 <- flash(Y,ebnm_fn = c(ebnm_point_exponential,ebnm_point_normal),
-             var_type = 0,greedy_Kmax = 9,nullcheck = FALSE,
+             var_type = 0,greedy_Kmax = k,nullcheck = FALSE,
              backfit = FALSE,verbose = 3)
 fl_snmf <- flash_init(Y,var_type = 2,S = s1)
 fl_snmf <- flash_factors_init(fl_snmf,fl0,

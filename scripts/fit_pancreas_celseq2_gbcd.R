@@ -1,7 +1,9 @@
 # remotes::install_github("stephenslab/gbcd@form-YYT-option")
 # packageVersion("gbcd")
 # 0.2.4
-# 
+#
+# TO DO: Focus on *semi-NMF decompositions*.
+#
 library(Matrix)
 library(ebnm)
 library(flashier)
@@ -38,13 +40,11 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Fit a semi-NMF covariance decomposition.
-# Note that Kmax = 5 results in a factorization with at most 9 factors.
+# Note that Kmax = 6 results in a factorization with at most 11 factors.
 fl_cd <- fit_gbcd(Y,Kmax = 6,form_YYT = TRUE,
                   prior = flash_ebnm(prior_family = "point_exponential"),
                   maxiter1 = 100,maxiter2 = 100,maxiter3 = 100,
                   verbose = 3)
-
-stop()
 
 # Save the model fits to an .Rdata file.
 fl_cd_ldf <- list(L = fl_cd$L,F = fl_cd$F$lfc)
@@ -59,8 +59,9 @@ celltype <-
 L <- fl_cd_ldf$L
 k <- ncol(L)
 colnames(L) <- paste0("k",1:k)
-celltype_factors  <- c(2,3,4,5,6,7,8)
-other_factors <- c(1,9)
+celltype_factors  <- c(2,3,4,5,6,7,9,10,11)
+other_factors <- c(1,8)
+other_colors <- c("#66c2a5","#fc8d62","#8da0cb")
 p1 <- structure_plot(L[,celltype_factors],grouping = celltype,
                      gap = 20,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor",
@@ -69,6 +70,36 @@ p2 <- structure_plot(L[,other_factors],grouping = celltype,
                      gap = 20,perplexity = 70,n = Inf) +
   scale_color_manual(values = other_colors) +
   scale_fill_manual(values = other_colors) +
+  labs(y = "membership",fill = "factor",color = "factor",
+       title = "other factors")
+plot_grid(p1,p2,nrow = 2,ncol = 1)
+
+stop()
+
+# Fit a semi-NMF using flashier, with greedy_Kmax = 11.
+fl0 <- flash(Y,ebnm_fn = c(ebnm_point_exponential,ebnm_point_normal),
+             var_type = 0,greedy_Kmax = 11,nullcheck = FALSE,
+             backfit = FALSE,verbose = 3)
+fl_snmf <- flash_init(Y,var_type = 2,S = s1)
+fl_snmf <- flash_factors_init(fl_snmf,fl0,
+                              c(ebnm_point_exponential,
+                                ebnm_point_normal))
+fl_snmf <- flash_backfit(fl_snmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
+fl_snmf <- flash_backfit(fl_snmf,extrapolate = TRUE,maxiter = 100,verbose = 3)
+
+# Structure plot.
+fl_snmf_ldf <- ldf(fl_snmf,type = "i")
+L <- fl_snmf_ldf$L
+k <- ncol(L)
+colnames(L) <- paste0("k",1:k)
+celltype_factors  <- 2:9
+other_factors <- c(1,10:13)
+p1 <- structure_plot(L[,celltype_factors],grouping = celltype,
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor",
+       title = "cell-type factors")
+p2 <- structure_plot(L[,other_factors],grouping = celltype,
+                     gap = 20,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor",
        title = "other factors")
 plot_grid(p1,p2,nrow = 2,ncol = 1)
