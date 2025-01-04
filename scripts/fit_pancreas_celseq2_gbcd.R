@@ -54,13 +54,13 @@ celltype <- sample_info$celltype
 celltype <-
  factor(celltype,
         c("acinar","ductal","activated_stellate","quiescent_stellate",
-		  "endothelial","macrophage","mast","schwann","alpha","beta",
-		  "delta","gamma","epsilon"))
+          "endothelial","macrophage","mast","schwann","alpha","beta",
+          "delta","gamma","epsilon"))
 L <- fl_cd_ldf$L
 k <- ncol(L)
 colnames(L) <- paste0("k",1:k)
-celltype_factors  <- c(2,3,4,5,6,7,9,10,11)
-other_factors <- c(1,8)
+celltype_factors  <- c(2:7,9,11)
+other_factors <- c(1,8,10)
 other_colors <- c("#66c2a5","#fc8d62","#8da0cb")
 p1 <- structure_plot(L[,celltype_factors],grouping = celltype,
                      gap = 20,perplexity = 70,n = Inf) +
@@ -73,8 +73,6 @@ p2 <- structure_plot(L[,other_factors],grouping = celltype,
   labs(y = "membership",fill = "factor",color = "factor",
        title = "other factors")
 plot_grid(p1,p2,nrow = 2,ncol = 1)
-
-stop()
 
 # Fit a semi-NMF using flashier, with greedy_Kmax = 11.
 fl0 <- flash(Y,ebnm_fn = c(ebnm_point_exponential,ebnm_point_normal),
@@ -92,14 +90,16 @@ fl_snmf_ldf <- ldf(fl_snmf,type = "i")
 L <- fl_snmf_ldf$L
 k <- ncol(L)
 colnames(L) <- paste0("k",1:k)
-celltype_factors  <- 2:9
-other_factors <- c(1,10:13)
+celltype_factors  <- c(2,3,4,5,6,7,8,9)
+other_factors <- c(1,10,11)
 p1 <- structure_plot(L[,celltype_factors],grouping = celltype,
                      gap = 20,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor",
        title = "cell-type factors")
 p2 <- structure_plot(L[,other_factors],grouping = celltype,
                      gap = 20,perplexity = 70,n = Inf) +
+  scale_color_manual(values = other_colors) +
+  scale_fill_manual(values = other_colors) +
   labs(y = "membership",fill = "factor",color = "factor",
        title = "other factors")
 plot_grid(p1,p2,nrow = 2,ncol = 1)
