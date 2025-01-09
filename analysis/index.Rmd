@@ -25,7 +25,7 @@ via [this link][box].
 
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
 
-+ [Initial exploration of the pancreas endocrine data set](pancreas_endocrine.html)
++ [Initial exploration of the pancreas endocrine data set.](pancreas_endocrine.html)
 
 + [Exploratory analysis of human brain data, COP cells.](human_brain_COP_cells.html)
 
