@@ -140,5 +140,8 @@ ggplot(sample_info,
   theme_cowplot(font_size = 10)
 ```
 
+Note that these UMAPs plots reproduce the plots in
+[the original paper][bastidas-ponce-2019].
+
 [bastidas-ponce-2019]: https://doi.org/10.1242/dev.173849
 [scvelo-paper]: https://doi.org/10.1038/s41587-020-0591-3
