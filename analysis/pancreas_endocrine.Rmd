@@ -99,5 +99,46 @@ save(list = c("gene_info","sample_info","counts"),
 resaveRdaFiles("pancreas_endocrine.RData")
 ```
 
+The meta-data includes a previously computed UMAP which we can use to
+visualize of the key structure in the data.
+
+The Bastidas-Ponce et al paper identified 8 main cell types:
+
+```{r umap-cell-types, fig.height=3, fig.width=4}
+cluster_colors <- c("#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00",
+                    "#ffff33","#a65628","#f781bf")
+ggplot(sample_info,
+       aes(x = umap1,y = umap2,color = clusters_fig2_final)) +
+  geom_point(size = 0.75) +
+  scale_color_manual(values = cluster_colors) +
+  labs(color = "cluster") +
+  theme_cowplot(font_size = 10)
+```
+
+Additionally, they distinguished proliferating vs. non-proliferating
+cells:
+
+```{r umap-proliferating, fig.height=3, fig.width=4}
+ggplot(sample_info,
+       aes(x = umap1,y = umap2,color = proliferation)) +
+  geom_point(size = 0.75) +
+  scale_color_manual(values = c("dodgerblue","darkblue")) +
+  labs(color = "") +
+  theme_cowplot(font_size = 10)
+```
+
+Beyond the main cell types and proliferating/non-profilerating, there
+appears to be additional structure in the data corresponding to the
+different lineages (days):
+
+```{r umap-lineage, fig.height=3, fig.width=3.75}
+lineage_colors <- c("#d01c8b","#f1b6da","#b8e186","#4dac26")
+ggplot(sample_info,
+       aes(x = umap1,y = umap2,color = day)) +
+  geom_point(size = 0.75) +
+  scale_color_manual(values = lineage_colors) +
+  theme_cowplot(font_size = 10)
+```
+
 [bastidas-ponce-2019]: https://doi.org/10.1242/dev.173849
 [scvelo-paper]: https://doi.org/10.1038/s41587-020-0591-3
