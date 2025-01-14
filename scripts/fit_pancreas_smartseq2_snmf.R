@@ -5,6 +5,7 @@
 # > remotes::install_github("stephenslab/gbcd@form-YYT-option")
 # > packageVersion("gbcd")
 # 0.2.4
+library(tools)
 library(Matrix)
 library(ebnm)
 library(flashier)
@@ -63,6 +64,6 @@ fl_cd_ldf <- list(L = fl_cd$L,F = fl_cd$F$lfc)
 fl_snmf_ldf  <- ldf(fl_snmf,type = "i")
 session_info <- sessionInfo()
 save(list = c("fl_cd_ldf","fl_snmf_ldf","session_info"),
-     file = "pancreas_celseq2_snmf.RData")
-resaveRdaFiles("pancreas_celseq2_snmf.RData")
+     file = "pancreas_smartseq2_snmf.RData")
+resaveRdaFiles("pancreas_smartseq2_snmf.RData")
 
