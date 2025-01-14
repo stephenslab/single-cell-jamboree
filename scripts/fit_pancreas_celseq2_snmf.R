@@ -1,5 +1,9 @@
-# remotes::install_github("stephenslab/gbcd@form-YYT-option")
-# packageVersion("gbcd")
+# Fit semi-non-negative matrix factorizations (semi-NMFs) to the
+# pancreas celseq2 data using flashier and gbcd.
+#
+# Note that I installed gbcd from the "form-YYT-option" branch:
+# > remotes::install_github("stephenslab/gbcd@form-YYT-option")
+# > packageVersion("gbcd")
 # 0.2.4
 library(Matrix)
 library(ebnm)
