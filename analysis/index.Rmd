@@ -23,6 +23,8 @@ via [this link][box].
 
 + [Tree-based representations of the pancreas data.](pancreas_trees.html)
 
++ [Revisiting semi-NMF for the pancreas data](pancreas_snmf.html)
+
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
 
 + [Initial exploration of the pancreas endocrine data set.](pancreas_endocrine.html)
