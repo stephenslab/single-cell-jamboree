@@ -1,11 +1,10 @@
 # Fit semi-non-negative matrix factorizations (semi-NMFs) to the
-# pancreas celseq2 data using flashier and gbcd.
+# pancreas smartseq2 data using flashier and gbcd.
 #
 # Note that I installed gbcd from the "form-YYT-option" branch:
 # > remotes::install_github("stephenslab/gbcd@form-YYT-option")
 # > packageVersion("gbcd")
 # 0.2.4
-library(tools)
 library(Matrix)
 library(ebnm)
 library(flashier)
@@ -16,9 +15,12 @@ library(cowplot)
 load("../data/pancreas.RData")
 set.seed(1)
 
-# Select the CEL-seq2 data (Muraro et al, 2016).
-# This should select 2,285 cells.
-i           <- which(sample_info$tech == "celseq2")
+# All the matrix factorizations will have this many topics or factors.
+k <- 9
+
+# Select the Smart-seq2 data (Segerstolpe et al, 2016).
+# This should select 2,394 cells.
+i           <- which(sample_info$tech == "smartseq2")
 sample_info <- sample_info[i,]
 counts      <- counts[i,]
 
@@ -63,3 +65,4 @@ session_info <- sessionInfo()
 save(list = c("fl_cd_ldf","fl_snmf_ldf","session_info"),
      file = "pancreas_celseq2_snmf.RData")
 resaveRdaFiles("pancreas_celseq2_snmf.RData")
+
