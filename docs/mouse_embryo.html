@@ -303,7 +303,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-12-03
+<strong>Last updated:</strong> 2025-01-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -435,15 +435,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree5f0f81be7480771ad392280abc5e159c87430d66targetblank5f0f81ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree82e82de95caf2a23e3550cdd7176a41db356fb48targetblank82e82dea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/5f0f81be7480771ad392280abc5e159c87430d66" target="_blank">5f0f81b</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/82e82de95caf2a23e3550cdd7176a41db356fb48" target="_blank">82e82de</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree5f0f81be7480771ad392280abc5e159c87430d66targetblank5f0f81ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree82e82de95caf2a23e3550cdd7176a41db356fb48targetblank82e82dea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -453,7 +453,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/5f0f81be7480771ad392280abc5e159c87430d66" target="_blank">5f0f81b</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/82e82de95caf2a23e3550cdd7176a41db356fb48" target="_blank">82e82de</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -470,11 +470,12 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
 
 Untracked files:
     Untracked:  .DS_Store
-    Untracked:  .gitignore
     Untracked:  analysis/.DS_Store
+    Untracked:  code/plot_loadings_on_locations.R
     Untracked:  data/.DS_Store
     Untracked:  data/mouse_embryo/
     Untracked:  output/.DS_Store
@@ -523,6 +524,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/82e82de95caf2a23e3550cdd7176a41db356fb48/analysis/mouse_embryo.Rmd" target="_blank">82e82de</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2025-01-22
+</td>
+<td>
+workflowr::wflow_publish("analysis/mouse_embryo.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/06856f38d0034d4ab5ac466986f62a39c8106ef3/docs/mouse_embryo.html" target="_blank">06856f3</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2024-12-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -773,10 +808,11 @@ library(Biobase)
 library(ggpubr)
 library(gridExtra)
 library(fastTopics)
+library(tidyverse)
 source(&#39;../code/plot_loadings_on_umap.R&#39;)
 source(&quot;../code/Customized_Plots.R&quot;)
-seurat_object &lt;- readRDS(&quot;../data/mouse_embryo/processed_seurat/seurat_object.rds&quot;)
-Y &lt;- t(seurat_object$RNA$data)</code></pre>
+source(&quot;../code/plot_loadings_on_locations.R&quot;)
+seurat_object &lt;- readRDS(&quot;../data/mouse_embryo/processed_seurat/seurat_object.rds&quot;)</code></pre>
 <p>The data contains the UMAP information that we can directly use for
 visualization, and compare with the “anatomical annotation” and the
 “cluster label” in <a
@@ -1669,6 +1705,88 @@ ArhGAP15 gene in Mus musculus (mouse), encoding the Rho
 GTPase-activating protein 15. Existing literature has reported that
 “Knock-out of Arhgap15 function demonstrates that this gene is required
 to regulate multiple functions in macrophages and neutrophils.”</p>
+</div>
+<div id="exploring-spatial-pattern-of-factors" class="section level2">
+<h2>Exploring Spatial Pattern of Factors</h2>
+<p>Finally, let’s explore the spatial pattern of these factors in the
+mouse embryo.</p>
+<pre class="r"><code>L &lt;- flashier_fit_nn$L_pm
+locations &lt;- data.frame(x = seurat_object$coords.x1, y = seurat_object$coords.x2)</code></pre>
+<p>These locations are collected from 14 different slides. Let’s focus
+on the slide 14 for now.</p>
+<pre class="r"><code>locationsdf &lt;- locations
+locationsdf$slideID &lt;- seurat_object$slide_id
+locationsdf$annotation &lt;- as.factor(seurat_object$anatomical_annotation)
+locationsdf$celltype &lt;- as.factor(seurat_object$final_cluster_label)
+locationsdf %&gt;%
+  filter(slideID == &quot;Slide 14&quot;) %&gt;%
+  ggplot(aes(x = x, y = y, colour = (annotation))) +
+  geom_point(size = 1, alpha = 1) +
+  theme_minimal()</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/plotting_slide14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>locationsdf %&gt;%
+  filter(slideID == &quot;Slide 14&quot;) %&gt;%
+  ggplot(aes(x = x, y = y, colour = (celltype))) +
+  geom_point(size = 1, alpha = 1) +
+  theme_minimal()</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/plotting_slide14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plots &lt;- list()
+slideID &lt;- seurat_object$slide_id == &quot;Slide 14&quot;
+selected_factors &lt;- which(order(flashier_fit_nn$pve, decreasing = T) %in% c(1:9))
+
+for (f in selected_factors) {
+  p &lt;- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] &lt;- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot &lt;- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/plotting_slide14_factors-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>L &lt;- flashier_fit_semi$L_pm
+slideID &lt;- seurat_object$slide_id == &quot;Slide 14&quot;
+selected_factors &lt;- which(order(flashier_fit_semi$pve, decreasing = T) %in% c(1:9))
+plots &lt;- list()
+for (f in selected_factors) {
+  p &lt;- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] &lt;- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot &lt;- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/plotting_slide14_factors_semi-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plots &lt;- list()
+slideID &lt;- seurat_object$slide_id == &quot;Slide 14&quot;
+selected_factors &lt;- which(order(flashier_fit_nn$pve, decreasing = T) %in% c(1:9))
+
+for (f in selected_factors) {
+  p &lt;- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] &lt;- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot &lt;- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/plotting_slide14_factors_ft-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># fasttopics_fit &lt;- readRDS(&quot;../output/mouse_embryo/fasttopics_fit.rds&quot;)
+L &lt;- fasttopics_fit$L
+slideID &lt;- seurat_object$slide_id == &quot;Slide 14&quot;
+selected_factors &lt;- c(1:9)
+plots &lt;- list()
+for (f in selected_factors) {
+  p &lt;- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] &lt;- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot &lt;- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)</code></pre>
+<p><img src="figure/mouse_embryo.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1696,62 +1814,64 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] fastTopics_0.6-192  gridExtra_2.3       ggpubr_0.6.0       
- [4] Biobase_2.62.0      BiocGenerics_0.48.1 RColorBrewer_1.1-3 
- [7] cowplot_1.1.3       patchwork_1.3.0     ggplot2_3.5.1      
-[10] flashier_1.0.54     ebnm_1.1-34         data.table_1.16.2  
-[13] Matrix_1.6-4        Seurat_5.1.0        SeuratObject_5.0.2 
-[16] sp_2.1-4           
+ [1] lubridate_1.9.3     forcats_1.0.0       stringr_1.5.1      
+ [4] dplyr_1.1.4         purrr_1.0.2         readr_2.1.5        
+ [7] tidyr_1.3.1         tibble_3.2.1        tidyverse_2.0.0    
+[10] fastTopics_0.6-192  gridExtra_2.3       ggpubr_0.6.0       
+[13] Biobase_2.62.0      BiocGenerics_0.48.1 RColorBrewer_1.1-3 
+[16] cowplot_1.1.3       patchwork_1.3.0     ggplot2_3.5.1      
+[19] flashier_1.0.54     ebnm_1.1-34         data.table_1.16.2  
+[22] Matrix_1.6-4        Seurat_5.1.0        SeuratObject_5.0.2 
+[25] sp_2.1-4           
 
 loaded via a namespace (and not attached):
   [1] RcppAnnoy_0.0.22       splines_4.3.1          later_1.3.2           
-  [4] tibble_3.2.1           polyclip_1.10-7        fastDummies_1.7.4     
-  [7] lifecycle_1.0.4        mixsqp_0.3-54          rstatix_0.7.2         
- [10] rprojroot_2.0.4        globals_0.16.3         lattice_0.22-6        
- [13] MASS_7.3-60            backports_1.5.0        magrittr_2.0.3        
- [16] plotly_4.10.4          sass_0.4.9             rmarkdown_2.28        
- [19] jquerylib_0.1.4        yaml_2.3.10            httpuv_1.6.15         
- [22] sctransform_0.4.1      spam_2.11-0            spatstat.sparse_3.1-0 
- [25] reticulate_1.39.0      pbapply_1.7-2          abind_1.4-8           
- [28] Rtsne_0.17             quadprog_1.5-8         purrr_1.0.2           
- [31] git2r_0.33.0           ggrepel_0.9.6          irlba_2.3.5.1         
- [34] listenv_0.9.1          spatstat.utils_3.1-0   goftest_1.2-3         
- [37] RSpectra_0.16-2        spatstat.random_3.3-2  fitdistrplus_1.2-1    
- [40] parallelly_1.38.0      leiden_0.4.3.1         codetools_0.2-20      
- [43] tidyselect_1.2.1       farver_2.1.2           matrixStats_1.4.1     
- [46] spatstat.explore_3.3-3 jsonlite_1.8.9         progressr_0.14.0      
- [49] Formula_1.2-5          ggridges_0.5.6         survival_3.7-0        
- [52] tools_4.3.1            progress_1.2.3         ica_1.0-3             
- [55] Rcpp_1.0.13-1          glue_1.8.0             xfun_0.48             
- [58] dplyr_1.1.4            withr_3.0.2            fastmap_1.2.0         
- [61] fansi_1.0.6            digest_0.6.37          truncnorm_1.0-9       
- [64] R6_2.5.1               mime_0.12              colorspace_2.1-1      
- [67] scattermore_1.2        gtools_3.9.5           tensor_1.5            
- [70] spatstat.data_3.1-2    RhpcBLASctl_0.23-42    utf8_1.2.4            
- [73] tidyr_1.3.1            generics_0.1.3         prettyunits_1.2.0     
- [76] httr_1.4.7             htmlwidgets_1.6.4      scatterplot3d_0.3-44  
- [79] deconvolveR_1.2-1      whisker_0.4.1          uwot_0.1.16           
- [82] pkgconfig_2.0.3        gtable_0.3.6           workflowr_1.7.1       
- [85] lmtest_0.9-40          htmltools_0.5.8.1      carData_3.0-5         
- [88] dotCall64_1.2          horseshoe_0.2.0        scales_1.3.0          
- [91] png_0.1-8              spatstat.univar_3.0-1  ashr_2.2-66           
- [94] knitr_1.48             rstudioapi_0.16.0      reshape2_1.4.4        
- [97] nlme_3.1-166           cachem_1.1.0           zoo_1.8-12            
-[100] Polychrome_1.5.1       stringr_1.5.1          KernSmooth_2.23-24    
-[103] parallel_4.3.1         miniUI_0.1.1.1         softImpute_1.4-1      
-[106] pillar_1.9.0           grid_4.3.1             vctrs_0.6.5           
-[109] RANN_2.6.2             promises_1.3.0         car_3.1-3             
-[112] xtable_1.8-4           cluster_2.1.6          evaluate_1.0.1        
-[115] invgamma_1.1           cli_3.6.3              compiler_4.3.1        
-[118] rlang_1.1.4            crayon_1.5.3           SQUAREM_2021.1        
-[121] future.apply_1.11.2    ggsignif_0.6.4         labeling_0.4.3        
-[124] plyr_1.8.9             fs_1.6.4               stringi_1.8.4         
-[127] viridisLite_0.4.2      deldir_2.0-4           munsell_0.5.1         
-[130] lazyeval_0.2.2         spatstat.geom_3.3-3    RcppHNSW_0.6.0        
-[133] hms_1.1.3              future_1.34.0          shiny_1.9.1           
-[136] highr_0.11             trust_0.1-8            ROCR_1.0-11           
-[139] igraph_2.1.1           broom_1.0.7            RcppParallel_5.1.9    
-[142] bslib_0.8.0           </code></pre>
+  [4] polyclip_1.10-7        fastDummies_1.7.4      lifecycle_1.0.4       
+  [7] mixsqp_0.3-54          rstatix_0.7.2          rprojroot_2.0.4       
+ [10] globals_0.16.3         lattice_0.22-6         MASS_7.3-60           
+ [13] backports_1.5.0        magrittr_2.0.3         plotly_4.10.4         
+ [16] sass_0.4.9             rmarkdown_2.28         jquerylib_0.1.4       
+ [19] yaml_2.3.10            httpuv_1.6.15          sctransform_0.4.1     
+ [22] spam_2.11-0            spatstat.sparse_3.1-0  reticulate_1.39.0     
+ [25] pbapply_1.7-2          abind_1.4-8            Rtsne_0.17            
+ [28] quadprog_1.5-8         git2r_0.33.0           ggrepel_0.9.6         
+ [31] irlba_2.3.5.1          listenv_0.9.1          spatstat.utils_3.1-0  
+ [34] goftest_1.2-3          RSpectra_0.16-2        spatstat.random_3.3-2 
+ [37] fitdistrplus_1.2-1     parallelly_1.38.0      leiden_0.4.3.1        
+ [40] codetools_0.2-20       tidyselect_1.2.1       farver_2.1.2          
+ [43] matrixStats_1.4.1      spatstat.explore_3.3-3 jsonlite_1.8.9        
+ [46] progressr_0.14.0       Formula_1.2-5          ggridges_0.5.6        
+ [49] survival_3.7-0         tools_4.3.1            progress_1.2.3        
+ [52] ica_1.0-3              Rcpp_1.0.13-1          glue_1.8.0            
+ [55] xfun_0.48              withr_3.0.2            fastmap_1.2.0         
+ [58] fansi_1.0.6            digest_0.6.37          truncnorm_1.0-9       
+ [61] timechange_0.3.0       R6_2.5.1               mime_0.12             
+ [64] colorspace_2.1-1       scattermore_1.2        gtools_3.9.5          
+ [67] tensor_1.5             spatstat.data_3.1-2    RhpcBLASctl_0.23-42   
+ [70] utf8_1.2.4             generics_0.1.3         prettyunits_1.2.0     
+ [73] httr_1.4.7             htmlwidgets_1.6.4      scatterplot3d_0.3-44  
+ [76] deconvolveR_1.2-1      whisker_0.4.1          uwot_0.1.16           
+ [79] pkgconfig_2.0.3        gtable_0.3.6           workflowr_1.7.1       
+ [82] lmtest_0.9-40          htmltools_0.5.8.1      carData_3.0-5         
+ [85] dotCall64_1.2          horseshoe_0.2.0        scales_1.3.0          
+ [88] png_0.1-8              spatstat.univar_3.0-1  ashr_2.2-66           
+ [91] knitr_1.48             rstudioapi_0.16.0      tzdb_0.4.0            
+ [94] reshape2_1.4.4         nlme_3.1-166           cachem_1.1.0          
+ [97] zoo_1.8-12             Polychrome_1.5.1       KernSmooth_2.23-24    
+[100] parallel_4.3.1         miniUI_0.1.1.1         softImpute_1.4-1      
+[103] pillar_1.9.0           grid_4.3.1             vctrs_0.6.5           
+[106] RANN_2.6.2             promises_1.3.0         car_3.1-3             
+[109] xtable_1.8-4           cluster_2.1.6          evaluate_1.0.1        
+[112] invgamma_1.1           cli_3.6.3              compiler_4.3.1        
+[115] rlang_1.1.4            crayon_1.5.3           SQUAREM_2021.1        
+[118] future.apply_1.11.2    ggsignif_0.6.4         labeling_0.4.3        
+[121] plyr_1.8.9             fs_1.6.4               stringi_1.8.4         
+[124] viridisLite_0.4.2      deldir_2.0-4           munsell_0.5.1         
+[127] lazyeval_0.2.2         spatstat.geom_3.3-3    RcppHNSW_0.6.0        
+[130] hms_1.1.3              future_1.34.0          shiny_1.9.1           
+[133] highr_0.11             trust_0.1-8            ROCR_1.0-11           
+[136] igraph_2.1.2           broom_1.0.7            RcppParallel_5.1.9    
+[139] bslib_0.8.0           </code></pre>
 </div>
 </div>
 </div>
