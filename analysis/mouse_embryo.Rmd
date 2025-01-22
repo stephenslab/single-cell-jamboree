@@ -557,23 +557,6 @@ print(combined_plot)
 ```
 
 
-```{r plotting_slide14_factors_ft}
-plots <- list()
-slideID <- seurat_object$slide_id == "Slide 14"
-selected_factors <- which(order(flashier_fit_nn$pve, decreasing = T) %in% c(1:9))
-
-for (f in selected_factors) {
-  p <- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
-  plots[[length(plots) + 1]] <- ggplotGrob(p)
-}
-# Combine the plots in a 2x3 grid
-combined_plot <- wrap_plots(plots, ncol = 3, nrow = 3)
-
-# Display the combined plot
-print(combined_plot)
-```
-
-
 ```{r}
 # fasttopics_fit <- readRDS("../output/mouse_embryo/fasttopics_fit.rds")
 L <- fasttopics_fit$L
