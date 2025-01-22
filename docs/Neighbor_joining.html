@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-12-12
+<strong>Last updated:</strong> 2024-12-16
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreede003c4a841f40e9ae9db590bd1c245631a02cedtargetblankde003c4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1101c80d8ba037f2f49812f069f619c9e4f543ddtargetblank1101c80a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/de003c4a841f40e9ae9db590bd1c245631a02ced" target="_blank">de003c4</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1101c80d8ba037f2f49812f069f619c9e4f543dd" target="_blank">1101c80</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreede003c4a841f40e9ae9db590bd1c245631a02cedtargetblankde003c4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1101c80d8ba037f2f49812f069f619c9e4f543ddtargetblank1101c80a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/de003c4a841f40e9ae9db590bd1c245631a02ced" target="_blank">de003c4</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1101c80d8ba037f2f49812f069f619c9e4f543dd" target="_blank">1101c80</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -468,12 +468,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Untracked files:
-    Untracked:  .gitignore
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -518,6 +512,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/Neighbor_joining.html" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/40ca4d03492d17587c36594eb850200c37eb6b12/docs/Neighbor_joining.html" target="_blank">40ca4d0</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+<td>
+adding NJ exploeration
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -609,6 +637,43 @@ p3 &lt;- structure_plot(L[cells,],topics = other_factors,
        fill = &quot;factor&quot;,color = &quot;factor&quot;)
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/structure-plots-flashier-nmf-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plots-flashier-nmf-1">
+Past versions of structure-plots-flashier-nmf-1.png
+</button>
+</p>
+<div id="fig-structure-plots-flashier-nmf-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/structure-plots-flashier-nmf-1.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Let’s start by applying NJ to all the factor together. It generates a
 couple of negative edge length that we correct</p>
 <pre class="r"><code>
@@ -617,9 +682,83 @@ dimnames(dist_mat)= list(1:ncol(dist_mat), 1:ncol(dist_mat))
 check_tree=nj(dist_mat )
 plot(check_tree, main=&quot;NMF +NJ&quot;)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/NJ%20NMF_all-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-NJ-NMF_all-1">
+Past versions of "NJ NMF_all-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-NJ-NMF_all-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/NJ NMF_all-1.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>check_tree$edge.length=abs(check_tree$edge.length)
 plot(check_tree)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/NJ%20NMF_all-2.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-NJ-NMF_all-2">
+Past versions of "NJ NMF_all-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-NJ-NMF_all-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/NJ NMF_all-2.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Lets now focus just on the so called celltype_factors and apply
 NJ</p>
 <pre class="r"><code>celltype_factors &lt;-c(6,11:19,21)
@@ -627,10 +766,84 @@ NJ</p>
 check_tree=nj(dist_mat[celltype_factors, celltype_factors] )
 plot(check_tree, main=&quot;Cell factor + NMF +NJ&quot;)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/unnamed-chunk-1-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/unnamed-chunk-1-1.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>check_tree$edge.length=abs(check_tree$edge.length)
 check_tree
 plot(check_tree)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/unnamed-chunk-1-2.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-2">
+Past versions of unnamed-chunk-1-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/unnamed-chunk-1-2.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code># 
 # Phylogenetic tree with 11 tips and 9 internal nodes.
 # 
@@ -662,6 +875,43 @@ p3 &lt;- structure_plot(L[cells,celltype_topics2],grouping = celltype[cells],
   ggtitle(&quot;more cell-type topics&quot;)                   
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/structure-plots-fasttopics-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plots-fasttopics-1">
+Past versions of structure-plots-fasttopics-1.png
+</button>
+</p>
+<div id="fig-structure-plots-fasttopics-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/structure-plots-fasttopics-1.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Same let’s run NJ on all the factor and then let’s focus of the cell
 topic</p>
 <pre class="r"><code>dist_mat=  t(pnmf$F)%*% pnmf$F
@@ -670,10 +920,84 @@ check_tree=nj(dist_mat   )
  
 plot(check_tree, main=&quot;Topic +NJ&quot;)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/unnamed-chunk-2-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/unnamed-chunk-2-1.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>check_tree$edge.length=abs(check_tree$edge.length)
 check_tree
 plot(check_tree)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/unnamed-chunk-2-2.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-2">
+Past versions of unnamed-chunk-2-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/unnamed-chunk-2-2.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code># 
 # Phylogenetic tree with 23 tips and 21 internal nodes.
 # 
@@ -688,10 +1012,84 @@ check_tree=nj( dist_mat[celltype_topics, celltype_topics]    )
  
 plot(check_tree, main=&quot;Cell topic + FastTopic +NJ&quot;)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/unnamed-chunk-3-1.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>check_tree$edge.length=abs(check_tree$edge.length)
 check_tree
 plot(check_tree)</code></pre>
 <p><img src="figure/Neighbor_joining.Rmd/unnamed-chunk-3-2.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3ece72dab3e75c608f94ffc2df1ae6401e3d3e9d/docs/figure/Neighbor_joining.Rmd/unnamed-chunk-3-2.png" target="_blank">3ece72d</a>
+</td>
+<td>
+WD
+</td>
+<td>
+2024-12-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code># 
 # Phylogenetic tree with 9 tips and 7 internal nodes.
 # 
@@ -715,7 +1113,7 @@ Session information
 <pre class="r"><code>sessionInfo()
 # R version 4.4.1 (2024-06-14 ucrt)
 # Platform: x86_64-w64-mingw32/x64
-# Running under: Windows 11 x64 (build 22631)
+# Running under: Windows 11 x64 (build 26100)
 # 
 # Matrix products: default
 # 

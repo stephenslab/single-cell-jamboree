@@ -19,14 +19,19 @@ via [this link][box].
 
 + [Various attempts at factorizing the pancreas data set.](pancreas_factors.html)
 
++ [Another look at matrix factorization for the pancreas data.](pancreas_another_look.html)
+
++ [Tree-based representations of the pancreas data.](pancreas_trees.html)
+
++ [Revisiting semi-NMF for the pancreas data](pancreas_snmf.html)
+
 + [Improved UMAP plots for the pancreas data set.](Exploration_pancreas_data_using_Seurat.html)
+
++ [Initial exploration of the pancreas endocrine data set.](pancreas_endocrine.html)
 
 + [Exploratory analysis of human brain data, COP cells.](human_brain_COP_cells.html)
 
 + [Analysis of Single-Cell (Spatial) Transcriptomics From Mouse Embryos](mouse_embryo.html)
-
-+ [Neighbor joining on pancreas cells](Neighbor_joining.html)
-
 
 [hca]: https://data.humancellatlas.org
 [google-sheet-data-sets]: https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing
