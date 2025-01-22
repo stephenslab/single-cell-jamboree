@@ -24,10 +24,11 @@ library(Biobase)
 library(ggpubr)
 library(gridExtra)
 library(fastTopics)
+library(tidyverse)
 source('../code/plot_loadings_on_umap.R')
 source("../code/Customized_Plots.R")
+source("../code/plot_loadings_on_locations.R")
 seurat_object <- readRDS("../data/mouse_embryo/processed_seurat/seurat_object.rds")
-Y <- t(seurat_object$RNA$data)
 ```
 
 The data contains the UMAP information that we can directly use for visualization, and compare with the "anatomical annotation" and the "cluster label" in [Srivatsan et al, 2021](https://www.science.org/doi/10.1126/science.abb9536).
@@ -493,8 +494,100 @@ Existing literature has reported that "Knock-out of Arhgap15 function demonstrat
 
 
 
+## Exploring Spatial Pattern of Factors
+
+Finally, let's explore the spatial pattern of these factors in the mouse embryo. 
+
+```{r load_image}
+L <- flashier_fit_nn$L_pm
+locations <- data.frame(x = seurat_object$coords.x1, y = seurat_object$coords.x2)
+```
 
 
+These locations are collected from 14 different slides. Let's focus on the slide 14 for now.
+
+```{r plotting_slide14}
+locationsdf <- locations
+locationsdf$slideID <- seurat_object$slide_id
+locationsdf$annotation <- as.factor(seurat_object$anatomical_annotation)
+locationsdf$celltype <- as.factor(seurat_object$final_cluster_label)
+locationsdf %>%
+  filter(slideID == "Slide 14") %>%
+  ggplot(aes(x = x, y = y, colour = (annotation))) +
+  geom_point(size = 1, alpha = 1) +
+  theme_minimal()
+locationsdf %>%
+  filter(slideID == "Slide 14") %>%
+  ggplot(aes(x = x, y = y, colour = (celltype))) +
+  geom_point(size = 1, alpha = 1) +
+  theme_minimal()
+```
+
+```{r plotting_slide14_factors}
+plots <- list()
+slideID <- seurat_object$slide_id == "Slide 14"
+selected_factors <- which(order(flashier_fit_nn$pve, decreasing = T) %in% c(1:9))
+
+for (f in selected_factors) {
+  p <- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)
+```
 
 
+```{r plotting_slide14_factors_semi}
+L <- flashier_fit_semi$L_pm
+slideID <- seurat_object$slide_id == "Slide 14"
+selected_factors <- which(order(flashier_fit_semi$pve, decreasing = T) %in% c(1:9))
+plots <- list()
+for (f in selected_factors) {
+  p <- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)
+```
+
+
+```{r plotting_slide14_factors_ft}
+plots <- list()
+slideID <- seurat_object$slide_id == "Slide 14"
+selected_factors <- which(order(flashier_fit_nn$pve, decreasing = T) %in% c(1:9))
+
+for (f in selected_factors) {
+  p <- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)
+```
+
+
+```{r}
+# fasttopics_fit <- readRDS("../output/mouse_embryo/fasttopics_fit.rds")
+L <- fasttopics_fit$L
+slideID <- seurat_object$slide_id == "Slide 14"
+selected_factors <- c(1:9)
+plots <- list()
+for (f in selected_factors) {
+  p <- plot_loadings_on_locations(locations = locations, loading = L, factor_num = f, size = 1, which_to_plot = slideID)
+  plots[[length(plots) + 1]] <- ggplotGrob(p)
+}
+# Combine the plots in a 2x3 grid
+combined_plot <- wrap_plots(plots, ncol = 3, nrow = 3)
+
+# Display the combined plot
+print(combined_plot)
+```
 
