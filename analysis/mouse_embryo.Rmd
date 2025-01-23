@@ -477,7 +477,7 @@ plot(flashier_fit_nn,
 
 For the factor `k2` that is shared across Erythroid Progenitors and Hepatocytes, the leading gene is ENSMUSG00000052305, which corresponds to the Hbb-bs gene in Mus musculus (mouse), encoding the hemoglobin, beta adult s chain. 
 This gene is a part of the beta-globin cluster and plays a crucial role in oxygen transport from the lungs to peripheral tissues. It is predominantly expressed in tissues involved in hematopoiesis.
-It is reasonable that this gene is highly expressed in Erythroid Progenitors, but it is kind of surprising that it is also highly expressed in Hepatocytes. Maybe this implies there exists some annotation error in the cell types of the original data.
+It is reasonable that this gene is highly expressed in Erythroid Progenitors.
 
 For the factor `k3` that is shared across multiple types of neurons and glial cells, the leading gene is ENSMUSG00000072235.
 ENSMUSG00000072235, corresponds to Tuba1a, encoding the alpha tubulin protein in Mus musculus (mouse).
@@ -508,18 +508,20 @@ These locations are collected from 14 different slides. Let's focus on the slide
 
 ```{r plotting_slide14}
 locationsdf <- locations
+locationsdf$x <- locationsdf$x + runif(nrow(locationsdf), -8, 8)
+locationsdf$y <- locationsdf$y + runif(nrow(locationsdf), -8, 8)
 locationsdf$slideID <- seurat_object$slide_id
 locationsdf$annotation <- as.factor(seurat_object$anatomical_annotation)
 locationsdf$celltype <- as.factor(seurat_object$final_cluster_label)
 locationsdf %>%
   filter(slideID == "Slide 14") %>%
   ggplot(aes(x = x, y = y, colour = (annotation))) +
-  geom_point(size = 1, alpha = 1) +
+  geom_point(size = 0.5, alpha = 0.5) +
   theme_minimal()
 locationsdf %>%
   filter(slideID == "Slide 14") %>%
   ggplot(aes(x = x, y = y, colour = (celltype))) +
-  geom_point(size = 1, alpha = 1) +
+  geom_point(size = 0.5, alpha = 0.5) +
   theme_minimal()
 ```
 
