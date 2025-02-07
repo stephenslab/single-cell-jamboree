@@ -37,7 +37,7 @@ timings <- list(nmf        = 0,
 
 # (1) Fit an NMF using flashier.
 t0 <- proc.time()
-fl0 <- flash(Y,ebnm_fn = ebnm_point_exponential,var_type = 2,
+fl_nmf <- flash(Y,ebnm_fn = ebnm_point_exponential,var_type = 2,
              greedy_Kmax = 10,S = s1,nullcheck = FALSE,
              backfit = FALSE,verbose = 3)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
