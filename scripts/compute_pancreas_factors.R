@@ -1,4 +1,4 @@
-# Analysis the pancreas data using various matrix factorization
+# Analyze the pancreas data using various matrix factorization
 # methods (flashier, fastTopics, etc)
 #
 # sinteractive --mem=16G -c 8 --time=24:00:00
