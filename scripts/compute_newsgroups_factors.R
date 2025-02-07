@@ -1,4 +1,4 @@
-# TO DO: Explain here what this script is for, and how to use it.
+# TO DO: Explain here what this script does, and how to use it.
 #
 # sinteractive --mem=16G -c 8 --time=24:00:00
 # module load R/4.2.0
@@ -30,9 +30,6 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Set up the "timings" data structure.
-#
-# *** TO DO: Update this ***
-#
 timings <- list(nmf        = 0,
                 fl_nmf     = 0,
                 fl_snmf    = 0,
