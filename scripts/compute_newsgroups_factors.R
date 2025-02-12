@@ -1,7 +1,7 @@
 # Analyze the "20 Newsgroups" data using various matrix factorization
 # methods (flashier, fastTopics, NNLM).
 #
-# sinteractive -mem=24G -c 8 --time=24:00:00
+# sinteractive --mem=24G -c 8 --time=24:00:00
 # module load R/4.2.0
 # .libPaths()[1]
 # /home/pcarbo/R_libs_4_20
@@ -74,17 +74,24 @@ pnmf <- fit_poisson_nmf(counts,k = 10,numiter = 100,method = "em",
 pnmf <- fit_poisson_nmf(counts,fit0 = pnmf,numiter = 100,method = "scd",
                         control = list(numiter = 4,nc = 8,extrapolate = TRUE),
                         verbose = "detailed")
-de <- de_analysis(pnmf,counts,shrink.method = "ash",pseudocount = 0.1,
-                  control = list(ns = 1e4,nc = 8,nsplit = 1000))
 t1 <- proc.time()
 timings$fasttopics <- t1 - t0
 print(timings$fasttopics)
 
-# Save the model fits to an .Rdata file.
+# Perform the "grade of membership" differential expression analysis
+# using the fitted Poisson NMF model.
+de_le <- de_analysis(pnmf,counts,shrink.method = "ash",
+                     lfc.stat = "le",pseudocount = 0.1,
+                     control = list(ns = 1e4,nc = 8,nsplit = 1000))
+de_vsnull <- de_analysis(pnmf,counts,shrink.method = "ash",
+                         lfc.stat = "vsnull",pseudocount = 0.1,
+                         control = list(ns = 1e4,nc = 8,nsplit = 1000))
+
+# Save the model fits and other outputs to an .Rdata file.
 fl_nmf_ldf   <- ldf(fl_nmf,type = "i")
 fl_snmf_ldf  <- ldf(fl_snmf,type = "i")
 session_info <- sessionInfo()
-save(list = c("nmf","fl_nmf_ldf","fl_snmf_ldf","pnmf","de",
-              "timings","session_info"),
+save(list = c("nmf","fl_nmf_ldf","fl_snmf_ldf","pnmf","de_le",
+              "de_vsnull","timings","session_info"),
      file = "newsgroups_factors.RData")
 resaveRdaFiles("newsgroups_factors.RData")
