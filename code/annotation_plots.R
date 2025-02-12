@@ -2,6 +2,9 @@
 # should be a matrix in which rows are features and columns are
 # dimensions (e.g., factors in a matrix factorization). Effects
 # smaller than zero_value in magnitude are not included in the plot.
+#
+# TO DO: Give example.
+#
 effect_plot <- function (effects_matrix, font_size = 9,
                          zero_value = 0.01) {
   features <- rownames(effects_matrix)
