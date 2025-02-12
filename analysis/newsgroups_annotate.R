@@ -1,0 +1,8 @@
+library(Matrix)
+library(flashier)
+library(fastTopics)
+library(ggplot2)
+library(cowplot)
+load("../data/newsgroups.RData")
+load("../output/newsgroups_factors.RData")
+set.seed(1)
