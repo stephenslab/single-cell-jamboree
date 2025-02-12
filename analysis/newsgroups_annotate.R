@@ -1,4 +1,4 @@
-# TO DO NEXT: Move this code to newsgroups_annotate.Rmd.
+# TO DO NEXT, PART 2: Move this code to newsgroups_annotate.Rmd.
 library(Matrix)
 library(flashier)
 library(fastTopics)
@@ -31,3 +31,11 @@ p8 <- volcano_plot(de_le,k = "k8",ymax = 60)
 p9 <- volcano_plot(de_le,k = "k9",ymax = 40)
 p10 <- volcano_plot(de_le,k = "k10",ymax = 40)
 
+# TO DO NEXT, PART 1a: Create plotting functions for visualizing and/or
+# annotating the semi-NMF factors (fl_snmf_ldf). This includes "effect
+# plots".
+#
+# PART 1b: Create plotting functions for visualizing and/or annotating
+# the flashier NMF factors (fl_nmf_ldf). This includes "driving gene
+# scatterplots" and "effect plots". (Although I should replace "gene"
+# with something else more general, e.g., feature.)
