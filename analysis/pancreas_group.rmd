@@ -224,7 +224,7 @@ colnames(L) <- paste0("k",1:k)
 
 Take a look at the elbow plot:
 
-```{r, results="hide", message=FALSE, warning=FALSE, fig.height=6, fig.width=8}
+```{r, results="hide", message=FALSE, warning=FALSE, fig.height=8, fig.width=8}
 ordered_df_tech <- ANOVA_factors(W[cells,], sample_info$tech[cells], stats = "R2")
 ordered_df_celltype <- ANOVA_factors(W[cells,], sample_info$celltype[cells], stats = "R2")
 par(mfrow = c(2,1))
