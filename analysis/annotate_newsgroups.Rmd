@@ -149,3 +149,25 @@ ggsave("structure_plot_newsgroups_topics.png",p1,
 ggsave("structure_plot_other_topics.png",p2,
        height = 2,width = 8,dpi = 200,bg = "white")
 ```
+
+### Annotation of the factors using "distinctive words"
+
+ADD TEXT HERE.
+
+```{r volcano-plot-k1, fig.height=3.5, fig.width=4.5}
+volcano_plot(de_le,k = "k1",ymax = 30)
+```
+
+ADD MORE TEXT HERE.
+
+```{r more-volcano-plots, fig.height=9, fig.width=7}
+plot_grid(volcano_plot(de_le,k = "k3") + guides(color = "none"),
+          volcano_plot(de_le,k = "k6") + guides(color = "none"),
+          volcano_plot(de_le,k = "k7",ymax = 30) + guides(color = "none"),
+          volcano_plot(de_le,k = "k8",ymax = 60) + guides(color = "none"),
+          volcano_plot(de_le,k = "k9",ymax = 40)  + guides(color = "none"),
+		  volcano_plot(de_le,k = "k10",ymax = 40) + guides(color = "none"),
+		  nrow = 3,ncol = 2)
+```
+
+TO DO NEXT: Generate "distinctive feature" scatterplots.
