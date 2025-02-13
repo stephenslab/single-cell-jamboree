@@ -133,8 +133,11 @@ p2 <- structure_plot(L,grouping = topics,gap = 10,topics = other_topics)
 p2
 ```
 
-See [here]() and [here]() for higher-resolution versions of these
-plots.
+See
+[here](https://github.com/stephenslab/single-cell-jamboree/blob/main/output/structure_plot_newsgroups_topics.png)
+and
+[here](https://github.com/stephenslab/single-cell-jamboree/blob/main/output/structure_plot_other_topics.png)
+for higher-resolution versions of these plots.
 
 Note that topics 2 and 5, while appearing in many different
 newsgroups, show up much more strongly in the rec.motorcycles and
