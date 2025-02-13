@@ -1,6 +1,5 @@
 # TO DO NEXT, PART 2: Move this code to newsgroups_annotate.Rmd.
 library(Matrix)
-library(flashier)
 library(fastTopics)
 library(ggplot2)
 library(cowplot)
@@ -8,6 +7,7 @@ library(ggrepel)
 source("../code/annotation_plots.R")
 load("../data/newsgroups.RData")
 load("../output/newsgroups_factors.RData")
+stop()
 set.seed(1)
 
 # Remove words that appear in fewer than 10 documents.
