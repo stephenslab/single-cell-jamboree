@@ -1,0 +1,53 @@
+---
+title: "Ideas for annotating factors: illustration using the 20 Newsgroups data set"
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+There has been a lot of discussion about how best to "annotate" the
+factors in a matrix factorization analysis. "Annotation" may mean
+different things depending on the type of data, but here we will
+consider a very simple aim in the context of text data: the data are
+counts of words in documents, and we would like to select a small set
+of words that best represents the meaning of a factor. For example, if
+a factor captures the topic of baseball, then words such as "bat",
+"Yankees" and "inning" would suggest this topic.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages needed for this analysis.
+
+```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(fastTopics)
+library(ggplot2)
+library(cowplot)
+library(ggrepel)
+```
+
+Some additional plotting functions were developed in
+[annotation_plots.R] to help us visualize the factor annotations:
+
+```{r annotate-plot-functions}
+source("../code/annotation_plots.R")
+```
+
+Set the seed for reproducibility.
+
+```{r set-seed}
+set.seed(1)
+```
+
+Load the 20 Newsgroups data and the result of fitting a topic model to
+these data:
+
+```{r load-data}
+load("../data/newsgroups.RData")
+load("../output/newsgroups_topics.RData")
+x <- colSums(counts > 0)
+j <- which(x > 9)
+counts <- counts[,j]
+```
