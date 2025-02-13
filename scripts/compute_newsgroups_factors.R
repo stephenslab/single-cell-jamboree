@@ -17,7 +17,6 @@ set.seed(1)
 x      <- colSums(counts > 0)
 j      <- which(x > 9)
 counts <- counts[,j]
-topics <- topics[j]
 
 # Compute the shifted log counts.
 a <- 1
@@ -39,8 +38,8 @@ timings <- list(nmf        = 0,
 # (1) Fit an NMF using flashier, with k = 10 factors.
 t0 <- proc.time()
 fl_nmf <- flash(Y,ebnm_fn = ebnm_point_exponential,var_type = 2,
-             greedy_Kmax = 10,S = s1,nullcheck = FALSE,
-             backfit = FALSE,verbose = 3)
+                greedy_Kmax = 10,S = s1,nullcheck = FALSE,
+                backfit = FALSE,verbose = 3)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 3)
 t1 <- proc.time()
 timings$fl_nmf <- t1 - t0
