@@ -263,5 +263,3 @@ p3 <- structure_plot(L[cells,],topics = other_factors,
        fill = "factor",color = "factor")
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 ```
-
-

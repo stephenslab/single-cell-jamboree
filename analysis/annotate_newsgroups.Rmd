@@ -10,13 +10,21 @@ different things depending on the type of data, but here we will
 consider a very simple aim in the context of text data: the data are
 counts of words in documents, and we would like to select a small set
 of words that best represents the meaning of a factor. For example, if
-a factor captures the topic of baseball, then words such as "bat",
-"Yankees" and "inning" would suggest this topic.
+a factor captures "baseball", then words such as *bat*, *Yankees* and
+*inning* would suggest this topic. Since we don't know in advance what
+a factor represents, we would like to automate the selection of the
+"most representative words", or, more generally, the "most
+representative features". However, although we would like to automate
+this selection process, some flexibility will be needed to accommodate
+different types of data and different aims. So the annotation ideas
+illustrated here have also been designed with flexibility in mind.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
+
+## Setup
 
 First, load the packages needed for this analysis.
 
@@ -29,7 +37,8 @@ library(ggrepel)
 ```
 
 Some additional plotting functions were developed in
-[annotation_plots.R] to help us visualize the factor annotations:
+[annotation_plots.R](https://github.com/stephenslab/single-cell-jamboree/blob/main/analysis/newsgroups_annotate.R)
+to help us visualize the annotations:
 
 ```{r annotate-plot-functions}
 source("../code/annotation_plots.R")
@@ -41,13 +50,55 @@ Set the seed for reproducibility.
 set.seed(1)
 ```
 
+## The 20 Newsgroups data
+
 Load the 20 Newsgroups data and the result of fitting a topic model to
 these data:
 
 ```{r load-data}
 load("../data/newsgroups.RData")
-load("../output/newsgroups_topics.RData")
 x <- colSums(counts > 0)
 j <- which(x > 9)
 counts <- counts[,j]
 ```
+
+The data are counts of words in documents:
+
+```{r inspect-data-1}
+counts[1:4,1:4]
+```
+
+In total, there are over 18,000 documents and 18,000 words:
+
+```{r inspect-data-2}
+nrow(counts)
+ncol(counts)
+```
+
+Only a small fraction (<1%) of the word counts are greater than zero:
+
+```{r inspect-data-3}
+nnzero(counts)/prod(dim(counts))
+```
+
+## A topic modeling analysis of the 20 Newsgroups data
+
+Previously, using
+[this R script](https://github.com/stephenslab/single-cell-jamboree/blob/main/scripts/compute_newsgroups_topics.R),
+we fit a multinomial topic model with $K = 10$ topics to the 20
+Newsgroups data set.
+
+```{r load-results}
+load("../output/newsgroups_topics.RData")
+```
+
+The "L" matrix in the topic model contains the topic proportions; that
+is, each document is represented as an affine combination of 10
+factors or "topics". (The proportions in each row of the L matrix add
+up to 1.)
+
+```{r memberships}
+L <- poisson2multinom(pnmf)$L
+head(round(L,digits = 3))
+```
+
