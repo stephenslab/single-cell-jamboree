@@ -21,9 +21,11 @@ via [this link][box].
 
 + [Another look at matrix factorization for the pancreas data.](pancreas_another_look.html)
 
++ [Annotation of pancreas factors.](pancreas_annotate.html)
+
 + [Tree-based representations of the pancreas data.](pancreas_trees.html)
 
-+ [Explorating group-specific factors of the pancreas data.](pancreas_group.html)
++ [Exploring group-specific factors of the pancreas data.](pancreas_group.html)
 
 + [Revisiting semi-NMF for the pancreas data](pancreas_snmf.html)
 
