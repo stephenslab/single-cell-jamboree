@@ -1,5 +1,5 @@
 # I run this after compute_newsgroups_topics.R to compile the key
-# matrices I would like to focus on in subsequent analyses.
+# matrices I would like to keep for subsequent analyses.
 library(tools)
 library(fastTopics)
 
@@ -18,7 +18,6 @@ L <- poisson2multinom(pnmf)$L
 F <- de_vsnull$postmean
 
 # Save the compiled results to an .Rdata file.
-save(list = c("topics","L","F"),
-     file = "newsgroups_factors.RData")
-resaveRdaFiles("newsgroups_factors.RData")
-
+newsgroups <- list(topics = topics,L = L,F = F)
+save(list = "newsgroups",file = "newsgroups.RData")
+resaveRdaFiles("newsgroups.RData")
