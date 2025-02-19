@@ -9,8 +9,8 @@ Here we re-examine some of the
 with the goal of understanding how best to *annotate* the pancreas
 factors. As we will see, there isn't a single "one-size-fits-all"
 strategy that works best, and so we recommend exploring different
-annotation strategies. Also, careful *interpretation* of the matrix
-factorization results is discussed.
+annotation strategies. Also, careful interpretation of the matrix
+factorization is discussed.
 
 The plotting functions used in this analysis are from
 [fastTopics][fastTopics].
@@ -54,8 +54,8 @@ produced by flashier.
 ## Structure plot
 
 The Structure plot (also shown in the previous analysis) shows that
-many of the factors correspond closely to the cell types estimated in
-the published analysis:
+many of the factors correspond closely to the cell-type assignments
+that were estimated in the published analysis:
 
 ```{r structure-plot-flashier-nmf, fig.height=2, fig.width=8, results="hide", message=FALSE}
 celltype <- sample_info$celltype
@@ -65,8 +65,7 @@ celltype <-
 		  "endothelial","macrophage","mast","schwann","alpha","beta",
 		  "delta","gamma","epsilon"))
 L <- fl_nmf_ldf$L
-k <- ncol(L)
-colnames(L) <- paste0("k",1:k)
+colnames(L) <- paste0("k",1:9)
 structure_plot(L[,-1],grouping = celltype,gap = 10,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 ```
@@ -77,10 +76,51 @@ at.
 
 **A note about interpretation:** For visualization purposes, the
 columns of the L matrix—the "membership matrix"—were scaled so that
-the largest membership for a given factor (column) is always
-exactly 1.  However, this *normalization is arbitrary*. Therefore, *it
+the largest membership for a given factor (column) was always
+exactly 1.  However, *this normalization is arbitrary*. Therefore, *it
 is not meaningful to compare memberships across factors (i.e., colors
 in the Structure plot); it is only meaningful to compare memberships
-within a given factor (color in the Structure plot).*
+within a given factor (a single color in the Structure plot).*
+
+## Annotating the factors by "driving genes"
+
+To illustrate annotating the factors, let's focus on factors 4, 5 and
+6—these are the factors that largely capture the islet cells (alpha,
+beta, *etc*). Let's consider two different selection strategies: (i)
+choosing genes $j$ with the largest $f_{jk}$; (ii) choosing genes $j$
+with the largest differences $f_{jk} - f_{jk'}$ with other factors $k'$
+("distinctive genes"). These two selection strategies are implemented
+in the "annotation_heatmap" function:
+
+```{r annotation-plot-flashier-nmf, fig.height=3.25, fig.width=6, comment=""}
+F <- fl_nmf_ldf$F
+colnames(F) <- paste0("k",1:9)
+kset <- paste0("k",4:6)
+p1 <- annotation_heatmap(F,n = 8,dims = kset,
+                         select_features = "largest",
+						 font_size = 9) +
+  labs(title = "select_features = \"largest\"") +
+  theme(plot.title = element_text(face = "plain",size = 9))
+p2 <- annotation_heatmap(F,n = 8,dims = kset,
+                         select_features = "distinctive",
+                         compare_dims = kset,
+						 font_size = 9) +
+  labs(title = "select_features = \"distinctive\"") +
+  theme(plot.title = element_text(face = "plain",size = 9))
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+Strategy (i) picks out some canonical marker genes for islet cells
+(e.g., *INS* for beta cells, *GCG* for alpha cells), but also other
+genes that are highly expressed in several islet cell types, such as
+*TTR* and *CHGB*. On the other hand, strategy (ii) focusses more
+strongly on genes that distinguish one cell type from another, and as
+a result marker genes such as *MAFA* (beta cells) and *GC* (alpha
+cells) are ranked more highly with this strategy.
+
+The better strategy will depend on the setting and on the goals of the
+analysis, which is why the "annotation_heatmap" function provides both
+options. These selection strategies can also reveal complementary
+insights so in many situations it may be better to use both.
 
 [fastTopics]: https://github.com/stephenslab/fastTopics/
