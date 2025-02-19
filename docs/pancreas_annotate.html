@@ -300,7 +300,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-18
+<strong>Last updated:</strong> 2025-02-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree371108b3bde59420be37c4794d9787c13f0c1d77targetblank371108ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb36508bf5db1e33dca218ea14dc03f3683da85b7targetblankb36508ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/371108b3bde59420be37c4794d9787c13f0c1d77" target="_blank">371108b</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b36508bf5db1e33dca218ea14dc03f3683da85b7" target="_blank">b36508b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree371108b3bde59420be37c4794d9787c13f0c1d77targetblank371108ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb36508bf5db1e33dca218ea14dc03f3683da85b7targetblankb36508ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/371108b3bde59420be37c4794d9787c13f0c1d77" target="_blank">371108b</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b36508bf5db1e33dca218ea14dc03f3683da85b7" target="_blank">b36508b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -519,6 +519,92 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b36508bf5db1e33dca218ea14dc03f3683da85b7/analysis/pancreas_annotate.Rmd" target="_blank">b36508b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+wflow_publish("pancreas_annotate.Rmd", verbose = TRUE, view = FALSE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a8d45762ba596b777dd984b9a6e8ca52385073ef/analysis/pancreas_annotate.Rmd" target="_blank">a8d4576</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+A few edits to the text of the pancreas_annotate analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/9dd5b4a4eeace7f6e633c05cf49036c4105a4b73/analysis/pancreas_annotate.Rmd" target="_blank">9dd5b4a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Added annotation plots for flashier NMF result to pancreas_annotate
+analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/335dd81ff06478b6c84002e65dbd8bd8a200a59e/analysis/pancreas_annotate.Rmd" target="_blank">335dd81</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-02-19
+</td>
+<td>
+Added structure plot to pancreas_annotate analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/e77173868c42138ec9de2b78146ab92fed1c4963/docs/pancreas_annotate.html" target="_blank">e771738</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-02-18
+</td>
+<td>
+First build of the pancreas_annotate analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/371108b3bde59420be37c4794d9787c13f0c1d77/analysis/pancreas_annotate.Rmd" target="_blank">371108b</a>
 </td>
 <td>
@@ -542,8 +628,9 @@ workflowr::wflow_publish("pancreas_annotate.Rmd", verbose = TRUE)
 href="pancreas_another_look.html">matrix factorization results from the
 pancreas CEL-seq2 data</a>, with the goal of understanding how best to
 <em>annotate</em> the pancreas factors. As we will see, there isn’t a
-single “one-size-fits-all” strategy that works best, so it is suggested
-that several annotation strategies be explored.</p>
+single “one-size-fits-all” strategy that works best, and so we recommend
+exploring different annotation strategies. Also, careful interpretation
+of the matrix factorization is discussed.</p>
 <p>The plotting functions used in this analysis are from <a
 href="https://github.com/stephenslab/fastTopics/">fastTopics</a>.</p>
 <p>First, load the packages needed for this analysis.</p>
@@ -554,8 +641,132 @@ library(ggplot2)
 library(cowplot)</code></pre>
 <p>Set the seed for reproducibility.</p>
 <pre class="r"><code>set.seed(1)</code></pre>
+<p>Load the CEL-Seq2 pancreas data and the outputs generated by running
+the <code>compute_pancreas_celseq2_factors.R</code> script.</p>
+<pre class="r"><code>load(&quot;../data/pancreas.RData&quot;)
+load(&quot;../output/pancreas_celseq2_factors.RData&quot;)
+i           &lt;- which(sample_info$tech == &quot;celseq2&quot;)
+sample_info &lt;- sample_info[i,]
+counts      &lt;- counts[i,]
+sample_info &lt;- transform(sample_info,celltype = factor(celltype))</code></pre>
+<p>We will first focus on the non-negative matrix factorization (NMF)
+produced by flashier.</p>
 <div id="structure-plot" class="section level2">
 <h2>Structure plot</h2>
+<p>The Structure plot (also shown in the previous analysis) shows that
+many of the factors correspond closely to the cell-type assignments that
+were estimated in the published analysis:</p>
+<pre class="r"><code>celltype &lt;- sample_info$celltype
+celltype &lt;-
+ factor(celltype,
+        c(&quot;acinar&quot;,&quot;ductal&quot;,&quot;activated_stellate&quot;,&quot;quiescent_stellate&quot;,
+          &quot;endothelial&quot;,&quot;macrophage&quot;,&quot;mast&quot;,&quot;schwann&quot;,&quot;alpha&quot;,&quot;beta&quot;,
+          &quot;delta&quot;,&quot;gamma&quot;,&quot;epsilon&quot;))
+L &lt;- fl_nmf_ldf$L
+colnames(L) &lt;- paste0(&quot;k&quot;,1:9)
+structure_plot(L[,-1],grouping = celltype,gap = 10,perplexity = 70,n = Inf) +
+  labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,color = &quot;factor&quot;)</code></pre>
+<p><img src="figure/pancreas_annotate.Rmd/structure-plot-flashier-nmf-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Note that the first factor was omitted in the Structure plot because
+it is a “baseline” factor, and not particularly interesting to look
+at.</p>
+<p><strong>A note about interpretation:</strong> For visualization
+purposes, the columns of the L matrix—the “membership matrix”—were
+scaled so that the largest membership for a given factor (column) was
+always exactly 1. However, please note <em>this normalization is
+arbitrary</em>. Therefore, <em>it is not meaningful to compare
+memberships across factors (i.e., colors in the Structure plot); it is
+only meaningful to compare memberships within a given factor (a single
+color in the Structure plot).</em></p>
+</div>
+<div id="annotating-the-factors-by-driving-genes"
+class="section level2">
+<h2>Annotating the factors by “driving genes”</h2>
+<p>To illustrate annotating the factors, let’s focus on factors 4, 5 and
+6—these are the factors that largely capture the islet cells (alpha,
+beta, <em>etc</em>). Let’s consider two different selection strategies:
+(i) choosing genes <span class="math inline">\(j\)</span> with the
+largest <span class="math inline">\(f_{jk}\)</span>; (ii) choosing genes
+<span class="math inline">\(j\)</span> with the largest differences
+<span class="math inline">\(f_{jk} - f_{jk&#39;}\)</span> with other
+factors <span class="math inline">\(k&#39;\)</span> (“distinctive
+genes”). These two selection strategies are implemented in the
+<code>annotation_heatmap</code> function:</p>
+<pre class="r"><code>F &lt;- fl_nmf_ldf$F
+colnames(F) &lt;- paste0(&quot;k&quot;,1:9)
+kset &lt;- paste0(&quot;k&quot;,4:6)
+p1 &lt;- annotation_heatmap(F,n = 8,dims = kset,
+                         select_features = &quot;largest&quot;,
+                         font_size = 9) +
+  labs(title = &quot;select_features = \&quot;largest\&quot;&quot;) +
+  theme(plot.title = element_text(face = &quot;plain&quot;,size = 9))
+p2 &lt;- annotation_heatmap(F,n = 8,dims = kset,
+                         select_features = &quot;distinctive&quot;,
+                         compare_dims = kset,
+                         font_size = 9) +
+  labs(title = &quot;select_features = \&quot;distinctive\&quot;&quot;) +
+  theme(plot.title = element_text(face = &quot;plain&quot;,size = 9))
+plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
+<p><img src="figure/pancreas_annotate.Rmd/annotation-plot-flashier-nmf-1.png" width="720" style="display: block; margin: auto;" /></p>
+<pre><code># Features selected for plot: INS IAPP SCGN SLC30A8 ABCC8 G6PC2 NPTX2 HADH GCG CHGB TM4SF4 TTR SCG2 SCG5 ALDH1A1 PCSK2 SST RBP4 PCSK1 CPE PPY SEC11C ISL1 
+c(&quot;INS&quot;, &quot;IAPP&quot;, &quot;SCGN&quot;, &quot;SLC30A8&quot;, &quot;ABCC8&quot;, &quot;G6PC2&quot;, &quot;NPTX2&quot;, 
+&quot;HADH&quot;, &quot;GCG&quot;, &quot;CHGB&quot;, &quot;TM4SF4&quot;, &quot;TTR&quot;, &quot;SCG2&quot;, &quot;SCG5&quot;, &quot;ALDH1A1&quot;, 
+&quot;PCSK2&quot;, &quot;SST&quot;, &quot;RBP4&quot;, &quot;PCSK1&quot;, &quot;CPE&quot;, &quot;PPY&quot;, &quot;SEC11C&quot;, &quot;ISL1&quot;
+)
+# Features selected for plot: INS IAPP NPTX2 MAFA MEG3 ADCYAP1 PFKFB2 DLK1 GCG GC TTR TM4SF4 FAP LOXL4 ALDH1A1 CRYBA2 SST AQP3 PPY LEPR EGR1 RBP4 DPYSL3 AKAP12 
+c(&quot;INS&quot;, &quot;IAPP&quot;, &quot;NPTX2&quot;, &quot;MAFA&quot;, &quot;MEG3&quot;, &quot;ADCYAP1&quot;, &quot;PFKFB2&quot;, 
+&quot;DLK1&quot;, &quot;GCG&quot;, &quot;GC&quot;, &quot;TTR&quot;, &quot;TM4SF4&quot;, &quot;FAP&quot;, &quot;LOXL4&quot;, &quot;ALDH1A1&quot;, 
+&quot;CRYBA2&quot;, &quot;SST&quot;, &quot;AQP3&quot;, &quot;PPY&quot;, &quot;LEPR&quot;, &quot;EGR1&quot;, &quot;RBP4&quot;, &quot;DPYSL3&quot;, 
+&quot;AKAP12&quot;)</code></pre>
+<p>Strategy (i) picks out some canonical marker genes for islet cells
+such as <em>INS</em> for beta cells and <em>GCG</em> for alpha cells.
+But it also picks out other genes that are highly expressed in multiple
+islet cell types, such as <em>TTR</em> and <em>CHGB</em>. Strategy (ii)
+focusses more strongly on genes that distinguish one cell type from
+another, and as a result marker genes such as <em>MAFA</em> (beta cells)
+and <em>GC</em> (alpha cells) are ranked more highly with this
+strategy.</p>
+<p>The better strategy will depend on the setting and on the goals of
+the analysis, which is why the <code>annotation_heatmap</code> function
+provides both options. These selection strategies can also reveal
+complementary insights and so in many situations it may be better to use
+both.</p>
+<div id="a-more-interpretable-annotation-plot" class="section level3">
+<h3>A more interpretable annotation plot</h3>
+<p>Above we sounded a note of caution about interpreting elements of L
+across factors/columns. The same applies to the F matrix. To provide a
+more even footing, above we employed the simple heuristic of scaling the
+columns of F so that the maximum element in each column was 1. That was
+helpful for selecting “distinctive” gene, but made the effect sizes
+difficult to interpret. To produce more easily interpretable effect
+sizes, we recommend visualizing this F matrix (in this code, fl is a
+“flash” object, e.g., the return value from a call to
+<code>flashier::flash()</code>):</p>
+<pre class="r"><code>out &lt;- ldf(fl)
+F &lt;- with(out,F %*% diag(D))</code></pre>
+<p>This is what this rescaled F matrix looks like for the pancreas
+data:</p>
+<pre class="r"><code>genes &lt;- c(&quot;INS&quot;,&quot;IAPP&quot;,&quot;NPTX2&quot;,&quot;MAFA&quot;,&quot;MEG3&quot;,&quot;ADCYAP1&quot;,&quot;PFKFB2&quot;, 
+           &quot;DLK1&quot;,&quot;GCG&quot;,&quot;GC&quot;,&quot;TTR&quot;,&quot;TM4SF4&quot;,&quot;FAP&quot;,&quot;LOXL4&quot;,&quot;ALDH1A1&quot;, 
+           &quot;CRYBA2&quot;,&quot;SST&quot;,&quot;AQP3&quot;,&quot;PPY&quot;,&quot;LEPR&quot;,&quot;EGR1&quot;,&quot;RBP4&quot;,&quot;DPYSL3&quot;, 
+           &quot;AKAP12&quot;)
+F &lt;- with(fl_nmf_ldf,F %*% diag(D))
+colnames(F) &lt;- paste0(&quot;k&quot;,1:9)
+annotation_heatmap(F,select_features = genes,font_size = 9)</code></pre>
+<p><img src="figure/pancreas_annotate.Rmd/annotation-plot-flashier-nmf-2-1.png" width="390" style="display: block; margin: auto;" /></p>
+<p>Visually, this plot looks quite similar to before, but now the effect
+sizes are on a different scale. With this rescaling, the effect sizes
+have the following interpretation:</p>
+<p><span class="math inline">\(f_{jk}\)</span> is (approximately) the
+<em>log-fold change</em> (LFC) of gene <span
+class="math inline">\(j\)</span> in a cell <span
+class="math inline">\(i\)</span> with the largest membership in factor
+<span class="math inline">\(k\)</span> (<span
+class="math inline">\(l_{ik} =
+1\)</span>) relative to a cell <span
+class="math inline">\(i&#39;\)</span> with no membership in factor <span
+class="math inline">\(k\)</span> (<span
+class="math inline">\(l_{i&#39;k} = 0\)</span>).</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -583,39 +794,41 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3     ggplot2_3.5.0     fastTopics_0.7-20 flashier_1.0.55  
+# [1] cowplot_1.1.3     ggplot2_3.5.0     fastTopics_0.7-21 flashier_1.0.55  
 # [5] ebnm_1.1-34       Matrix_1.6-5     
 # 
 # loaded via a namespace (and not attached):
-#  [1] tidyselect_1.2.1     viridisLite_0.4.2    dplyr_1.1.4         
-#  [4] fastmap_1.1.1        lazyeval_0.2.2       promises_1.2.1      
-#  [7] digest_0.6.34        lifecycle_1.0.4      invgamma_1.1        
-# [10] magrittr_2.0.3       compiler_4.3.3       rlang_1.1.3         
-# [13] sass_0.4.8           progress_1.2.3       tools_4.3.3         
-# [16] utf8_1.2.4           yaml_2.3.8           data.table_1.15.2   
-# [19] knitr_1.45           prettyunits_1.2.0    htmlwidgets_1.6.4   
-# [22] scatterplot3d_0.3-44 plyr_1.8.9           RColorBrewer_1.1-3  
-# [25] Rtsne_0.17           workflowr_1.7.1      withr_3.0.0         
-# [28] purrr_1.0.2          grid_4.3.3           fansi_1.0.6         
-# [31] git2r_0.33.0         colorspace_2.1-0     scales_1.3.0        
-# [34] gtools_3.9.5         cli_3.6.2            rmarkdown_2.26      
-# [37] crayon_1.5.2         generics_0.1.3       RcppParallel_5.1.7  
-# [40] httr_1.4.7           reshape2_1.4.4       pbapply_1.7-2       
-# [43] cachem_1.0.8         stringr_1.5.1        splines_4.3.3       
-# [46] parallel_4.3.3       softImpute_1.4-1     vctrs_0.6.5         
-# [49] jsonlite_1.8.8       hms_1.1.3            mixsqp_0.3-54       
-# [52] ggrepel_0.9.5        irlba_2.3.5.1        horseshoe_0.2.0     
-# [55] trust_0.1-8          plotly_4.10.4        jquerylib_0.1.4     
-# [58] tidyr_1.3.1          glue_1.7.0           uwot_0.2.2.9000     
-# [61] stringi_1.8.3        Polychrome_1.5.1     gtable_0.3.4        
-# [64] later_1.3.2          quadprog_1.5-8       munsell_0.5.0       
-# [67] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.7     
-# [70] truncnorm_1.0-9      R6_2.5.1             rprojroot_2.0.4     
-# [73] evaluate_0.23        lattice_0.22-5       RhpcBLASctl_0.23-42 
-# [76] SQUAREM_2021.1       ashr_2.2-66          httpuv_1.6.14       
-# [79] bslib_0.6.1          Rcpp_1.0.12          deconvolveR_1.2-1   
-# [82] whisker_0.4.1        xfun_0.42            fs_1.6.3            
-# [85] pkgconfig_2.0.3</code></pre>
+#  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.1        
+#  [4] dplyr_1.1.4          fastmap_1.1.1        lazyeval_0.2.2      
+#  [7] promises_1.2.1       digest_0.6.34        lifecycle_1.0.4     
+# [10] invgamma_1.1         magrittr_2.0.3       compiler_4.3.3      
+# [13] rlang_1.1.3          sass_0.4.8           progress_1.2.3      
+# [16] tools_4.3.3          utf8_1.2.4           yaml_2.3.8          
+# [19] data.table_1.15.2    knitr_1.45           labeling_0.4.3      
+# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
+# [25] plyr_1.8.9           RColorBrewer_1.1-3   Rtsne_0.17          
+# [28] workflowr_1.7.1      withr_3.0.0          purrr_1.0.2         
+# [31] grid_4.3.3           fansi_1.0.6          git2r_0.33.0        
+# [34] colorspace_2.1-0     scales_1.3.0         gtools_3.9.5        
+# [37] cli_3.6.2            rmarkdown_2.26       crayon_1.5.2        
+# [40] generics_0.1.3       RcppParallel_5.1.7   httr_1.4.7          
+# [43] reshape2_1.4.4       pbapply_1.7-2        cachem_1.0.8        
+# [46] stringr_1.5.1        splines_4.3.3        parallel_4.3.3      
+# [49] softImpute_1.4-1     vctrs_0.6.5          jsonlite_1.8.8      
+# [52] hms_1.1.3            mixsqp_0.3-54        ggrepel_0.9.5       
+# [55] irlba_2.3.5.1        horseshoe_0.2.0      trust_0.1-8         
+# [58] plotly_4.10.4        jquerylib_0.1.4      tidyr_1.3.1         
+# [61] glue_1.7.0           uwot_0.2.2.9000      stringi_1.8.3       
+# [64] Polychrome_1.5.1     gtable_0.3.4         later_1.3.2         
+# [67] quadprog_1.5-8       munsell_0.5.0        tibble_3.2.1        
+# [70] pillar_1.9.0         htmltools_0.5.7      truncnorm_1.0-9     
+# [73] R6_2.5.1             rprojroot_2.0.4      evaluate_0.23       
+# [76] lattice_0.22-5       highr_0.10           RhpcBLASctl_0.23-42 
+# [79] SQUAREM_2021.1       ashr_2.2-66          httpuv_1.6.14       
+# [82] bslib_0.6.1          Rcpp_1.0.12          deconvolveR_1.2-1   
+# [85] whisker_0.4.1        xfun_0.42            fs_1.6.3            
+# [88] pkgconfig_2.0.3</code></pre>
+</div>
 </div>
 </div>
 
