@@ -124,4 +124,42 @@ analysis, which is why the `annotation_heatmap` function provides both
 options. These selection strategies can also reveal complementary
 insights and so in many situations it may be better to use both.
 
+### A more interpretable annotation plot
+
+Above we sounded a note of caution about interpreting elements of L
+across factors/columns. The same applies to the F matrix. To provide a
+more even footing, above we employed the simple heuristic of scaling
+the columns of F so that the maximum element in each column
+was 1. That was helpful for selecting "distinctive" gene, but made the
+effect sizes difficult to interpret. To produce more easily
+interpretable effect sizes, we recommend visualizing this F matrix (in
+this code, fl is a "flash" object, e.g., the return value from a call
+to `flashier::flash()`):
+
+```{r rescaling-F, eval=FALSE}
+out <- ldf(fl)
+F <- with(out,F %*% diag(D))
+```
+
+This is what this rescaled F matrix looks like for the pancreas data:
+
+```{r annotation-plot-flashier-nmf-2, fig.height=3.25, fig.width=3.25, results="hide"}
+genes <- c("INS","IAPP","NPTX2","MAFA","MEG3","ADCYAP1","PFKFB2", 
+           "DLK1","GCG","GC","TTR","TM4SF4","FAP","LOXL4","ALDH1A1", 
+           "CRYBA2","SST","AQP3","PPY","LEPR","EGR1","RBP4","DPYSL3", 
+           "AKAP12")
+F <- with(fl_nmf_ldf,F %*% diag(D))
+colnames(F) <- paste0("k",1:9)
+annotation_heatmap(F,select_features = genes,font_size = 9)
+```
+
+Visually, this plot looks quite similar to before, but now the effect
+sizes are on a different scale. With this rescaling, the effect sizes
+have the following interpretation:
+
+$f_{jk}$ is (approximately) the *log-fold change* (LFC) of gene $j$
+in a cell $i$ with the largest membership in factor $k$ ($l_{ik} =
+1$) relative to a cell $i'$ with no membership in factor $k$
+($l_{i'k} = 0$).
+
 [fastTopics]: https://github.com/stephenslab/fastTopics/
