@@ -157,9 +157,9 @@ Visually, this plot looks quite similar to before, but now the effect
 sizes are on a different scale. With this rescaling, the effect sizes
 have the following interpretation:
 
-$f_{jk}$ is (approximately) the *log-fold change* (LFC) of gene $j$
-in a cell $i$ with the largest membership in factor $k$ ($l_{ik} =
-1$) relative to a cell $i'$ with no membership in factor $k$
-($l_{i'k} = 0$).
+$f_{jk}$ is (approximately) the log-fold change (LFC) of gene $j$ in
+a hypothetical cell $i$ with the largest possible membership to factor
+$k$ ($l_{ik} = 1$) relative to another hypothetical cell $i'$ with no
+membership to factor $k$ ($l_{i'k} = 0$).
 
 [fastTopics]: https://github.com/stephenslab/fastTopics/
