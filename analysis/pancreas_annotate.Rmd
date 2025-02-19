@@ -77,10 +77,11 @@ at.
 **A note about interpretation:** For visualization purposes, the
 columns of the L matrix—the "membership matrix"—were scaled so that
 the largest membership for a given factor (column) was always
-exactly 1.  However, *this normalization is arbitrary*. Therefore, *it
-is not meaningful to compare memberships across factors (i.e., colors
-in the Structure plot); it is only meaningful to compare memberships
-within a given factor (a single color in the Structure plot).*
+exactly 1.  However, please note *this normalization is
+arbitrary*. Therefore, *it is not meaningful to compare memberships
+across factors (i.e., colors in the Structure plot); it is only
+meaningful to compare memberships within a given factor (a single
+color in the Structure plot).*
 
 ## Annotating the factors by "driving genes"
 
@@ -90,7 +91,7 @@ beta, *etc*). Let's consider two different selection strategies: (i)
 choosing genes $j$ with the largest $f_{jk}$; (ii) choosing genes $j$
 with the largest differences $f_{jk} - f_{jk'}$ with other factors $k'$
 ("distinctive genes"). These two selection strategies are implemented
-in the "annotation_heatmap" function:
+in the `annotation_heatmap` function:
 
 ```{r annotation-plot-flashier-nmf, fig.height=3.25, fig.width=6, comment=""}
 F <- fl_nmf_ldf$F
@@ -111,16 +112,16 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
 Strategy (i) picks out some canonical marker genes for islet cells
-(e.g., *INS* for beta cells, *GCG* for alpha cells), but also other
-genes that are highly expressed in several islet cell types, such as
-*TTR* and *CHGB*. On the other hand, strategy (ii) focusses more
-strongly on genes that distinguish one cell type from another, and as
-a result marker genes such as *MAFA* (beta cells) and *GC* (alpha
-cells) are ranked more highly with this strategy.
+such as *INS* for beta cells and *GCG* for alpha cells. But it also
+picks out other genes that are highly expressed in multiple islet cell
+types, such as *TTR* and *CHGB*. Strategy (ii) focusses more strongly
+on genes that distinguish one cell type from another, and as a result
+marker genes such as *MAFA* (beta cells) and *GC* (alpha cells) are
+ranked more highly with this strategy.
 
 The better strategy will depend on the setting and on the goals of the
-analysis, which is why the "annotation_heatmap" function provides both
+analysis, which is why the `annotation_heatmap` function provides both
 options. These selection strategies can also reveal complementary
-insights so in many situations it may be better to use both.
+insights and so in many situations it may be better to use both.
 
 [fastTopics]: https://github.com/stephenslab/fastTopics/
