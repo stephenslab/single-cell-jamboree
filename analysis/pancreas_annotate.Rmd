@@ -124,7 +124,7 @@ analysis, which is why the `annotation_heatmap` function provides both
 options. These selection strategies can also reveal complementary
 insights and so in many situations it may be better to use both.
 
-### A more interpretable annotation plot
+### A more interpretable annotation heatmap
 
 Above we sounded a note of caution about interpreting elements of L
 across factors/columns. The same applies to the F matrix. To provide a
@@ -165,7 +165,7 @@ membership to factor $k$ ($l_{i'k} = 0$).
 </div>
 
 Also note that this same idea could have been also applied to the
-other annotation plot (using the first selection strategy)—we showed
-this with just the second annotation plot for illustration.
+other annotation heatmap (using the first selection strategy)—we showed
+this with just the second annotation heatmap for illustration.
 
 [fastTopics]: https://github.com/stephenslab/fastTopics/
