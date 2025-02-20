@@ -168,4 +168,48 @@ Also note that this same idea could have been also applied to the
 other annotation heatmap (using the first selection strategy)—we showed
 this with just the second annotation heatmap for illustration.
 
+## Annotating the semi-NMF
+
+Previously, we found the semi-non-negative matrix factorization
+(semi-NMF) produced by flashier yields a more hierarchical
+decomposition of the cell types, capturing structure at different
+levels of cell-type-specifity:
+
+```{r structure-plot-flashier-snmf, fig.height=2, fig.width=8, results="hide", message=FALSE}
+L <- fl_snmf_ldf$L
+colnames(L) <- paste0("k",1:9)
+structure_plot(L[,-c(1,5)],grouping = celltype,gap = 10,
+               perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+```
+
+As a result, we would expect that the factors themselves would tend to
+pick more "distinctive" features; for example, factor 8 capturing
+expression specific to dselta, gamma and epsilon cells doesn't need to
+include the expression that is shared with alpha cells because factor
+4 already captures this. Still, it is helpful to explore these two
+selection strategies for the islet cell factors (3, 4 and 8) in the
+annotation heatmap:
+
+```{r annotation-plot-flashier-snmf, fig.height=3.25, fig.width=6, comment=""}
+F <- fl_snmf_ldf$F
+colnames(F) <- paste0("k",1:9)
+kset <- paste0("k",c(3,4,8))
+F <- F[,c(3,4,8,1,2,5,6,7,9)]
+p1 <- annotation_heatmap(F,n = 8,dims = kset,
+                         select_features = "largest",
+                         feature_sign = "positive",
+						 font_size = 9) +
+  labs(title = "select_features = \"largest\"") +
+  theme(plot.title = element_text(face = "plain",size = 9))
+p2 <- annotation_heatmap(F,n = 8,dims = kset,
+                         select_features = "distinctive",
+                         compare_dims = kset,
+                         feature_sign = "positive",
+						 font_size = 9) +
+  labs(title = "select_features = \"distinctive\"") +
+  theme(plot.title = element_text(face = "plain",size = 9))
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+ 
 [fastTopics]: https://github.com/stephenslab/fastTopics/
