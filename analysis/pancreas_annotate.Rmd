@@ -162,4 +162,8 @@ a hypothetical cell $i$ with the largest possible membership to factor
 $k$ ($l_{ik} = 1$) relative to another hypothetical cell $i'$ with no
 membership to factor $k$ ($l_{i'k} = 0$).
 
+Also note that this same idea could have been also applied to the
+other annotation plot (using the first selection strategy)—we showed
+this with just the second annotation plot for illustration.
+
 [fastTopics]: https://github.com/stephenslab/fastTopics/
