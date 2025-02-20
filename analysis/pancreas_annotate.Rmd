@@ -211,5 +211,5 @@ p2 <- annotation_heatmap(F,n = 8,dims = kset,
   theme(plot.title = element_text(face = "plain",size = 9))
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
- 
+
 [fastTopics]: https://github.com/stephenslab/fastTopics/
