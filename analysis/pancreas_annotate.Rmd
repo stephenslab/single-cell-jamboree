@@ -157,10 +157,12 @@ Visually, this plot looks quite similar to before, but now the effect
 sizes are on a different scale. With this rescaling, the effect sizes
 have the following interpretation:
 
+<div style="margin:1em; padding:1em; border:1px solid black;">
 $f_{jk}$ is (approximately) the log-fold change (LFC) of gene $j$ in
 a hypothetical cell $i$ with the largest possible membership to factor
 $k$ ($l_{ik} = 1$) relative to another hypothetical cell $i'$ with no
 membership to factor $k$ ($l_{i'k} = 0$).
+</div>
 
 Also note that this same idea could have been also applied to the
 other annotation plot (using the first selection strategy)—we showed
