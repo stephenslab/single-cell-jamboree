@@ -12,8 +12,9 @@ strategy that works best, and so we recommend exploring different
 annotation strategies. Also, careful interpretation of the matrix
 factorization is discussed.
 
-The plotting functions used in this analysis are from
-[fastTopics][fastTopics].
+A side benefit of this investigation is to illustate some useful
+plotting strategies, including the `annotation_heatmap()` function
+from the [fastTopics][fastTopics package].
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -27,6 +28,7 @@ library(Matrix)
 library(flashier)
 library(fastTopics)
 library(ggplot2)
+library(ggrepel)
 library(cowplot)
 ```
 
@@ -114,10 +116,15 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 Strategy (i) picks out some canonical marker genes for islet cells
 such as *INS* for beta cells and *GCG* for alpha cells. But it also
 picks out other genes that are highly expressed in multiple islet cell
-types, such as *TTR* and *CHGB*. Strategy (ii) focusses more strongly
+types, such as *SCGN* and *TTR*. Strategy (ii) focusses more strongly
 on genes that distinguish one cell type from another, and as a result
 marker genes such as *MAFA* (beta cells) and *GC* (alpha cells) are
 ranked more highly with this strategy.
+
+Below, we take a closer look at the ranking of the genes based on
+these two strategies, and suggest another simple visualization which
+could be useful. (See: "A closer look at ranking genes by largest
+versus distinctive".)
 
 The better strategy will depend on the setting and on the goals of the
 analysis, which is why the `annotation_heatmap` function provides both
@@ -211,5 +218,80 @@ p2 <- annotation_heatmap(F,n = 8,dims = kset,
   theme(plot.title = element_text(face = "plain",size = 9))
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
+
+Note that the F matrix in the semi-NMF allows for both positive and
+negative log-fold changes.
+
+## A closer look at ranking genes by largest vs. distinctive
+
+Above, we compared gene selection strategies for some annotation
+heatmaps of NMF results. Here we visualize how these two different
+strategies result in two different gene rankings. And this
+visualization may be useful on its own to annotate the factors.
+
+First we define a couple of functions used to create some plots.
+
+This function computes the "least extreme" (l.e.) effect differences
+for a non-negative effects matrix:
+
+```{r compute-le-diff}
+compute_le_diff <- function (effects_matrix,
+                             compare_dims = seq(1,ncol(effects_matrix))) {
+  m <- ncol(effects_matrix)
+  out <- effects_matrix
+  for (i in 1:m) {
+    dims <- setdiff(compare_dims,i)
+    out[,i] <- effects_matrix[,i] - apply(effects_matrix[,dims],1,max)
+  }
+  return(out)
+}
+```
+
+This function will be used to create the scatterplots:
+
+```{r distinctive-gene-scatterplot}
+distinctive_genes_scatterplot <- function (effects_matrix, k,
+                                           effect_quantile_prob = 0.999,
+                                           lediff_quantile_prob = 0.999) {
+  lediff <- compute_le_diff(effects_matrix)
+  genes  <- rownames(effects_matrix)
+  pdat   <- data.frame(gene    = genes,
+                       effect  = effects_matrix[,k],
+                       lediff = lediff[,k])
+  effect_quantile <- quantile(pdat$effect,effect_quantile_prob)
+  lediff_quantile <- quantile(pdat$lediff,lediff_quantile_prob)
+  i <- which(pdat$effect < effect_quantile & pdat$lediff < lediff_quantile)
+  pdat[i,"gene"] <- NA
+  return(ggplot(pdat,aes(x = effect,y = lediff,label = gene)) +
+         geom_point(color = "dodgerblue") +
+         geom_hline(yintercept = 0,color = "magenta",linetype = "dotted",
+                    linewidth = 0.5) +
+         geom_text_repel(color = "black",size = 2,
+                         fontface = "italic",segment.color = "black",
+                         segment.size = 0.25,min.segment.length = 0,
+                         max.overlaps = Inf,na.rm = TRUE) +
+         labs(x = "log-fold change",y = "l.e. difference") +
+         theme_cowplot(font_size = 9))
+}
+```
+
+Now we compare the two different gene rankings in the scatterplots for
+factors 4, 5 and 6 of the flashier NMF result:
+
+```{r distinctive-gene-scatterplots-flashier-nmf, fig.height=2.5, fig.width=7.5}
+F <- fl_nmf_ldf$F
+colnames(F) <- paste0("k",1:9)
+kset <- paste0("k",4:6)
+p1 <- distinctive_genes_scatterplot(F[,kset],"k4") + ggtitle("factor k4")
+p2 <- distinctive_genes_scatterplot(F[,kset],"k5") + ggtitle("factor k5")
+p3 <- distinctive_genes_scatterplot(F[,kset],"k6") + ggtitle("factor k6")
+print(plot_grid(p1,p2,p3,nrow = 1,ncol = 3))
+```
+
+It is clear from these scatterplots that the rankings are very
+different, and strikingly so for factor 5 representing alpha cells.
+This means that many of the top-ranked genes for factor 5 (largest
+increases in expression) also show very large increases in other islet
+cells, e.g., *SCG5*.
 
 [fastTopics]: https://github.com/stephenslab/fastTopics/
