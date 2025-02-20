@@ -111,4 +111,3 @@ distinctive_genes_scatterplot <-
          labs(x = "effect estimate",y = "least extreme difference") +
          theme_cowplot(font_size = font_size))
 }
-
