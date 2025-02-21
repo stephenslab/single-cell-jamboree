@@ -14,7 +14,7 @@ factorization is discussed.
 
 A side benefit of this investigation is to illustate some useful
 plotting strategies, including the `annotation_heatmap()` function
-from the [fastTopics][fastTopics package].
+from the [fastTopics][fastTopics] package.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
