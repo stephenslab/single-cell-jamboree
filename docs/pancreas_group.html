@@ -435,15 +435,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreee0006dbbb5f20d13ee2d8037ed5d8798006f13aatargetblanke0006dba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeac96a01a7d66d0ead39afde968b46aaa7e8087a1targetblankac96a01a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/e0006dbbb5f20d13ee2d8037ed5d8798006f13aa" target="_blank">e0006db</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ac96a01a7d66d0ead39afde968b46aaa7e8087a1" target="_blank">ac96a01</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreee0006dbbb5f20d13ee2d8037ed5d8798006f13aatargetblanke0006dba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeac96a01a7d66d0ead39afde968b46aaa7e8087a1targetblankac96a01a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -453,7 +453,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/e0006dbbb5f20d13ee2d8037ed5d8798006f13aa" target="_blank">e0006db</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ac96a01a7d66d0ead39afde968b46aaa7e8087a1" target="_blank">ac96a01</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -535,6 +535,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ac96a01a7d66d0ead39afde968b46aaa7e8087a1/analysis/pancreas_group.rmd" target="_blank">ac96a01</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2025-04-02
+</td>
+<td>
+workflowr::wflow_publish("analysis/pancreas_group.rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/529428e13d9b1dec823ebde3042663fa63eb9c72/docs/pancreas_group.html" target="_blank">529428e</a>
+</td>
+<td>
+Ziang Zhang
+</td>
+<td>
+2025-04-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -661,9 +695,9 @@ class="math inline">\(G_i\)</span> denote the grouping information
 class="math inline">\(i\)</span>. Suppose <span
 class="math inline">\(G_i\)</span> can take values in <span
 class="math inline">\(\{g_1, g_2, \ldots, g_L\}\)</span> (e.g. <span
-class="math inline">\(L\)</span> possible cell-types). A straightforward
-way to identify group-specific factors is to perform an ANOVA on each
-factor’s loadings. Concretely, for the <span
+class="math inline">\(L\)</span> possible cell-types).</p>
+<p>A straightforward way to identify group-specific factors is to
+perform an ANOVA on each factor’s loadings. Specifically, for the <span
 class="math inline">\(k\)</span>th factor, we regress the loadings <span
 class="math inline">\(\boldsymbol{l}_k\)</span> on the set of indicator
 variables <span class="math inline">\(\{\mathbb{I}(G_i =
