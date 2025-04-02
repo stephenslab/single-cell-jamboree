@@ -40,14 +40,17 @@ source("../code/group_factors.R")
 
 Let \(l_{ki}\) denote the loading of observation \(i\) on the $k$th factor, and let \(G_i\) denote the grouping information (e.g. cell-type) for observation (e.g. cell) \(i\). 
 Suppose \(G_i\) can take values in \(\{g_1, g_2, \ldots, g_L\}\) (e.g. $L$ possible cell-types). 
-A straightforward way to identify group-specific factors is to perform an ANOVA on each factor's loadings. Concretely, for the $k$th factor, we regress the loadings \(\boldsymbol{l}_k\) on the set of indicator variables \(\{\mathbb{I}(G_i = c_l)\}_{l=1}^L\):
+
+A straightforward way to identify group-specific factors is to perform an ANOVA on each factor's loadings. 
+Specifically, for the $k$th factor, we regress the loadings \(\boldsymbol{l}_k\) on the set of indicator variables \(\{\mathbb{I}(G_i = c_l)\}_{l=1}^L\):
 
 \[
 l_{ki} \sim \sum_{l=1}^L \beta_l \,\mathbb{I}(G_i = c_l).
 \]
 
 From the regression model for each factor, we obtain a statistic \(S_k\) that measures how strongly the grouping structure explains variation in the \(k\)-th factor's loadings. 
-For instance, \(S_k\) could be the \(R^2\) of this regression model or the \(F\)-statistic from the ANOVA test. After computing \(\{S_k\}_{k=1}^K\), we can rank the factors by their relevance to the grouping, then choose a threshold (for example, by examining an elbow plot) to automatically select the ``group-specific'' factors.
+For instance, \(S_k\) could be the \(R^2\) of this regression model or the \(F\)-statistic from the ANOVA test. 
+After computing \(\{S_k\}_{k=1}^K\), we can rank the factors by their relevance to the grouping, then choose a threshold (for example, by examining an elbow plot) to automatically select the ``group-specific'' factors.
 
 Below, let's apply this approach to the pancreas dataset, using \(R^2\) as the relevance statistic.
 
