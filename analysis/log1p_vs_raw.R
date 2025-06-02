@@ -1,5 +1,3 @@
-# TO DO: Convert this script to R Markdown.
-
 # First set the seed so that the results are reproducible.
 set.seed(1)
 
@@ -10,7 +8,7 @@ n <- 200
 s <- pmax(10,1000 * rnorm(n,10,4))
 
 # Simulate the membership matrix.
-k <- 9
+k <- 6
 L <- matrix(0,n,k)
 for (i in 1:n) {
   # TO DO.
@@ -24,3 +22,6 @@ counts <- rpois(n*m,tcrossprod(s*L,F))
 counts <- as.double(counts)
 counts <- matrix(counts,n,m)
 counts <- generate_poisson_nmf_counts(F,s*L)
+
+# TO DO: Run PCA and fastglmpca on these data and then plot the first
+# two PCs.
