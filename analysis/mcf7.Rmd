@@ -31,6 +31,8 @@ library(flashier)
 library(data.table)
 library(GEOquery)
 library(singlecelljamboreeR)
+library(ggplot2)
+library(cowplot)
 ```
 
 Set the seed for reproducibility:
@@ -86,6 +88,74 @@ samples[samples$TGFb,"label"] <- "TGFb"
 samples[with(samples,RA & TGFb),"label"] <- "RA+TGFb"
 samples <- transform(samples,
                      label = factor(label,c("EtOH","RA","TGFb","RA+TGFb")))
+```
+
+Remove the non-protein-coding genes, and the genes that are expressed
+in fewer than 4 samples:
+
+```{r filter-genes}
+x <- colSums(counts > 0)
+i <- which(x > 3 &
+           genes$GeneType == "protein-coding" &
+		   genes$Status == "active")
+genes  <- genes[i,]
+counts <- counts[,i]
+```
+
+(It turns out that there is some structure in the non-coding RNA genes
+that is is picked up by the Poisson-based methods but not by the
+Gaussian-based methods, so to avoid this complication in the
+comparisons I have removed these genes from the data, which aren't of
+interest anyhow.)
+
+This is the dimension of the data set we will analyze:
+
+```{r dim-counts}
+dim(counts)
+```
+
+For the Gaussian-based analyses, we will need the shifted log counts:
+
+```{r shifted-log-counts}
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+shifted_log_counts <- log1p(counts/(a*s))
+```
+
+## PCA and GLM-PCA
+
+Let's see what happens when we apply PCA to the shifted log counts and
+GLM-PCA to the counts. As we will see, PCA and GLM-PCA both show a
+clear clustering of the data that corresponds to the different
+treatments. However, the PCs are not individually interpretable.
+
+Run PCA on the shifted log counts, and plot the first 2 PCs:
+
+```{r pca, fig.height=2, fig.width=3}
+pca <- rpca(shifted_log_counts,k = 2,center = TRUE,scale = FALSE)
+colnames(pca$x) <- c("PC1","PC2")
+pdat <- data.frame(samples,pca$x)
+ggplot(pdat,aes(x = PC1,y = PC2,color = label)) +
+  geom_point() +
+  scale_color_manual(values = c("dodgerblue","tomato","darkblue",
+                                "limegreen")) + 
+  theme_cowplot(font_size = 10)
+```
+
+GLM-PCA applied to the counts essentially produces the same result
+(aside from an arbitrary rotation):
+
+```{r fastglmpca, fig.height=2, fig.width=3, message=FALSE}
+fit_glmpca <- init_glmpca_pois(t(counts),K = 2)
+fit_glmpca <- fit_glmpca_pois(t(counts),fit0 = fit_glmpca,verbose = FALSE)
+colnames(fit_glmpca$V) <- c("k1","k2")
+pdat <- data.frame(samples,fit_glmpca$V)
+ggplot(pdat,aes(x = k1,y = k2,color = label)) +
+  geom_point() +
+  scale_color_manual(values = c("dodgerblue","tomato","darkblue",
+                                "limegreen")) + 
+  theme_cowplot(font_size = 10)
 ```
 
 [sanford2020elife]: https://doi.org/10.7554/eLife.59388
