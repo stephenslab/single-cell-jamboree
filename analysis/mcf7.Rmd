@@ -1,0 +1,93 @@
+---
+title: NMF analysis of the MCF-7 data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+The MCF-7 data set from [Sanford et al eLife paper][sanford2020elife]
+could be a great data set for illustrating many of the ideas behind
+NMF analysis of single-cell data (even though it is actually a bulk
+RNA-seq data set). This paper analyzed the transcriptional response of
+human MCF-7 cells to retinoic acid and TGF-$\beta$, applied
+individually and in combination.  The data were downloaded from
+[GEO accession GSE152749][mcf7-geo].
+
+The following abbreviations were used in analysis:
+EtOH = ethanol; RA = retinoic acid; TGFb = TGF-$\beta$.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load packages used to process the data, perform the analyses, and
+create the plots.
+
+```{r load-pkgs, message=FALSE}
+library(rsvd)
+library(fastglmpca)
+library(fastTopics)
+library(flashier)
+library(data.table)
+library(GEOquery)
+library(singlecelljamboreeR)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
+
+## Prepare the data for analysis with fastTopics and flashier
+
+Load the RNA-seq counts:
+
+```{r load-rnaseq}
+counts <- fread("../data/GSE152749_raw_counts_GRCh38.p13_NCBI.tsv.gz",
+                sep = "\t",header = TRUE,stringsAsFactors = FALSE)
+class(counts) <- "data.frame"
+rownames(counts) <- counts$GeneID
+counts <- counts[,-1]
+counts <- as.matrix(counts)
+storage.mode(counts) <- "double"
+counts <- t(counts)
+ids <- rownames(counts)
+```
+
+Load the gene information:
+
+```{r load-genes}
+genes <- fread("../data/Human.GRCh38.p13.annot.tsv.gz",sep = "\t",
+               header = TRUE,stringsAsFactors = FALSE)
+class(genes) <- "data.frame"
+genes <- genes[1:10]
+genes <- transform(genes,
+                   GeneType = factor(GeneType),
+				   Status   = factor(Status))
+```
+
+Load the sample information:
+
+```{r load-sample-info, message=FALSE}
+geo <- getGEO(filename = "../data/GSE152749_family.soft.gz")
+samples <- data.frame(id = names(GSMList(geo)),
+                      treatment = sapply(GSMList(geo),
+                                         function (x) Meta(x)$title))
+samples <- samples[ids,]
+rownames(samples) <- NULL
+samples <- transform(samples,
+                     EtOH = grepl("EtOH",treatment,fixed = TRUE),
+                     RA   = grepl("RA",treatment,fixed = TRUE),
+                     TGFb = grepl("TGFb",treatment,fixed = TRUE))
+samples$label                 <- "EtOH"
+samples[samples$RA,"label"]   <- "RA"
+samples[samples$TGFb,"label"] <- "TGFb"
+samples[with(samples,RA & TGFb),"label"] <- "RA+TGFb"
+samples <- transform(samples,
+                     label = factor(label,c("EtOH","RA","TGFb","RA+TGFb")))
+```
+
+[sanford2020elife]: https://doi.org/10.7554/eLife.59388
+[mcf7-geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE152749
+
