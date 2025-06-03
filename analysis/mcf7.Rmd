@@ -161,17 +161,14 @@ ggplot(pdat,aes(x = k1,y = k2,color = label)) +
 
 ## Topic model
 
-Let's now try fitting a (multinomial) topic model to these data,
-which represents an *additive model* of the transcriptional changes in
-response to the different exposures. After a bit of trial and error,
-it turns out that 3 topics are needed to get the right result:
+Fit a topic model with $K = 3$ topics to the counts:
 
 ```{r fit-topic-model}
-fit0 <- fit_poisson_nmf(counts,k = 3,init.method = "random",numiter = 50,
-                        verbose = "none",
-                        control = list(nc = 4,extrapolate = FALSE))
-fit <- fit_poisson_nmf(counts,fit0 = fit0,numiter = 50,verbose = "none",
-                       control = list(nc = 4,extrapolate = TRUE))
+tm0 <- fit_poisson_nmf(counts,k = 3,init.method = "random",
+                       numiter = 50,verbose = "none",
+     				   control = list(nc = 4,extrapolate = FALSE))
+tm <- fit_poisson_nmf(counts,fit0 = tm0,numiter = 50,verbose = "none",
+                      control = list(nc = 4,extrapolate = TRUE))
 ```
 
 Structure plot comparing the topics to the clusters or treatment
@@ -179,14 +176,16 @@ conditions:
 
 ```{r structure-plot-topic-model, fig.height=1.5, fig.width=5}
 topic_colors <- c("tomato","darkblue","dodgerblue")
-n    <- nrow(fit$L)
-L    <- poisson2multinom(fit)$L
+n    <- nrow(tm$L)
+L    <- poisson2multinom(tm)$L
 rows <- order(pmax(L[,1],L[,2],L[,3]))
 L    <- L[rows,]
 structure_plot(L,grouping = samples$label[rows],topics = 1:3,
                loadings_order = 1:n,colors = topic_colors) +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
 ```
+
+TO DO NEXT: Add flashier result.
 
 [sanford2020elife]: https://doi.org/10.7554/eLife.59388
 [mcf7-geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE152749
