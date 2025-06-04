@@ -17,6 +17,8 @@ via [this link][box].
 
 + [NMF analysis of the MCF-7 data set.](mcf7.html)
 
++ [NMF analysis of the LPS data set.](lps.html)
+
 + [Initial exploration of the pancreas data set.](pancreas.html)
 
 + [Various attempts at factorizing the pancreas data set.](pancreas_factors.html)
