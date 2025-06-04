@@ -279,7 +279,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -290,8 +290,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -304,9 +304,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -401,16 +401,24 @@ versions is critical for reproducibility.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
 </p>
 </div>
-<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be
-confident that you successfully produced the results during this
-run.</p>
+The following chunks had caches available:
+<ul>
+<li>
+flashier-nmf
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory
+<code>mcf7_cache</code> and re-run the analysis. To have workflowr
+automatically delete the cache directory prior to building the file, set
+<code>delete_cache = TRUE</code> when running <code>wflow_build()</code>
+or <code>wflow_publish()</code>.</p>
 </div>
 </div>
 </div>
@@ -432,15 +440,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4499b61e965920ec63d0eb72952425037f9b4238targetblank4499b61a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1ac5a526fb7f8ae61144f12d54f3aba0e6c6f259targetblank1ac5a52a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4499b61e965920ec63d0eb72952425037f9b4238" target="_blank">4499b61</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1ac5a526fb7f8ae61144f12d54f3aba0e6c6f259" target="_blank">1ac5a52</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4499b61e965920ec63d0eb72952425037f9b4238targetblank4499b61a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1ac5a526fb7f8ae61144f12d54f3aba0e6c6f259targetblank1ac5a52a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +458,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4499b61e965920ec63d0eb72952425037f9b4238" target="_blank">4499b61</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1ac5a526fb7f8ae61144f12d54f3aba0e6c6f259" target="_blank">1ac5a52</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -465,13 +473,11 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
+    Untracked:  analysis/mcf7_cache/
     Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/Immune_ALL_human.h5ad
     Untracked:  data/pancreas_endocrine.RData
     Untracked:  data/pancreas_endocrine_alldays.h5ad
-
-Unstaged changes:
-    Modified:   analysis/pbmc_facs.R
 
 </code></pre>
 <p>
@@ -516,6 +522,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/1ac5a526fb7f8ae61144f12d54f3aba0e6c6f259/analysis/mcf7.Rmd" target="_blank">1ac5a52</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+wflow_publish("mcf7.Rmd", verbose = TRUE, view = FALSE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/5dceacd10d9338a079e584a022bc9cf3db82c76a/docs/mcf7.html" target="_blank">5dceacd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-03
+</td>
+<td>
+A few small adjustments to the topic modeling results in the mcf7
+analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -610,15 +651,15 @@ wflow_publish("mcf7.Rmd", verbose = TRUE, view = FALSE)
 </div>
 <p>The MCF-7 data set from <a
 href="https://doi.org/10.7554/eLife.59388">Sanford et al eLife paper</a>
-could be a great data set for illustrating many of the ideas behind NMF
-analysis of single-cell data (even though it is actually a bulk RNA-seq
-data set). This paper analyzed the transcriptional response of human
-MCF-7 cells to retinoic acid and TGF-<span
+is helpful for illustrating some of the basic ideas behind NMF analysis
+of single-cell data (even though it is actually a bulk RNA-seq data
+set!). This paper analyzed the transcriptional response of human MCF-7
+cells to retinoic acid and TGF-<span
 class="math inline">\(\beta\)</span>, applied individually and in
-combination. The data were downloaded from <a
+combination. These data were downloaded from <a
 href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE152749">GEO
 accession GSE152749</a>.</p>
-<p>The following abbreviations were used in analysis: EtOH = ethanol; RA
+<p>The following abbreviations are used in analysis: EtOH = ethanol; RA
 = retinoic acid; TGFb = TGF-<span
 class="math inline">\(\beta\)</span>.</p>
 <p>Load packages used to process the data, perform the analyses, and
@@ -680,11 +721,11 @@ i &lt;- which(x &gt; 3 &amp;
            genes$Status == &quot;active&quot;)
 genes  &lt;- genes[i,]
 counts &lt;- counts[,i]</code></pre>
-<p>(It turns out that there is some structure in the non-coding RNA
-genes that is is picked up by the Poisson-based methods but not by the
-Gaussian-based methods, so to avoid this complication in the comparisons
-I have removed these genes from the data, which aren’t of interest
-anyhow.)</p>
+<p>(Some background: it turns out that there is some structure in the
+non-coding RNA genes that is is picked up by the Poisson-based methods
+but not by the Gaussian-based methods, so to avoid this complication in
+the comparisons I have removed these genes from the data, which aren’t
+of interest anyhow.)</p>
 <p>This is the dimension of the data set we will analyze:</p>
 <pre class="r"><code>dim(counts)
 # [1]    41 16773</code></pre>
@@ -711,6 +752,43 @@ ggplot(pdat,aes(x = PC1,y = PC2,color = label)) +
                                 &quot;limegreen&quot;)) + 
   theme_cowplot(font_size = 10)</code></pre>
 <p><img src="figure/mcf7.Rmd/pca-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pca-1">
+Past versions of pca-1.png
+</button>
+</p>
+<div id="fig-pca-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/5dceacd10d9338a079e584a022bc9cf3db82c76a/docs/figure/mcf7.Rmd/pca-1.png" target="_blank">5dceacd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>GLM-PCA applied to the counts essentially produces the same result
 (aside from an arbitrary rotation):</p>
 <pre class="r"><code>fit_glmpca &lt;- init_glmpca_pois(t(counts),K = 2)
@@ -724,9 +802,46 @@ ggplot(pdat,aes(x = k1,y = k2,color = label)) +
                                 &quot;limegreen&quot;)) + 
   theme_cowplot(font_size = 10)</code></pre>
 <p><img src="figure/mcf7.Rmd/fastglmpca-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fastglmpca-1">
+Past versions of fastglmpca-1.png
+</button>
+</p>
+<div id="fig-fastglmpca-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/5dceacd10d9338a079e584a022bc9cf3db82c76a/docs/figure/mcf7.Rmd/fastglmpca-1.png" target="_blank">5dceacd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="topic-model" class="section level2">
-<h2>Topic model</h2>
+</div>
+</div>
+<div id="topic-model-fasttopics" class="section level2">
+<h2>Topic model (fastTopics)</h2>
 <p>Fit a topic model with <span class="math inline">\(K = 3\)</span>
 topics to the counts:</p>
 <pre class="r"><code>tm0 &lt;- fit_poisson_nmf(counts,k = 3,init.method = &quot;random&quot;,
@@ -745,7 +860,79 @@ structure_plot(L,grouping = samples$label[rows],topics = 1:3,
                loadings_order = 1:n,colors = topic_colors) +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5))</code></pre>
 <p><img src="figure/mcf7.Rmd/structure-plot-topic-model-1.png" width="600" style="display: block; margin: auto;" /></p>
-<p>TO DO NEXT: Add flashier result.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plot-topic-model-1">
+Past versions of structure-plot-topic-model-1.png
+</button>
+</p>
+<div id="fig-structure-plot-topic-model-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/5dceacd10d9338a079e584a022bc9cf3db82c76a/docs/figure/mcf7.Rmd/structure-plot-topic-model-1.png" target="_blank">5dceacd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="ebnmf-flashier" class="section level2">
+<h2>EBNMF (flashier)</h2>
+<p>Next fit an NMF to the shifted log counts using flashier, with <span
+class="math inline">\(K = 4\)</span>:</p>
+<pre class="r"><code>n  &lt;- nrow(counts)
+x  &lt;- rpois(1e7,1/n)
+s1 &lt;- sd(log(x + 1))
+fl_nmf &lt;- flash(shifted_log_counts,ebnm_fn = ebnm_point_exponential,
+                var_type = 2, greedy_Kmax = 4,S = s1,backfit = TRUE,
+                verbose = 0)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>EBNMF applied to the shifted log count decomposes the samples in a
+similar way as the topic model:</p>
+<pre class="r"><code>topic_colors &lt;- c(&quot;olivedrab&quot;,&quot;dodgerblue&quot;,&quot;darkblue&quot;,&quot;tomato&quot;)
+L    &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
+rows &lt;- order(pmax(L[,2],L[,3],L[,4]))
+L    &lt;- L[rows,]
+structure_plot(L,grouping = samples[rows,&quot;label&quot;],topics = 4:1,
+               loadings_order = 1:n,colors = topic_colors) +
+  labs(y = &quot;membership&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))</code></pre>
+<p><img src="figure/mcf7.Rmd/structure-plot-nmf-1.png" width="600" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
