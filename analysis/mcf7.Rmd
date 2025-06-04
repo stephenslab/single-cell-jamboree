@@ -4,7 +4,7 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-The MCF-7 data set from [Sanford et al eLife paper][sanford2020elife]
+The MCF-7 data set from [Sanford et al 2020 eLife paper][sanford2020elife]
 is helpful for illustrating some of the basic ideas behind NMF
 analysis of single-cell data (even though it is actually a bulk
 RNA-seq data set!). This paper analyzed the transcriptional response

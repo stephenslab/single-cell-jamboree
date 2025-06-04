@@ -5,8 +5,8 @@ output: workflowr::wflow_html
 ---
 
 Here we will revisit the LPS data set that we analyzed using a topic
-model in the [Takahama et al 2024 Nature Immunology paper][takahama2024].
-(LPS = lipopolysaccharide).
+model in the [Takahama et al Nat Immunol paper][takahama2024]. (LPS =
+lipopolysaccharide).
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -17,6 +17,7 @@ Load packages used to process the data, perform the analyses, and
 create the plots.
 
 ```{r load-pkgs, message=FALSE}
+library(data.table)
 library(fastTopics)
 library(flashier)
 library(singlecelljamboreeR)
@@ -26,6 +27,56 @@ Set the seed for reproducibility:
 
 ```{r set-seed}
 set.seed(1)
+```
+
+## Prepare the data for analysis with fastTopics and flashier
+
+Load the RNA-seq counts:
+
+```{r load-counts}
+read_lps_data <- function (file) {
+  counts <- fread(file)
+  class(counts) <- "data.frame"
+  genes <- counts[,1]
+  counts <- t(as.matrix(counts[,-1]))
+  colnames(counts) <- genes
+  samples <- rownames(counts)
+  samples <- strsplit(samples,"_")
+  samples <- data.frame(tissue    = sapply(samples,"[[",1),
+                        timepoint = sapply(samples,"[[",2),
+                        mouse     = sapply(samples,"[[",3))
+  samples <- transform(samples,
+                       tissue    = factor(tissue),
+					   timepoint = factor(timepoint),
+					   mouse     = factor(mouse))
+  return(list(samples = samples,counts = counts))
+}
+out <- read_lps_data("../data/lps.csv.gz")
+samples <- out$samples
+counts  <- out$counts
+rm(out)
+```
+
+Remove genes with very low (or no) expression.
+
+```{r, eval=FALSE}
+j <- which(colSums(counts) > 20)
+counts <- counts[,j]
+```
+
+This is the dimension of the data set we will analyze:
+
+```{r dim-counts}
+dim(counts)
+```
+
+For the Gaussian-based analyses, we will need the shifted log counts:
+
+```{r shifted-log-counts}
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+shifted_log_counts <- log1p(counts/(a*s))
 ```
 
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
