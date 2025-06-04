@@ -1,0 +1,31 @@
+---
+title: NMF analysis of the LPS data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+Here we will revisit the LPS data set that we analyzed using a topic
+model in the [Takahama et al 2024 Nature Immunology paper][takahama2024].
+(LPS = lipopolysaccharide).
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load packages used to process the data, perform the analyses, and
+create the plots.
+
+```{r load-pkgs, message=FALSE}
+library(fastTopics)
+library(flashier)
+library(singlecelljamboreeR)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
+
+[takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
