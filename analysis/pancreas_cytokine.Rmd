@@ -23,6 +23,8 @@ library(Matrix)
 library(tools)
 library(rsvd)
 library(uwot)
+library(ggplot2)
+library(cowplot)
 ```
 
 Set the seed for reproducibility:
