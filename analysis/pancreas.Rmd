@@ -157,7 +157,7 @@ sample_info$tsne2 <- tsne$Y[,2]
 
 *t*-SNE with cells colored by cell-type:
 
-```{r umap-vs-cell-type, fig.height=3.75, fig.width=5}
+```{r tsne-vs-cell-type, fig.height=3.75, fig.width=5}
 tsne_colors <- rep(c("#E69F00","#56B4E9","#009E73","#F0E442",
                      "#0072B2","#D55E00","#CC79A7"),times = 2)
 tsne_shapes <- rep(c(19,17),each = 7)
@@ -172,7 +172,7 @@ ggplot(sample_info,aes(x = tsne1,y = tsne2,color = celltype,
 
 *t*-SNE with cells colored by batch:
 
-```{r umap-vs-batch, fig.height=3.75, fig.width=4.75}
+```{r tsne-vs-batch, fig.height=3.75, fig.width=4.75}
 ggplot(sample_info,aes(x = tsne1,y = tsne2,color = tech,shape = tech)) +
   geom_point(size = 1.5) +
   scale_color_manual(values = tsne_colors) +

@@ -22,7 +22,7 @@ library(data.table)
 library(Matrix)
 library(tools)
 library(rsvd)
-library(Rtsne)
+library(uwot)
 ```
 
 Set the seed for reproducibility:
@@ -88,7 +88,7 @@ counts   <- t(counts)
 A good fraction of cells have fewer expressed genes. Let's remove them:
 
 ```{r filter-genes-per-cell, fig.height=3, fig.width=3}
-par(mar = c(4,4,2,2))
+par(mar = c(4,4,1,1))
 x <- rowSums(counts > 0)
 i <- which(x > 2000)
 samples <- samples[i,]
@@ -100,7 +100,7 @@ A small number of cells have a large proportion of mitochondrial genes.
 Let's remove those cells as well.
 
 ```{r filter-mito, fig.height=3, fig.width=3}
-par(mar = c(4,4,2,2))
+par(mar = c(4,4,1,1))
 mito_genes <- which(substr(genes$symbol,1,2) == "mt")
 s          <- rowSums(counts)
 s_mito     <- counts[,mito_genes]
@@ -144,26 +144,40 @@ shifted_log_counts <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 Then project the cells onto the top 30 PCs:
 
 ```{r pca}
-i <- which(samples$mouse == "S1")
-U <- rsvd(shifted_log_counts[i,],k = 30)$u
+set.seed(1)
+U <- rsvd(shifted_log_counts,k = 30)$u
 ```
 
-Now run t-SNE on the 30 PCs:
+Now run UMAP on the 30 PCs:
 
-```{r embeddings, results="hide", eval=FALSE}
-tsne <- Rtsne(U,dims = 2,perplexity = 100,pca = FALSE,
-              num_threads = 8,verbose = TRUE)
+```{r umap}
+set.seed(1)
+Y <- umap(U,n_neighbors = 30,metric = "cosine",min_dist = 0.3,
+          n_threads = 8,verbose = TRUE)
+x <- Y[,1]
+y <- Y[,2]
+samples$umap1 <- x
+samples$umap2 <- y
 ```
 
-t-SNE plot:
+Specify the clusters based on the UMAP plot:
 
-```{r umap-vs-cell-type, fig.height=3.75, fig.width=5, eval=FALSE}
-pdat <- cbind(samples[i,],
-              data.frame(tsne1 = tsne$Y[,1],
-			             tsne2 = tsne$Y[,2]))
-p <- ggplot(pdat,aes(x = tsne1,y = tsne2)) +
+```{r find-clusters}
+samples$cluster <- "c7"
+samples$cluster[x < -3 & y > 5]   <- "c1"
+samples$cluster[x < -6 & y < -7]  <- "c2"
+samples$cluster[x < -2 & y < -15] <- "c3"
+samples$cluster[x > 14] <- "c4"
+samples$cluster[sqrt((x - 9)^2 + (y + 8)^2) < 2] <- "c5"
+samples$cluster[sqrt((x + 1)^2 + (y + 13)^2) < 3] <- "c6"
+samples <- transform(samples,cluster = factor(cluster))
+```
+
+UMAP plot:
+
+```{r umap-vs-cell-type, fig.height=3.75, fig.width=5}
+p <- ggplot(samples,aes(x = umap1,y = umap2,color = cluster)) +
   geom_point(size = 1.5) +
-  labs(x = "tSNE 1",y = "tSNE 2") + 
   theme_cowplot(font_size = 10)
 print(p)
 ```
