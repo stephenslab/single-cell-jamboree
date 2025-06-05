@@ -153,7 +153,7 @@ Now run UMAP on the 30 PCs:
 ```{r umap}
 set.seed(1)
 Y <- umap(U,n_neighbors = 30,metric = "cosine",min_dist = 0.3,
-          n_threads = 8,verbose = TRUE)
+          n_threads = 8,verbose = FALSE)
 x <- Y[,1]
 y <- Y[,2]
 samples$umap1 <- x
@@ -163,23 +163,35 @@ samples$umap2 <- y
 Specify the clusters based on the UMAP plot:
 
 ```{r find-clusters}
-samples$cluster <- "c7"
-samples$cluster[x < -3 & y > 5]   <- "c1"
-samples$cluster[x < -6 & y < -7]  <- "c2"
-samples$cluster[x < -2 & y < -15] <- "c3"
-samples$cluster[x > 14] <- "c4"
-samples$cluster[sqrt((x - 9)^2 + (y + 8)^2) < 2] <- "c5"
-samples$cluster[sqrt((x + 1)^2 + (y + 13)^2) < 3] <- "c6"
+samples$cluster <- "islet2"
+samples$cluster[x < -3 & y > 5]   <- "islet1" 
+samples$cluster[x < -6 & y < -7]  <- "macrophage" # Ccr5
+samples$cluster[x < -2 & y < -15] <- "endothelial" # Esam, Pecam1
+samples$cluster[x > 14] <- "duct" # Krt19
+samples$cluster[sqrt((x - 9)^2 + (y + 8)^2) < 2] <- "acinar" # Prss1
+samples$cluster[sqrt((x + 1)^2 + (y + 13)^2) < 3] <- "mesenchyme" # Col1a1
 samples <- transform(samples,cluster = factor(cluster))
 ```
 
-UMAP plot:
+UMAP plot by cluster:
 
-```{r umap-vs-cell-type, fig.height=3.75, fig.width=5}
-p <- ggplot(samples,aes(x = umap1,y = umap2,color = cluster)) +
+```{r umap-plot-1, fig.height=3, fig.width=4}
+cluster_colors <- c("darkmagenta","royalblue","limegreen","red",
+                    "darkorange","gold","sienna")
+ggplot(samples,aes(x = umap1,y = umap2,color = cluster)) +
   geom_point(size = 1.5) +
+  scale_color_manual(values = cluster_colors) +
   theme_cowplot(font_size = 10)
-print(p)
+```
+
+UMAP plot by mouse:
+
+```{r umap-plot-2, fig.height=3, fig.width=4}
+sample_colors <- c("limegreen","orange","darkblue","magenta")
+ggplot(samples,aes(x = umap1,y = umap2,color = mouse)) +
+  geom_point(size = 1.5) +
+  scale_color_manual(values = sample_colors) +
+  theme_cowplot(font_size = 10)
 ```
 
 Save the processed data to an RData file:
