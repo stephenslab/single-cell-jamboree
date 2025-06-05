@@ -7,7 +7,7 @@ output: workflowr::wflow_html
 Here we will prepare the single-cell RNA-seq data from
 [Stancill et al 2021][stancill2021function] for analysis with
 fastTopics and flashier. The data files were obtained by downloading
-and extracting tar file `GSE183010_RAW.tar` from
+and extracting tar file GSE183010_RAW.tar from
 [GEO accession GSE183010][stancill2021function-geo].
 
 ```{r knitr-opts, include=FALSE}
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
-ADD TEXT HERE.
+Load the R packages used to perform the data processing and analysis:
 
 ```{r load-pkgs, message=FALSE}
 library(data.table)
@@ -84,7 +84,7 @@ counts   <- do.call("cbind",lapply(dat,function (x) x$counts[features,]))
 counts   <- t(counts)
 ```
 
-ADD TEXT HERE.
+Here's an overview of the scRNA-seq data:
 
 ```{r data-overview}
 nrow(samples)
@@ -93,7 +93,7 @@ dim(counts)
 mean(counts > 0)
 ```
 
-ADD TEXT HERE.
+Save the processed data to an RData file:
 
 ```{r save-data, eval=FALSE}
 save(list = c("samples","genes","counts"),
