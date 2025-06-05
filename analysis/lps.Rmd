@@ -19,6 +19,7 @@ create the plots.
 ```{r load-pkgs, message=FALSE}
 library(data.table)
 library(fastTopics)
+library(NNLM)
 library(flashier)
 library(singlecelljamboreeR)
 library(ggplot2)
@@ -59,9 +60,17 @@ counts  <- out$counts
 rm(out)
 ```
 
+Remove a sample that appears to be an outlier based on the NMF analyses:
+
+```{r filter-outliers}
+i       <- which(rownames(counts) != "iLN_d2_20")
+samples <- samples[i,]
+counts  <- counts[i,]
+```
+
 Remove genes that are expressed in fewer than 5 samples:
 
-```{r}
+```{r filter-genes}
 j <- which(colSums(counts > 0) > 4)
 counts <- counts[,j]
 ```
@@ -103,7 +112,7 @@ topic_colors <- c("darkblue","dodgerblue","darkorange","forestgreen",
                   "darkmagenta","sienna","royalblue","lightskyblue",
                   "gold","red","cyan")
 p <- structure_plot(tm,grouping = samples$tissue,gap = 4,
-                    topics = 1:k,colors = topic_colors,
+                    topics = 1:14,colors = topic_colors,
 					loadings_order = rows) +
   labs(fill = "") +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
@@ -117,7 +126,7 @@ Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
 heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung;
 SI = small intestine; SK = skin; SP = spleen; TH = thymus.
 
-```{r structure-plot-topic-model-2, fig.height=1.5, fig.width=7}
+```{r structure-plot-topic-model-2, fig.height=1.5, fig.width=7, eval=FALSE}
 topics <- c(1,3,5,11,16)
 p <- structure_plot(tm,grouping = samples$tissue,gap = 4,
                     topics = topics,colors = topic_colors,
@@ -130,23 +139,31 @@ p <- structure_plot(tm,grouping = samples$tissue,gap = 4,
 print(p)
 ```
 
-Perform DE analysis usingthe topic model:
-
-```{r de-analysis, eval=FALSE}
-de <- de_analysis(fit,counts,shrink.method = "ash",pseudocount = 0.1,
-                  control = list(ns = 1000,nc = 8))
-```
-
 ## EBNMF (flashier)
 
-Next fit an NMF to the shifted log counts using flashier, with $K = 17$:
+Next fit an NMF to the shifted log counts using flashier, with $K =
+15$:
 
 ```{r flashier-nmf, cache=TRUE}
-n  <- nrow(counts)
+k <- 15
+n <- nrow(shifted_log_counts)
+m <- ncol(shifted_log_counts)
+nmf0 <- nnmf(shifted_log_counts,k = 1,loss = "mse",method = "scd",
+            max.iter = 10,verbose = 0,n.threads = 4)
+W0 <- nmf0$W
+H0 <- nmf0$H
+W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
+H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
+nmf <- nnmf(shifted_log_counts,k,init = list(W = W0,H = H0),
+            loss = "mse",method = "scd",max.iter = 10,
+            verbose = 2,n.threads = 8)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
-fl_nmf <- flash(shifted_log_counts,ebnm_fn = ebnm_point_exponential,
-                var_type = 2,S = s1,backfit = TRUE,verbose = 2)
+fl_nmf <- flash_init(shifted_log_counts,var_type = 2,S = s1)
+fl_nmf <- flash_factors_init(fl_nmf,list(nmf$W,t(nmf$H)),
+                             ebnm_point_exponential)
+fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100)
+fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100)
 ```
 
 ADD TEXT HERE.
@@ -163,9 +180,5 @@ p <- structure_plot(L,grouping = samples$tissue,gap = 4,
 					loadings_order = rows)
 print(p)
 ```
-
-TO DO NEXT: Try running NMF on these data.
-
-
 
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8

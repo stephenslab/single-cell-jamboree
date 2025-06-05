@@ -4,7 +4,11 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-ADD TEXT HERE.
+Here we will prepare the single-cell RNA-seq data from
+[Stancill et al 2021][stancill2021function] for analysis with
+fastTopics and flashier. The data files were obtained by downloading
+and extracting tar file `GSE183010_RAW.tar` from
+[GEO accession GSE183010][stancill2021function-geo].
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -15,4 +19,87 @@ ADD TEXT HERE.
 
 ```{r load-pkgs, message=FALSE}
 library(data.table)
+library(Matrix)
+library(tools)
+library(uwot)
 ```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
+
+Import the count data from the "matrix market" format:
+
+```{r load-data}
+read_geo_data <- function (i, r, prefix = "GSM000000", dir = ".") {
+  infile   <- sprintf("%s_Rep%d_S%d_barcodes.tsv.gz",prefix,r,i)
+  barcodes <- fread(file.path(dir,infile),quote = FALSE,header = FALSE,
+                    stringsAsFactors = FALSE)
+  class(barcodes) <- "data.frame"
+  barcodes <- barcodes[,1]
+  infile <- sprintf("%s_Rep%d_S%d_features.tsv.gz",prefix,r,i)
+  genes  <- fread(file.path(dir,infile),sep = "\t",quote = FALSE,
+                  header = FALSE,stringsAsFactors = FALSE)
+  class(genes) <- "data.frame"
+  names(genes) <- c("ensembl","symbol","type")
+  genes        <- transform(genes,type = factor(type))
+  infile <- sprintf("%s_Rep%d_S%d_matrix.mtx.gz",prefix,r,i)
+  counts <- fread(file.path(dir,infile),quote = FALSE,header = FALSE,
+                  skip = 2)
+  class(counts) <- "data.frame"
+  names(counts) <- c("row","col","value")
+  n <- max(counts$row)
+  m <- max(counts$col)
+  counts <- sparseMatrix(i = counts$row,j = counts$col,x = counts$value,
+                         dims = c(n,m))
+  rownames(counts) <- genes$ensembl
+  colnames(counts) <- barcodes
+  return(list(genes  = genes,
+			  counts = counts))
+}
+dat     <- vector("list",8)
+dataset <- 0
+samples <- NULL
+for (r in 1:2) {
+  for (i in 1:4) {
+    dataset <- dataset + 1
+    dat[[dataset]] <-
+	  read_geo_data(i,r,prefix = paste0("GSM55486",23 + dataset),
+	                dir = "../data/GSE183010")
+	samples <- rbind(samples,
+	                 data.frame(barcode   = colnames(dat[[dataset]]$counts),
+					            mouse     = paste0("S",i),
+					            replicate = r,
+								stringsAsFactors = FALSE))
+  }
+}
+samples <- transform(samples,
+                     mouse     = factor(mouse),
+					 replicate = factor(replicate))
+features <- Reduce(intersect,lapply(dat,function (x) x$genes$ensembl))
+genes    <- subset(dat[[1]]$genes,is.element(ensembl,features))
+counts   <- do.call("cbind",lapply(dat,function (x) x$counts[features,]))
+counts   <- t(counts)
+```
+
+ADD TEXT HERE.
+
+```{r data-overview}
+nrow(samples)
+nrow(genes)
+dim(counts)
+mean(counts > 0)
+```
+
+ADD TEXT HERE.
+
+```{r save-data, eval=FALSE}
+save(list = c("samples","genes","counts"),
+     file = "pancreas_cytokine.RData")
+resaveRdaFiles("pancreas_cytokine.RData")
+```
+
+[stancill2021function]: https://doi.org/10.1093/function/zqab063
+[stancill2021function-geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE183010
