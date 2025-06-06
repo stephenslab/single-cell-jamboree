@@ -152,7 +152,7 @@ structure_plot(tm,grouping = samples$tissue,gap = 4,
 Next fit an NMF to the shifted log counts using flashier, with $K =
 15$:
 
-```{r flashier-nmf, cache=TRUE}
+```{r flashier-nmf, cache=TRUE, warning=FALSE}
 k <- 15
 n <- nrow(shifted_log_counts)
 m <- ncol(shifted_log_counts)
@@ -164,7 +164,7 @@ W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
 H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
 nmf <- nnmf(shifted_log_counts,k,init = list(W = W0,H = H0),
             loss = "mse",method = "scd",max.iter = 10,
-            verbose = 2,n.threads = 8)
+            verbose = 0,n.threads = 8)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 sparse_prior <- ebnm_point_exponential(x = c(rep(1,100)))
