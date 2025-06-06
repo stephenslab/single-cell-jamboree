@@ -1,0 +1,12 @@
+---
+title: NMF analysis of the "pancreas cytokine" data set (untreated mouse only)
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+ADD TEXT HERE.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
