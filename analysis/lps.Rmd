@@ -174,8 +174,8 @@ ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
 fl_nmf <- flash_init(shifted_log_counts,var_type = 2,S = s1)
 fl_nmf <- flash_factors_init(fl_nmf,list(nmf$W,t(nmf$H)),
                              c(ebnm_sparse_prior,ebnm_point_exponential))
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100)
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100)
+fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 0)
+fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 0)
 ```
 
 Structure plot comparing the factors to the organ types:
