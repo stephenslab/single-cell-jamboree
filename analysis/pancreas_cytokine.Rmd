@@ -171,7 +171,7 @@ samples <- transform(samples,cluster = factor(cluster))
 
 UMAP plot by cluster:
 
-```{r umap-plot-1, fig.height=3, fig.width=4.75}
+```{r umap-plot-1, fig.height=3, fig.width=4.5}
 cluster_colors <- c("darkmagenta","royalblue","limegreen","red","darkorange")
 samples$cluster                   <- "islet"      # Gcg, Sst, Ins1, Ins2, Ppy, 
                                                   # Mafa, Mafb
@@ -186,9 +186,9 @@ ggplot(samples,aes(x = umap1,y = umap2,color = cluster)) +
   theme_cowplot(font_size = 10)
 ```
 
-UAMP plot for the first mouse only:
+UMAP plot for *the first (untreated) mouse only:*
 
-```{umap-plot-2, fig.height=3, fig.width=3.5}
+```{r umap-plot-2, fig.height=3, fig.width=4.5}
 ggplot(subset(samples,mouse == "S1"),
        aes(x = umap1,y = umap2,color = cluster)) +
   geom_point(size = 1) +
