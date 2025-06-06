@@ -89,7 +89,7 @@ counts   <- t(counts)
 
 A good fraction of cells have fewer expressed genes. Let's remove them:
 
-```{r filter-genes-per-cell, fig.height=3, fig.width=3}
+```{r filter-genes-per-cell, fig.height=2.5, fig.width=2.5}
 par(mar = c(4,4,1,1))
 x <- rowSums(counts > 0)
 i <- which(x > 2000)
@@ -101,7 +101,7 @@ hist(x,n = 64,main = "",xlab = "number of genes",ylab = "number of cells")
 A small number of cells have a large proportion of mitochondrial genes.
 Let's remove those cells as well.
 
-```{r filter-mito, fig.height=3, fig.width=3}
+```{r filter-mito, fig.height=2.5, fig.width=2.5}
 par(mar = c(4,4,1,1))
 mito_genes <- which(substr(genes$symbol,1,2) == "mt")
 s          <- rowSums(counts)
@@ -139,6 +139,7 @@ t-SNE. First, transform the counts into "shifted log counts":
 
 ```{r shifted-log-counts}
 a <- 1
+s <- rowSums(counts)
 s <- s/mean(s)
 shifted_log_counts <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 ```
@@ -146,14 +147,12 @@ shifted_log_counts <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 Then project the cells onto the top 30 PCs:
 
 ```{r pca}
-set.seed(1)
 U <- rsvd(shifted_log_counts,k = 30)$u
 ```
 
 Now run UMAP on the 30 PCs:
 
 ```{r umap}
-set.seed(1)
 Y <- umap(U,n_neighbors = 30,metric = "cosine",min_dist = 0.3,
           n_threads = 8,verbose = FALSE)
 x <- Y[,1]
