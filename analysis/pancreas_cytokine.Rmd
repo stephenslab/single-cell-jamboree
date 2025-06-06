@@ -164,40 +164,41 @@ samples$umap2 <- y
 Specify the clusters based on the UMAP plot:
 
 ```{r find-clusters}
-samples$cluster <- "islet2"
-samples$cluster[x < -3 & y > 5]   <- "islet1" 
-samples$cluster[x < -6 & y < -7]  <- "macrophage" # Ccr5
-samples$cluster[x < -2 & y < -15] <- "endothelial" # Esam, Pecam1
-samples$cluster[x > 14] <- "duct" # Krt19
-samples$cluster[sqrt((x - 9)^2 + (y + 8)^2) < 2] <- "acinar" # Prss1
-samples$cluster[sqrt((x + 1)^2 + (y + 13)^2) < 3] <- "mesenchyme" # Col1a1
+samples$cluster <- "none"
+samples$cluster[x > -3 & y > 5]   <- "islet1" 
 samples <- transform(samples,cluster = factor(cluster))
 ```
 
 UMAP plot by cluster:
 
-```{r umap-plot-1, fig.height=3, fig.width=4}
-cluster_colors <- c("darkmagenta","royalblue","limegreen","red",
-                    "darkorange","gold","sienna")
+```{r umap-plot-1, fig.height=3, fig.width=4.75}
+cluster_colors <- c("darkmagenta","royalblue","limegreen","red","darkorange")
+samples$cluster                   <- "islet"      # Gcg, Sst, Ins1, Ins2, Ppy, 
+                                                  # Mafa, Mafb
+samples$cluster[x > 14]           <- "duct1"      # Krt19
+samples$cluster[x > 12 & x < 13]  <- "duct2"      # Krt19
+samples$cluster[x < -5 & y < -11] <- "macrophage" # Ccr5
+samples$cluster[x > -2 & x < 5 & y < -12] <- 
+  "endothelial-mesenchymal" # Esam, Pecam1, Col1a1
 ggplot(samples,aes(x = umap1,y = umap2,color = cluster)) +
-  geom_point(size = 1.5) +
+  geom_point(size = 1) +
   scale_color_manual(values = cluster_colors) +
   theme_cowplot(font_size = 10)
 ```
 
 UMAP plot by mouse:
 
-```{r umap-plot-2, fig.height=3, fig.width=4}
+```{r umap-plot-2, fig.height=3, fig.width=3.5}
 sample_colors <- c("limegreen","orange","darkblue","magenta")
 ggplot(samples,aes(x = umap1,y = umap2,color = mouse)) +
-  geom_point(size = 1.5) +
+  geom_point(size = 1) +
   scale_color_manual(values = sample_colors) +
   theme_cowplot(font_size = 10)
 ```
 
 Save the processed data to an RData file:
 
-```{r save-data, eval=FALSE}
+```{r save-data}
 save(list = c("samples","genes","counts"),
      file = "pancreas_cytokine.RData")
 resaveRdaFiles("pancreas_cytokine.RData")
