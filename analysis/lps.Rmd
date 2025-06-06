@@ -129,6 +129,9 @@ Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
 heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung;
 SI = small intestine; SK = skin; SP = spleen; TH = thymus.
 
+This next structure plot better highlights the topics that capture
+the processes driven by LPS-induced sepsis:
+
 ```{r structure-plot-topic-model-2, fig.height=1.5, fig.width=7}
 topic_colors <- c("magenta","gray50","gray65","gray40",
                   "gray85","gray75","red","gray80","gray90",
@@ -149,7 +152,7 @@ structure_plot(tm,grouping = samples$tissue,gap = 4,
 Next fit an NMF to the shifted log counts using flashier, with $K =
 15$:
 
-```{r flashier-nmf, eval=FALSE}
+```{r flashier-nmf, cache=TRUE}
 k <- 15
 n <- nrow(shifted_log_counts)
 m <- ncol(shifted_log_counts)
@@ -175,19 +178,43 @@ fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100)
 ```
 
-ADD TEXT HERE.
+Structure plot comparing the factors to the organ types:
 
-```{r structure-plot-flashier-nmf, fig.height=1.5, fig.width=7, eval=FALSE}
+```{r structure-plot-flashier-nmf, fig.height=2, fig.width=7}
 rows <- order(samples$timepoint)
-topic_colors <- c("darkblue","dodgerblue","darkorange","forestgreen",
-                  "limegreen","tomato","darkred","olivedrab","magenta",
-                  "darkmagenta","sienna","royalblue","lightskyblue",
-                  "gold","red","cyan")
+topic_colors <- c("powderblue","dodgerblue","olivedrab","limegreen",
+                  "forestgreen","red","darkmagenta","gray","darkorange",
+                  "cyan","royalblue","darkblue","lightskyblue",
+                  "gold","sienna")
 L <- ldf(fl_nmf,type = "i")$L
-p <- structure_plot(L,grouping = samples$tissue,gap = 4,
+structure_plot(L,grouping = samples$tissue,gap = 4,
                     topics = 1:15,colors = topic_colors,
-					loadings_order = rows)
-print(p)
+					loadings_order = rows) +
+  labs(fill = "",y = "membership") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,"cm"),
+        legend.key.width = unit(0.25,"cm"),
+        legend.text = element_text(size = 7))
+```
+
+This next structure plot better highlights the topics that capture
+the processes driven by LPS-induced sepsis:
+
+```{r structure-plot-flashier-nmf-2, fig.height=2, fig.width=7}
+rows <- order(samples$timepoint)
+topic_colors <- c("gray95","gray70","gray80","limegreen",
+                  "gray60","red","gray75","gray","gray85",
+                  "gray90","gray65","gray50","gray45",
+                  "gray35","gray75")
+L <- ldf(fl_nmf,type = "i")$L
+structure_plot(L,grouping = samples$tissue,gap = 4,
+                    topics = 1:15,colors = topic_colors,
+					loadings_order = rows) +
+  labs(fill = "",y = "membership") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,"cm"),
+        legend.key.width = unit(0.25,"cm"),
+        legend.text = element_text(size = 7))
 ```
 
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
