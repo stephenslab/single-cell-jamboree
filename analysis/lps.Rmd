@@ -20,6 +20,7 @@ create the plots.
 library(data.table)
 library(fastTopics)
 library(NNLM)
+library(ebnm)
 library(flashier)
 library(singlecelljamboreeR)
 library(ggplot2)
@@ -159,9 +160,13 @@ nmf <- nnmf(shifted_log_counts,k,init = list(W = W0,H = H0),
             verbose = 2,n.threads = 8)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
+sparse_prior <- ebnm_point_exponential(x = c(rep(1,100)))
+sparse_prior$fitted_g$pi <- c(0.99,0.01)
+ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
+                                fix_g = TRUE,g_init = sparse_prior)
 fl_nmf <- flash_init(shifted_log_counts,var_type = 2,S = s1)
 fl_nmf <- flash_factors_init(fl_nmf,list(nmf$W,t(nmf$H)),
-                             ebnm_point_exponential)
+                             c(ebnm_sparse_prior,ebnm_point_exponential))
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100)
 ```
@@ -176,7 +181,7 @@ topic_colors <- c("darkblue","dodgerblue","darkorange","forestgreen",
                   "gold","red","cyan")
 L <- ldf(fl_nmf,type = "i")$L
 p <- structure_plot(L,grouping = samples$tissue,gap = 4,
-                    topics = 1:15,colors = topic_colors,
+                    topics = 2:15,colors = topic_colors,
 					loadings_order = rows)
 print(p)
 ```
