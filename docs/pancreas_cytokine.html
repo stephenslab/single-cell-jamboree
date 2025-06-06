@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-05
+<strong>Last updated:</strong> 2025-06-06
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree281790b5bf0b7edc001123395e9faf0070461a4dtargetblank281790ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreec8b096b7874ccd25dc74956ee3119094e08a6535targetblankc8b096ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/281790b5bf0b7edc001123395e9faf0070461a4d" target="_blank">281790b</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/c8b096b7874ccd25dc74956ee3119094e08a6535" target="_blank">c8b096b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree281790b5bf0b7edc001123395e9faf0070461a4dtargetblank281790ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreec8b096b7874ccd25dc74956ee3119094e08a6535targetblankc8b096ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/281790b5bf0b7edc001123395e9faf0070461a4d" target="_blank">281790b</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/c8b096b7874ccd25dc74956ee3119094e08a6535" target="_blank">c8b096b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -465,14 +465,13 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Ignored files:
-    Ignored:    analysis/figure/
-
 Untracked files:
     Untracked:  analysis/lps_cache/
     Untracked:  analysis/mcf7_cache/
     Untracked:  analysis/pancreas_cytokine.RData
     Untracked:  analysis/temp2.R
+    Untracked:  analysis/temp3.R
+    Untracked:  analysis/temp4.R
     Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE183010/
     Untracked:  data/Immune_ALL_human.h5ad
@@ -523,6 +522,58 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/c8b096b7874ccd25dc74956ee3119094e08a6535/analysis/pancreas_cytokine.Rmd" target="_blank">c8b096b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+wflow_publish("pancreas_cytokine.Rmd", verbose = TRUE, view = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ea78d4f9a5acc1f981b4d71a8cb346a92b050201/analysis/pancreas_cytokine.Rmd" target="_blank">ea78d4f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+Fixed a bug in computing the size factors in the pancreas_cytokine
+analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/8081d2c4f3cf5d6e4adec876ba88b05233d455e7/docs/pancreas_cytokine.html" target="_blank">8081d2c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -760,7 +811,44 @@ i &lt;- which(x &gt; 2000)
 samples &lt;- samples[i,]
 counts  &lt;- counts[i,]
 hist(x,n = 64,main = &quot;&quot;,xlab = &quot;number of genes&quot;,ylab = &quot;number of cells&quot;)</code></pre>
-<p><img src="figure/pancreas_cytokine.Rmd/filter-genes-per-cell-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pancreas_cytokine.Rmd/filter-genes-per-cell-1.png" width="300" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-filter-genes-per-cell-1">
+Past versions of filter-genes-per-cell-1.png
+</button>
+</p>
+<div id="fig-filter-genes-per-cell-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/8081d2c4f3cf5d6e4adec876ba88b05233d455e7/docs/figure/pancreas_cytokine.Rmd/filter-genes-per-cell-1.png" target="_blank">8081d2c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>A small number of cells have a large proportion of mitochondrial
 genes. Let’s remove those cells as well.</p>
 <pre class="r"><code>par(mar = c(4,4,1,1))
@@ -773,7 +861,44 @@ samples &lt;- samples[i,]
 counts  &lt;- counts[i,]
 hist(prop_mito,n = 64,main = &quot;&quot;,xlab = &quot;proportion mitochondrial&quot;,
      ylab = &quot;number of cells&quot;)</code></pre>
-<p><img src="figure/pancreas_cytokine.Rmd/filter-mito-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pancreas_cytokine.Rmd/filter-mito-1.png" width="300" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-filter-mito-1">
+Past versions of filter-mito-1.png
+</button>
+</p>
+<div id="fig-filter-mito-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/8081d2c4f3cf5d6e4adec876ba88b05233d455e7/docs/figure/pancreas_cytokine.Rmd/filter-mito-1.png" target="_blank">8081d2c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Finally, a bunch of genes are not expressed in any cells. Let’s
 remove those as well:</p>
 <pre class="r"><code>x      &lt;- colSums(counts &gt; 0)
@@ -793,45 +918,117 @@ mean(counts &gt; 0)
 <p>Now let’s generate a 2-d nonlinear embedding of the cells using
 t-SNE. First, transform the counts into “shifted log counts”:</p>
 <pre class="r"><code>a &lt;- 1
+s &lt;- rowSums(counts)
 s &lt;- s/mean(s)
-shifted_log_counts &lt;- MatrixExtra::mapSparse(counts/(a*s),log1p)
-# Warning in .Ops.recycle.ind(e1, len = l2): longer object length
-#   is not a multiple of shorter object length</code></pre>
+shifted_log_counts &lt;- MatrixExtra::mapSparse(counts/(a*s),log1p)</code></pre>
 <p>Then project the cells onto the top 30 PCs:</p>
-<pre class="r"><code>set.seed(1)
-U &lt;- rsvd(shifted_log_counts,k = 30)$u</code></pre>
+<pre class="r"><code>U &lt;- rsvd(shifted_log_counts,k = 30)$u</code></pre>
 <p>Now run UMAP on the 30 PCs:</p>
-<pre class="r"><code>set.seed(1)
-Y &lt;- umap(U,n_neighbors = 30,metric = &quot;cosine&quot;,min_dist = 0.3,
+<pre class="r"><code>Y &lt;- umap(U,n_neighbors = 30,metric = &quot;cosine&quot;,min_dist = 0.3,
           n_threads = 8,verbose = FALSE)
 x &lt;- Y[,1]
 y &lt;- Y[,2]
 samples$umap1 &lt;- x
 samples$umap2 &lt;- y</code></pre>
 <p>Specify the clusters based on the UMAP plot:</p>
-<pre class="r"><code>samples$cluster &lt;- &quot;islet2&quot;
-samples$cluster[x &lt; -3 &amp; y &gt; 5]   &lt;- &quot;islet1&quot; 
-samples$cluster[x &lt; -6 &amp; y &lt; -7]  &lt;- &quot;macrophage&quot; # Ccr5
-samples$cluster[x &lt; -2 &amp; y &lt; -15] &lt;- &quot;endothelial&quot; # Esam, Pecam1
-samples$cluster[x &gt; 14] &lt;- &quot;duct&quot; # Krt19
-samples$cluster[sqrt((x - 9)^2 + (y + 8)^2) &lt; 2] &lt;- &quot;acinar&quot; # Prss1
-samples$cluster[sqrt((x + 1)^2 + (y + 13)^2) &lt; 3] &lt;- &quot;mesenchyme&quot; # Col1a1
+<pre class="r"><code>samples$cluster &lt;- &quot;none&quot;
+samples$cluster[x &gt; -3 &amp; y &gt; 5]   &lt;- &quot;islet1&quot; 
 samples &lt;- transform(samples,cluster = factor(cluster))</code></pre>
 <p>UMAP plot by cluster:</p>
-<pre class="r"><code>cluster_colors &lt;- c(&quot;darkmagenta&quot;,&quot;royalblue&quot;,&quot;limegreen&quot;,&quot;red&quot;,
-                    &quot;darkorange&quot;,&quot;gold&quot;,&quot;sienna&quot;)
+<pre class="r"><code>cluster_colors &lt;- c(&quot;darkmagenta&quot;,&quot;royalblue&quot;,&quot;limegreen&quot;,&quot;red&quot;,&quot;darkorange&quot;)
+samples$cluster                   &lt;- &quot;islet&quot;      # Gcg, Sst, Ins1, Ins2, Ppy, 
+                                                  # Mafa, Mafb
+samples$cluster[x &gt; 14]           &lt;- &quot;duct1&quot;      # Krt19
+samples$cluster[x &gt; 12 &amp; x &lt; 13]  &lt;- &quot;duct2&quot;      # Krt19
+samples$cluster[x &lt; -5 &amp; y &lt; -11] &lt;- &quot;macrophage&quot; # Ccr5
+samples$cluster[x &gt; -2 &amp; x &lt; 5 &amp; y &lt; -12] &lt;- 
+  &quot;endothelial-mesenchymal&quot; # Esam, Pecam1, Col1a1
 ggplot(samples,aes(x = umap1,y = umap2,color = cluster)) +
-  geom_point(size = 1.5) +
+  geom_point(size = 1) +
   scale_color_manual(values = cluster_colors) +
   theme_cowplot(font_size = 10)</code></pre>
-<p><img src="figure/pancreas_cytokine.Rmd/umap-plot-1-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pancreas_cytokine.Rmd/umap-plot-1-1.png" width="570" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umap-plot-1-1">
+Past versions of umap-plot-1-1.png
+</button>
+</p>
+<div id="fig-umap-plot-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/8081d2c4f3cf5d6e4adec876ba88b05233d455e7/docs/figure/pancreas_cytokine.Rmd/umap-plot-1-1.png" target="_blank">8081d2c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>UMAP plot by mouse:</p>
 <pre class="r"><code>sample_colors &lt;- c(&quot;limegreen&quot;,&quot;orange&quot;,&quot;darkblue&quot;,&quot;magenta&quot;)
 ggplot(samples,aes(x = umap1,y = umap2,color = mouse)) +
-  geom_point(size = 1.5) +
+  geom_point(size = 1) +
   scale_color_manual(values = sample_colors) +
   theme_cowplot(font_size = 10)</code></pre>
-<p><img src="figure/pancreas_cytokine.Rmd/umap-plot-2-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pancreas_cytokine.Rmd/umap-plot-2-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umap-plot-2-1">
+Past versions of umap-plot-2-1.png
+</button>
+</p>
+<div id="fig-umap-plot-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/8081d2c4f3cf5d6e4adec876ba88b05233d455e7/docs/figure/pancreas_cytokine.Rmd/umap-plot-2-1.png" target="_blank">8081d2c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Save the processed data to an RData file:</p>
 <pre class="r"><code>save(list = c(&quot;samples&quot;,&quot;genes&quot;,&quot;counts&quot;),
      file = &quot;pancreas_cytokine.RData&quot;)
