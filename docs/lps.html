@@ -279,7 +279,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -290,8 +290,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -300,13 +300,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-04
+<strong>Last updated:</strong> 2025-06-06
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -401,16 +401,27 @@ versions is critical for reproducibility.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
 </p>
 </div>
-<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be
-confident that you successfully produced the results during this
-run.</p>
+The following chunks had caches available:
+<ul>
+<li>
+fit-topic-model
+</li>
+<li>
+flashier-nmf
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory
+<code>lps_cache</code> and re-run the analysis. To have workflowr
+automatically delete the cache directory prior to building the file, set
+<code>delete_cache = TRUE</code> when running <code>wflow_build()</code>
+or <code>wflow_publish()</code>.</p>
 </div>
 </div>
 </div>
@@ -432,15 +443,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree85adf3f294176997b859f1e2351d672ce413af11targetblank85adf3fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreef38b5868f566a5efd73d58eb9bf1f6f05b52cb8ftargetblankf38b586a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/85adf3f294176997b859f1e2351d672ce413af11" target="_blank">85adf3f</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/f38b5868f566a5efd73d58eb9bf1f6f05b52cb8f" target="_blank">f38b586</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree85adf3f294176997b859f1e2351d672ce413af11targetblank85adf3fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreef38b5868f566a5efd73d58eb9bf1f6f05b52cb8ftargetblankf38b586a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +461,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/85adf3f294176997b859f1e2351d672ce413af11" target="_blank">85adf3f</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/f38b5868f566a5efd73d58eb9bf1f6f05b52cb8f" target="_blank">f38b586</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -465,14 +476,15 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
+    Untracked:  analysis/lps_cache/
     Untracked:  analysis/mcf7_cache/
+    Untracked:  analysis/temp2.R
     Untracked:  data/GSE132188_adata.h5ad.h5
+    Untracked:  data/GSE183010/
     Untracked:  data/Immune_ALL_human.h5ad
+    Untracked:  data/pancreas_cytokine.RData
     Untracked:  data/pancreas_endocrine.RData
     Untracked:  data/pancreas_endocrine_alldays.h5ad
-
-Unstaged changes:
-    Modified:   analysis/mcf7.Rmd
 
 </code></pre>
 <p>
@@ -522,6 +534,178 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f38b5868f566a5efd73d58eb9bf1f6f05b52cb8f/analysis/lps.Rmd" target="_blank">f38b586</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+A small fix to the lps analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae4257ccd0323c365412c4a0ae9f104b30e6387/analysis/lps.Rmd" target="_blank">aae4257</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+A couple fixes to the lps analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/6cbad5f1203de7ea08fa9769b49440a2f6138009/analysis/lps.Rmd" target="_blank">6cbad5f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+Added a structure plot to the lps analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/90d6c063f96aa1805b7ab6b456dc05eff2fd9626/analysis/lps.Rmd" target="_blank">90d6c06</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+Improved the structure plots in the lps analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/dac95b566c5f66b67e3f46f8e4a1e50f4acf708d/analysis/lps.Rmd" target="_blank">dac95b5</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+Made a few changes to the flashier fit in the lps analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/9e1f1279beceee0612c9ca09ce3de52ba22c38f8/analysis/lps.Rmd" target="_blank">9e1f127</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-05
+</td>
+<td>
+Added code to pancreas_cytokine analysis to prepare the scrna-seq data
+downloaded from geo.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/8d945a1ebcb216415939c8bb8811803ae9c79bbe/analysis/lps.Rmd" target="_blank">8d945a1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-04
+</td>
+<td>
+Added flashier fit to lps analysis; need to revise this and the topic
+modeling result.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/dac6198b50dfb95b95f7ebb1f28227ad3d2f21fa/analysis/lps.Rmd" target="_blank">dac6198</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-04
+</td>
+<td>
+Working on topic modeling results for lps data.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/8f39607ebba82349cd62736373fc6886c917ec5f/analysis/lps.Rmd" target="_blank">8f39607</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-04
+</td>
+<td>
+Added steps to the lps analysis to load and prepare the data.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/2bfef0b5b759c8eacda0d00b99a9193de45ba241/docs/lps.html" target="_blank">2bfef0b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-04
+</td>
+<td>
+First build of the LPS analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/85adf3f294176997b859f1e2351d672ce413af11/analysis/lps.Rmd" target="_blank">85adf3f</a>
 </td>
 <td>
@@ -543,15 +727,199 @@ wflow_publish("lps.Rmd")
 </div>
 <p>Here we will revisit the LPS data set that we analyzed using a topic
 model in the <a
-href="https://doi.org/10.1038/s41590-023-01722-8">Takahama et al 2024
-Nature Immunology paper</a>. (LPS = lipopolysaccharide).</p>
+href="https://doi.org/10.1038/s41590-023-01722-8">Takahama et al Nat
+Immunol paper</a>. (LPS = lipopolysaccharide).</p>
 <p>Load packages used to process the data, perform the analyses, and
 create the plots.</p>
-<pre class="r"><code>library(fastTopics)
+<pre class="r"><code>library(data.table)
+library(fastTopics)
+library(NNLM)
+library(ebnm)
 library(flashier)
-library(singlecelljamboreeR)</code></pre>
+library(singlecelljamboreeR)
+library(ggplot2)
+library(cowplot)</code></pre>
 <p>Set the seed for reproducibility:</p>
 <pre class="r"><code>set.seed(1)</code></pre>
+<div id="prepare-the-data-for-analysis-with-fasttopics-and-flashier"
+class="section level2">
+<h2>Prepare the data for analysis with fastTopics and flashier</h2>
+<p>Load the RNA-seq counts:</p>
+<pre class="r"><code>read_lps_data &lt;- function (file) {
+  counts &lt;- fread(file)
+  class(counts) &lt;- &quot;data.frame&quot;
+  genes &lt;- counts[,1]
+  counts &lt;- t(as.matrix(counts[,-1]))
+  colnames(counts) &lt;- genes
+  samples &lt;- rownames(counts)
+  samples &lt;- strsplit(samples,&quot;_&quot;)
+  samples &lt;- data.frame(tissue    = sapply(samples,&quot;[[&quot;,1),
+                        timepoint = sapply(samples,&quot;[[&quot;,2),
+                        mouse     = sapply(samples,&quot;[[&quot;,3))
+  samples &lt;- transform(samples,
+                       tissue    = factor(tissue),
+                       timepoint = factor(timepoint),
+                       mouse     = factor(mouse))
+  return(list(samples = samples,counts = counts))
+}
+out &lt;- read_lps_data(&quot;../data/lps.csv.gz&quot;)
+samples &lt;- out$samples
+counts  &lt;- out$counts
+rm(out)</code></pre>
+<p>Remove a sample that appears to be an outlier based on the NMF
+analyses:</p>
+<pre class="r"><code>i       &lt;- which(rownames(counts) != &quot;iLN_d2_20&quot;)
+samples &lt;- samples[i,]
+counts  &lt;- counts[i,]</code></pre>
+<p>Remove genes that are expressed in fewer than 5 samples:</p>
+<pre class="r"><code>j &lt;- which(colSums(counts &gt; 0) &gt; 4)
+counts &lt;- counts[,j]</code></pre>
+<p>This is the dimension of the data set we will analyze:</p>
+<pre class="r"><code>dim(counts)
+# [1]   363 33533</code></pre>
+<p>For the Gaussian-based analyses, we will need the shifted log
+counts:</p>
+<pre class="r"><code>a &lt;- 1
+s &lt;- rowSums(counts)
+s &lt;- s/mean(s)
+shifted_log_counts &lt;- log1p(counts/(a*s))</code></pre>
+</div>
+<div id="topic-model-fasttopics" class="section level2">
+<h2>Topic model (fastTopics)</h2>
+<p>Fit a topic model with <span class="math inline">\(K = 14\)</span>
+topics to the counts:</p>
+<pre class="r"><code>tm &lt;- fit_poisson_nmf(counts,k = 14,init.method = &quot;random&quot;,method = &quot;em&quot;,
+                      numiter = 20,verbose = &quot;none&quot;,
+                      control = list(numiter = 4,nc = 8,extrapolate = FALSE))
+tm &lt;- fit_poisson_nmf(counts,fit0 = tm,method = &quot;scd&quot;,numiter = 40,
+                      control = list(numiter = 4,nc = 8,extrapolate = TRUE),
+                      verbose = &quot;none&quot;)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>Structure plot comparing the topics to the organ types:</p>
+<pre class="r"><code>rows &lt;- order(samples$timepoint)
+topic_colors &lt;- c(&quot;magenta&quot;,&quot;darkorange&quot;,&quot;darkblue&quot;,&quot;forestgreen&quot;,
+                  &quot;dodgerblue&quot;,&quot;gray&quot;,&quot;red&quot;,&quot;olivedrab&quot;,&quot;darkmagenta&quot;,
+                  &quot;sienna&quot;,&quot;limegreen&quot;,&quot;royalblue&quot;,&quot;lightskyblue&quot;,
+                  &quot;gold&quot;)
+samples &lt;- transform(samples,
+  tissue = factor(tissue,c(&quot;PBMC&quot;,&quot;BM&quot;,&quot;LU&quot;,&quot;CO&quot;,&quot;SI&quot;,&quot;iLN&quot;,&quot;SP&quot;,
+                           &quot;TH&quot;,&quot;SK&quot;,&quot;KI&quot;,&quot;LI&quot;,&quot;BR&quot;,&quot;HE&quot;)))
+structure_plot(tm,grouping = samples$tissue,gap = 4,
+               topics = 1:14,colors = topic_colors,
+               loadings_order = rows) +
+  labs(fill = &quot;&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,&quot;cm&quot;),
+        legend.key.width = unit(0.2,&quot;cm&quot;),
+        legend.text = element_text(size = 6))</code></pre>
+<p><img src="figure/lps.Rmd/structure-plot-topic-model-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
+heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung; SI
+= small intestine; SK = skin; SP = spleen; TH = thymus.</p>
+<p>This next structure plot better highlights the topics that capture
+the processes driven by LPS-induced sepsis:</p>
+<pre class="r"><code>topic_colors &lt;- c(&quot;magenta&quot;,&quot;gray50&quot;,&quot;gray65&quot;,&quot;gray40&quot;,
+                  &quot;gray85&quot;,&quot;gray75&quot;,&quot;red&quot;,&quot;gray80&quot;,&quot;gray90&quot;,
+                  &quot;gray60&quot;,&quot;limegreen&quot;,&quot;gray70&quot;,&quot;gray55&quot;,
+                  &quot;gold&quot;)
+structure_plot(tm,grouping = samples$tissue,gap = 4,
+               topics = 1:14,colors = topic_colors,
+               loadings_order = rows) +
+  labs(fill = &quot;&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,&quot;cm&quot;),
+        legend.key.width = unit(0.2,&quot;cm&quot;),
+        legend.text = element_text(size = 6))</code></pre>
+<p><img src="figure/lps.Rmd/structure-plot-topic-model-2-1.png" width="840" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebnmf-flashier" class="section level2">
+<h2>EBNMF (flashier)</h2>
+<p>Next fit an NMF to the shifted log counts using flashier, with <span
+class="math inline">\(K =
+15\)</span>:</p>
+<pre class="r"><code>k &lt;- 15
+n &lt;- nrow(shifted_log_counts)
+m &lt;- ncol(shifted_log_counts)
+nmf0 &lt;- nnmf(shifted_log_counts,k = 1,loss = &quot;mse&quot;,method = &quot;scd&quot;,
+            max.iter = 10,verbose = 0,n.threads = 4)
+W0 &lt;- nmf0$W
+H0 &lt;- nmf0$H
+W0 &lt;- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
+H0 &lt;- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
+nmf &lt;- nnmf(shifted_log_counts,k,init = list(W = W0,H = H0),
+            loss = &quot;mse&quot;,method = &quot;scd&quot;,max.iter = 10,
+            verbose = 0,n.threads = 8)
+x  &lt;- rpois(1e7,1/n)
+s1 &lt;- sd(log(x + 1))
+sparse_prior &lt;- ebnm_point_exponential(x = c(rep(1,100)))
+sparse_prior$fitted_g$pi &lt;- c(0.99,0.01)
+ebnm_sparse_prior &lt;- flash_ebnm(prior_family = &quot;point_exponential&quot;,
+                                fix_g = TRUE,g_init = sparse_prior)
+fl_nmf &lt;- flash_init(shifted_log_counts,var_type = 2,S = s1)
+fl_nmf &lt;- flash_factors_init(fl_nmf,list(nmf$W,t(nmf$H)),
+                             c(ebnm_sparse_prior,ebnm_point_exponential))
+fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 0)
+fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 0)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>Structure plot comparing the factors to the organ types:</p>
+<pre class="r"><code>rows &lt;- order(samples$timepoint)
+topic_colors &lt;- c(&quot;powderblue&quot;,&quot;dodgerblue&quot;,&quot;olivedrab&quot;,&quot;limegreen&quot;,
+                  &quot;forestgreen&quot;,&quot;red&quot;,&quot;darkmagenta&quot;,&quot;gray&quot;,&quot;darkorange&quot;,
+                  &quot;cyan&quot;,&quot;royalblue&quot;,&quot;darkblue&quot;,&quot;lightskyblue&quot;,
+                  &quot;gold&quot;,&quot;sienna&quot;)
+L &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
+structure_plot(L,grouping = samples$tissue,gap = 4,
+                    topics = 1:15,colors = topic_colors,
+                    loadings_order = rows) +
+  labs(fill = &quot;&quot;,y = &quot;membership&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,&quot;cm&quot;),
+        legend.key.width = unit(0.25,&quot;cm&quot;),
+        legend.text = element_text(size = 7))</code></pre>
+<p><img src="figure/lps.Rmd/structure-plot-flashier-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>This next structure plot better highlights the topics that capture
+the processes driven by LPS-induced sepsis:</p>
+<pre class="r"><code>rows &lt;- order(samples$timepoint)
+topic_colors &lt;- c(&quot;gray95&quot;,&quot;gray70&quot;,&quot;gray80&quot;,&quot;limegreen&quot;,
+                  &quot;gray60&quot;,&quot;red&quot;,&quot;gray75&quot;,&quot;gray&quot;,&quot;gray85&quot;,
+                  &quot;gray90&quot;,&quot;gray65&quot;,&quot;gray50&quot;,&quot;gray45&quot;,
+                  &quot;gray35&quot;,&quot;gray75&quot;)
+L &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
+structure_plot(L,grouping = samples$tissue,gap = 4,
+                    topics = 1:15,colors = topic_colors,
+                    loadings_order = rows) +
+  labs(fill = &quot;&quot;,y = &quot;membership&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,&quot;cm&quot;),
+        legend.key.width = unit(0.25,&quot;cm&quot;),
+        legend.text = element_text(size = 7))</code></pre>
+<p><img src="figure/lps.Rmd/structure-plot-flashier-nmf-2-1.png" width="840" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -579,39 +947,46 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] singlecelljamboreeR_0.1-3 flashier_1.0.55          
-# [3] ebnm_1.1-34               fastTopics_0.7-25        
+# [1] workflowr_1.7.1           cowplot_1.1.3            
+# [3] ggplot2_3.5.0             singlecelljamboreeR_0.1-3
+# [5] flashier_1.0.55           ebnm_1.1-34              
+# [7] NNLM_0.4.4                fastTopics_0.7-25        
+# [9] data.table_1.17.4        
 # 
 # loaded via a namespace (and not attached):
-#  [1] softImpute_1.4-1     gtable_0.3.4         xfun_0.42           
-#  [4] bslib_0.6.1          ggplot2_3.5.0        htmlwidgets_1.6.4   
-#  [7] ggrepel_0.9.5        lattice_0.22-5       quadprog_1.5-8      
-# [10] vctrs_0.6.5          tools_4.3.3          generics_0.1.3      
-# [13] parallel_4.3.3       Polychrome_1.5.1     tibble_3.2.1        
-# [16] fansi_1.0.6          pkgconfig_2.0.3      Matrix_1.6-5        
-# [19] data.table_1.15.2    SQUAREM_2021.1       RColorBrewer_1.1-3  
-# [22] scatterplot3d_0.3-44 RcppParallel_5.1.10  lifecycle_1.0.4     
-# [25] truncnorm_1.0-9      compiler_4.3.3       stringr_1.5.1       
-# [28] git2r_0.33.0         progress_1.2.3       munsell_0.5.0       
-# [31] RhpcBLASctl_0.23-42  httpuv_1.6.14        htmltools_0.5.8.1   
-# [34] sass_0.4.9           yaml_2.3.8           lazyeval_0.2.2      
-# [37] plotly_4.10.4        crayon_1.5.2         later_1.3.2         
-# [40] pillar_1.9.0         jquerylib_0.1.4      whisker_0.4.1       
-# [43] tidyr_1.3.1          uwot_0.2.3           cachem_1.0.8        
-# [46] trust_0.1-8          gtools_3.9.5         tidyselect_1.2.1    
-# [49] digest_0.6.34        Rtsne_0.17           stringi_1.8.3       
-# [52] reshape2_1.4.4       dplyr_1.1.4          purrr_1.0.2         
-# [55] ashr_2.2-66          splines_4.3.3        cowplot_1.1.3       
-# [58] rprojroot_2.0.4      fastmap_1.1.1        grid_4.3.3          
-# [61] colorspace_2.1-0     cli_3.6.4            invgamma_1.1        
-# [64] magrittr_2.0.3       utf8_1.2.4           prettyunits_1.2.0   
-# [67] scales_1.3.0         promises_1.2.1       horseshoe_0.2.0     
-# [70] rmarkdown_2.26       httr_1.4.7           deconvolveR_1.2-1   
-# [73] workflowr_1.7.1      hms_1.1.3            pbapply_1.7-2       
-# [76] evaluate_1.0.3       knitr_1.45           viridisLite_0.4.2   
-# [79] irlba_2.3.5.1        rlang_1.1.5          Rcpp_1.0.12         
-# [82] mixsqp_0.3-54        glue_1.8.0           jsonlite_1.8.8      
-# [85] plyr_1.8.9           R6_2.5.1             fs_1.6.5</code></pre>
+#  [1] pbapply_1.7-2        rlang_1.1.5          magrittr_2.0.3      
+#  [4] git2r_0.33.0         horseshoe_0.2.0      compiler_4.3.3      
+#  [7] getPass_0.2-4        callr_3.7.5          vctrs_0.6.5         
+# [10] reshape2_1.4.4       quadprog_1.5-8       stringr_1.5.1       
+# [13] pkgconfig_2.0.3      crayon_1.5.2         fastmap_1.1.1       
+# [16] labeling_0.4.3       utf8_1.2.4           promises_1.2.1      
+# [19] rmarkdown_2.26       ps_1.7.6             purrr_1.0.2         
+# [22] xfun_0.42            cachem_1.0.8         trust_0.1-8         
+# [25] jsonlite_1.8.8       progress_1.2.3       highr_0.10          
+# [28] later_1.3.2          irlba_2.3.5.1        parallel_4.3.3      
+# [31] prettyunits_1.2.0    R6_2.5.1             bslib_0.6.1         
+# [34] stringi_1.8.3        RColorBrewer_1.1-3   SQUAREM_2021.1      
+# [37] jquerylib_0.1.4      Rcpp_1.0.12          knitr_1.45          
+# [40] R.utils_2.12.3       httpuv_1.6.14        Matrix_1.6-5        
+# [43] splines_4.3.3        tidyselect_1.2.1     rstudioapi_0.15.0   
+# [46] yaml_2.3.8           codetools_0.2-19     processx_3.8.3      
+# [49] lattice_0.22-5       tibble_3.2.1         plyr_1.8.9          
+# [52] withr_3.0.2          evaluate_1.0.3       Rtsne_0.17          
+# [55] RcppParallel_5.1.10  pillar_1.9.0         whisker_0.4.1       
+# [58] plotly_4.10.4        softImpute_1.4-1     generics_0.1.3      
+# [61] rprojroot_2.0.4      invgamma_1.1         truncnorm_1.0-9     
+# [64] hms_1.1.3            munsell_0.5.0        scales_1.3.0        
+# [67] ashr_2.2-66          gtools_3.9.5         RhpcBLASctl_0.23-42 
+# [70] glue_1.8.0           scatterplot3d_0.3-44 lazyeval_0.2.2      
+# [73] tools_4.3.3          fs_1.6.5             grid_4.3.3          
+# [76] tidyr_1.3.1          colorspace_2.1-0     deconvolveR_1.2-1   
+# [79] cli_3.6.4            Polychrome_1.5.1     fansi_1.0.6         
+# [82] mixsqp_0.3-54        viridisLite_0.4.2    dplyr_1.1.4         
+# [85] uwot_0.2.3           gtable_0.3.4         R.methodsS3_1.8.2   
+# [88] sass_0.4.9           digest_0.6.34        ggrepel_0.9.5       
+# [91] htmlwidgets_1.6.4    farver_2.1.1         htmltools_0.5.8.1   
+# [94] R.oo_1.26.0          lifecycle_1.0.4      httr_1.4.7</code></pre>
+</div>
 </div>
 
 
