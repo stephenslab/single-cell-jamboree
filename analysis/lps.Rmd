@@ -188,8 +188,8 @@ topic_colors <- c("powderblue","dodgerblue","olivedrab","limegreen",
                   "gold","sienna")
 L <- ldf(fl_nmf,type = "i")$L
 structure_plot(L,grouping = samples$tissue,gap = 4,
-                    topics = 1:15,colors = topic_colors,
-					loadings_order = rows) +
+               topics = 1:15,colors = topic_colors,
+			   loadings_order = rows) +
   labs(fill = "",y = "membership") +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
         legend.key.height = unit(0.01,"cm"),
