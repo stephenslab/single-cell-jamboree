@@ -37,6 +37,8 @@ via [this link][box].
 
 + [Preparation and initial exploration of the "pancreas cytokine" data set.](pancreas_cytokine.html)
 
++ [NMF analysis of the "pancreas cytokine" data set (untreated mouse only).](pancreas_cytokine_S1_factors.html)
+
 + [Initial exploration of the pancreas endocrine data set.](pancreas_endocrine.html)
 
 + [Exploratory analysis of human brain data, COP cells.](human_brain_COP_cells.html)
