@@ -185,11 +185,10 @@ samples <- transform(samples,cluster = factor(cluster))
 
 UMAP plot by cluster:
 
-```{r umap-plot-1, fig.height=3, fig.width=4.5}
+```{r umap-plot-1, fig.height=2.75, fig.width=4.5}
 cluster_colors <- c("darkmagenta","royalblue","limegreen","red","darkorange")
-samples$cluster                   <- "islet"      # Gcg, Sst, Ins1, Ins2, Ppy, 
-                                                  # Mafa, Mafb
-samples$cluster[y < -16] <- "duct"      # Krt19
+samples$cluster          <- "islet" # Gcg, Sst, Ins1, Ins2, Ppy, # Mafa, Mafb
+samples$cluster[y < -16] <- "duct"  # Krt19
 samples$cluster[x > 11 & y > 4] <- "macrophage" # Ccr5
 samples$cluster[x > 10 & y > -6 & y < 0] <- 
   "endothelial-mesenchymal" # Esam, Pecam1, Col1a1
@@ -202,7 +201,7 @@ ggplot(samples,aes(x = umap1,y = umap2,color = cluster)) +
 
 UMAP plot for the first (untreated) mouse only:
 
-```{r umap-plot-2, fig.height=3, fig.width=4.5}
+```{r umap-plot-2, fig.height=2.75, fig.width=4.5}
 ggplot(subset(samples,mouse == "S1"),
        aes(x = umap1,y = umap2,color = cluster)) +
   geom_point(size = 1) +
@@ -212,7 +211,7 @@ ggplot(subset(samples,mouse == "S1"),
 
 UMAP plot by mouse:
 
-```{r umap-plot-3, fig.height=3, fig.width=3.5}
+```{r umap-plot-3, fig.height=2.75, fig.width=3.25}
 sample_colors <- c("limegreen","orange","darkblue","magenta")
 ggplot(samples,aes(x = umap1,y = umap2,color = mouse)) +
   geom_point(size = 1) +
@@ -222,7 +221,7 @@ ggplot(samples,aes(x = umap1,y = umap2,color = mouse)) +
 
 Save the processed data to an RData file:
 
-```{r save-data, eval=FALSE}
+```{r save-data}
 save(list = c("samples","genes","counts"),
      file = "pancreas_cytokine.RData")
 resaveRdaFiles("pancreas_cytokine.RData")
