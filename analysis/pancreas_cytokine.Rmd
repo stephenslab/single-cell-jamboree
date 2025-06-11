@@ -128,10 +128,18 @@ genes  <- genes[j,]
 counts <- counts[,j]
 ```
 
+Remove *Malat1*, which typically shows variation for technical reasons:
+
+```{r filter-genes-2}
+j      <- which(genes$symbol != "Malat1")
+genes  <- genes[j,]
+counts <- counts[,j]
+```
+
 Finally, a bunch of genes are not expressed in any cells. Let's remove
 those as well:
 
-```{r filter-genes-2}
+```{r filter-genes-3}
 x      <- colSums(counts > 0)
 j      <- which(x > 0)
 genes  <- genes[j,]
