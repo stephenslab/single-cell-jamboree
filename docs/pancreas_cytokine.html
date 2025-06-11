@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-10
+<strong>Last updated:</strong> 2025-06-11
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree5249817791516a7b04d8a431b008b7bd6df82610targetblank5249817a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeffad5cdff21ce9cf92bdce3b7e2f58a178e56b6dtargetblankffad5cda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/5249817791516a7b04d8a431b008b7bd6df82610" target="_blank">5249817</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ffad5cdff21ce9cf92bdce3b7e2f58a178e56b6d" target="_blank">ffad5cd</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree5249817791516a7b04d8a431b008b7bd6df82610targetblank5249817a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeffad5cdff21ce9cf92bdce3b7e2f58a178e56b6dtargetblankffad5cda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/5249817791516a7b04d8a431b008b7bd6df82610" target="_blank">5249817</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ffad5cdff21ce9cf92bdce3b7e2f58a178e56b6d" target="_blank">ffad5cd</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -470,7 +470,6 @@ Untracked files:
     Untracked:  analysis/mcf7_cache/
     Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
     Untracked:  analysis/temp2.R
-    Untracked:  analysis/temp3.R
     Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE183010/
     Untracked:  data/Immune_ALL_human.h5ad
@@ -525,6 +524,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ffad5cdff21ce9cf92bdce3b7e2f58a178e56b6d/analysis/pancreas_cytokine.Rmd" target="_blank">ffad5cd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+<td>
+wflow_publish("pancreas_cytokine.Rmd", verbose = TRUE, view = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/e876f200425815e4f28291a50d1ad111886998ef/docs/pancreas_cytokine.html" target="_blank">e876f20</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-10
+</td>
+<td>
+Ran wflow_publish("pancreas_cytokine.Rmd").
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1054,6 +1087,11 @@ href="https://nbisweden.github.io/workshop-scRNAseq/labs/seurat/seurat_01_qc.htm
              grepl(&quot;^Rp[sl]&quot;,genes$symbol)))
 genes  &lt;- genes[j,]
 counts &lt;- counts[,j]</code></pre>
+<p>Remove <em>Malat1</em>, which typically shows variation for technical
+reasons:</p>
+<pre class="r"><code>j      &lt;- which(genes$symbol != &quot;Malat1&quot;)
+genes  &lt;- genes[j,]
+counts &lt;- counts[,j]</code></pre>
 <p>Finally, a bunch of genes are not expressed in any cells. Let’s
 remove those as well:</p>
 <pre class="r"><code>x      &lt;- colSums(counts &gt; 0)
@@ -1067,9 +1105,9 @@ nrow(genes)
 dim(counts)
 mean(counts &gt; 0)
 # [1] 9354
-# [1] 21793
-# [1]  9354 21793
-# [1] 0.2031886</code></pre>
+# [1] 21792
+# [1]  9354 21792
+# [1] 0.2031521</code></pre>
 <p>Now let’s generate a 2-d nonlinear embedding of the cells using
 t-SNE. First, transform the counts into “shifted log counts”:</p>
 <pre class="r"><code>a &lt;- 1
@@ -1124,6 +1162,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e876f200425815e4f28291a50d1ad111886998ef/docs/figure/pancreas_cytokine.Rmd/umap-plot-1-1.png" target="_blank">e876f20</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/5941ced2fc05b6379038fc30c28b6fdf94da761c/docs/figure/pancreas_cytokine.Rmd/umap-plot-1-1.png" target="_blank">5941ced</a>
@@ -1190,6 +1239,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e876f200425815e4f28291a50d1ad111886998ef/docs/figure/pancreas_cytokine.Rmd/umap-plot-2-1.png" target="_blank">e876f20</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/5941ced2fc05b6379038fc30c28b6fdf94da761c/docs/figure/pancreas_cytokine.Rmd/umap-plot-2-1.png" target="_blank">5941ced</a>
@@ -1267,6 +1327,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e876f200425815e4f28291a50d1ad111886998ef/docs/figure/pancreas_cytokine.Rmd/umap-plot-3-1.png" target="_blank">e876f20</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/af8e02d63c8bba11a42eaf2b2417b83cfaeef700/docs/figure/pancreas_cytokine.Rmd/umap-plot-3-1.png" target="_blank">af8e02d</a>
