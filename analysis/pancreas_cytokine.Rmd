@@ -196,7 +196,7 @@ UMAP plot by cluster:
 
 ```{r umap-plot-1, fig.height=2.75, fig.width=4.5}
 cluster_colors <- c("darkmagenta","royalblue","limegreen","red","darkorange")
-samples$cluster          <- "islet" # Gcg, Sst, Ins1, Ins2, Ppy, # Mafa, Mafb
+samples$cluster          <- "islet" # Gcg, Sst, Ins1, Ins2, Ppy, Mafa, Mafb
 samples$cluster[y < -13] <- "duct"  # Krt19
 samples$cluster[x > 11 & y > 3] <- "macrophage" # Ccr5
 samples$cluster[x > 10 & y > -6 & y < 0] <- 
@@ -230,7 +230,7 @@ ggplot(samples,aes(x = umap1,y = umap2,color = mouse)) +
 
 Save the processed data to an RData file:
 
-```{r save-data, eval=FALSE}
+```{r save-data}
 save(list = c("samples","genes","counts"),
      file = "pancreas_cytokine.RData")
 resaveRdaFiles("pancreas_cytokine.RData")
