@@ -93,35 +93,42 @@ tm <- fit_poisson_nmf(counts,fit0 = tm,method = "scd",numiter = 40,
 Structure plot comparing the topics to the clusters:
 
 ```{r structure-plot-topic-model, fig.height=2.25, fig.width=6.5, results="hide", message=FALSE}
-topic_colors <- c("magenta","darkorange","darkblue","forestgreen",
-                  "dodgerblue","gray","red","olivedrab","darkmagenta",
-                  "sienna","limegreen","royalblue","lightskyblue",
-				  "gold")
-samples <- transform(samples,cluster = factor(cluster))
-structure_plot(tm,grouping = samples$cluster,gap = 10,colors = topic_colors)
+topic_colors <- c("gainsboro","darkorange","darkblue","forestgreen",
+                  "dodgerblue","gold","red")
+L <- poisson2multinom(tm)$L
+clusters <- as.character(samples$cluster)
+clusters[clusters == "islet"]                 <- "beta"
+clusters[clusters == "beta" & L[,"k6"] > 0.3] <- "alpha"
+clusters[clusters == "beta" & L[,"k7"] > 0.2] <- "delta+gamma"
+clusters[clusters == "beta" & L[,"k4"] > 0.2] <- "beta(Ins1-)"
+clusters <- factor(clusters)
+structure_plot(L,grouping = clusters,gap = 10,colors = topic_colors,
+               topics = 1:7)
 ```
 
-k6 = $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
-k1 = $\alpha$ cells (*Gcg*, *Mafb*)
-k4 = $\delta$ and $\epsilon$ cells (*Sst*, *Ghrl*)
-k5 = $\gamma$ or pluripotent cells (*Ppy*)
-k3 = macrophages, endothelial cells, mesenchymal cells and duct cells
-k7 = endocrine-related process (*Chga*, *Iapp*)?
-k2 = Malat1?
+Based on the estimated $\mathbf{F}$, we have the following potential
+interpretation of the topics:
 
-```{r annotation-heatmap-topic-model, fig.height=3, fig.width=3, results="hide", eval=FALSE}
-scale.rows <- function (A)
++ k5 = $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
++ k4 = *Ins1-* $\beta$ cells?
++ k6 = $\alpha$ cells (*Gcg*, *Mafb*)
++ k7 = $\delta$, $\gamma$ and $\epsilon$ cells (*Sst*, *Ghrl*)
++ k2 = a non-$\alpha$ islet process
++ k3 = macrophages, endothelial cells, mesenchymal cells and duct cells
+
+```{r annotation-heatmap-topic-model, fig.height=3, fig.width=3}
+scale_rows <- function (A)
   A / apply(A,1,max)
 marker_genes <- c("Ins1","Ins2","Mafa","Gcg","Mafb","Sst","Ghrl",
-                  "Ppy","Krt19",
-                  "Ccr5","Pecam1","Esam","Col1a1","Ghrl","Chga","Iapp")
+                  "Ppy","Chga","Iapp","Krt19","Ccr5","Pecam1","Esam",
+				  "Col1a1","Ghrl")
 j <- match(marker_genes,genes$symbol)
 F <- poisson2multinom(tm)$F
 F <- F[j,]
-F <- scale.rows(F)
+F <- scale_rows(F)
 rownames(F) <- marker_genes
-p <- annotation_heatmap(F[,c("k6","k1","k4","k5","k3","k7","K2")],
-                        select_features = "all")
+topics <- paste0("k",c(5,4,6,7,2,3))
+p <- annotation_heatmap(F[,topics],select_features = "all",verbose = FALSE)
 print(p)
 ```
 
@@ -145,6 +152,42 @@ Structure plot comparing the factors to the clusters:
 
 ```{r structure-plot-flashier-nmf, fig.height=2.5, fig.width=6.5, results="hide", message=FALSE}
 L <- ldf(fl_nmf,type = "i")$L
-structure_plot(L,grouping = samples$cluster,gap = 10,colors = topic_colors) +
+colnames(L) <- paste0("k",1:7)
+clusters <- as.character(samples$cluster)
+clusters[clusters == "endothelial-mesenchymal"] <- "mesen.+endothelial"
+clusters[clusters == "mesen.+endothelial" & L[,"k6"] > 0.5] <- "mesenchymal"
+clusters[clusters == "islet"] <- "beta"
+clusters[clusters == "beta" & L[,"k3"] > 0.5]  <- "alpha+delta+gamma"
+clusters[clusters == "beta" & L[,"k7"] > 0.25] <- "beta(Ins1-)"
+clusters <- factor(clusters)
+structure_plot(L[,-1],grouping = clusters,gap = 10,colors = topic_colors[-1]) +
   labs(y = "membership")
+```
+
+Possible interpretation of the factors:
+
++ k4 = $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
++ k7 = *Ins1-* $\beta$ cells?
++ k3 = $\alpha$, $\delta$ and $\gamma$ cells
++ k5 = macrophages (*Ccr5*)
++ k2 = endothelial cells (*Pecam1*, *Esam*)
++ k6 = mesenchymal cells (*Col1a1*)
+
+```{r annotation-heatmap-flashier-nmf, fig.height=3, fig.width=3}
+scale_cols <- function (A) {
+  b <- apply(A,2,max)
+  return(t(t(A) * b))
+}
+marker_genes <- c("Ins1","Ins2","Mafa","Gcg","Mafb","Sst","Ghrl",
+                  "Ppy","Chga","Iapp","Krt19",
+                  "Ccr5","Pecam1","Esam","Col1a1","Ghrl")
+j <- match(marker_genes,genes$symbol)
+F <- ldf(fl_nmf,type = "i")$F
+F <- scale_cols(F)
+F <- F[j,]
+rownames(F) <- marker_genes
+colnames(F) <- paste0("k",1:7)
+factors <- paste0("k",c(4,7,3,5,2,6))
+p <- annotation_heatmap(F[,factors],select_features = "all",verbose = FALSE)
+print(p)
 ```
