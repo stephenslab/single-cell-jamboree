@@ -129,8 +129,7 @@ F <- F[j,]
 F <- scale_rows(F)
 rownames(F) <- marker_genes
 topics <- paste0("k",c(5,4,6,7,2,3))
-p <- annotation_heatmap(F[,topics],select_features = "all",verbose = FALSE)
-print(p)
+annotation_heatmap(F[,topics],select_features = "all",verbose = FALSE)
 ```
 
 ## EBNMF (flashier)
@@ -189,6 +188,5 @@ F <- F[j,]
 rownames(F) <- marker_genes
 colnames(F) <- paste0("k",1:7)
 factors <- paste0("k",c(4,7,3,5,2,6))
-p <- annotation_heatmap(F[,factors],select_features = "all",verbose = FALSE)
-print(p)
+annotation_heatmap(F[,factors],select_features = "all",verbose = FALSE)
 ```
