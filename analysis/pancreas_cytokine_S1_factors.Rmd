@@ -92,13 +92,37 @@ tm <- fit_poisson_nmf(counts,fit0 = tm,method = "scd",numiter = 40,
 
 Structure plot comparing the topics to the clusters:
 
-```{r structure-plot-topic-model, fig.height=1.5, fig.width=7}
+```{r structure-plot-topic-model, fig.height=2.25, fig.width=6.5, results="hide", message=FALSE}
 topic_colors <- c("magenta","darkorange","darkblue","forestgreen",
                   "dodgerblue","gray","red","olivedrab","darkmagenta",
                   "sienna","limegreen","royalblue","lightskyblue",
 				  "gold")
 samples <- transform(samples,cluster = factor(cluster))
-structure_plot(tm,grouping = samples$cluster,gap = 20,colors = topic_colors)
+structure_plot(tm,grouping = samples$cluster,gap = 10,colors = topic_colors)
+```
+
+k6 = $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
+k1 = $\alpha$ cells (*Gcg*, *Mafb*)
+k4 = $\delta$ and $\epsilon$ cells (*Sst*, *Ghrl*)
+k5 = $\gamma$ or pluripotent cells (*Ppy*)
+k3 = macrophages, endothelial cells, mesenchymal cells and duct cells
+k7 = endocrine-related process (*Chga*, *Iapp*)?
+k2 = Malat1?
+
+```{r annotation-heatmap-topic-model, fig.height=3, fig.width=3, results="hide", eval=FALSE}
+scale.rows <- function (A)
+  A / apply(A,1,max)
+marker_genes <- c("Ins1","Ins2","Mafa","Gcg","Mafb","Sst","Ghrl",
+                  "Ppy","Krt19",
+                  "Ccr5","Pecam1","Esam","Col1a1","Ghrl","Chga","Iapp")
+j <- match(marker_genes,genes$symbol)
+F <- poisson2multinom(tm)$F
+F <- F[j,]
+F <- scale.rows(F)
+rownames(F) <- marker_genes
+p <- annotation_heatmap(F[,c("k6","k1","k4","k5","k3","k7","K2")],
+                        select_features = "all")
+print(p)
 ```
 
 ## EBNMF (flashier)
@@ -106,7 +130,7 @@ structure_plot(tm,grouping = samples$cluster,gap = 20,colors = topic_colors)
 Next fit an NMF to the shifted log counts using flashier, also with $K
 = 7$:
 
-```{r flashier-nmf, cache=TRUE}
+```{r flashier-nmf, cache=TRUE, warning=FALSE}
 n  <- nrow(samples)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
@@ -119,7 +143,8 @@ fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 80,verbose = 0)
 
 Structure plot comparing the factors to the clusters:
 
-```{r structure-plot-flashier-nmf, fig.height=2, fig.width=7}
+```{r structure-plot-flashier-nmf, fig.height=2.5, fig.width=6.5, results="hide", message=FALSE}
 L <- ldf(fl_nmf,type = "i")$L
-structure_plot(L,grouping = samples$cluster,gap = 20,colors = topic_colors)
+structure_plot(L,grouping = samples$cluster,gap = 10,colors = topic_colors) +
+  labs(y = "membership")
 ```
