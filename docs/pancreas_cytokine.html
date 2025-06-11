@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeffad5cdff21ce9cf92bdce3b7e2f58a178e56b6dtargetblankffad5cda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreebd56aae130ef81c23a980f3bdf16ba1096210c2ctargetblankbd56aaea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ffad5cdff21ce9cf92bdce3b7e2f58a178e56b6d" target="_blank">ffad5cd</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/bd56aae130ef81c23a980f3bdf16ba1096210c2c" target="_blank">bd56aae</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeffad5cdff21ce9cf92bdce3b7e2f58a178e56b6dtargetblankffad5cda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreebd56aae130ef81c23a980f3bdf16ba1096210c2ctargetblankbd56aaea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ffad5cdff21ce9cf92bdce3b7e2f58a178e56b6d" target="_blank">ffad5cd</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/bd56aae130ef81c23a980f3bdf16ba1096210c2c" target="_blank">bd56aae</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -468,17 +468,12 @@ were generated:
 Untracked files:
     Untracked:  analysis/lps_cache/
     Untracked:  analysis/mcf7_cache/
-    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
     Untracked:  analysis/temp2.R
     Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE183010/
     Untracked:  data/Immune_ALL_human.h5ad
-    Untracked:  data/pancreas_cytokine.RData
     Untracked:  data/pancreas_endocrine.RData
     Untracked:  data/pancreas_endocrine_alldays.h5ad
-
-Unstaged changes:
-    Modified:   analysis/pancreas_cytokine_S1_factors.Rmd
 
 </code></pre>
 <p>
@@ -524,6 +519,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/bd56aae130ef81c23a980f3bdf16ba1096210c2c/analysis/pancreas_cytokine.Rmd" target="_blank">bd56aae</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+<td>
+wflow_publish("pancreas_cytokine.Rmd", verbose = TRUE, view = FALSE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/980e6701b758327f1dc1a77637f47eaabc575179/analysis/pancreas_cytokine.Rmd" target="_blank">980e670</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+<td>
+Fixed the clustering for the pancreas_cytokine data slightly.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/dc6ef06b953e19a047f8e4a3bbc5ce1d08009c90/docs/pancreas_cytokine.html" target="_blank">dc6ef06</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+<td>
+Removed Malat1 from the pancreas_cytokine data set.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1114,7 +1160,8 @@ t-SNE. First, transform the counts into “shifted log counts”:</p>
 s &lt;- rowSums(counts)
 s &lt;- s/mean(s)
 shifted_log_counts &lt;- MatrixExtra::mapSparse(counts/(a*s),log1p)</code></pre>
-<p>Then project the cells onto the top 30 PCs:</p>
+<p>Then use the shifted log counts to project the cells onto the top 30
+PCs:</p>
 <pre class="r"><code>U &lt;- rsvd(shifted_log_counts,k = 30)$u</code></pre>
 <p>Now run UMAP on the 30 PCs:</p>
 <pre class="r"><code>Y &lt;- umap(U,n_neighbors = 30,metric = &quot;cosine&quot;,min_dist = 0.3,
@@ -1129,9 +1176,9 @@ samples$cluster[x &gt; -3 &amp; y &gt; 5]   &lt;- &quot;islet1&quot;
 samples &lt;- transform(samples,cluster = factor(cluster))</code></pre>
 <p>UMAP plot by cluster:</p>
 <pre class="r"><code>cluster_colors &lt;- c(&quot;darkmagenta&quot;,&quot;royalblue&quot;,&quot;limegreen&quot;,&quot;red&quot;,&quot;darkorange&quot;)
-samples$cluster          &lt;- &quot;islet&quot; # Gcg, Sst, Ins1, Ins2, Ppy, # Mafa, Mafb
-samples$cluster[y &lt; -16] &lt;- &quot;duct&quot;  # Krt19
-samples$cluster[x &gt; 11 &amp; y &gt; 4] &lt;- &quot;macrophage&quot; # Ccr5
+samples$cluster          &lt;- &quot;islet&quot; # Gcg, Sst, Ins1, Ins2, Ppy, Mafa, Mafb
+samples$cluster[y &lt; -13] &lt;- &quot;duct&quot;  # Krt19
+samples$cluster[x &gt; 11 &amp; y &gt; 3] &lt;- &quot;macrophage&quot; # Ccr5
 samples$cluster[x &gt; 10 &amp; y &gt; -6 &amp; y &lt; 0] &lt;- 
   &quot;endothelial-mesenchymal&quot; # Esam, Pecam1, Col1a1
 samples &lt;- transform(samples,cluster = factor(cluster))
@@ -1162,6 +1209,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/dc6ef06b953e19a047f8e4a3bbc5ce1d08009c90/docs/figure/pancreas_cytokine.Rmd/umap-plot-1-1.png" target="_blank">dc6ef06</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/e876f200425815e4f28291a50d1ad111886998ef/docs/figure/pancreas_cytokine.Rmd/umap-plot-1-1.png" target="_blank">e876f20</a>
@@ -1239,6 +1297,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/dc6ef06b953e19a047f8e4a3bbc5ce1d08009c90/docs/figure/pancreas_cytokine.Rmd/umap-plot-2-1.png" target="_blank">dc6ef06</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/e876f200425815e4f28291a50d1ad111886998ef/docs/figure/pancreas_cytokine.Rmd/umap-plot-2-1.png" target="_blank">e876f20</a>
@@ -1327,6 +1396,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/dc6ef06b953e19a047f8e4a3bbc5ce1d08009c90/docs/figure/pancreas_cytokine.Rmd/umap-plot-3-1.png" target="_blank">dc6ef06</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/e876f200425815e4f28291a50d1ad111886998ef/docs/figure/pancreas_cytokine.Rmd/umap-plot-3-1.png" target="_blank">e876f20</a>
