@@ -4,8 +4,9 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-Here we perform a NMF analyses of the "pancreas cytokine" data set,
-focussing on the scRNA-seq data from untreated mouse only.
+Here we perform a NMF analyses of the
+["pancreas cytokine" data set](pancreas_cytokine.html), focussing on
+the scRNA-seq data from untreated mouse only.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
