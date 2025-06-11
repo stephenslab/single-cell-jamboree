@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Peter Carbonetto" />
+
+
+<title>NMF analysis of the “pancreas cytokine” data set (untreated mouse only)</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">single-cell jamboree</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephenslab/single-cell-jamboree">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">NMF analysis of the “pancreas cytokine”
+data set (untreated mouse only)</h1>
+<h4 class="author">Peter Carbonetto</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-06-11
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>single-cell-jamboree/analysis/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed1code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(1)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed1code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(1)</code> was run prior to running the
+code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+</p>
+</div>
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div class="panel-body">
+The following chunks had caches available:
+<ul>
+<li>
+fit-topic-model
+</li>
+<li>
+flashier-nmf
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory
+<code>pancreas_cytokine_S1_factors_cache</code> and re-run the analysis.
+To have workflowr automatically delete the cache directory prior to
+building the file, set <code>delete_cache = TRUE</code> when running
+<code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree2153b306e786757a80eb7df98fa952b605bf82betargetblank2153b30a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/2153b306e786757a80eb7df98fa952b605bf82be" target="_blank">2153b30</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree2153b306e786757a80eb7df98fa952b605bf82betargetblank2153b30a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/2153b306e786757a80eb7df98fa952b605bf82be" target="_blank">2153b30</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Untracked files:
+    Untracked:  analysis/lps_cache/
+    Untracked:  analysis/mcf7_cache/
+    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
+    Untracked:  analysis/temp2.R
+    Untracked:  data/GSE132188_adata.h5ad.h5
+    Untracked:  data/GSE183010/
+    Untracked:  data/Immune_ALL_human.h5ad
+    Untracked:  data/pancreas_cytokine.RData
+    Untracked:  data/pancreas_endocrine.RData
+    Untracked:  data/pancreas_endocrine_alldays.h5ad
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/pancreas_cytokine_S1_factors.Rmd</code>) and HTML
+(<code>docs/pancreas_cytokine_S1_factors.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2153b306e786757a80eb7df98fa952b605bf82be/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">2153b30</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+<td>
+wflow_publish("pancreas_cytokine_S1_factors.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/980e6701b758327f1dc1a77637f47eaabc575179/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">980e670</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+<td>
+Fixed the clustering for the pancreas_cytokine data slightly.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/d1fdbe94edc2f169a73750ab652e39effa8d3ecc/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">d1fdbe9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-11
+</td>
+<td>
+Made a few improvements to the pancreas_cytokine_S1_factors analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ce314bb479051afc1cdf9ba8b730f27664b0ab97/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">ce314bb</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-09
+</td>
+<td>
+First try at running fastTopics and flashier on the pancreas_cytokine
+data, for mouse = S1 only; from this analysis I learned that I need to
+remove the mt and rp genes.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/422c8ed202a376bfcd0a6e646df89145d0905470/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">422c8ed</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-09
+</td>
+<td>
+Added steps to the pancreas_cytokine_S1_factors analysis to prepare the
+data for fastTopics and flashier.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/46ba21ab2808f38f824c0250c671b051c73da2ae/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">46ba21a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-06
+</td>
+<td>
+Started new analysis in pancreas_cytokine_S1_factors.Rmd.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>Here we perform a NMF analyses of the “pancreas cytokine” data set,
+focussing on the scRNA-seq data from untreated mouse only.</p>
+<p>Load packages used to process the data, perform the analyses, and
+create the plots.</p>
+<pre class="r"><code>library(Matrix)
+library(fastTopics)
+library(flashier)
+library(singlecelljamboreeR)
+library(ggplot2)
+library(cowplot)</code></pre>
+<p>Set the seed for reproducibility:</p>
+<pre class="r"><code>set.seed(1)</code></pre>
+<p>Load the prepared data set:</p>
+<pre class="r"><code>load(&quot;../data/pancreas_cytokine.RData&quot;)</code></pre>
+<p>Here we will analyze the cells from the untreated mouse only:</p>
+<pre class="r"><code>i       &lt;- which(samples$mouse == &quot;S1&quot;)
+samples &lt;- samples[i,]
+counts  &lt;- counts[i,]</code></pre>
+<p>Remove two cells that appear to be outliers:</p>
+<pre class="r"><code>outliers &lt;- c(&quot;TTTGTTGTCGTTAGTG-1&quot;,&quot;TTTGTTGGTAGAGCTG-1&quot;)
+i        &lt;- which(!is.element(samples$barcode,outliers))
+samples  &lt;- samples[i,]
+counts   &lt;- counts[i,]</code></pre>
+<p>Remove genes that are expressed in fewer than 5 cells:</p>
+<pre class="r"><code>j      &lt;- which(colSums(counts &gt; 0) &gt; 4)
+genes  &lt;- genes[j,]
+counts &lt;- counts[,j]</code></pre>
+<p>This is the dimension of the data set we will analyze:</p>
+<pre class="r"><code>dim(counts)
+# [1]  3137 16366</code></pre>
+<p>For the Gaussian-based analyses, we will need the shifted log
+counts:</p>
+<pre class="r"><code>a &lt;- 1
+s &lt;- rowSums(counts)
+s &lt;- s/mean(s)
+shifted_log_counts &lt;- log1p(counts/(a*s))
+rownames(shifted_log_counts) &lt;- NULL</code></pre>
+<div id="topic-model-fasttopics" class="section level2">
+<h2>Topic model (fastTopics)</h2>
+<p>Fit a topic model with <span class="math inline">\(K = 7\)</span>
+topics to the counts:</p>
+<pre class="r"><code>tm &lt;- fit_poisson_nmf(counts,k = 7,init.method = &quot;random&quot;,method = &quot;em&quot;,
+                      numiter = 40,verbose = &quot;none&quot;,
+                      control = list(numiter = 4,nc = 8,extrapolate = FALSE))
+tm &lt;- fit_poisson_nmf(counts,fit0 = tm,method = &quot;scd&quot;,numiter = 40,
+                      control = list(numiter = 4,nc = 8,extrapolate = TRUE),
+                      verbose = &quot;none&quot;)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>Structure plot comparing the topics to the clusters:</p>
+<pre class="r"><code>topic_colors &lt;- c(&quot;gainsboro&quot;,&quot;darkorange&quot;,&quot;darkblue&quot;,&quot;forestgreen&quot;,
+                  &quot;dodgerblue&quot;,&quot;gold&quot;,&quot;red&quot;)
+L &lt;- poisson2multinom(tm)$L
+clusters &lt;- as.character(samples$cluster)
+clusters[clusters == &quot;islet&quot;]                 &lt;- &quot;beta&quot;
+clusters[clusters == &quot;beta&quot; &amp; L[,&quot;k6&quot;] &gt; 0.3] &lt;- &quot;alpha&quot;
+clusters[clusters == &quot;beta&quot; &amp; L[,&quot;k7&quot;] &gt; 0.2] &lt;- &quot;delta+gamma&quot;
+clusters[clusters == &quot;beta&quot; &amp; L[,&quot;k4&quot;] &gt; 0.2] &lt;- &quot;beta(Ins1-)&quot;
+clusters &lt;- factor(clusters)
+structure_plot(L,grouping = clusters,gap = 10,colors = topic_colors,
+               topics = 1:7)</code></pre>
+<p><img src="figure/pancreas_cytokine_S1_factors.Rmd/structure-plot-topic-model-1.png" width="780" style="display: block; margin: auto;" /></p>
+<p>Based on the estimated <span
+class="math inline">\(\mathbf{F}\)</span>, we have the following
+potential interpretation of the topics:</p>
+<ul>
+<li>k5 = <span class="math inline">\(\beta\)</span> cells
+(<em>Ins1</em>, <em>Ins2</em>, <em>Mafa</em>)</li>
+<li>k4 = <em>Ins1-</em> <span class="math inline">\(\beta\)</span>
+cells?</li>
+<li>k6 = <span class="math inline">\(\alpha\)</span> cells
+(<em>Gcg</em>, <em>Mafb</em>)</li>
+<li>k7 = <span class="math inline">\(\delta\)</span>, <span
+class="math inline">\(\gamma\)</span> and <span
+class="math inline">\(\epsilon\)</span> cells (<em>Sst</em>,
+<em>Ghrl</em>)</li>
+<li>k2 = a non-<span class="math inline">\(\alpha\)</span> islet
+process</li>
+<li>k3 = macrophages, endothelial cells, mesenchymal cells and duct
+cells</li>
+</ul>
+<pre class="r"><code>scale_rows &lt;- function (A)
+  A / apply(A,1,max)
+marker_genes &lt;- c(&quot;Ins1&quot;,&quot;Ins2&quot;,&quot;Mafa&quot;,&quot;Gcg&quot;,&quot;Mafb&quot;,&quot;Sst&quot;,&quot;Ghrl&quot;,
+                  &quot;Ppy&quot;,&quot;Chga&quot;,&quot;Iapp&quot;,&quot;Krt19&quot;,&quot;Ccr5&quot;,&quot;Pecam1&quot;,&quot;Esam&quot;,
+                  &quot;Col1a1&quot;,&quot;Ghrl&quot;)
+j &lt;- match(marker_genes,genes$symbol)
+F &lt;- poisson2multinom(tm)$F
+F &lt;- F[j,]
+F &lt;- scale_rows(F)
+rownames(F) &lt;- marker_genes
+topics &lt;- paste0(&quot;k&quot;,c(5,4,6,7,2,3))
+p &lt;- annotation_heatmap(F[,topics],select_features = &quot;all&quot;,verbose = FALSE)
+print(p)</code></pre>
+<p><img src="figure/pancreas_cytokine_S1_factors.Rmd/annotation-heatmap-topic-model-1.png" width="360" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebnmf-flashier" class="section level2">
+<h2>EBNMF (flashier)</h2>
+<p>Next fit an NMF to the shifted log counts using flashier, also with
+<span class="math inline">\(K
+= 7\)</span>:</p>
+<pre class="r"><code>n  &lt;- nrow(samples)
+x  &lt;- rpois(1e7,1/n)
+s1 &lt;- sd(log(x + 1))
+fl_nmf &lt;- flash(shifted_log_counts,S = s1,ebnm_fn = ebnm_point_exponential,
+                var_type = 2,greedy_Kmax = 7,backfit = FALSE,
+                nullcheck = FALSE,verbose = 0)
+fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 40,verbose = 0)
+fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 80,verbose = 0)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>Structure plot comparing the factors to the clusters:</p>
+<pre class="r"><code>L &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
+colnames(L) &lt;- paste0(&quot;k&quot;,1:7)
+clusters &lt;- as.character(samples$cluster)
+clusters[clusters == &quot;endothelial-mesenchymal&quot;] &lt;- &quot;mesen.+endothelial&quot;
+clusters[clusters == &quot;mesen.+endothelial&quot; &amp; L[,&quot;k6&quot;] &gt; 0.5] &lt;- &quot;mesenchymal&quot;
+clusters[clusters == &quot;islet&quot;] &lt;- &quot;beta&quot;
+clusters[clusters == &quot;beta&quot; &amp; L[,&quot;k3&quot;] &gt; 0.5]  &lt;- &quot;alpha+delta+gamma&quot;
+clusters[clusters == &quot;beta&quot; &amp; L[,&quot;k7&quot;] &gt; 0.25] &lt;- &quot;beta(Ins1-)&quot;
+clusters &lt;- factor(clusters)
+structure_plot(L[,-1],grouping = clusters,gap = 10,colors = topic_colors[-1]) +
+  labs(y = &quot;membership&quot;)</code></pre>
+<p><img src="figure/pancreas_cytokine_S1_factors.Rmd/structure-plot-flashier-nmf-1.png" width="780" style="display: block; margin: auto;" /></p>
+<p>Possible interpretation of the factors:</p>
+<ul>
+<li>k4 = <span class="math inline">\(\beta\)</span> cells
+(<em>Ins1</em>, <em>Ins2</em>, <em>Mafa</em>)</li>
+<li>k7 = <em>Ins1-</em> <span class="math inline">\(\beta\)</span>
+cells?</li>
+<li>k3 = <span class="math inline">\(\alpha\)</span>, <span
+class="math inline">\(\delta\)</span> and <span
+class="math inline">\(\gamma\)</span> cells</li>
+<li>k5 = macrophages (<em>Ccr5</em>)</li>
+<li>k2 = endothelial cells (<em>Pecam1</em>, <em>Esam</em>)</li>
+<li>k6 = mesenchymal cells (<em>Col1a1</em>)</li>
+</ul>
+<pre class="r"><code>scale_cols &lt;- function (A) {
+  b &lt;- apply(A,2,max)
+  return(t(t(A) * b))
+}
+marker_genes &lt;- c(&quot;Ins1&quot;,&quot;Ins2&quot;,&quot;Mafa&quot;,&quot;Gcg&quot;,&quot;Mafb&quot;,&quot;Sst&quot;,&quot;Ghrl&quot;,
+                  &quot;Ppy&quot;,&quot;Chga&quot;,&quot;Iapp&quot;,&quot;Krt19&quot;,
+                  &quot;Ccr5&quot;,&quot;Pecam1&quot;,&quot;Esam&quot;,&quot;Col1a1&quot;,&quot;Ghrl&quot;)
+j &lt;- match(marker_genes,genes$symbol)
+F &lt;- ldf(fl_nmf,type = &quot;i&quot;)$F
+F &lt;- scale_cols(F)
+F &lt;- F[j,]
+rownames(F) &lt;- marker_genes
+colnames(F) &lt;- paste0(&quot;k&quot;,1:7)
+factors &lt;- paste0(&quot;k&quot;,c(4,7,3,5,2,6))
+p &lt;- annotation_heatmap(F[,factors],select_features = &quot;all&quot;,verbose = FALSE)
+print(p)</code></pre>
+<p><img src="figure/pancreas_cytokine_S1_factors.Rmd/annotation-heatmap-flashier-nmf-1.png" width="360" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS 15.4.1
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/Chicago
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+# [1] cowplot_1.1.3             ggplot2_3.5.0            
+# [3] singlecelljamboreeR_0.1-3 flashier_1.0.55          
+# [5] ebnm_1.1-34               fastTopics_0.7-25        
+# [7] Matrix_1.6-5             
+# 
+# loaded via a namespace (and not attached):
+#  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.1        
+#  [4] dplyr_1.1.4          fastmap_1.1.1        lazyeval_0.2.2      
+#  [7] promises_1.2.1       digest_0.6.34        lifecycle_1.0.4     
+# [10] invgamma_1.1         magrittr_2.0.3       compiler_4.3.3      
+# [13] rlang_1.1.5          sass_0.4.9           progress_1.2.3      
+# [16] tools_4.3.3          utf8_1.2.4           yaml_2.3.8          
+# [19] data.table_1.17.4    knitr_1.45           labeling_0.4.3      
+# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
+# [25] plyr_1.8.9           RColorBrewer_1.1-3   Rtsne_0.17          
+# [28] workflowr_1.7.1      withr_3.0.2          purrr_1.0.2         
+# [31] grid_4.3.3           fansi_1.0.6          git2r_0.33.0        
+# [34] colorspace_2.1-0     scales_1.3.0         gtools_3.9.5        
+# [37] cli_3.6.4            rmarkdown_2.26       crayon_1.5.2        
+# [40] generics_0.1.3       RcppParallel_5.1.10  httr_1.4.7          
+# [43] reshape2_1.4.4       pbapply_1.7-2        cachem_1.0.8        
+# [46] stringr_1.5.1        splines_4.3.3        parallel_4.3.3      
+# [49] softImpute_1.4-1     vctrs_0.6.5          jsonlite_1.8.8      
+# [52] hms_1.1.3            mixsqp_0.3-54        ggrepel_0.9.5       
+# [55] irlba_2.3.5.1        horseshoe_0.2.0      trust_0.1-8         
+# [58] plotly_4.10.4        tidyr_1.3.1          jquerylib_0.1.4     
+# [61] glue_1.8.0           uwot_0.2.3           stringi_1.8.3       
+# [64] Polychrome_1.5.1     gtable_0.3.4         later_1.3.2         
+# [67] quadprog_1.5-8       munsell_0.5.0        tibble_3.2.1        
+# [70] pillar_1.9.0         htmltools_0.5.8.1    truncnorm_1.0-9     
+# [73] R6_2.5.1             rprojroot_2.0.4      evaluate_1.0.3      
+# [76] lattice_0.22-5       highr_0.10           RhpcBLASctl_0.23-42 
+# [79] SQUAREM_2021.1       ashr_2.2-66          httpuv_1.6.14       
+# [82] bslib_0.6.1          Rcpp_1.0.12          deconvolveR_1.2-1   
+# [85] whisker_0.4.1        xfun_0.42            fs_1.6.5            
+# [88] pkgconfig_2.0.3</code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
