@@ -13,7 +13,7 @@
 
 <title>Single-cell matrix factorization jamboree</title>
 
-<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -278,7 +278,7 @@ jamboree</h1>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -289,8 +289,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -299,13 +299,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-09
+<strong>Last updated:</strong> 2025-06-16
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 1
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -329,33 +329,36 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree71476db3401154319ad5f90fd099550b0b5461fetargetblank71476dba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea7e6cd59545ebb400c5e99ce03e7f500e13fd71btargetblanka7e6cd5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/71476db3401154319ad5f90fd099550b0b5461fe" target="_blank">71476db</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a7e6cd59545ebb400c5e99ce03e7f500e13fd71b" target="_blank">a7e6cd5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree71476db3401154319ad5f90fd099550b0b5461fetargetblank71476dba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea7e6cd59545ebb400c5e99ce03e7f500e13fd71btargetblanka7e6cd5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -365,7 +368,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/71476db3401154319ad5f90fd099550b0b5461fe" target="_blank">71476db</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a7e6cd59545ebb400c5e99ce03e7f500e13fd71b" target="_blank">a7e6cd5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -380,16 +383,11 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  analysis/lps_cache/
-    Untracked:  analysis/mcf7_cache/
-    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
-    Untracked:  analysis/temp2.R
-    Untracked:  data/GSE132188_adata.h5ad.h5
-    Untracked:  data/GSE183010/
-    Untracked:  data/Immune_ALL_human.h5ad
-    Untracked:  data/pancreas_cytokine.RData
-    Untracked:  data/pancreas_endocrine.RData
-    Untracked:  data/pancreas_endocrine_alldays.h5ad
+    Untracked:  data/GSE156175_RAW/
+    Untracked:  data/panc_cyto_lsa_tm_k12.rds
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -434,6 +432,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/39b9a9ce57074af976b008673e29ab98ec4a2b8b/docs/index.html" target="_blank">39b9a9c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-09
+</td>
+<td>
+Added a link to the overview page.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -973,7 +988,7 @@ html
 junmingguan
 </td>
 <td>
-2024-11-16
+2024-11-17
 </td>
 <td>
 Build site.
@@ -990,7 +1005,7 @@ Rmd
 junmingguan
 </td>
 <td>
-2024-11-16
+2024-11-17
 </td>
 <td>
 Change link for human brain cell COP analysis
@@ -1503,6 +1518,9 @@ pancreas endocrine data set.</a></p></li>
 human brain data, COP cells.</a></p></li>
 <li><p><a href="mouse_embryo.html">Analysis of Single-Cell (Spatial)
 Transcriptomics From Mouse Embryos</a></p></li>
+<li><p><a href="pancreas_cytokine_lsa_clustering.html">Initial Cleaning
+and Clustering of Pancreas Cytokine Data from Stancill LSA
+Paper</a></p></li>
 </ul>
 
 

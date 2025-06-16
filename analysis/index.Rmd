@@ -45,6 +45,8 @@ via [this link][box].
 
 + [Analysis of Single-Cell (Spatial) Transcriptomics From Mouse Embryos](mouse_embryo.html)
 
++ [Initial Cleaning and Clustering of Pancreas Cytokine Data from Stancill LSA Paper](pancreas_cytokine_lsa_clustering.html)
+
 [hca]: https://data.humancellatlas.org
 [google-sheet-data-sets]: https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing
 [box]: https://uchicago.box.com/s/l0emrjcqpw5yat1zaygtr1v3akq7de1t
