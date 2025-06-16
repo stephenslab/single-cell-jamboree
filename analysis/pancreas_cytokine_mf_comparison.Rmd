@@ -1,0 +1,107 @@
+---
+title: Comparing the log1p and topic models on Stancill 2021 LSA
+author: Eric Weine
+output: workflowr::wflow_html
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+```{r, include=FALSE}
+library(Matrix)
+library(fastTopics)
+library(dplyr)
+library(log1pNMF)
+```
+
+Here, I attempt to separate out fitted topics based on their association with either celltype or treatment. I'll start with the log1p model with $K = 12$.
+
+```{r, include=FALSE}
+load("../data/panc_cyto_lsa.Rdata")
+```
+
+```{r, include=FALSE}
+fit_log1p_12 <- readr::read_rds("../data/panc_cyto_lsa_res/lsa_pancreas_cytokine_log1p_c1_rank1_init_K12.rds")
+```
+
+Here are the factors that appeared most correlated with cell type.
+
+```{r, include=FALSE}
+p <- normalized_structure_plot(
+  fit_log1p_12,
+  grouping = barcodes$celltype,
+  topics = c(
+    paste0("k", "_", c(1, 2, 3, 5, 6, 7, 8, 9))
+  ),
+  gap = 20
+)
+```
+
+```{r}
+p
+```
+
+The pockets of purple and yellow in the beta cell cluster may represent cells that were misclassified (though it is very hard to tell).
+
+And here are those that are most correlated with treatment condition:
+
+```{r, include=FALSE}
+p <- normalized_structure_plot(
+  fit_log1p_12,
+  grouping = barcodes$condition,
+  topics = c(
+    paste0("k", "_", c(4, 10, 11, 12))
+  ),
+  gap = 20
+)
+```
+
+```{r}
+p
+```
+
+Here, it appears that the pink factor is specific to conditions that are not treated with IL-1B, where the blue factor is specific to conditions treated with IL-1B. The orange factor appears specific to conditions treated with IFNg. The condition with both treatments has both the orange and the blue factors.
+
+Next, we look at the topic model:
+
+```{r, include=FALSE}
+tm_fit <- readr::read_rds("../data/panc_cyto_lsa_res/tm_k12.rds")
+```
+
+The topic model appears to have more factors that are specific to celltype, and fewer that seem to capture the treatment effects.
+
+Below are the celltype specific factors:
+
+```{r, include=FALSE}
+p <- structure_plot(
+  tm_fit,
+  n = Inf,
+  grouping = barcodes$celltype,
+  gap = 20,
+  topics = paste0("k", c(2, 3, 5, 6, 7, 8, 9, 10, 11, 12))
+)
+```
+
+```{r}
+p
+```
+
+Only factor 4 (and possibly 1?) appeared to be correlated with treatment:
+
+```{r, include=FALSE}
+p <- structure_plot(
+  tm_fit,
+  n = Inf,
+  grouping = barcodes$condition,
+  gap = 40,
+  topics = paste0("k", c(1, 4))
+)
+```
+
+```{r}
+p
+```
+
+Factor 1 appears to be non-IL-1B specific, where factor 4 appears to be a general cytokine effect (but perhaps moreso capturing the effects of IL-1B).
