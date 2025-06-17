@@ -177,7 +177,7 @@ single cell.)
 
 Structure plot comparing the factors to the clusters:
 
-```{r structure-plot-flashier-nmf, fig.height=2.5, fig.width=6.5, results="hide", message=FALSE}
+```{r structure-plot-flashier-nmf, fig.height=2.25, fig.width=6.5, results="hide", message=FALSE}
 set.seed(1)
 L <- ldf(fl_nmf,type = "i")$L
 colnames(L) <- paste0("k",1:9)
