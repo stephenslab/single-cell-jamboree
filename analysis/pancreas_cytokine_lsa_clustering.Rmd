@@ -13,6 +13,7 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
 library(Matrix)
 library(fastTopics)
 library(dplyr)
+library(Seurat)
 ```
 
 
@@ -253,6 +254,24 @@ structure_plot(tm_fit, grouping = L_df$cluster, gap = 20, n = Inf)
 ```
 
 Overall, this clustering looks quite good, but there is a small pocket of beta cells that have loadings on the green, black, and grey factors, which indicate that they could also be alpha or delta cells. Perhaps additional investigation into these cells (e.g. with a UMAP) could help distinguish their precise types. Or, we could exclude them as not having a clear type.
+
+Next, I investigated a UMAP plot to see how our clusters looked. Below is an elbow plot of the PCs created by Seurat
+
+```{r}
+barcodes$celltype <- L_df$cluster
+counts <- counts[,!duplicated(colnames(counts))]
+
+so <- CreateSeuratObject(counts = Matrix::t(counts), meta.data = barcodes)
+so <- SCTransform(so, verbose = FALSE)
+so <- RunPCA(so, verbose = FALSE)
+ElbowPlot(so)
+```
+```{r}
+so <- RunUMAP(so, dims = 1:10, verbose = FALSE)
+DimPlot(so, group.by = "celltype")
+```
+
+There are clearly a few cells on the UMAP plot that appear to lie in a different cluster than their assignment. However, I'm not convinced that this plot is any more reliable than the topic model structure plot.
 
 [stancill2021lsa]: https://www.life-science-alliance.org/content/4/6/e202000949
 [stancill2021lsa-geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE156175

@@ -16,6 +16,8 @@ library(dplyr)
 library(log1pNMF)
 ```
 
+## K = 12
+
 Here, I attempt to separate out fitted topics based on their association with either celltype or treatment. I'll start with the log1p model with $K = 12$.
 
 ```{r, include=FALSE}
@@ -105,3 +107,50 @@ p
 ```
 
 Factor 1 appears to be non-IL-1B specific, where factor 4 appears to be a general cytokine effect (but perhaps moreso capturing the effects of IL-1B).
+
+## K = 15
+
+```{r, include=FALSE}
+tm_fit15 <- readr::read_rds("../data/panc_cyto_lsa_res/tm_k15.rds")
+```
+
+```{r, eval=FALSE}
+structure_plot(tm_fit15, grouping = barcodes$celltype, gap = 20)
+
+# Treatment specific factors:
+# k2
+# k8
+# k9
+# k10
+# k12
+# k14
+# k15
+
+# celltype specific factors:
+# k1
+# k3
+# k4
+# k5
+# k6
+# k7
+# k11
+# k13
+```
+```{r, eval=FALSE}
+structure_plot(
+  tm_fit15, grouping = barcodes$condition, gap = 20,
+  topics = paste0("k", c(2, 8, 9, 10, 12, 14, 15))
+  )
+
+```
+Here, it appears that the pink factor (k10) and grey (k8) is mostly specific to the untreated condition, the dark orange (k14) is specific to IL-1B, the maroon (k15) is represented in all treated conditions.
+
+
+```{r, eval=FALSE}
+log1p_fit15 <- readr::read_rds("../data/panc_cyto_lsa_res/lsa_pancreas_cytokine_log1p_c1_rank1_init_K15.rds")
+```
+
+```{r, eval=FALSE}
+normalized_structure_plot(log1p_fit15, grouping = barcodes$celltype, gap = 20, n = Inf)
+```
+
