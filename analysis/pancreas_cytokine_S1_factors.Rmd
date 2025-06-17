@@ -107,7 +107,8 @@ clusters[clusters == "islet"]                  <- "beta"
 clusters[clusters == "beta" & L[,"k3"] > 0.25] <- "alpha"
 clusters[clusters == "beta" & L[,"k8"] > 0.25] <- "delta+epsilon"
 clusters[clusters == "beta" & L[,"k9"] > 0.25] <- "gamma"
-clusters <- factor(clusters)
+clusters <- factor(clusters,c("beta","alpha","delta+epsilon","gamma","duct",
+                              "endothelial-mesenchymal","macrophage"))
 i <- c(sample(which(clusters == "beta"),400),
        which(clusters != "beta"))
 p1 <- structure_plot(L[i,],grouping = clusters[i],topics = celltype_topics,
@@ -117,6 +118,15 @@ p2 <- structure_plot(L[i,],grouping = clusters[i],topics = other_topics,
                      gap = 10,n = Inf) +
   labs(fill = "")
 plot_grid(p1,p2,nrow = 2,ncol = 1)
+```
+
+Select genes in two ways: (a) genes that are different from the mean
+expression level, (b) genes that are "distinctive".
+
+```{r de-analysis, eval=FALSE}
+de_vsnull <- de_analysis(tm,counts,pseudocount = 0.1,lfc.stat = "vsnull",
+                         verbose = TRUE,control = list(ns = 1000,nc = 8))
+de_le
 ```
 
 Based on the estimated $\mathbf{F}$, we have the following potential
@@ -146,35 +156,37 @@ annotation_heatmap(F[,topics],select_features = "all",verbose = FALSE)
 
 ## EBNMF (flashier)
 
-Next fit an NMF to the shifted log counts using flashier, also with $K
-= 7$:
+Next fit an NMF to the shifted log counts using flashier, with $K =
+9$:
 
-```{r flashier-nmf, cache=TRUE, warning=FALSE, eval=FALSE}
+```{r flashier-nmf, cache=TRUE, warning=FALSE, cache=TRUE}
+set.seed(1)
 n  <- nrow(samples)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 fl_nmf <- flash(shifted_log_counts,S = s1,ebnm_fn = ebnm_point_exponential,
-                var_type = 2,greedy_Kmax = 7,backfit = FALSE,
+                var_type = 2,greedy_Kmax = 9,backfit = FALSE,
 				nullcheck = FALSE,verbose = 0)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 40,verbose = 0)
 fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 80,verbose = 0)
 ```
 
+(Note that I tried setting `greedy_Kmax > 9`, but this didn't result
+in more interesting fits—the additional factors loaded on only a
+single cell.)
+
 Structure plot comparing the factors to the clusters:
 
-```{r structure-plot-flashier-nmf, fig.height=2.5, fig.width=6.5, results="hide", message=FALSE, eval=FALSE}
+```{r structure-plot-flashier-nmf, fig.height=2.5, fig.width=6.5, results="hide", message=FALSE}
+set.seed(1)
 L <- ldf(fl_nmf,type = "i")$L
-colnames(L) <- paste0("k",1:7)
-clusters <- as.character(samples$cluster)
-clusters[clusters == "endothelial-mesenchymal"] <- "mesen.+endothelial"
-clusters[clusters == "mesen.+endothelial" & L[,"k6"] > 0.5] <- "mesenchymal"
-clusters[clusters == "islet"] <- "beta"
-clusters[clusters == "beta" & L[,"k3"] > 0.5]  <- "alpha+delta+gamma"
-clusters[clusters == "beta" & L[,"k7"] > 0.25] <- "beta(Ins1-)"
-clusters <- factor(clusters)
-structure_plot(L[,-1],grouping = clusters,gap = 15,
-               colors = topic_colors[-1],n = Inf) +
-  labs(y = "membership")
+colnames(L) <- paste0("k",1:9)
+i <- c(sample(which(clusters == "beta"),400),
+       which(clusters != "beta"))
+p <- structure_plot(L[i,],grouping = clusters[i],topics = 2:9,
+                    gap = 10,n = Inf) +
+  labs(y = "membership",fill = "")
+print(p)
 ```
 
 Possible interpretation of the factors:
@@ -202,25 +214,4 @@ rownames(F) <- marker_genes
 colnames(F) <- paste0("k",1:7)
 factors <- paste0("k",c(4,7,3,5,2,6))
 annotation_heatmap(F[,factors],select_eatures = "all",verbose = FALSE)
-```
-
-Let's now try with $K = 12$ factors:
-
-```{r flashier-nmf-k-12, cache=TRUE, warning=FALSE, eval=FALSE}
-set.seed(1)
-fl_nmf_k12 <- flash(shifted_log_counts,S = s1,ebnm_fn = ebnm_point_exponential,
-                    var_type = 2,greedy_Kmax = 12,backfit = FALSE,
-	   			    nullcheck = FALSE,verbose = 3)
-fl_nmf_k12 <- flash_backfit(fl_nmf_k12,extrapolate = FALSE,maxiter = 40,
-                            verbose = 3)
-fl_nmf_k12 <- flash_backfit(fl_nmf_k12,extrapolate = TRUE,maxiter = 80,
-                            verbose = 3)
-```
-
-ADD TEXT HERE.
-
-```{r structure-plot-flashier-nmf-k-12, fig.height=2.5, fig.width=6.5, results="hide", message=FALSE, eval=FALSE}
-L <- ldf(fl_nmf_k12,type = "i")$L
-colnames(L) <- paste0("k",1:12)
-p <- structure_plot(L[,-1],grouping = dat$celltype,gap = 15,n = Inf)
 ```
