@@ -123,10 +123,13 @@ plot_grid(p1,p2,nrow = 2,ncol = 1)
 Select genes in two ways: (a) genes that are different from the mean
 expression level, (b) genes that are "distinctive".
 
-```{r de-analysis, eval=FALSE}
-de_vsnull <- de_analysis(tm,counts,pseudocount = 0.1,lfc.stat = "vsnull",
-                         verbose = TRUE,control = list(ns = 1000,nc = 8))
-de_le
+```{r de-analysis, cache=TRUE}
+set.seed(1)
+tm_merged <- merge_topics(poisson2multinom(tm),paste0("k",c(1,2,4,11)))
+de_vsnull <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "vsnull",
+                         verbose = FALSE,control = list(ns = 1e4,nc = 8))
+de_le <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "le",
+                     verbose = FALSE,control = list(ns = 1e4,nc = 8))
 ```
 
 Based on the estimated $\mathbf{F}$, we have the following potential
