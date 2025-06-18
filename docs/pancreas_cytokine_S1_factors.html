@@ -305,9 +305,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 3
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -331,35 +331,329 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Environment:</strong> objects present
+</a>
 </p>
 </div>
-<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongobjectspresent"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the
-global environment can affect the analysis in your R Markdown file in
-unknown ways. For reproduciblity it’s best to always run the code in an
-empty environment.</p>
+<p>
+The global environment had objects present when the code in the R
+Markdown file was run. These objects can affect the analysis in your R
+Markdown file in unknown ways. For reproduciblity it’s best to always
+run the code in an empty environment. Use <code>wflow_publish</code> or
+<code>wflow_build</code> to ensure that the code is always run in an
+empty environment.
+</p>
+<p>
+The following objects were defined in the global environment when these
+results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+a
+</td>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+celltype_topics
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+504 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+clusters
+</td>
+<td style="text-align:left;">
+factor
+</td>
+<td style="text-align:left;">
+13.2 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+counts
+</td>
+<td style="text-align:left;">
+dgCMatrix
+</td>
+<td style="text-align:left;">
+148.6 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+de_le
+</td>
+<td style="text-align:left;">
+topic_model_de_analysis;list
+</td>
+<td style="text-align:left;">
+25.1 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+de_vsnull
+</td>
+<td style="text-align:left;">
+topic_model_de_analysis;list
+</td>
+<td style="text-align:left;">
+25.1 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fl_nmf
+</td>
+<td style="text-align:left;">
+flash;list
+</td>
+<td style="text-align:left;">
+164.8 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+genes
+</td>
+<td style="text-align:left;">
+data.frame
+</td>
+<td style="text-align:left;">
+2.5 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+i
+</td>
+<td style="text-align:left;">
+integer
+</td>
+<td style="text-align:left;">
+4.3 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+j
+</td>
+<td style="text-align:left;">
+integer
+</td>
+<td style="text-align:left;">
+1.4 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+L
+</td>
+<td style="text-align:left;">
+matrix;array
+</td>
+<td style="text-align:left;">
+221.5 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+n
+</td>
+<td style="text-align:left;">
+integer
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+other_topics
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+432 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+out
+</td>
+<td style="text-align:left;">
+data.frame
+</td>
+<td style="text-align:left;">
+283.4 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+outliers
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+320 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+p1
+</td>
+<td style="text-align:left;">
+gg;ggplot
+</td>
+<td style="text-align:left;">
+227.3 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+p2
+</td>
+<td style="text-align:left;">
+gg;ggplot
+</td>
+<td style="text-align:left;">
+120.2 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+s
+</td>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+294.1 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+s1
+</td>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+samples
+</td>
+<td style="text-align:left;">
+data.frame
+</td>
+<td style="text-align:left;">
+370.5 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+shifted_log_counts
+</td>
+<td style="text-align:left;">
+dgCMatrix
+</td>
+<td style="text-align:left;">
+148.4 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tm
+</td>
+<td style="text-align:left;">
+poisson_nmf_fit;list
+</td>
+<td style="text-align:left;">
+10.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tm_merged
+</td>
+<td style="text-align:left;">
+multinom_topic_model_fit;list
+</td>
+<td style="text-align:left;">
+9.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+x
+</td>
+<td style="text-align:left;">
+integer
+</td>
+<td style="text-align:left;">
+38.1 Mb
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -450,15 +744,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree928cbd30eaa161a60117b3bd8befe0ff34e078fdtargetblank928cbd3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb7f4df581e305d84509e4f3a6d6987ee503a7110targetblankb7f4df5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/928cbd30eaa161a60117b3bd8befe0ff34e078fd" target="_blank">928cbd3</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b7f4df581e305d84509e4f3a6d6987ee503a7110" target="_blank">b7f4df5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree928cbd30eaa161a60117b3bd8befe0ff34e078fdtargetblank928cbd3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb7f4df581e305d84509e4f3a6d6987ee503a7110targetblankb7f4df5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -468,7 +762,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/928cbd30eaa161a60117b3bd8befe0ff34e078fd" target="_blank">928cbd3</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b7f4df581e305d84509e4f3a6d6987ee503a7110" target="_blank">b7f4df5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -493,6 +787,12 @@ Untracked files:
     Untracked:  data/pancreas_cytokine.RData
     Untracked:  data/pancreas_endocrine.RData
     Untracked:  data/pancreas_endocrine_alldays.h5ad
+
+Unstaged changes:
+    Modified:   analysis/pancreas_cytokine_S1_factors.Rmd
+
+Staged changes:
+    New:        data/pancreas_cytokine_S1_tm_k=13_clusters.csv
 
 </code></pre>
 <p>
@@ -539,6 +839,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/b7f4df581e305d84509e4f3a6d6987ee503a7110/docs/pancreas_cytokine_S1_factors.html" target="_blank">b7f4df5</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-18
+</td>
+<td>
+Ran wflow_publish("pancreas_cytokine_S1_factors.Rmd").
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -971,6 +1288,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b7f4df581e305d84509e4f3a6d6987ee503a7110/docs/figure/pancreas_cytokine_S1_factors.Rmd/structure-plot-topic-model-1.png" target="_blank">b7f4df5</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/1507be2db394e6bfdb6b93ca29c61647b09a93f0/docs/figure/pancreas_cytokine_S1_factors.Rmd/structure-plot-topic-model-1.png" target="_blank">1507be2</a>
 </td>
 <td>
@@ -984,6 +1312,13 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Save this topic-model-based clustering because it could be useful
+elsewhere:</p>
+<pre class="r"><code>out &lt;- data.frame(barcode = samples$barcode,
+                  cluster = clusters,
+                  stringsAsFactors = FALSE)
+write.csv(out,&quot;pancreas_cytokine_S1_tm_k=13_clusters.csv&quot;,quote = FALSE,
+          row.names = FALSE)</code></pre>
 <p>Select genes in two ways: (a) genes that are different from the mean
 expression level, (b) genes that are “distinctive”.</p>
 <pre class="r"><code>set.seed(1)
@@ -1107,6 +1442,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b7f4df581e305d84509e4f3a6d6987ee503a7110/docs/figure/pancreas_cytokine_S1_factors.Rmd/structure-plot-flashier-nmf-1.png" target="_blank">b7f4df5</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/1507be2db394e6bfdb6b93ca29c61647b09a93f0/docs/figure/pancreas_cytokine_S1_factors.Rmd/structure-plot-flashier-nmf-1.png" target="_blank">1507be2</a>
 </td>
 <td>
@@ -1178,39 +1524,40 @@ Session information
 # [1] cowplot_1.1.3             ggplot2_3.5.0            
 # [3] singlecelljamboreeR_0.1-3 flashier_1.0.55          
 # [5] ebnm_1.1-34               fastTopics_0.7-25        
-# [7] Matrix_1.6-5             
+# [7] Matrix_1.6-5              workflowr_1.7.1          
 # 
 # loaded via a namespace (and not attached):
 #  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.1        
 #  [4] dplyr_1.1.4          fastmap_1.1.1        lazyeval_0.2.2      
 #  [7] promises_1.2.1       digest_0.6.34        lifecycle_1.0.4     
-# [10] invgamma_1.1         magrittr_2.0.3       compiler_4.3.3      
-# [13] rlang_1.1.5          sass_0.4.9           progress_1.2.3      
-# [16] tools_4.3.3          utf8_1.2.4           yaml_2.3.8          
-# [19] data.table_1.17.4    knitr_1.45           labeling_0.4.3      
-# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
-# [25] plyr_1.8.9           RColorBrewer_1.1-3   Rtsne_0.17          
-# [28] workflowr_1.7.1      withr_3.0.2          purrr_1.0.2         
+# [10] processx_3.8.3       invgamma_1.1         magrittr_2.0.3      
+# [13] compiler_4.3.3       rlang_1.1.5          sass_0.4.9          
+# [16] progress_1.2.3       tools_4.3.3          utf8_1.2.4          
+# [19] yaml_2.3.8           data.table_1.17.4    knitr_1.45          
+# [22] labeling_0.4.3       prettyunits_1.2.0    htmlwidgets_1.6.4   
+# [25] scatterplot3d_0.3-44 RColorBrewer_1.1-3   plyr_1.8.9          
+# [28] Rtsne_0.17           withr_3.0.2          purrr_1.0.2         
 # [31] grid_4.3.3           fansi_1.0.6          git2r_0.33.0        
 # [34] colorspace_2.1-0     scales_1.3.0         gtools_3.9.5        
 # [37] cli_3.6.4            rmarkdown_2.26       crayon_1.5.2        
-# [40] generics_0.1.3       RcppParallel_5.1.10  httr_1.4.7          
-# [43] reshape2_1.4.4       pbapply_1.7-2        cachem_1.0.8        
-# [46] stringr_1.5.1        splines_4.3.3        parallel_4.3.3      
-# [49] softImpute_1.4-1     vctrs_0.6.5          jsonlite_1.8.8      
-# [52] hms_1.1.3            mixsqp_0.3-54        ggrepel_0.9.5       
-# [55] irlba_2.3.5.1        horseshoe_0.2.0      trust_0.1-8         
-# [58] plotly_4.10.4        tidyr_1.3.1          jquerylib_0.1.4     
-# [61] glue_1.8.0           uwot_0.2.3           stringi_1.8.3       
-# [64] Polychrome_1.5.1     gtable_0.3.4         later_1.3.2         
-# [67] quadprog_1.5-8       munsell_0.5.0        tibble_3.2.1        
-# [70] pillar_1.9.0         htmltools_0.5.8.1    truncnorm_1.0-9     
-# [73] R6_2.5.1             rprojroot_2.0.4      evaluate_1.0.3      
-# [76] lattice_0.22-5       highr_0.10           RhpcBLASctl_0.23-42 
-# [79] SQUAREM_2021.1       ashr_2.2-66          httpuv_1.6.14       
-# [82] bslib_0.6.1          Rcpp_1.0.12          deconvolveR_1.2-1   
-# [85] whisker_0.4.1        xfun_0.42            fs_1.6.5            
-# [88] pkgconfig_2.0.3</code></pre>
+# [40] generics_0.1.3       RcppParallel_5.1.10  rstudioapi_0.15.0   
+# [43] httr_1.4.7           reshape2_1.4.4       pbapply_1.7-2       
+# [46] cachem_1.0.8         stringr_1.5.1        splines_4.3.3       
+# [49] parallel_4.3.3       softImpute_1.4-1     vctrs_0.6.5         
+# [52] jsonlite_1.8.8       callr_3.7.5          hms_1.1.3           
+# [55] mixsqp_0.3-54        ggrepel_0.9.5        irlba_2.3.5.1       
+# [58] horseshoe_0.2.0      trust_0.1-8          plotly_4.10.4       
+# [61] jquerylib_0.1.4      tidyr_1.3.1          glue_1.8.0          
+# [64] codetools_0.2-19     ps_1.7.6             uwot_0.2.3          
+# [67] stringi_1.8.3        Polychrome_1.5.1     gtable_0.3.4        
+# [70] later_1.3.2          quadprog_1.5-8       munsell_0.5.0       
+# [73] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.8.1   
+# [76] truncnorm_1.0-9      R6_2.5.1             rprojroot_2.0.4     
+# [79] evaluate_1.0.3       lattice_0.22-5       highr_0.10          
+# [82] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-66         
+# [85] httpuv_1.6.14        bslib_0.6.1          Rcpp_1.0.12         
+# [88] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.42           
+# [91] fs_1.6.5             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 

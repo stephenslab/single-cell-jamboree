@@ -120,6 +120,17 @@ p2 <- structure_plot(L[i,],grouping = clusters[i],topics = other_topics,
 plot_grid(p1,p2,nrow = 2,ncol = 1)
 ```
 
+Save this topic-model-based clustering because it could be useful
+elsewhere:
+
+```{r write-clusters}
+out <- data.frame(barcode = samples$barcode,
+                  cluster = clusters,
+				  stringsAsFactors = FALSE)
+write.csv(out,"pancreas_cytokine_S1_tm_k=13_clusters.csv",quote = FALSE,
+          row.names = FALSE)
+```
+
 Select genes in two ways: (a) genes that are different from the mean
 expression level, (b) genes that are "distinctive".
 
