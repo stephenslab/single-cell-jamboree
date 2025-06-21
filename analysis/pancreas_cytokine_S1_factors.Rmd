@@ -193,14 +193,16 @@ Structure plot comparing the factors to the clusters:
 
 ```{r structure-plot-flashier-nmf, fig.height=4, fig.width=6.5, results="hide", message=FALSE}
 set.seed(1)
+celltype_factors <- paste0("k",c(2:6,8,9))
+other_factors <- paste0("k",c(1,7))
 L <- ldf(fl_nmf,type = "i")$L
 colnames(L) <- paste0("k",1:9)
 i <- c(sample(which(clusters == "beta"),400),
        which(clusters != "beta"))
-p1 <- structure_plot(L[i,],grouping = clusters[i],topics = c(2:6,8,9),
+p1 <- structure_plot(L[i,],grouping = clusters[i],topics = celltype_factors,
                     gap = 10,n = Inf) +
   labs(y = "membership",fill = "")
-p2 <- structure_plot(L[i,],grouping = clusters[i],topics = c(1,7),
+p2 <- structure_plot(L[i,],grouping = clusters[i],topics = other_factors,
                     gap = 10,n = Inf) +
   labs(y = "membership",fill = "")
 plot_grid(p1,p2,nrow = 2,ncol = 1)
