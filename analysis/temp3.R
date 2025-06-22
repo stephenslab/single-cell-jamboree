@@ -15,10 +15,13 @@ plot(F[,6],F_distinct[,6],pch = 20)
 #
 # TO DO NEXT:
 #
-# (1) Implement function compute_distinctive_changes in
+# (1) Add another flashier result initialized using NNLM (and with k =
+#     13). This illustrates the flexibility of flashier.
+#
+# (2) Implement function compute_distinctive_changes in
 #     singlecelljamboreeR.
 #
-# (2) Develop a function in the singlecelljamboreeR package to
+# (3) Develop a function in the singlecelljamboreeR package to
 #    create plots of "changes" vs. "distinctive changes".
 #
 
