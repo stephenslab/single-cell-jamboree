@@ -4,7 +4,7 @@ author: Eric Weine
 output: workflowr::wflow_html
 ---
 
-ADD TEXT HERE.
+This is our initial NMF analysis of ther Stancill 2021 LSA data set.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -27,10 +27,12 @@ Load the data set:
 
 ```{r load-data}
 load("../data/pancreas_cytokine_lsa.Rdata")
-barcodes <- as.data.frame(barcodes)
-barcodes <- transform(barcodes,
-                      condition = factor(condition),
-					  celltype  = factor(celltype))
+barcodes   <- as.data.frame(barcodes)
+clusters   <- factor(barcodes$celltype,
+                     c("Acinar","Ductal","Endothelial/Mesnchymal","Macrophage",
+			  	       "Alpha","Beta","Delta","Gamma"))
+conditions <- factor(barcodes$condition,
+                     c("Untreated","IL-1B","IFNg","IL-1B_IFNg"))
 ```
 
 ## Topic model, K = 12
@@ -45,24 +47,21 @@ tm_k12 <- read_rds("../output/panc_cyto_lsa_res/tm_k12.rds")
 The topic model appears to have more factors that are specific to
 celltype, and fewer that seem to capture the treatment effects.
 
-```{r structure-plot-topic-model-k12, fig.height=6.75, fig.width=6.5, results="hide", message=FALSE}
+```{r structure-plot-topic-model-k12, fig.height=5.5, fig.width=6.5, results="hide", message=FALSE}
 set.seed(1)
 celltype_topics <- c(2:3,5:11)
-clusters <- factor(barcodes$celltype,
-                   c("Acinar","Ductal","Endothelial/Mesnchymal","Macrophage",
-				     "Alpha","Beta","Delta","Gamma"))
+other_topics <- c(1,4,12)
+topic_colors <- fastTopics:::kelly()[c(2:12,14)]
 i <- c(sample(which(clusters == "Beta"),800),
        which(clusters != "Beta"))
 L <- poisson2multinom(tm_k12)$L
 p1 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = celltype_topics)	
+                     topics = celltype_topics,colors = topic_colors)	
 p2 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = c(1,4))
-p3 <- structure_plot(L[i,],grouping = barcodes[i,"condition"],gap = 20,
-                     n = Inf,topics = c(1,4))
-p4 <- structure_plot(L[i,],grouping = barcodes[i,"condition"],gap = 30,
-                     n = Inf,topics = c(1,12))					 
-plot_grid(p1,p2,p3,p4,nrow = 4,ncol = 1,rel_heights = c(3,3,2,2))
+                     topics = other_topics,colors = topic_colors)
+p3 <- structure_plot(L[i,],grouping = conditions[i],gap = 20,n = Inf,
+                     topics = other_topics,colors = topic_colors)
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))
 ```
 
 Topic 1 appears to be non-IL-1B specific, whereas topic 4 appears to
@@ -71,50 +70,44 @@ of IL-1B).
 
 ## Poisson log1p NMF, K = 12
 
-I'll start with the log1p model with $K = 12$.
+Let's now look at the results from the Poisson log1p NMF, with $K =
+12$.
 
-```{r load-log1p-nmf-k12, eval=FALSE}
+```{r load-log1p-nmf-k12}
 log1p_k12 <- read_rds(file.path("../output/panc_cyto_lsa_res",
                "lsa_pancreas_cytokine_log1p_c1_rank1_init_K12.rds"))
 ```
 
 Here are the factors that appeared most correlated with cell type.
 
-```{r structure-plot-topic-model-1, fig.height=2, fig.width=6.5, results="hide", message=FALSE, eval=FALSE}
+```{r structure-plot-log1p-nmf-k12, fig.height=6, fig.width=6.5, results="hide", message=FALSE}
 scale_cols <- function (A, b)
   t(t(A) * b)
 set.seed(1)
+celltype_topics = c(1,2,3,5,6,7,8,9)
+topic_colors <- fastTopics:::kelly()[c(2:12,14)]
 L <- log1p_k12$LL
 d <- apply(L,2,max)
 L <- scale_cols(L,1/d)
-p1 <- structure_plot(L,grouping = barcodes$celltype,gap = 10,n = Inf)
-print(p1)
+p1 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
+                     topics = celltype_topics,colors = topic_colors) +
+  labs(y = "membership",fill = "")					 
+p2 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
+                     topics = c(4,10,11,12),colors = topic_colors) +
+  labs(y = "membership",fill = "")
+p3 <- structure_plot(L[i,],grouping = conditions[i],gap = 30,n = Inf,
+                     topics = c(4,10,11,12),colors = topic_colors) +
+  labs(y = "membership",fill = "")					 
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 ```
 
-The pockets of purple and yellow in the beta cell cluster may
-represent cells that were misclassified (though it is very hard to
-tell).
-
-And here are those that are most correlated with treatment condition:
-
-```{r structure-plot-topic-model-2, fig.height=2, fig.width=6.5, results="hide", message=FALSE, eval=FALSE}
-p <- normalized_structure_plot(
-  fit_log1p_12,
-  grouping = barcodes$condition,
-  topics = c(
-    paste0("k", "_", c(4, 10, 11, 12))
-  ),
-  gap = 20
-)
-print(p)
-```
-
-Here, it appears that the pink factor is specific to conditions that
-are not treated with IL-1B, where the blue factor is specific to
-conditions treated with IL-1B. The orange factor appears specific to
-conditions treated with IFNg. The condition with both treatments has
-both the orange and the blue factors.
-
+NOTE: UPDATE THIS TEXT. The pockets of purple and yellow in the beta
+cell cluster may represent cells that were misclassified (though it is
+very hard to tell). Here, it appears that the pink factor is specific
+to conditions that are not treated with IL-1B, where the blue factor
+is specific to conditions treated with IL-1B. The orange factor
+appears specific to conditions treated with IFNg. The condition with
+both treatments has both the orange and the blue factors.
 
 ## K = 15
 
