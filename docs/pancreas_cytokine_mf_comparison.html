@@ -14,7 +14,7 @@
 
 <title>Comparing the Poisson log1p NMF and topic model on the Stancill 2021 LSA data</title>
 
-<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -280,7 +280,7 @@ model on the Stancill 2021 LSA data</h1>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -291,8 +291,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -305,9 +305,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -331,18 +331,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -433,15 +436,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreee7ffd058173cdf3fe2e3e8545728568b5ddbaa27targetblanke7ffd05a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree2e7cdf0f9bc109a16367ca66ac41ba8e974765f3targetblank2e7cdf0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/e7ffd058173cdf3fe2e3e8545728568b5ddbaa27" target="_blank">e7ffd05</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/2e7cdf0f9bc109a16367ca66ac41ba8e974765f3" target="_blank">2e7cdf0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreee7ffd058173cdf3fe2e3e8545728568b5ddbaa27targetblanke7ffd05a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree2e7cdf0f9bc109a16367ca66ac41ba8e974765f3targetblank2e7cdf0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +454,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/e7ffd058173cdf3fe2e3e8545728568b5ddbaa27" target="_blank">e7ffd05</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/2e7cdf0f9bc109a16367ca66ac41ba8e974765f3" target="_blank">2e7cdf0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -466,18 +469,13 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  analysis/lps_cache/
-    Untracked:  analysis/mcf7_cache/
-    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
-    Untracked:  analysis/temp2.R
-    Untracked:  data/GSE132188_adata.h5ad.h5
-    Untracked:  data/GSE183010/
-    Untracked:  data/Immune_ALL_human.h5ad
-    Untracked:  data/pancreas_cytokine.RData
-    Untracked:  data/pancreas_cytokine_lsa.RData
-    Untracked:  data/pancreas_endocrine.RData
-    Untracked:  data/pancreas_endocrine_alldays.h5ad
+    Untracked:  data/GSE156175_RAW/
+    Untracked:  data/panc_cyto_lsa_tm_k12.rds
+    Untracked:  data/pancreas_cytokine_lsa.Rdata
     Untracked:  output/panc_cyto_lsa_res/
+
+Unstaged changes:
+    Modified:   analysis/pancreas_cytokine_mf_comparison.Rmd
 
 </code></pre>
 <p>
@@ -524,6 +522,24 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/2e7cdf0f9bc109a16367ca66ac41ba8e974765f3/docs/pancreas_cytokine_mf_comparison.html" target="_blank">2e7cdf0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-23
+</td>
+<td>
+Updated the Structure plots in the pancreas_cytokine_mf_comparison
+analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -626,6 +642,7 @@ library(dplyr)
 library(fastTopics)
 library(log1pNMF)
 library(ggplot2)
+# Warning: package &#39;ggplot2&#39; was built under R version 4.4.1
 library(cowplot)</code></pre>
 <p>Load the data set:</p>
 <pre class="r"><code>load(&quot;../data/pancreas_cytokine_lsa.Rdata&quot;)
@@ -635,6 +652,53 @@ clusters   &lt;- factor(barcodes$celltype,
                        &quot;Alpha&quot;,&quot;Beta&quot;,&quot;Delta&quot;,&quot;Gamma&quot;))
 conditions &lt;- factor(barcodes$condition,
                      c(&quot;Untreated&quot;,&quot;IL-1B&quot;,&quot;IFNg&quot;,&quot;IL-1B_IFNg&quot;))</code></pre>
+<p>Fit the log1p models:</p>
+<pre class="r"><code>cc_vec &lt;- c(1)
+
+K_vec &lt;- c(12, 15)
+
+init_method_vec &lt;- c(&quot;rank1&quot;)
+
+for (init_method in init_method_vec) {
+
+  for (K in K_vec) {
+
+    for (cc in cc_vec) {
+
+      set.seed(1)
+      fit &lt;- fit_poisson_log1p_nmf(
+        Y = counts,
+        K = K,
+        cc = cc,
+        init_method = init_method,
+        loglik = &quot;exact&quot;,
+        control = list(maxiter = 250)
+      )
+
+      readr::write_rds(
+        fit,
+        glue::glue(&quot;results/lsa_pancreas_cytokine_log1p_c{cc}_{init_method}_init_K{K}.rds&quot;)
+      )
+
+    }
+
+  }
+
+}</code></pre>
+<p>Fit the topic models:</p>
+<pre class="r"><code>set.seed(1)
+tm_k12 &lt;- fit_poisson_nmf(
+  X = as(counts, &quot;CsparseMatrix&quot;),
+  k = 12,
+  control = list(nc = 7)
+)
+
+set.seed(1)
+tm_k15 &lt;- fit_poisson_nmf(
+  X = as(counts, &quot;CsparseMatrix&quot;),
+  k = 15,
+  control = list(nc = 7)
+)</code></pre>
 <div id="topic-model-k-12" class="section level2">
 <h2>Topic model, K = 12</h2>
 <p>Here, I attempt to separate out fitted topics based on their
@@ -650,13 +714,50 @@ i &lt;- c(sample(which(clusters == &quot;Beta&quot;),800),
        which(clusters != &quot;Beta&quot;))
 L &lt;- poisson2multinom(tm_k12)$L
 p1 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = celltype_topics,colors = topic_colors)    
+                     topics = celltype_topics,colors = topic_colors)$plot   
 p2 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = other_topics,colors = topic_colors)
+                     topics = other_topics,colors = topic_colors)$plot
 p3 &lt;- structure_plot(L[i,],grouping = conditions[i],gap = 20,n = Inf,
-                     topics = other_topics,colors = topic_colors)
+                     topics = other_topics,colors = topic_colors)$plot
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))</code></pre>
 <p><img src="figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-topic-model-k12-1.png" width="780" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plot-topic-model-k12-1">
+Past versions of structure-plot-topic-model-k12-1.png
+</button>
+</p>
+<div id="fig-structure-plot-topic-model-k12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2e7cdf0f9bc109a16367ca66ac41ba8e974765f3/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-topic-model-k12-1.png" target="_blank">2e7cdf0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Topic 1 appears to be non-IL-1B specific, whereas topic 4 appears to
 be a general cytokine effect (but perhaps moreso capturing the effects
 of IL-1B).</p>
@@ -679,16 +780,53 @@ L &lt;- log1p_k12$LL
 d &lt;- apply(L,2,max)
 L &lt;- scale_cols(L,1/d)
 p1 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = celltype_topics,colors = topic_colors) +
+                     topics = celltype_topics,colors = topic_colors)$plot +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)                   
 p2 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = c(4,10,11,12),colors = topic_colors) +
+                     topics = c(4,10,11,12),colors = topic_colors)$plot +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)
 p3 &lt;- structure_plot(L[i,],grouping = conditions[i],gap = 30,n = Inf,
-                     topics = c(4,10,11,12),colors = topic_colors) +
+                     topics = c(4,10,11,12),colors = topic_colors)$plot +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)                   
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)</code></pre>
 <p><img src="figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-log1p-nmf-k12-1.png" width="780" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plot-log1p-nmf-k12-1">
+Past versions of structure-plot-log1p-nmf-k12-1.png
+</button>
+</p>
+<div id="fig-structure-plot-log1p-nmf-k12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2e7cdf0f9bc109a16367ca66ac41ba8e974765f3/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-log1p-nmf-k12-1.png" target="_blank">2e7cdf0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>NOTE: UPDATE THIS TEXT. The pockets of purple and yellow in the beta
 cell cluster may represent cells that were misclassified (though it is
 very hard to tell). Here, it appears that the pink factor is specific to
@@ -738,56 +876,56 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()
-# R version 4.3.3 (2024-02-29)
-# Platform: aarch64-apple-darwin20 (64-bit)
-# Running under: macOS 15.5
+# R version 4.4.0 (2024-04-24)
+# Platform: aarch64-apple-darwin20
+# Running under: macOS Ventura 13.5
 # 
 # Matrix products: default
-# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
-# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
 # 
 # locale:
 # [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 # 
-# time zone: America/Chicago
+# time zone: America/New_York
 # tzcode source: internal
 # 
 # attached base packages:
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3     ggplot2_3.5.0     log1pNMF_0.1-6    fastTopics_0.7-25
-# [5] dplyr_1.1.4       readr_2.1.5       Matrix_1.6-5     
+# [1] cowplot_1.1.3     ggplot2_3.5.2     log1pNMF_0.1-4    fastTopics_0.7-24
+# [5] dplyr_1.1.4       readr_2.1.5       Matrix_1.7-0     
 # 
 # loaded via a namespace (and not attached):
-#  [1] gtable_0.3.4        xfun_0.42           bslib_0.6.1        
-#  [4] htmlwidgets_1.6.4   ggrepel_0.9.5       lattice_0.22-5     
+#  [1] gtable_0.3.6        xfun_0.52           bslib_0.9.0        
+#  [4] htmlwidgets_1.6.4   ggrepel_0.9.6       lattice_0.22-6     
 #  [7] tzdb_0.4.0          quadprog_1.5-8      vctrs_0.6.5        
-# [10] tools_4.3.3         generics_0.1.3      parallel_4.3.3     
-# [13] tibble_3.2.1        fansi_1.0.6         highr_0.10         
-# [16] pkgconfig_2.0.3     data.table_1.17.4   SQUAREM_2021.1     
-# [19] RcppParallel_5.1.10 lifecycle_1.0.4     truncnorm_1.0-9    
-# [22] farver_2.1.1        compiler_4.3.3      stringr_1.5.1      
-# [25] git2r_0.33.0        progress_1.2.3      munsell_0.5.0      
-# [28] RhpcBLASctl_0.23-42 httpuv_1.6.14       htmltools_0.5.8.1  
-# [31] sass_0.4.9          yaml_2.3.8          lazyeval_0.2.2     
-# [34] plotly_4.10.4       crayon_1.5.2        tidyr_1.3.1        
-# [37] later_1.3.2         pillar_1.9.0        jquerylib_0.1.4    
-# [40] whisker_0.4.1       MASS_7.3-60.0.1     uwot_0.2.3         
-# [43] cachem_1.0.8        gtools_3.9.5        tidyselect_1.2.1   
-# [46] digest_0.6.34       Rtsne_0.17          stringi_1.8.3      
-# [49] reshape2_1.4.4      purrr_1.0.2         ashr_2.2-66        
-# [52] labeling_0.4.3      rprojroot_2.0.4     fastmap_1.1.1      
-# [55] grid_4.3.3          colorspace_2.1-0    cli_3.6.4          
-# [58] invgamma_1.1        magrittr_2.0.3      utf8_1.2.4         
-# [61] withr_3.0.2         prettyunits_1.2.0   scales_1.3.0       
-# [64] promises_1.2.1      rmarkdown_2.26      httr_1.4.7         
-# [67] startupmsg_0.9.6.1  workflowr_1.7.1     hms_1.1.3          
-# [70] pbapply_1.7-2       evaluate_1.0.3      distr_2.9.3        
-# [73] knitr_1.45          viridisLite_0.4.2   irlba_2.3.5.1      
-# [76] rlang_1.1.5         Rcpp_1.0.12         mixsqp_0.3-54      
-# [79] glue_1.8.0          jsonlite_1.8.8      plyr_1.8.9         
-# [82] R6_2.5.1            sfsmisc_1.1-18      fs_1.6.5</code></pre>
+# [10] tools_4.4.0         generics_0.1.3      parallel_4.4.0     
+# [13] tibble_3.2.1        pkgconfig_2.0.3     data.table_1.17.0  
+# [16] SQUAREM_2021.1      RcppParallel_5.1.10 lifecycle_1.0.4    
+# [19] truncnorm_1.0-9     farver_2.1.2        compiler_4.4.0     
+# [22] stringr_1.5.1       git2r_0.33.0        progress_1.2.3     
+# [25] munsell_0.5.1       RhpcBLASctl_0.23-42 httpuv_1.6.15      
+# [28] htmltools_0.5.8.1   sass_0.4.10         yaml_2.3.10        
+# [31] lazyeval_0.2.2      plotly_4.10.4       crayon_1.5.3       
+# [34] later_1.4.2         pillar_1.10.2       jquerylib_0.1.4    
+# [37] whisker_0.4.1       tidyr_1.3.1         MASS_7.3-61        
+# [40] uwot_0.2.3          cachem_1.1.0        gtools_3.9.5       
+# [43] tidyselect_1.2.1    digest_0.6.37       Rtsne_0.17         
+# [46] stringi_1.8.7       reshape2_1.4.4      purrr_1.0.4        
+# [49] ashr_2.2-66         labeling_0.4.3      rprojroot_2.0.4    
+# [52] fastmap_1.2.0       grid_4.4.0          colorspace_2.1-1   
+# [55] cli_3.6.5           invgamma_1.1        magrittr_2.0.3     
+# [58] withr_3.0.2         prettyunits_1.2.0   scales_1.3.0       
+# [61] promises_1.3.2      rmarkdown_2.29      httr_1.4.7         
+# [64] startupmsg_0.9.6.1  workflowr_1.7.1     hms_1.1.3          
+# [67] pbapply_1.7-2       evaluate_1.0.3      distr_2.9.3        
+# [70] knitr_1.50          viridisLite_0.4.2   irlba_2.3.5.1      
+# [73] rlang_1.1.6         Rcpp_1.0.14         mixsqp_0.3-54      
+# [76] glue_1.8.0          rstudioapi_0.16.0   jsonlite_2.0.0     
+# [79] plyr_1.8.9          R6_2.6.1            sfsmisc_1.1-18     
+# [82] fs_1.6.6</code></pre>
 </div>
 </div>
 

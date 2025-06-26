@@ -35,6 +35,62 @@ conditions <- factor(barcodes$condition,
                      c("Untreated","IL-1B","IFNg","IL-1B_IFNg"))
 ```
 
+Fit the log1p models:
+
+```{r, eval=FALSE}
+cc_vec <- c(1)
+
+K_vec <- c(12, 15)
+
+init_method_vec <- c("rank1")
+
+for (init_method in init_method_vec) {
+
+  for (K in K_vec) {
+
+    for (cc in cc_vec) {
+
+      set.seed(1)
+      fit <- fit_poisson_log1p_nmf(
+        Y = counts,
+        K = K,
+        cc = cc,
+        init_method = init_method,
+        loglik = "exact",
+        control = list(maxiter = 250)
+      )
+
+      readr::write_rds(
+        fit,
+        glue::glue("results/lsa_pancreas_cytokine_log1p_c{cc}_{init_method}_init_K{K}.rds")
+      )
+
+    }
+
+  }
+
+}
+```
+
+Fit the topic models:
+
+```{r, eval=FALSE}
+set.seed(1)
+tm_k12 <- fit_poisson_nmf(
+  X = as(counts, "CsparseMatrix"),
+  k = 12,
+  control = list(nc = 7)
+)
+
+set.seed(1)
+tm_k15 <- fit_poisson_nmf(
+  X = as(counts, "CsparseMatrix"),
+  k = 15,
+  control = list(nc = 7)
+)
+```
+
+
 ## Topic model, K = 12
 
 Here, I attempt to separate out fitted topics based on their
