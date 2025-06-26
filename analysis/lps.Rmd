@@ -93,6 +93,41 @@ shifted_log_counts <- log1p(counts/(a*s))
 
 ## Topic model (fastTopics)
 
+Fit a topic model with $K = 9$ topics to the counts:
+
+```{r fit-topic-model-k9, cache=TRUE}
+tm_k9 <- fit_poisson_nmf(counts,k = 9,init.method = "random",method = "em",
+                         numiter = 20,verbose = "none",
+		   			     control = list(numiter=4,nc=8,extrapolate=FALSE))
+tm_k9 <- fit_poisson_nmf(counts,fit0 = tm_k9,method = "scd",numiter = 40,
+                         control = list(numiter = 4,nc = 8,extrapolate = TRUE),
+					     verbose = "none")
+```
+
+Structure plot comparing the topics to the organ types:
+
+```{r structure-plot-topic-model-k9, fig.height=1.5, fig.width=7}
+rows <- order(samples$timepoint)
+topic_colors <- c("magenta","darkorange","darkblue","forestgreen",
+                  "dodgerblue","gray","red","olivedrab","darkmagenta",
+                  "sienna","limegreen","royalblue","lightskyblue",
+				  "gold")
+samples <- transform(samples,
+  tissue = factor(tissue,c("PBMC","BM","CO","SI","iLN","SP",
+                           "TH","SK","BR","LI","HE","KI","LU")))
+p <- structure_plot(tm_k9,grouping = samples$tissue,gap = 4,
+               topics = 1:9,colors = topic_colors,
+   		       loadings_order = rows) +
+  labs(fill = "") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
+
+Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
+heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung;
+SI = small intestine; SK = skin; SP = spleen; TH = thymus.
+
+ADD TEXT HERE.
+
 Fit a topic model with $K = 14$ topics to the counts:
 
 ```{r fit-topic-model, cache=TRUE}
@@ -107,14 +142,6 @@ tm <- fit_poisson_nmf(counts,fit0 = tm,method = "scd",numiter = 40,
 Structure plot comparing the topics to the organ types:
 
 ```{r structure-plot-topic-model, fig.height=1.5, fig.width=7}
-rows <- order(samples$timepoint)
-topic_colors <- c("magenta","darkorange","darkblue","forestgreen",
-                  "dodgerblue","gray","red","olivedrab","darkmagenta",
-                  "sienna","limegreen","royalblue","lightskyblue",
-				  "gold")
-samples <- transform(samples,
-  tissue = factor(tissue,c("PBMC","BM","LU","CO","SI","iLN","SP",
-                           "TH","SK","KI","LI","BR","HE")))
 structure_plot(tm,grouping = samples$tissue,gap = 4,
                topics = 1:14,colors = topic_colors,
    		       loadings_order = rows) +
@@ -125,9 +152,7 @@ structure_plot(tm,grouping = samples$tissue,gap = 4,
         legend.text = element_text(size = 6))
 ```
 
-Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
-heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung;
-SI = small intestine; SK = skin; SP = spleen; TH = thymus.
+ADD TEXT HERE.
 
 This next structure plot better highlights the topics that capture
 the processes driven by LPS-induced sepsis:
