@@ -176,11 +176,9 @@ conditions:
 
 ```{r structure-plot-topic-model, fig.height=1.5, fig.width=5}
 topic_colors <- c("tomato","darkblue","dodgerblue")
-n    <- nrow(tm$L)
+n    <- nrow(counts)
 L    <- poisson2multinom(tm)$L
-rows <- order(pmax(L[,1],L[,2],L[,3]))
-L    <- L[rows,]
-structure_plot(L,grouping = samples$label[rows],topics = 1:3,
+structure_plot(L,grouping = samples$label,topics = 1:3,
                loadings_order = 1:n,colors = topic_colors) +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
 ```
@@ -203,10 +201,8 @@ similar way as the topic model:
 
 ```{r structure-plot-nmf, fig.height=2.25, fig.width=5}
 topic_colors <- c("olivedrab","dodgerblue","darkblue","tomato")
-L    <- ldf(fl_nmf,type = "i")$L
-rows <- order(pmax(L[,2],L[,3],L[,4]))
-L    <- L[rows,]
-structure_plot(L,grouping = samples[rows,"label"],topics = 4:1,
+L <- ldf(fl_nmf,type = "i")$L
+structure_plot(L,grouping = samples$label,topics = 4:1,
                loadings_order = 1:n,colors = topic_colors) +
   labs(y = "membership") +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
