@@ -4,12 +4,15 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-The MCF-7 data set from [Sanford et al 2020 eLife paper][sanford2020elife]
-is helpful for illustrating some of the basic ideas behind NMF
-analysis of single-cell data (even though it is actually a bulk
-RNA-seq data set!). This paper analyzed the transcriptional response
-of human MCF-7 cells to retinoic acid and TGF-$\beta$, applied
-individually and in combination. These data were downloaded from
+The MCF-7 data set from
+[Sanford et al 2020 eLife paper][sanford2020elife] is helpful for
+illustrating some of the basic ideas behind NMF analysis of
+single-cell data, although interpretation of the factors as gene
+programs is less clear.
+
+This paper analyzed the transcriptional response of human MCF-7 cells
+to retinoic acid and TGF-$\beta$, applied individually and in
+combination. These data were downloaded from
 [GEO accession GSE152749][mcf7-geo].
 
 The following abbreviations are used in analysis:
@@ -102,11 +105,11 @@ genes  <- genes[i,]
 counts <- counts[,i]
 ```
 
-(Some background: it turns out that there is some structure in the
+*Some background:** it turns out that there is some structure in the
 non-coding RNA genes that is is picked up by the Poisson-based methods
 but not by the Gaussian-based methods, so to avoid this complication
 in the comparisons I have removed these genes from the data, which
-aren't of interest anyhow.)
+aren't of interest anyhow.
 
 This is the dimension of the data set we will analyze:
 
@@ -176,14 +179,17 @@ conditions:
 
 ```{r structure-plot-topic-model, fig.height=1.5, fig.width=5}
 topic_colors <- c("tomato","darkblue","dodgerblue")
-n    <- nrow(counts)
-L    <- poisson2multinom(tm)$L
+n <- nrow(counts)
+L <- poisson2multinom(tm)$L
 structure_plot(L,grouping = samples$label,topics = 1:3,
                loadings_order = 1:n,colors = topic_colors) +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
 ```
 
-ADD TEXT HERE.
+It is also helpful to visualize the gene matrix, which we can roughly
+think about as capturing levels of gene expression. These next three
+scatterplots compare the estimated expression levels among the three
+topics (on the logarithmic scale).
 
 ```{r gene-matrix-scatterplots, fig.height=2, fig.width=6}
 gene_matrix_scatterplot <- function (gene_matrix, k1, k2) {
@@ -201,6 +207,21 @@ p2 <- gene_matrix_scatterplot(F,"EtOH","TGFb")
 p3 <- gene_matrix_scatterplot(F,"RA","TGFb")
 plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
 ```
+
+(Note: gene matrix is being shown on the logarithmic scale in these
+plots.)
+
+What we see here is that most of the gene expression does not change
+much, except for a few genes far from the diagonal that show *large
+changes* in gene expression. These are the "distinctive" or
+"characteristic" genes for these factors. The point here is that
+simply looking at the genes with the top expression values (the
+largest elements of the ${\bf F}$ matrix) will not identify these
+distinctive genes. Intuitively, this is what we are often trying to do
+when performing differential expression analyses that compare
+different cell types: we are most interested in identifying the genes
+that show large differences in gene expression (usually large
+increases), or LFCs far from zero.
 
 ## EBNMF (flashier)
 
