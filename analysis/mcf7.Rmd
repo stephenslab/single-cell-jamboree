@@ -223,6 +223,12 @@ different cell types: we are most interested in identifying the genes
 that show large differences in gene expression (usually large
 increases), or LFCs far from zero.
 
+TO DO: Run `de_analysis()` with `lfc.stat = "le"`, and show the
+volcano plots for the three topics.
+
+Summary: although the topic model clearly is not just doing a simple
+clustering, the topics are often "cluster-like".
+
 ## EBNMF (flashier)
 
 Next fit an NMF to the shifted log counts using flashier, with $K = 4$:
