@@ -5,8 +5,9 @@ output: workflowr::wflow_html
 ---
 
 Here we will revisit the LPS data set that we analyzed using a topic
-model in the [Takahama et al Nat Immunol paper][takahama2024]. (LPS =
-lipopolysaccharide).
+model in the [Takahama et al Nat Immunol paper][takahama2024] (LPS =
+lipopolysaccharide). I believe some interesting insights can be gained
+by examining this data set more deeply.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -93,7 +94,10 @@ shifted_log_counts <- log1p(counts/(a*s))
 
 ## Topic model (fastTopics)
 
-Fit a topic model with $K = 9$ topics to the counts:
+First let's fit a topic model with $K = 9$ topics to the counts. This
+is probably an insufficient number of topics to fully capture the
+interesting structure in the data, but this is done on purpose since I
+want to illustrate how the topic model prioritizes the structure.
 
 ```{r fit-topic-model-k9, cache=TRUE}
 tm_k9 <- fit_poisson_nmf(counts,k = 9,init.method = "random",method = "em",
@@ -104,7 +108,7 @@ tm_k9 <- fit_poisson_nmf(counts,fit0 = tm_k9,method = "scd",numiter = 40,
 					     verbose = "none")
 ```
 
-Structure plot comparing the topics to the organ types:
+Structure plot comparing the topics to the tissue types:
 
 ```{r structure-plot-topic-model-k9, fig.height=1.5, fig.width=7}
 rows <- order(samples$timepoint)
@@ -115,7 +119,7 @@ topic_colors <- c("magenta","darkorange","darkblue","forestgreen",
 samples <- transform(samples,
   tissue = factor(tissue,c("PBMC","BM","CO","SI","iLN","SP",
                            "TH","SK","BR","LI","HE","KI","LU")))
-p <- structure_plot(tm_k9,grouping = samples$tissue,gap = 4,
+structure_plot(tm_k9,grouping = samples$tissue,gap = 4,
                topics = 1:9,colors = topic_colors,
    		       loadings_order = rows) +
   labs(fill = "") +
@@ -126,7 +130,13 @@ Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
 heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung;
 SI = small intestine; SK = skin; SP = spleen; TH = thymus.
 
-ADD TEXT HERE.
+The topics largely correspond to the different tissues, although
+because there are more tissues than topics, some tissues that are more
+similar to each other shared the same topic. It is also interesting
+that, for the most part, none of the topics are capturing changes
+downstream of the LPS treatment. So presumably these expression
+changes are more subtle than the differences in expression among the
+tissues.
 
 Fit a topic model with $K = 14$ topics to the counts:
 
@@ -139,7 +149,7 @@ tm <- fit_poisson_nmf(counts,fit0 = tm,method = "scd",numiter = 40,
 					  verbose = "none")
 ```
 
-Structure plot comparing the topics to the organ types:
+Structure plot comparing the topics to the tissue types:
 
 ```{r structure-plot-topic-model, fig.height=1.5, fig.width=7}
 structure_plot(tm,grouping = samples$tissue,gap = 4,
@@ -152,10 +162,9 @@ structure_plot(tm,grouping = samples$tissue,gap = 4,
         legend.text = element_text(size = 6))
 ```
 
-ADD TEXT HERE.
-
-This next structure plot better highlights the topics that capture
-the processes driven by LPS-induced sepsis:
+This next structure plot better highlights the topics that are
+capturing expression changes over time, some being presumably driven
+by the LPS-induced sepsis:
 
 ```{r structure-plot-topic-model-2, fig.height=1.5, fig.width=7}
 topic_colors <- c("magenta","gray50","gray65","gray40",
@@ -171,6 +180,8 @@ structure_plot(tm,grouping = samples$tissue,gap = 4,
         legend.key.width = unit(0.2,"cm"),
         legend.text = element_text(size = 6))
 ```
+
+TO DO: Examine more closely topics k1 and k7.
 
 ## EBNMF (flashier)
 
