@@ -105,7 +105,7 @@ genes  <- genes[i,]
 counts <- counts[,i]
 ```
 
-*Some background:** it turns out that there is some structure in the
+**Some background:** it turns out that there is some structure in the
 non-coding RNA genes that is is picked up by the Poisson-based methods
 but not by the Gaussian-based methods, so to avoid this complication
 in the comparisons I have removed these genes from the data, which
@@ -191,7 +191,7 @@ think about as capturing levels of gene expression. These next three
 scatterplots compare the estimated expression levels among the three
 topics (on the logarithmic scale).
 
-```{r gene-matrix-scatterplots, fig.height=2, fig.width=6}
+```{r gene-matrix-scatterplots-topic-model, fig.height=2, fig.width=6}
 gene_matrix_scatterplot <- function (gene_matrix, k1, k2) {
   ggplot(gene_matrix,aes_string(x = k1,y = k2)) +
     geom_point(color = "black") +
@@ -208,26 +208,24 @@ p3 <- gene_matrix_scatterplot(F,"RA","TGFb")
 plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
 ```
 
-(Note: gene matrix is being shown on the logarithmic scale in these
-plots.)
+(Note: the gene matrix is being shown on the logarithmic scale in
+these plots.)
 
 What we see here is that most of the gene expression does not change
-much, except for a few genes far from the diagonal that show *large
-changes* in gene expression. These are the "distinctive" or
-"characteristic" genes for these factors. The point here is that
-simply looking at the genes with the top expression values (the
-largest elements of the ${\bf F}$ matrix) will not identify these
-distinctive genes. Intuitively, this is what we are often trying to do
-when performing differential expression analyses that compare
-different cell types: we are most interested in identifying the genes
-that show large differences in gene expression (usually large
-increases), or LFCs far from zero.
-
-TO DO: Run `de_analysis()` with `lfc.stat = "le"`, and show the
-volcano plots for the three topics.
+much, except for a few genes far from the diagonal. These are the
+"distinctive" or "characteristic" genes for these factors. Looking at
+the genes with the top expression values (the largest elements of the
+${\bf F}$ matrix) will not isolate these distinctive
+genes. Intuitively, this is what we are often trying to do when
+performing differential expression analyses that compare different
+cell types: we are most interested in identifying the genes that show
+large differences in gene expression in the given cell type vs. other
+celltypes.
 
 Summary: although the topic model clearly is not just doing a simple
-clustering, the topics are often "cluster-like".
+clustering, the topics are often "cluster-like", and therefore it is
+natural to think about analyses that are performed on clusters (e.g.,
+differential expression analysis) as also applying to this setting.
 
 ## EBNMF (flashier)
 
@@ -242,7 +240,7 @@ fl_nmf <- flash(shifted_log_counts,ebnm_fn = ebnm_point_exponential,
 				verbose = 0)
 ```
 
-EBNMF applied to the shifted log count decomposes the samples in a
+EBNMF applied to the shifted log counts decomposes the samples in a
 similar way as the topic model:
 
 ```{r structure-plot-nmf, fig.height=2.25, fig.width=5}
@@ -253,6 +251,25 @@ structure_plot(L,grouping = samples$label,topics = 4:1,
   labs(y = "membership") +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
 ```
+
+These next three scatterplots compare the factor estimates
+(approximately, LFCs) among the three factors other than the baseline:
+
+```{r gene-matrix-scatterplot, fig.height=2, fig.width=6}
+F <- ldf(fl_nmf,type = "i")$F
+colnames(F) <- paste0("k",1:4)
+colnames(F) <- c("baseline","EtOH","RA","TGFb")
+pdat <- cbind(genes[c("GeneID","Symbol")],F)
+p1 <- gene_matrix_scatterplot(F,"EtOH","RA")
+p2 <- gene_matrix_scatterplot(F,"EtOH","TGFb")
+p3 <- gene_matrix_scatterplot(F,"RA","TGFb")
+print(plot_grid(p1,p2,p3,nrow = 1,ncol = 3))
+```
+
+More than the topic model, the NMF factors better isolate more
+"distinctive" genes; we see that the largest values of the gene matrix
+are often also a gene that is zero or small in the other factors,
+whereas this was clearly not true in the topic model.
 
 [sanford2020elife]: https://doi.org/10.7554/eLife.59388
 [mcf7-geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE152749
