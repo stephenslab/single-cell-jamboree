@@ -191,8 +191,9 @@ think about as capturing levels of gene expression. These next three
 scatterplots compare the estimated expression levels among the three
 topics (on the logarithmic scale).
 
-```{r gene-matrix-scatterplots-topic-model, fig.height=2, fig.width=6}
+```{r gene-matrix-scatterplots-topic-model, fig.height=2, fig.width=6, warning=FALSE}
 gene_matrix_scatterplot <- function (gene_matrix, k1, k2) {
+  gene_matrix <- as.data.frame(gene_matrix)
   ggplot(gene_matrix,aes_string(x = k1,y = k2)) +
     geom_point(color = "black") +
     geom_abline(intercept = 0,slope = 1,color = "orangered",
@@ -257,7 +258,6 @@ These next three scatterplots compare the factor estimates
 
 ```{r gene-matrix-scatterplot, fig.height=2, fig.width=6}
 F <- ldf(fl_nmf,type = "i")$F
-colnames(F) <- paste0("k",1:4)
 colnames(F) <- c("baseline","EtOH","RA","TGFb")
 pdat <- cbind(genes[c("GeneID","Symbol")],F)
 p1 <- gene_matrix_scatterplot(F,"EtOH","RA")
@@ -270,6 +270,25 @@ More than the topic model, the NMF factors better isolate more
 "distinctive" genes; we see that the largest values of the gene matrix
 are often also a gene that is zero or small in the other factors,
 whereas this was clearly not true in the topic model.
+
+To reinforce this point, this last set of scatterplots compares the
+topics to the corresponding factors:
+
+```{r nmf-vs-tm, fig.height=2, fig.width=6}
+F1 <- poisson2multinom(tm)$F
+F1 <- log10(F1 + 1e-6)
+F2 <- ldf(fl_nmf,type = "i")$F
+colnames(F1) <- c("TGFb_tm","RA_tm","EtOH_tm")
+colnames(F2) <- c("baseline","EtOH_nmf","RA_nmf","TGFb_nmf")
+F <- cbind(F1,F2)
+p1 <- gene_matrix_scatterplot(F,"EtOH_tm","EtOH_nmf")
+p2 <- gene_matrix_scatterplot(F,"RA_tm","RA_nmf")
+p3 <- gene_matrix_scatterplot(F,"TGFb_tm","TGFb_nmf")
+print(plot_grid(p1,p2,p3,nrow = 1,ncol = 3))
+```
+
+Note that the topics ("tm") are plotted along the x-axis on the log
+scale.
 
 [sanford2020elife]: https://doi.org/10.7554/eLife.59388
 [mcf7-geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE152749
