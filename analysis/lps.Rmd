@@ -28,12 +28,6 @@ library(ggplot2)
 library(cowplot)
 ```
 
-Set the seed for reproducibility:
-
-```{r set-seed}
-set.seed(1)
-```
-
 ## Prepare the data for analysis with fastTopics and flashier
 
 Load the RNA-seq counts:
@@ -100,6 +94,7 @@ interesting structure in the data, but this is done on purpose since I
 want to illustrate how the topic model prioritizes the structure.
 
 ```{r fit-topic-model-k9, cache=TRUE}
+set.seed(1)
 tm_k9 <- fit_poisson_nmf(counts,k = 9,init.method = "random",method = "em",
                          numiter = 20,verbose = "none",
 		   			     control = list(numiter=4,nc=8,extrapolate=FALSE))
@@ -141,6 +136,7 @@ tissues.
 Fit a topic model with $K = 14$ topics to the counts:
 
 ```{r fit-topic-model, cache=TRUE}
+set.seed(1)
 tm <- fit_poisson_nmf(counts,k = 14,init.method = "random",method = "em",
                       numiter = 20,verbose = "none",
 					  control = list(numiter = 4,nc = 8,extrapolate = FALSE))
@@ -185,45 +181,71 @@ TO DO: Examine more closely topics k1 and k7.
 
 ## EBNMF (flashier)
 
-TO DO: Also run flashier with a smaller number of factors.
+Similar to the topic modeling analysis, let's start by fitting an
+EBNMF to the shifted log counts using flashier, first with $K = 9$.
+Since the greedy initialization does not seem to work well in this
+example, I'll use a different initialization strategy: obtain a "good"
+initialization using the NNLM package, then use this initialization to
+fit a NMF using flashier. This approach is implemented in the
+following function:
 
-Next fit an NMF to the shifted log counts using flashier, with $K =
-15$:
-
-```{r flashier-nmf, cache=TRUE, warning=FALSE}
-k <- 15
-n <- nrow(shifted_log_counts)
-m <- ncol(shifted_log_counts)
-nmf0 <- nnmf(shifted_log_counts,k = 1,loss = "mse",method = "scd",
-            max.iter = 10,verbose = 0,n.threads = 4)
-W0 <- nmf0$W
-H0 <- nmf0$H
-W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
-H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
-nmf <- nnmf(shifted_log_counts,k,init = list(W = W0,H = H0),
-            loss = "mse",method = "scd",max.iter = 10,
-            verbose = 0,n.threads = 8)
-x  <- rpois(1e7,1/n)
-s1 <- sd(log(x + 1))
-sparse_prior <- ebnm_point_exponential(x = c(rep(1,100)))
-sparse_prior$fitted_g$pi <- c(0.99,0.01)
-ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
-                                fix_g = TRUE,g_init = sparse_prior)
-fl_nmf <- flash_init(shifted_log_counts,var_type = 2,S = s1)
-fl_nmf <- flash_factors_init(fl_nmf,list(nmf$W,t(nmf$H)),
-                             c(ebnm_sparse_prior,ebnm_point_exponential))
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 0)
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 0)
+```{r flashier-nmf-function}
+flashier_nmf <- function (X, k = 3, n.threads = 1) {
+  n <- nrow(X)
+  m <- ncol(X)
+  nmf0 <- nnmf(shifted_log_counts,k = 1,loss = "mse",method = "scd",
+            max.iter = 10,verbose = 0,n.threads = n.threads)
+  W0 <- nmf0$W
+  H0 <- nmf0$H
+  W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
+  H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
+  nmf <- nnmf(X,k,init = list(W = W0,H = H0),loss = "mse",method = "scd",
+              max.iter = 10,verbose = 0,n.threads = n.threads)
+  x  <- rpois(1e7,1/n)
+  s1 <- sd(log(x + 1))
+  out <- flash_init(X,var_type = 2,S = s1)
+  out <- flash_factors_init(out,list(nmf$W,t(nmf$H)),ebnm_point_exponential)
+  out <- flash_backfit(out,extrapolate = FALSE,maxiter = 100,verbose = 0)
+  return(flash_backfit(out,extrapolate = TRUE,maxiter = 100,verbose = 0))
+}
 ```
 
-Structure plot comparing the factors to the organ types:
+Now fit an NMF to the shifted log counts, with $K = 9$:
 
-```{r structure-plot-flashier-nmf, fig.height=2, fig.width=7}
+```{r flashier-nmf-k9, cache=TRUE}
+set.seed(1)
+fl_nmf_k9 <- flashier_nmf(shifted_log_counts,k = 9,n.threads = 8)
+```
+
+Structure plot comparing the topics to the tissue types:
+
+```{r structure-plot-flashier-nmf-k9, fig.height=2, fig.width=7}
 rows <- order(samples$timepoint)
 topic_colors <- c("powderblue","dodgerblue","olivedrab","limegreen",
                   "forestgreen","red","darkmagenta","gray","darkorange",
                   "cyan","royalblue","darkblue","lightskyblue",
                   "gold","sienna")
+L <- ldf(fl_nmf_k9,type = "i")$L
+structure_plot(L,grouping = samples$tissue,gap = 4,
+               topics = 1:9,colors = topic_colors,
+			   loadings_order = rows) +
+  labs(fill = "",y = "membership")
+```
+
+Like the topic model, the EBNMF model with $K = 9$ does not capture
+any changes downstream of the LPS-induced sepsis.
+
+Next fit an NMF to the shifted log counts using flashier, with $K =
+15$:
+
+```{r flashier-nmf-k15, cache=TRUE, warning=FALSE}
+set.seed(1)
+fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,n.threads = 8)
+```
+
+Structure plot comparing the factors to the tissue types:
+
+```{r structure-plot-flashier-nmf, fig.height=2, fig.width=7}
 L <- ldf(fl_nmf,type = "i")$L
 structure_plot(L,grouping = samples$tissue,gap = 4,
                topics = 1:15,colors = topic_colors,
@@ -235,14 +257,14 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
         legend.text = element_text(size = 7))
 ```
 
-This next structure plot better highlights the topics that capture
-the processes driven by LPS-induced sepsis:
+This next structure plot better highlights the topics that capture the
+processes that are driven or may be driven by LPS-induced sepsis:
 
 ```{r structure-plot-flashier-nmf-2, fig.height=2, fig.width=7}
 rows <- order(samples$timepoint)
 topic_colors <- c("gray95","gray70","gray80","limegreen",
-                  "gray60","red","gray75","gray","gray85",
-                  "gray90","gray65","gray50","gray45",
+                  "gray60","gray50","gray75","gray","gray85",
+                  "gray90","gray65","darkblue","gray45",
                   "gray35","gray75")
 L <- ldf(fl_nmf,type = "i")$L
 structure_plot(L,grouping = samples$tissue,gap = 4,
