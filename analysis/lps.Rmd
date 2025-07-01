@@ -277,4 +277,13 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
         legend.text = element_text(size = 7))
 ```
 
+TO DO NEXT: Look more closely at factor 6 in the EBNMF model and
+topics 1 and 7 in the topic model. In particular, for topic 1, compute
+"least extreme" LFCs; for topic 7, compute "vsnull" LFCs (to remove
+effect of baseline). Then perform a GSEA on these LFCs, including the
+LFCs from the EBNMF (simply obtained by extracting the F matrix from
+the EBNMF fit).
+
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
+
+
