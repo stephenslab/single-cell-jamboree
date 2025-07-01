@@ -262,8 +262,8 @@ processes that are driven or may be driven by LPS-induced sepsis:
 
 ```{r structure-plot-flashier-nmf-2, fig.height=2, fig.width=7}
 rows <- order(samples$timepoint)
-topic_colors <- c("gray95","gray70","gray80","limegreen",
-                  "gray60","gray50","gray75","gray","gray85",
+topic_colors <- c("gray95","gray70","gray80","gray50",
+                  "gray60","red","gray75","gray","gray85",
                   "gray90","gray65","darkblue","gray45",
                   "gray35","gray75")
 L <- ldf(fl_nmf,type = "i")$L
