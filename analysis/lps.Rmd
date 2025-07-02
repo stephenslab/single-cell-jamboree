@@ -25,6 +25,7 @@ library(ebnm)
 library(flashier)
 library(singlecelljamboreeR)
 library(ggplot2)
+library(ggrepel)
 library(cowplot)
 ```
 
@@ -177,8 +178,6 @@ structure_plot(tm,grouping = samples$tissue,gap = 4,
         legend.text = element_text(size = 6))
 ```
 
-TO DO: Examine more closely topics k1 and k7.
-
 ## EBNMF (flashier)
 
 Similar to the topic modeling analysis, let's start by fitting an
@@ -277,13 +276,82 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
         legend.text = element_text(size = 7))
 ```
 
-TO DO NEXT: Look more closely at factor 6 in the EBNMF model and
-topics 1 and 7 in the topic model. In particular, for topic 1, compute
-"least extreme" LFCs; for topic 7, compute "vsnull" LFCs (to remove
-effect of baseline). Then perform a GSEA on these LFCs, including the
-LFCs from the EBNMF (simply obtained by extracting the F matrix from
-the EBNMF fit).
+## Factors isolating responses to LPS-induced sepsis
+
+From the Structure plots, it appears that topic 7, and possibly topic
+1, are capturing processes activated by LPS. However, I conjecture
+that it is difficult to determine which genes should members of 
+topic 1 and which are members of the colon and small intensine
+topics. Indeed, topic 1 shares many genes with these two topics:
+
+```{r compare-topics-1, fig.height=2.25, fig.width=5}
+pdat <- cbind(data.frame(gene = colnames(counts)),
+              poisson2multinom(tm)$F)
+rows <- which(pdat$k1 < 0.01)
+pdat[rows,"gene"] <- ""
+p1 <- ggplot(pdat,aes(x = k1,y = k4,label = gene)) +
+  geom_point() +
+  geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
+  scale_x_continuous(trans = "sqrt") +
+  scale_y_continuous(trans = "sqrt") +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(pdat,aes(x = k1,y = k13,label = gene)) +
+  geom_point() +
+  geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
+  scale_x_continuous(trans = "sqrt") +
+  scale_y_continuous(trans = "sqrt") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+Still, it is interesting that three genes, *Reg3b*, *Reg3g* and
+*Lypd8*, stand out in topic 1 as distinct from the colon and SI
+topics. Let's now contrast this to the situation for topic 7:
+
+```{r compare-topics-2, fig.height=2.25, fig.width=5}
+pdat <- cbind(data.frame(gene = colnames(counts)),
+              poisson2multinom(tm)$F)
+rows <- which(pdat$k7 < 0.008)
+pdat[rows,"gene"] <- ""
+p1 <- ggplot(pdat,aes(x = k7,y = k6,label = gene)) +
+  geom_point() +
+  geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
+  scale_x_continuous(trans = "sqrt") +
+  scale_y_continuous(trans = "sqrt") +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(pdat,aes(x = k7,y = k8,label = gene)) +
+  geom_point() +
+  geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
+  scale_x_continuous(trans = "sqrt") +
+  scale_y_continuous(trans = "sqrt") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+For illustration, I compared topic 7 to the kidney and lung
+topics. The key point here is that the topic model has selected genes
+for topic 7 that are very independent of the tissue topics. So this
+looks quite promising. Let's now see if the result is similar for the
+EBNMF model fitted to the shifted log counts:
+
+```{r sepsis-tm-vs-nmf, fig.height=2.5, fig.width=4}
+F <- ldf(fl_nmf,type = "i")$F
+colnames(F) <- paste0("k",1:15)
+pdat <- data.frame(tm   = poisson2multinom(tm)$F[,"k7"],
+                   nmf  = F[,"k6"],
+				   gene = rownames(F))
+rows <- which(with(pdat,tm < 0.005 & nmf < 0.8))
+pdat[rows,"gene"] <- ""
+ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene)) +
+  geom_point() +
+  geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
+  labs(x = "topic 7",y = "factor 6") +
+  theme_cowplot(font_size = 12)
+```
+
+Indeed, factor 6 and topic 7 are cpaturing very similar expression
+patterns.
+
+NEXT: Perform a GSEA separately for topics 1 and 7, and factor 6.
 
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
-
-
