@@ -20,7 +20,8 @@ library(RcppML)
 
 ## Introduction
 
-I want to try fitting gbcd to the Pancreas celseq2 data.
+I want to look at the gbcd fit to the Pancreas celseq2 data.
+The 
 
 First I load the data and select the CEL-seq2 data, which should select 2,285 cells.
 Then I remove genes that are expressed in fewer than 10 cells, and compute the shifted log counts.
@@ -45,17 +46,20 @@ a <- 1
 s <- rowSums(counts)
 s <- s/mean(s)
 Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
-dat <- Matrix::tcrossprod(Y)/ncol(Y) # cell by cells covariance matrix
+
+#randomly divide rows of Y into 2
+subset = sample(1:nrow(Y), nrow(Y)/2)
+
+#dat <- Matrix::tcrossprod(Y)/ncol(Y) # cell by cells covariance matrix
 ```
 
-Now fit a gbcd model to the data, using the `fit_gbcd` function. 
+Now load the gbcd fits created by `fit_pancreas_celseq2_gbcd.R`. This loads 3 fits: fit.gbcd is the whole dataset and fit.gbcd.1 and fit.gbcd2 are fits to two random halves of the data (subset and its complement).
 ```{r}
-fit.gbcd = fit_gbcd(Y, Kmax = 20)
+load("../output/pancreas_celseq2_gbcd.RData")
 ```
 
-Plot the structure plot
+Plot the structure plot for the whole fit:
 ```{r structure-plots-celseq2-flashier, fig.height=4, fig.width=8, message=FALSE, results="hide"}
-
 
 sample_info <- transform(sample_info,celltype = factor(celltype))
 celltype <- sample_info$celltype
@@ -67,18 +71,68 @@ celltype <-
 
 L <- fit.gbcd$L
 
-p1 <- structure_plot(L[,-(1:10)],grouping = celltype,
+p1 <- structure_plot(L,grouping = celltype,
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+plot(p1)
+```
+
+Then two other structure plots:
+```{r}
+L.1 <- fit.gbcd.1$L
+
+p1 <- structure_plot(L.1,grouping = celltype[subset],
                      gap = 20,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 plot(p1)
 ```
 
 
-Volcano plot for a few GEPs
 ```{r}
-res.gbcd = fit.gbcd
-for(GEP in c("GEP8","GEP10","GEP12","GEP15","GEP23")){
+L.2 <- fit.gbcd.2$L
 
+p2 <- structure_plot(L.2,grouping = celltype[-subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+plot(p2)
+```
+
+Compute the cross correlations of the factors from the two independent fits. (Note that the rows of xcor correspond to the first fit and the columns to the second fit.) 
+
+A histogram shows that xcors exceeding 0.5 are 
+"above the noise".
+```{r}
+xcor = cor(fit.gbcd.1$F$lfc,fit.gbcd.2$F$lfc)
+hist(xcor)
+```
+
+For each row of xcor (GEPs in first fit) find the names of the columns (GEPs in second fit) whose correlation exceed 0.5.
+The matches are those GEPs that have exactly one such match (a few have 2 other GEPs that are correlated >0.5 suggesting they are somewhat split).
+```{r}
+above_noise = apply(xcor,1,function(x) names(x)[x > 0.5])
+matches = above_noise[lapply(above_noise,length)==1]
+```
+  
+  
+## Structure Plots with matching GEPs
+  
+```{r}
+p1.match <- structure_plot(L.1[,names(matches)],grouping = celltype[subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+
+p2.match <- structure_plot(L.2[,unlist(matches)],grouping = celltype[-subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+
+plot_grid(p1.match,p2.match,ncol=1)
+```
+
+  
+## Volcano plots of matching GEPs  
+Volcano plot code.
+```{r}
+volcano_plot=function(res.gbcd,GEP){
   pdat <- data.frame(gene = rownames(res.gbcd$F$lfc), 
                    lfc = res.gbcd$F$lfc[, GEP], 
                    z = abs(res.gbcd$F$z_score[, GEP]), 
@@ -100,10 +154,26 @@ for(GEP in c("GEP8","GEP10","GEP12","GEP15","GEP23")){
         legend.title    = element_text(size = 12),
         legend.text     = element_text(size = 10),
         legend.position = "bottom") +
-  ggtitle(paste0("Volcano plot of gene signature for ",GEP))
+  ggtitle(paste0(GEP))
+  return(p)
+}
+```
+
+For each match plot the GEPs of both fits next to one another:
+```{r}
+for(GEP.1 in names(matches)){
+  print(GEP.1)
+  GEP.2 <- matches[[GEP.1]]
+  p.1 <- volcano_plot(fit.gbcd.1, GEP.1)
+  p.2 <- volcano_plot(fit.gbcd.2, GEP.2)
+  p = plot_grid(p.1, p.2,nrow=1)
   plot(p)
 }
 ```
+
+I was interested to notice that GEP20, which corresponds to Gamma (PP) cells, has MAFB being downregulated. Further inspection shows that indeed MAFB is low expressed in Gamma cells in these data. That is not something I have found noted in the literature.
+
+Eyeballing the plots, most seem to match quite well; exceptions are maybe GEP15-GEP21 which don't match so well; also some differences between GEP22-GEP22? But overall subsetting to the highly correlated GEPs seems to work well at creating a pretty consistent structure plot.
 
 
 ## Try regular NMF
@@ -111,10 +181,103 @@ for(GEP in c("GEP8","GEP10","GEP12","GEP15","GEP23")){
 Since I could not find a convenient implementation of symmetric NMF in R I used regular nmf on the Gram matrix (note that because it is symmetric the result tends to be close to symmetric, but it would be nice to have a version that properly respects symmetry.)
 
 ```{r}
+dat <- Matrix::tcrossprod(Y)/ncol(Y) # cell by cells covariance matrix 
 temp = nmf(as.matrix(dat),10)
 p1 <- structure_plot(temp@w,grouping = celltype,
                      gap = 20,perplexity = 70,n = Inf) +
   labs(y = "membership",fill = "factor",color = "factor")
 plot(p1)
+```
+
+
+### Try Symmetric NMF
+
+Here I try Annie Xie's R code for symNMF based on the method of Vandaele et al. This is work in progress.
+
+```{r}
+# this is an implementation of the coordinate descent symNMF method from A. Vandaele, N. Gillis, Q. Lei, K. Zhong, I. Dhillon
+# given an n-by-n symmetric nonnegative matrix A and a factorization rank r, it computes a n-by-r nonnegative matrix H
+# which solves the problem min_{H >0} \|A - HH'\|_F^2
+
+CoDesymNMF_init <- function(A, r, init_type){
+  n <- ncol(A)
+  if(init_type == 'zeros'){
+    H <- matrix(rep(0,n*r), ncol = r)
+  }else{
+    H <- matrix(runif(n*r), ncol = r)
+  }
+}
+
+CoDesymNMF_fit <- function(A, H, maxiter = 100, rand_permutation = FALSE){
+  n <- nrow(H)
+  r <- ncol(H)
+  
+  # scaling (if H is not the zero matrix)
+  if (max(H) > 0){
+    HHt <- tcrossprod(H)
+    beta <- sum(A*HHt)/sum(HHt^2) #scaling factor
+    H <- sqrt(beta)*H
+  }
+  
+  iter <- 1
+  x <- rep(0,4)
+  # main loop
+  while(iter <= maxiter){
+    # randomly permute columns if rand_permutation is TRUE
+    if (rand_permutation == TRUE){
+      col_permutation <- sample(r, size = r, replace = FALSE)
+      H <- H[,col_permutation]
+    }
+    
+    # calculate residual
+    R <- A - tcrossprod(H)
+    for (k in 1:r){
+      R <- R + tcrossprod(H[,k])
+      diag_R <- diag(R)
+      HtH <- crossprod(H[,k]) #scalar, equals sum(H[,k]^2)
+      for (i in 1:n){
+        # coefficients a and b of x^3 + ax + b
+        HtH <- HtH - H[i,k]^2 #scalar
+        a <- HtH - diag_R[i] #scalar
+        b <- -(t(H[,k]) %*% R[,i] - H[i,k]*diag_R[i]) #scalar
+        
+        Delta <- 4*(a^3) + 27*(b^2) # note: delta can be negative!
+        d <- 0.5 * (-b + sqrt(as.complex(Delta/27))) #might be complex
+        
+        if (Delta <= 0) {
+          r3 <- 2*(abs(d)^(1/3))
+          th3 <- atan2(Im(d),Re(d))/3
+          x[2] <- r3*cos(th3)
+          x[3] <- r3*cos(th3 + (2*pi/3))
+          x[4] <- r3*cos(th3 + (4*pi/3))
+          x <- x[x >= 0] 
+          ind <- which.min((x^4)/4 + c(a)*(x^2)/2 + c(b)*x)
+          H[i,k] <- x[ind]
+          HtH <- HtH + H[i,k]^2
+        }else{
+          d <- Re(d) # d is just a real number in this case
+          z <- sign(d)*(abs(d))^(1/3)
+          val <- z - (a/(3*z))
+          if(((val^4)/4 + a*(val^2/2) + b*val < 0) & (val >= 0)){
+            HtH <- HtH + val^2
+            H[i,k] <- val
+          }else{
+            H[i,k] <- 0
+          }
+        }
+      } # end of 1:n for loop
+      R <- R - tcrossprod(H[,k])
+    } # end of 1:r for loop 
+    iter <- iter + 1
+  } # end of maxiter while loop
+  # return output
+  return(list(H=H, obj_func = sum((A - tcrossprod(H))^2)))
+}
+
+CoDesymNMF <- function(A, r, init_type = 'zeros', maxiter = 100, rand_permutation = FALSE){
+  H_init <- CoDesymNMF_init(A, r, init_type)
+  CoDesymNMF_results <- CoDesymNMF_fit(A, H_init, maxiter, rand_permutation)
+  return(CoDesymNMF_results)
+}
 ```
 
