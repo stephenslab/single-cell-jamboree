@@ -1,0 +1,120 @@
+---
+title: "pancreas_celseq2_gbcd"
+author: "Matthew Stephens"
+date: "2025-07-02"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(gbcd)
+library(flashier)
+library(fastTopics)
+library(Matrix)
+library(ggplot2)
+library(cowplot)
+library(ggrepel)
+library(RcppML)
+```
+
+## Introduction
+
+I want to try fitting gbcd to the Pancreas celseq2 data.
+
+First I load the data and select the CEL-seq2 data, which should select 2,285 cells.
+Then I remove genes that are expressed in fewer than 10 cells, and compute the shifted log counts.
+
+```{r}
+load("../data/pancreas.RData")
+set.seed(1)
+
+# Select the CEL-seq2 data (Muraro et al, 2016).
+# This should select 2,285 cells.
+i           <- which(sample_info$tech == "celseq2")
+sample_info <- sample_info[i,]
+counts      <- counts[i,]
+
+# Remove genes that are expressed in fewer than 10 cells.
+x      <- colSums(counts > 0)
+j      <- which(x > 9)
+counts <- counts[,j]
+
+# Compute the shifted log counts.
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
+dat <- Matrix::tcrossprod(Y)/ncol(Y) # cell by cells covariance matrix
+```
+
+Now fit a gbcd model to the data, using the `fit_gbcd` function. 
+```{r}
+fit.gbcd = fit_gbcd(Y, Kmax = 20)
+```
+
+Plot the structure plot
+```{r structure-plots-celseq2-flashier, fig.height=4, fig.width=8, message=FALSE, results="hide"}
+
+
+sample_info <- transform(sample_info,celltype = factor(celltype))
+celltype <- sample_info$celltype
+celltype <-
+ factor(celltype,
+        c("acinar","ductal","activated_stellate","quiescent_stellate",
+          "endothelial","macrophage","mast","schwann","alpha","beta",
+          "delta","gamma","epsilon"))
+
+L <- fit.gbcd$L
+
+p1 <- structure_plot(L[,-(1:10)],grouping = celltype,
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+plot(p1)
+```
+
+
+Volcano plot for a few GEPs
+```{r}
+res.gbcd = fit.gbcd
+for(GEP in c("GEP8","GEP10","GEP12","GEP15","GEP23")){
+
+  pdat <- data.frame(gene = rownames(res.gbcd$F$lfc), 
+                   lfc = res.gbcd$F$lfc[, GEP], 
+                   z = abs(res.gbcd$F$z_score[, GEP]), 
+                   lfsr = res.gbcd$F$lfsr[, GEP],
+                   stringsAsFactors = FALSE)
+  pdat <- transform(pdat, lfsr = cut(lfsr, c(-1, 0.001, 0.01, 0.05, Inf)))
+  rows  <- with(pdat, which(!(abs(lfc) > quantile(abs(lfc), 0.998) | (z > 10))))
+  pdat[rows, "gene"] <- ""
+  p = ggplot(pdat, aes(x = lfc, y = z, color = lfsr, label = gene)) + geom_point() + 
+    geom_text_repel(color = "black", size = 2.5, segment.color = "black",
+                  segment.size = 0.25, min.segment.length = 0,
+                  max.overlaps = Inf, na.rm = TRUE) +
+  scale_color_manual(values = c("coral", "orange", "gold", "deepskyblue")) +
+  labs(x = "log-fold change", y = "|posterior z-score|") + 
+  guides(colour = guide_legend(override.aes = list(size = 2))) + 
+  theme(plot.title      = element_text(hjust = 0.5,size = 12),
+        axis.text       = element_text(size = 10),
+        axis.title      = element_text(size = 10),
+        legend.title    = element_text(size = 12),
+        legend.text     = element_text(size = 10),
+        legend.position = "bottom") +
+  ggtitle(paste0("Volcano plot of gene signature for ",GEP))
+  plot(p)
+}
+```
+
+
+## Try regular NMF
+
+Since I could not find a convenient implementation of symmetric NMF in R I used regular nmf on the Gram matrix (note that because it is symmetric the result tends to be close to symmetric, but it would be nice to have a version that properly respects symmetry.)
+
+```{r}
+temp = nmf(as.matrix(dat),10)
+p1 <- structure_plot(temp@w,grouping = celltype,
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+plot(p1)
+```
+
