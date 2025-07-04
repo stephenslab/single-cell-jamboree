@@ -18,11 +18,14 @@ Load packages used to process the data, perform the analyses, and
 create the plots.
 
 ```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(readr)
 library(data.table)
 library(fastTopics)
 library(NNLM)
 library(ebnm)
 library(flashier)
+library(pathways)
 library(singlecelljamboreeR)
 library(ggplot2)
 library(ggrepel)
