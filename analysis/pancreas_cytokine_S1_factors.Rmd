@@ -222,14 +222,19 @@ print(plot_grid(p1,p2,nrow = 2,ncol = 1))
 Based on the estimated $\mathbf{F}$, we have the following potential
 interpretation of the topics:
 
-+ topic 1: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
-+ topic 3: duct cells (*Krt19*)
-+ topic 4: macrophages (*Ccr5*)
-+ topic 5: $\alpha$ (*Gcg*, *Mafb*) and $\gamma$ cells (*Ppy*)
-+ topic 6: replicate effect
-+ topic 9: endothelial cells (*Pecam1*, *Esam*)
-+ topic 10: mesenchymal cells (*Col1a1*)
-+ topic 13: $\delta$ cells (*Sst*)
++ factor 1: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
++ factors 2, 9, 11: endothelial cells (*Pecam1*, *Esam*)
++ factor 3: duct cells (*Krt19*)
++ factor 4: macrophages (*Ccr5*)
++ factor 5: $\alpha$ (*Gcg*, *Mafb*) and $\gamma$ cells (*Ppy*)
++ factor 6: replicate effect
++ factors 7, 12: cell cycle
++ factor 10: mesenchymal cells (*Col1a1*)
++ factor 13: $\delta$ cells (*Sst*)
+
+TO DO: It seems that there are some other interesting "cluster-like"
+factors within the endothelial-mesenchymal that need to be studied in
+more detail to determine what they are. Actually those clusters 
 
 Factor 6 almost perfectly captures the technical difference in the two
 replicates:
@@ -243,7 +248,7 @@ ggplot(pdat,aes(x = replicate,y = k6)) +
   theme_cowplot(font_size = 12)
 ```
 
-Factor 12 appears to be capturing cell cycle:
+Factors 7 and 12 appears to be capturing cell cycle (TO DO: UPDATE THIS):
 
 ```{r cell-cycle}
 cell_cycle <-
@@ -289,3 +294,6 @@ TO DO:
   for the factors.
 
 + Create annotation plots for the topic model and the EBNMF model.
+
++ The cell cycle factors (k7, k12) are other examples where the factors
+  are largely independent from the others.
