@@ -19,6 +19,7 @@ create the plots.
 ```{r load-pkgs, message=FALSE}
 library(Matrix)
 library(fastTopics)
+library(NNLM)
 library(flashier)
 library(singlecelljamboreeR)
 library(ggplot2)
@@ -132,14 +133,6 @@ interpretation of the topics:
 + topic 9: $\gamma$ cells (*Ppy*)
 + topic 13: endothelial (*Pecam1*) and mesenchymal cells (*Col1a1*).
 
-```{r}
-F <- poisson2multinom(tm)$F
-cell_cycle <-
-c("Ccnb1", "Ccnd1", "Ccnd2", "Ccnd3", "Ccne1", "Ccnh", "Cdc25a",
-"Cdk1", "Cdk2", "Cdk4", "Cdk6", "Cdk7", "Cdkn1a", "Cdkn1b", "Cdkn2a",
-"Cdkn2b", "Cdkn2c", "Cdkn2d", "E2f1", "Rb1", "Rbl1", "Tfdp1")
-```
-
 Topic 10 is clearly capturing a technical difference in the two
 replicates:
 
@@ -170,24 +163,40 @@ annotation_heatmap(F[,topics],select_features = "all",verbose = FALSE)
 
 ## EBNMF (flashier)
 
-Next fit an NMF to the shifted log counts using flashier, with $K =
-9$:
+Next we will fit an NMF to the *shifted log counts* using flashier,
+with $K = 13$. Since the greedy initialization does not seem to work
+well in this example, I'll use a different initialization strategy:
+obtain a "good" initialization using the NNLM package, then use this
+initialization to fit a NMF using flashier. This approach is
+implemented in the following function:
+
+```{r flashier-nmf-function}
+flashier_nmf <- function (X, k = 3, n.threads = 1) {
+  n <- nrow(X)
+  m <- ncol(X)
+  shifted_log_counts_dense <- as.matrix(shifted_log_counts)
+  nmf0 <- nnmf(shifted_log_counts_dense,k = 1,loss = "mse",method = "scd",
+            max.iter = 10,verbose = 2,n.threads = n.threads)
+  W0 <- nmf0$W
+  H0 <- nmf0$H
+  W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
+  H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
+  nmf <- nnmf(shifted_log_counts_dense,k,init = list(W = W0,H = H0),
+              loss = "mse",method = "scd",max.iter = 10,verbose = 2,
+			  n.threads = n.threads)
+  x  <- rpois(1e7,1/n)
+  s1 <- sd(log(x + 1))
+  out <- flash_init(X,var_type = 2,S = s1)
+  out <- flash_factors_init(out,list(nmf$W,t(nmf$H)),ebnm_point_exponential)
+  out <- flash_backfit(out,extrapolate = FALSE,maxiter = 100,verbose = 2)
+  return(flash_backfit(out,extrapolate = TRUE,maxiter = 100,verbose = 2))
+}
+```
 
 ```{r flashier-nmf, cache=TRUE, warning=FALSE, cache=TRUE}
 set.seed(1)
-n  <- nrow(samples)
-x  <- rpois(1e7,1/n)
-s1 <- sd(log(x + 1))
-fl_nmf <- flash(shifted_log_counts,S = s1,ebnm_fn = ebnm_point_exponential,
-                var_type = 2,greedy_Kmax = 9,backfit = FALSE,
-				nullcheck = FALSE,verbose = 0)
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 40,verbose = 0)
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 80,verbose = 0)
+fl_nmf <- flashier_nmf(shifted_log_counts,k = 13,n.threads = 8)
 ```
-
-(Note that I tried setting `greedy_Kmax > 9`, but this didn't result
-in more interesting fits—the additional factors loaded on only a
-single cell.)
 
 Structure plot comparing the factors to the clusters:
 

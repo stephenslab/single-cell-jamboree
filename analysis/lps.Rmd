@@ -195,8 +195,8 @@ following function:
 flashier_nmf <- function (X, k = 3, n.threads = 1) {
   n <- nrow(X)
   m <- ncol(X)
-  nmf0 <- nnmf(shifted_log_counts,k = 1,loss = "mse",method = "scd",
-            max.iter = 10,verbose = 0,n.threads = n.threads)
+  nmf0 <- nnmf(X,k = 1,loss = "mse",method = "scd",
+               max.iter = 10,verbose = 0,n.threads = n.threads)
   W0 <- nmf0$W
   H0 <- nmf0$H
   W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
