@@ -150,6 +150,9 @@ ggplot(pdat,aes(x = replicate,y = k10)) +
   theme_cowplot(font_size = 12)
 ```
 
+TO DO: Add annotation heatmaps as a way to summarize the topic
+modeling results.
+
 ```{r annotation-heatmap-topic-model, eval=FALSE}
 scale_rows <- function (A)
   A / apply(A,1,max)
