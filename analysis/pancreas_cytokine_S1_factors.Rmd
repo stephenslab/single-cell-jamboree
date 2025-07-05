@@ -174,16 +174,15 @@ implemented in the following function:
 flashier_nmf <- function (X, k = 3, n.threads = 1) {
   n <- nrow(X)
   m <- ncol(X)
-  shifted_log_counts_dense <- as.matrix(shifted_log_counts)
-  nmf0 <- nnmf(shifted_log_counts_dense,k = 1,loss = "mse",method = "scd",
-            max.iter = 10,verbose = 2,n.threads = n.threads)
+  Y <- as.matrix(X)
+  nmf0 <- nnmf(Y,k = 1,loss = "mse",method = "scd",max.iter = 10,
+               verbose = 2,n.threads = n.threads)
   W0 <- nmf0$W
   H0 <- nmf0$H
   W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
   H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
-  nmf <- nnmf(shifted_log_counts_dense,k,init = list(W = W0,H = H0),
-              loss = "mse",method = "scd",max.iter = 10,verbose = 2,
-			  n.threads = n.threads)
+  nmf <- nnmf(Y,k,init = list(W = W0,H = H0),loss = "mse",method = "scd",
+              max.iter = 10,verbose = 2,n.threads = n.threads)
   x  <- rpois(1e7,1/n)
   s1 <- sd(log(x + 1))
   out <- flash_init(X,var_type = 2,S = s1)
@@ -192,6 +191,8 @@ flashier_nmf <- function (X, k = 3, n.threads = 1) {
   return(flash_backfit(out,extrapolate = TRUE,maxiter = 100,verbose = 2))
 }
 ```
+
+Now fit an NMF to the shifted log counts, with $K = 13$:
 
 ```{r flashier-nmf, cache=TRUE, warning=FALSE, cache=TRUE}
 set.seed(1)
@@ -219,14 +220,17 @@ plot_grid(p1,p2,nrow = 2,ncol = 1)
 
 Possible interpretation of the factors:
 
-+ k4 = $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
-+ k7 = *Ins1-* $\beta$ cells?
-+ k3 = $\alpha$, $\delta$ and $\gamma$ cells
-+ k5 = macrophages (*Ccr5*)
-+ k2 = endothelial cells (*Pecam1*, *Esam*)
-+ k6 = mesenchymal cells (*Col1a1*)
++ topic 4: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
++ topic 7: *Ins1-* $\beta$ cells?
++ topic 3: $\alpha$, $\delta$ and $\gamma$ cells
++ topic 5: macrophages (*Ccr5*)
++ topic 2: endothelial cells (*Pecam1*, *Esam*)
++ topic 6: mesenchymal cells (*Col1a1*)
 
-```{r annotation-heatmap-flashier-nmf, fig.height=3, fig.width=3, eval=FALSE}
+TO DO: Add annotation heatmaps as a way to summarize the results of
+the EBNMF analysis.
+
+```{r annotation-heatmap-flashier-nmf, eval=FALSE}
 scale_cols <- function (A) {
   b <- apply(A,2,max)
   return(t(t(A) * b))
