@@ -1,0 +1,201 @@
+---
+title: "pancreas_celseq2_snmf_k40_ms"
+author: "Matthew Stephens"
+date: "2025-07-03"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(ggplot2)
+library(cowplot)
+library(ggrepel)
+```
+
+## Introduction
+
+I want to look at the semi-NMF results for the Pancreas celseq data (`fit_pancreas_celseq2_snmf_k40.R'), and particularly see how consistent the results are from two different subsets of the data.
+
+First I read in the data and the fit results.
+
+```{r}
+load("../data/pancreas.RData")
+set.seed(1)
+
+# Select the CEL-seq2 data (Muraro et al, 2016).
+# This should select 2,285 cells.
+i           <- which(sample_info$tech == "celseq2")
+sample_info <- sample_info[i,]
+counts      <- counts[i,]
+
+# Remove genes that are expressed in fewer than 10 cells.
+x      <- colSums(counts > 0)
+j      <- which(x > 9)
+counts <- counts[,j]
+
+# Compute the shifted log counts.
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
+
+#randomly divide rows of Y into 2
+subset = sample(1:nrow(Y), nrow(Y)/2)
+
+load("../output/pancreas_celseq2_snmf_k40.RData")
+
+colnames(fit.snmf.k40.1$F_pm) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$F_pm) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+
+colnames(fit.snmf.k40.1$F_psd) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$F_psd) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+
+colnames(fit.snmf.k40.1$F_lfsr) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$F_lfsr) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+
+
+
+
+
+colnames(fit.snmf.k40.1$L_pm) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$L_pm) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.1$L_psd) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$L_psd) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.1$L_lfsr) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$L_lfsr) <- c("Baseline",paste0("GEP",1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+
+
+```
+
+## Look at cross correlations
+
+We compute the cross correlations of the factors from the two fits. 
+A histogram shows that xcors exceeding about 0.5 are 
+"above the noise". 
+```{r}
+xcor = cor(fit.snmf.k40.1$F_pm,fit.snmf.k40.2$F_pm)
+hist(xcor)
+```
+
+And generally we see a 1-1 match at this threshold:
+```{r}
+image(xcor>0.5)
+```
+
+
+
+## Find matches between the two fits
+
+For each row of xcor (GEPs in first fit) find the names of the columns (GEPs in second fit) whose correlation exceed 0.5.
+The matches are those GEPs that have exactly one such match (a few have 2 other GEPs that are correlated >0.5 suggesting they are somewhat split).
+```{r}
+above_noise = apply(xcor,1,function(x) names(x)[x > 0.5])
+matches = above_noise[lapply(above_noise,length)==1]
+matches
+```
+  
+  
+## Structure Plots with matching GEPs
+  
+Now I do structure plots with just the matching GEPs (with the same colors to help see the matching).
+
+```{r}
+sample_info <- transform(sample_info,celltype = factor(celltype))
+celltype <- sample_info$celltype
+celltype <-
+ factor(celltype,
+        c("acinar","ductal","activated_stellate","quiescent_stellate",
+          "endothelial","macrophage","mast","schwann","alpha","beta",
+          "delta","gamma","epsilon"))
+
+
+L.1 = fit.snmf.k40.1$L_pm
+L.2 = fit.snmf.k40.2$L_pm
+
+p1.match <- structure_plot(L.1[,names(matches)],grouping = celltype[subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+
+p2.match <- structure_plot(L.2[,unlist(matches)],grouping = celltype[-subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+
+plot_grid(p1.match,p2.match,ncol=1)
+```
+
+  
+## Volcano plots of matching GEPs  
+
+Here I define a function for "volcano plots", based on code from the `gbcd` package. I changed the y axis to show the "baseline" expression of each gene; I included negative y axis just to allow space for gene names which otherwise got very cramped.
+
+```{r}
+volcano_plot=function(res,GEP){
+  pdat <- data.frame(gene = rownames(res$F_pm), 
+                   lfc = res$F_pm[,GEP], 
+                   base = res$F_pm[,"Baseline"], 
+                   lfsr = res$F_lfsr[, GEP],
+                   stringsAsFactors = FALSE)
+  pdat <- transform(pdat, lfsr = cut(lfsr, c(-1, 0.001, 0.01, 0.05, Inf)))
+  rows  <- with(pdat, which(!(abs(lfc) > quantile(abs(lfc), 0.998) )))
+  pdat[rows, "gene"] <- ""
+  p = ggplot(pdat, aes(x = lfc, y = base, color = lfsr, label = gene)) + ylim(-2,max(pdat$base)) + geom_point() + 
+    geom_text_repel(color = "black", size = 2.5, segment.color = "black",
+                  segment.size = 0.25, min.segment.length = 0,
+                  max.overlaps = Inf, na.rm = TRUE) +
+  scale_color_manual(values = c("coral", "orange", "gold", "deepskyblue")) +
+  labs(x = "log-fold change", y = "Baseline") + 
+  guides(colour = guide_legend(override.aes = list(size = 2))) + 
+  theme(plot.title      = element_text(hjust = 0.5,size = 12),
+        axis.text       = element_text(size = 10),
+        axis.title      = element_text(size = 10),
+        legend.title    = element_text(size = 12),
+        legend.text     = element_text(size = 10),
+        legend.position = "bottom") +
+  ggtitle(paste0(GEP))
+  return(p)
+}
+```
+
+For each matching pair of GEPs, plot the volcano plots
+next to one another for comparison. I exclude the baseline here.
+```{r}
+for(GEP.1 in names(matches)[-1]){
+  print(GEP.1)
+  GEP.2 <- matches[[GEP.1]]
+  p.1 <- volcano_plot(fit.snmf.k40.1, GEP.1)
+  p.2 <- volcano_plot(fit.snmf.k40.2, GEP.2)
+  p = plot_grid(p.1, p.2,nrow=1)
+  plot(p)
+}
+```
+
+## Closer look at GEP12,GEP14
+
+Despite being "matches" these two look pretty different so I thought I would look a bit closer. It turns out this one is just above the correlation 0.5 threshold.
+
+```{r}
+xcor["GEP14","GEP12"]
+plot(fit.snmf.k40.1$F_pm[,"GEP14"],fit.snmf.k40.2$F_pm[,"GEP12"],
+     xlab = "GEP14",ylab = "GEP12",
+     main = paste0("xcor = ",round(xcor["GEP14","GEP12"],3)))
+```
+
+Here I plot the structure plot for just these GEPs (I have to show baseline as the code requires at least two topics I think?)
+The distribution of the GEPs across cell types are similar, which is somewhat reassuring that it might be a meaningful signal of some kind, even if the driving genes are not very clear since they do not stand out greatly from the rest.
+```{r}
+p1.sub <- structure_plot(L.1[,c("Baseline","GEP14")],grouping = celltype[subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+
+p2.sub <- structure_plot(L.2[,c("Baseline","GEP12")],grouping = celltype[-subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = "membership",fill = "factor",color = "factor")
+
+plot_grid(p1.sub,p2.sub,ncol=1)
+```
+
+
+

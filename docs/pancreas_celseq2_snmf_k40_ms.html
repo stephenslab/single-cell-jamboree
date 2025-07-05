@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthew Stephens" />
+
+<meta name="date" content="2025-07-03" />
+
+<title>pancreas_celseq2_snmf_k40_ms</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">single-cell jamboree</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephenslab/single-cell-jamboree">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">pancreas_celseq2_snmf_k40_ms</h1>
+<h4 class="author">Matthew Stephens</h4>
+<h4 class="date">2025-07-03</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-07-03
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>single-cell-jamboree/analysis/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed1code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(1)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed1code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(1)</code> was run prior to running the
+code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree912c6907548544718089299070cd3ad2ea63fe29targetblank912c690a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/912c6907548544718089299070cd3ad2ea63fe29" target="_blank">912c690</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree912c6907548544718089299070cd3ad2ea63fe29targetblank912c690a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/912c6907548544718089299070cd3ad2ea63fe29" target="_blank">912c690</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.RData
+
+Untracked files:
+    Untracked:  analysis/Rplot.pdf
+    Untracked:  analysis/fit_pancreas_celseq2_gbcd.Rout
+    Untracked:  analysis/fit_pancreas_celseq2_snmf_k100.R
+    Untracked:  analysis/fit_pancreas_celseq2_snmf_k40.R
+    Untracked:  analysis/fit_pancreas_celseq2_snmf_k40.Rout
+    Untracked:  analysis/pancreas_celseq2_snmf_k100.RData
+    Untracked:  analysis/pancreas_celseq2_snmf_ms.Rmd
+    Untracked:  output/pancreas_celseq2_snmf_k100.RData
+    Untracked:  output/pancreas_celseq2_snmf_k40.RData
+
+Unstaged changes:
+    Modified:   single-cell-jamboree.Rproj
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/pancreas_celseq2_snmf_k40_ms.Rmd</code>) and HTML
+(<code>docs/pancreas_celseq2_snmf_k40_ms.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/912c6907548544718089299070cd3ad2ea63fe29/analysis/pancreas_celseq2_snmf_k40_ms.Rmd" target="_blank">912c690</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2025-07-03
+</td>
+<td>
+workflowr::wflow_publish("pancreas_celseq2_snmf_k40_ms.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(fastTopics)
+library(Matrix)
+library(ggplot2)
+library(cowplot)
+library(ggrepel)</code></pre>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>I want to look at the semi-NMF results for the Pancreas celseq data
+(`fit_pancreas_celseq2_snmf_k40.R’), and particularly see how consistent
+the results are from two different subsets of the data.</p>
+<p>First I read in the data and the fit results.</p>
+<pre class="r"><code>load(&quot;../data/pancreas.RData&quot;)
+set.seed(1)
+
+# Select the CEL-seq2 data (Muraro et al, 2016).
+# This should select 2,285 cells.
+i           &lt;- which(sample_info$tech == &quot;celseq2&quot;)
+sample_info &lt;- sample_info[i,]
+counts      &lt;- counts[i,]
+
+# Remove genes that are expressed in fewer than 10 cells.
+x      &lt;- colSums(counts &gt; 0)
+j      &lt;- which(x &gt; 9)
+counts &lt;- counts[,j]
+
+# Compute the shifted log counts.
+a &lt;- 1
+s &lt;- rowSums(counts)
+s &lt;- s/mean(s)
+Y &lt;- MatrixExtra::mapSparse(counts/(a*s),log1p)
+
+#randomly divide rows of Y into 2
+subset = sample(1:nrow(Y), nrow(Y)/2)
+
+load(&quot;../output/pancreas_celseq2_snmf_k40.RData&quot;)
+
+colnames(fit.snmf.k40.1$F_pm) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$F_pm) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+
+colnames(fit.snmf.k40.1$F_psd) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$F_psd) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+
+colnames(fit.snmf.k40.1$F_lfsr) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$F_lfsr) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+
+
+
+
+
+colnames(fit.snmf.k40.1$L_pm) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$L_pm) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.1$L_psd) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$L_psd) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.1$L_lfsr) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))
+colnames(fit.snmf.k40.2$L_lfsr) &lt;- c(&quot;Baseline&quot;,paste0(&quot;GEP&quot;,1:(ncol(fit.snmf.k40.1$F_pm)-1)))</code></pre>
+</div>
+<div id="look-at-cross-correlations" class="section level2">
+<h2>Look at cross correlations</h2>
+<p>We compute the cross correlations of the factors from the two fits. A
+histogram shows that xcors exceeding about 0.5 are “above the
+noise”.</p>
+<pre class="r"><code>xcor = cor(fit.snmf.k40.1$F_pm,fit.snmf.k40.2$F_pm)
+hist(xcor)</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>And generally we see a 1-1 match at this threshold:</p>
+<pre class="r"><code>image(xcor&gt;0.5)</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="find-matches-between-the-two-fits" class="section level2">
+<h2>Find matches between the two fits</h2>
+<p>For each row of xcor (GEPs in first fit) find the names of the
+columns (GEPs in second fit) whose correlation exceed 0.5. The matches
+are those GEPs that have exactly one such match (a few have 2 other GEPs
+that are correlated &gt;0.5 suggesting they are somewhat split).</p>
+<pre class="r"><code>above_noise = apply(xcor,1,function(x) names(x)[x &gt; 0.5])
+matches = above_noise[lapply(above_noise,length)==1]
+matches</code></pre>
+<pre><code>$Baseline
+[1] &quot;Baseline&quot;
+
+$GEP1
+[1] &quot;GEP1&quot;
+
+$GEP2
+[1] &quot;GEP2&quot;
+
+$GEP3
+[1] &quot;GEP3&quot;
+
+$GEP4
+[1] &quot;GEP5&quot;
+
+$GEP5
+[1] &quot;GEP4&quot;
+
+$GEP6
+[1] &quot;GEP6&quot;
+
+$GEP7
+[1] &quot;GEP7&quot;
+
+$GEP8
+[1] &quot;GEP13&quot;
+
+$GEP9
+[1] &quot;GEP9&quot;
+
+$GEP10
+[1] &quot;GEP11&quot;
+
+$GEP11
+[1] &quot;GEP10&quot;
+
+$GEP12
+[1] &quot;GEP14&quot;
+
+$GEP14
+[1] &quot;GEP12&quot;
+
+$GEP15
+[1] &quot;GEP17&quot;
+
+$GEP16
+[1] &quot;GEP8&quot;
+
+$GEP18
+[1] &quot;GEP20&quot;
+
+$GEP19
+[1] &quot;GEP16&quot;
+
+$GEP22
+[1] &quot;GEP21&quot;
+
+$GEP34
+[1] &quot;GEP30&quot;</code></pre>
+</div>
+<div id="structure-plots-with-matching-geps" class="section level2">
+<h2>Structure Plots with matching GEPs</h2>
+<p>Now I do structure plots with just the matching GEPs (with the same
+colors to help see the matching).</p>
+<pre class="r"><code>sample_info &lt;- transform(sample_info,celltype = factor(celltype))
+celltype &lt;- sample_info$celltype
+celltype &lt;-
+ factor(celltype,
+        c(&quot;acinar&quot;,&quot;ductal&quot;,&quot;activated_stellate&quot;,&quot;quiescent_stellate&quot;,
+          &quot;endothelial&quot;,&quot;macrophage&quot;,&quot;mast&quot;,&quot;schwann&quot;,&quot;alpha&quot;,&quot;beta&quot;,
+          &quot;delta&quot;,&quot;gamma&quot;,&quot;epsilon&quot;))
+
+
+L.1 = fit.snmf.k40.1$L_pm
+L.2 = fit.snmf.k40.2$L_pm
+
+p1.match &lt;- structure_plot(L.1[,names(matches)],grouping = celltype[subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,color = &quot;factor&quot;)</code></pre>
+<pre><code>Running tsne on 145 x 20 matrix.</code></pre>
+<pre><code>Read the 145 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 47.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.01 seconds (sparsity = 0.992247)!
+Learning embedding...
+Iteration 50: error is 47.257616 (50 iterations in 0.01 seconds)
+Iteration 100: error is 48.298183 (50 iterations in 0.01 seconds)
+Iteration 150: error is 46.127051 (50 iterations in 0.01 seconds)
+Iteration 200: error is 46.293893 (50 iterations in 0.01 seconds)
+Iteration 250: error is 46.735454 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.658692 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.340192 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.334019 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.334022 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.334021 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.334021 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.334021 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.334021 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.334022 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.334021 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.334021 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.334021 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.334021 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.334021 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.334021 (50 iterations in 0.01 seconds)
+Fitting performed in 0.11 seconds.</code></pre>
+<pre><code>Running tsne on 122 x 20 matrix.</code></pre>
+<pre><code>Read the 122 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 39.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.989653)!
+Learning embedding...
+Iteration 50: error is 49.237900 (50 iterations in 0.01 seconds)
+Iteration 100: error is 50.170848 (50 iterations in 0.01 seconds)
+Iteration 150: error is 50.198858 (50 iterations in 0.01 seconds)
+Iteration 200: error is 48.431825 (50 iterations in 0.01 seconds)
+Iteration 250: error is 49.966119 (50 iterations in 0.01 seconds)
+Iteration 300: error is 1.012711 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.692623 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.689518 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.689518 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.689517 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.689519 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.689519 (50 iterations in 0.00 seconds)
+Fitting performed in 0.09 seconds.</code></pre>
+<pre><code>Running tsne on 45 x 20 matrix.</code></pre>
+<pre><code>Read the 45 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 13.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.959012)!
+Learning embedding...
+Iteration 50: error is 59.753661 (50 iterations in 0.00 seconds)
+Iteration 100: error is 57.909548 (50 iterations in 0.00 seconds)
+Iteration 150: error is 58.669365 (50 iterations in 0.00 seconds)
+Iteration 200: error is 57.017609 (50 iterations in 0.00 seconds)
+Iteration 250: error is 57.149416 (50 iterations in 0.00 seconds)
+Iteration 300: error is 2.852341 (50 iterations in 0.00 seconds)
+Iteration 350: error is 1.404420 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.663285 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.615106 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.614981 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.614979 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.614980 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.614980 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.614980 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.614979 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.614980 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.614980 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.614980 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.614980 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.614980 (50 iterations in 0.00 seconds)
+Fitting performed in 0.02 seconds.</code></pre>
+<pre><code>Running tsne on 420 x 20 matrix.</code></pre>
+<pre><code>Read the 420 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.04 seconds (sparsity = 0.658515)!
+Learning embedding...
+Iteration 50: error is 49.457665 (50 iterations in 0.03 seconds)
+Iteration 100: error is 49.459279 (50 iterations in 0.03 seconds)
+Iteration 150: error is 49.456700 (50 iterations in 0.03 seconds)
+Iteration 200: error is 49.456662 (50 iterations in 0.03 seconds)
+Iteration 250: error is 49.462581 (50 iterations in 0.03 seconds)
+Iteration 300: error is 0.693645 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.686374 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.686122 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.686122 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.686121 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.686121 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.686121 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.686122 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.686121 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.686121 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.686121 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.686122 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.686121 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.686122 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.686121 (50 iterations in 0.02 seconds)
+Fitting performed in 0.50 seconds.</code></pre>
+<pre><code>Running tsne on 230 x 20 matrix.</code></pre>
+<pre><code>Read the 230 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.02 seconds (sparsity = 0.983138)!
+Learning embedding...
+Iteration 50: error is 42.770324 (50 iterations in 0.01 seconds)
+Iteration 100: error is 42.775824 (50 iterations in 0.01 seconds)
+Iteration 150: error is 42.748722 (50 iterations in 0.01 seconds)
+Iteration 200: error is 42.747728 (50 iterations in 0.01 seconds)
+Iteration 250: error is 42.776790 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.533653 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 650: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 700: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.532789 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.532789 (50 iterations in 0.01 seconds)
+Fitting performed in 0.22 seconds.</code></pre>
+<pre><code>Running tsne on 92 x 20 matrix.</code></pre>
+<pre><code>Read the 92 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 29.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.984641)!
+Learning embedding...
+Iteration 50: error is 50.203767 (50 iterations in 0.00 seconds)
+Iteration 100: error is 51.668591 (50 iterations in 0.00 seconds)
+Iteration 150: error is 53.890141 (50 iterations in 0.00 seconds)
+Iteration 200: error is 53.677583 (50 iterations in 0.00 seconds)
+Iteration 250: error is 57.016171 (50 iterations in 0.00 seconds)
+Iteration 300: error is 1.798599 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.757431 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.752362 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.752351 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.752325 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.752351 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.752325 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.752350 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.752355 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.752350 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.752351 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.752355 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.752326 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.752355 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.752344 (50 iterations in 0.00 seconds)
+Fitting performed in 0.06 seconds.</code></pre>
+<pre><code>Running tsne on 56 x 20 matrix.</code></pre>
+<pre><code>Read the 56 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 17.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.973852)!
+Learning embedding...
+Iteration 50: error is 54.844046 (50 iterations in 0.00 seconds)
+Iteration 100: error is 53.824368 (50 iterations in 0.00 seconds)
+Iteration 150: error is 58.764944 (50 iterations in 0.00 seconds)
+Iteration 200: error is 51.816030 (50 iterations in 0.00 seconds)
+Iteration 250: error is 51.959267 (50 iterations in 0.00 seconds)
+Iteration 300: error is 0.955586 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.490688 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.489540 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.489540 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.489541 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.489541 (50 iterations in 0.00 seconds)
+Fitting performed in 0.03 seconds.</code></pre>
+<pre class="r"><code>p2.match &lt;- structure_plot(L.2[,unlist(matches)],grouping = celltype[-subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,color = &quot;factor&quot;)</code></pre>
+<pre><code>Running tsne on 129 x 20 matrix.</code></pre>
+<pre><code>Read the 129 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 41.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.989243)!
+Learning embedding...
+Iteration 50: error is 49.166961 (50 iterations in 0.01 seconds)
+Iteration 100: error is 48.464659 (50 iterations in 0.01 seconds)
+Iteration 150: error is 50.161823 (50 iterations in 0.01 seconds)
+Iteration 200: error is 47.898838 (50 iterations in 0.01 seconds)
+Iteration 250: error is 46.971551 (50 iterations in 0.01 seconds)
+Iteration 300: error is 1.234049 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.888372 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.767887 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.734906 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.734893 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.734893 (50 iterations in 0.00 seconds)
+Fitting performed in 0.10 seconds.</code></pre>
+<pre><code>Running tsne on 136 x 20 matrix.</code></pre>
+<pre><code>Read the 136 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 44.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.01 seconds (sparsity = 0.991674)!
+Learning embedding...
+Iteration 50: error is 46.521640 (50 iterations in 0.01 seconds)
+Iteration 100: error is 46.498717 (50 iterations in 0.01 seconds)
+Iteration 150: error is 47.680999 (50 iterations in 0.01 seconds)
+Iteration 200: error is 47.137854 (50 iterations in 0.01 seconds)
+Iteration 250: error is 46.449684 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.760347 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.646681 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.646629 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.646629 (50 iterations in 0.00 seconds)
+Fitting performed in 0.10 seconds.</code></pre>
+<pre><code>Running tsne on 45 x 20 matrix.</code></pre>
+<pre><code>Read the 45 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 13.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.958025)!
+Learning embedding...
+Iteration 50: error is 61.013120 (50 iterations in 0.00 seconds)
+Iteration 100: error is 60.078705 (50 iterations in 0.00 seconds)
+Iteration 150: error is 58.235094 (50 iterations in 0.00 seconds)
+Iteration 200: error is 56.791291 (50 iterations in 0.00 seconds)
+Iteration 250: error is 60.873383 (50 iterations in 0.00 seconds)
+Iteration 300: error is 2.399894 (50 iterations in 0.00 seconds)
+Iteration 350: error is 1.110639 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.601867 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.543860 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.543844 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.543844 (50 iterations in 0.00 seconds)
+Fitting performed in 0.02 seconds.</code></pre>
+<pre><code>Running tsne on 423 x 20 matrix.</code></pre>
+<pre><code>Read the 423 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.04 seconds (sparsity = 0.654561)!
+Learning embedding...
+Iteration 50: error is 49.622494 (50 iterations in 0.03 seconds)
+Iteration 100: error is 49.622494 (50 iterations in 0.03 seconds)
+Iteration 150: error is 49.622494 (50 iterations in 0.03 seconds)
+Iteration 200: error is 49.622494 (50 iterations in 0.04 seconds)
+Iteration 250: error is 49.622494 (50 iterations in 0.05 seconds)
+Iteration 300: error is 0.802905 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.784554 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.783504 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.783503 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.783503 (50 iterations in 0.02 seconds)
+Fitting performed in 0.51 seconds.</code></pre>
+<pre><code>Running tsne on 215 x 20 matrix.</code></pre>
+<pre><code>Read the 215 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.02 seconds (sparsity = 0.994657)!
+Learning embedding...
+Iteration 50: error is 42.893290 (50 iterations in 0.01 seconds)
+Iteration 100: error is 42.628450 (50 iterations in 0.01 seconds)
+Iteration 150: error is 42.651018 (50 iterations in 0.01 seconds)
+Iteration 200: error is 42.271286 (50 iterations in 0.01 seconds)
+Iteration 250: error is 42.304971 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.468470 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.466747 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.466752 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.466751 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.466751 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 650: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 700: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.466751 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.466750 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.466751 (50 iterations in 0.01 seconds)
+Fitting performed in 0.19 seconds.</code></pre>
+<pre><code>Running tsne on 111 x 20 matrix.</code></pre>
+<pre><code>Read the 111 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 35.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.986121)!
+Learning embedding...
+Iteration 50: error is 49.428364 (50 iterations in 0.00 seconds)
+Iteration 100: error is 50.646479 (50 iterations in 0.01 seconds)
+Iteration 150: error is 50.281513 (50 iterations in 0.01 seconds)
+Iteration 200: error is 54.436573 (50 iterations in 0.01 seconds)
+Iteration 250: error is 51.807596 (50 iterations in 0.00 seconds)
+Iteration 300: error is 1.292607 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.870662 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.785842 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.785824 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.785824 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.785824 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.785824 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.785824 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.785824 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.785824 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.785824 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.785825 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.785824 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.785824 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.785824 (50 iterations in 0.00 seconds)
+Fitting performed in 0.09 seconds.</code></pre>
+<pre><code>Running tsne on 54 x 20 matrix.</code></pre>
+<pre><code>Read the 54 x 20 data matrix successfully!
+Using no_dims = 1, perplexity = 16.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.964335)!
+Learning embedding...
+Iteration 50: error is 60.335743 (50 iterations in 0.00 seconds)
+Iteration 100: error is 60.004647 (50 iterations in 0.00 seconds)
+Iteration 150: error is 60.836339 (50 iterations in 0.00 seconds)
+Iteration 200: error is 56.088713 (50 iterations in 0.00 seconds)
+Iteration 250: error is 53.845434 (50 iterations in 0.00 seconds)
+Iteration 300: error is 2.506061 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.824527 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.741533 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.741193 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.741198 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.741198 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.741198 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.741198 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.741197 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.741198 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.741198 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.741198 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.741195 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.741199 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.741198 (50 iterations in 0.00 seconds)
+Fitting performed in 0.03 seconds.</code></pre>
+<pre class="r"><code>plot_grid(p1.match,p2.match,ncol=1)</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="volcano-plots-of-matching-geps" class="section level2">
+<h2>Volcano plots of matching GEPs</h2>
+<p>Here I define a function for “volcano plots”, based on code from the
+<code>gbcd</code> package. I changed the y axis to show the “baseline”
+expression of each gene; I included negative y axis just to allow space
+for gene names which otherwise got very cramped.</p>
+<pre class="r"><code>volcano_plot=function(res,GEP){
+  pdat &lt;- data.frame(gene = rownames(res$F_pm), 
+                   lfc = res$F_pm[,GEP], 
+                   base = res$F_pm[,&quot;Baseline&quot;], 
+                   lfsr = res$F_lfsr[, GEP],
+                   stringsAsFactors = FALSE)
+  pdat &lt;- transform(pdat, lfsr = cut(lfsr, c(-1, 0.001, 0.01, 0.05, Inf)))
+  rows  &lt;- with(pdat, which(!(abs(lfc) &gt; quantile(abs(lfc), 0.998) )))
+  pdat[rows, &quot;gene&quot;] &lt;- &quot;&quot;
+  p = ggplot(pdat, aes(x = lfc, y = base, color = lfsr, label = gene)) + ylim(-2,max(pdat$base)) + geom_point() + 
+    geom_text_repel(color = &quot;black&quot;, size = 2.5, segment.color = &quot;black&quot;,
+                  segment.size = 0.25, min.segment.length = 0,
+                  max.overlaps = Inf, na.rm = TRUE) +
+  scale_color_manual(values = c(&quot;coral&quot;, &quot;orange&quot;, &quot;gold&quot;, &quot;deepskyblue&quot;)) +
+  labs(x = &quot;log-fold change&quot;, y = &quot;Baseline&quot;) + 
+  guides(colour = guide_legend(override.aes = list(size = 2))) + 
+  theme(plot.title      = element_text(hjust = 0.5,size = 12),
+        axis.text       = element_text(size = 10),
+        axis.title      = element_text(size = 10),
+        legend.title    = element_text(size = 12),
+        legend.text     = element_text(size = 10),
+        legend.position = &quot;bottom&quot;) +
+  ggtitle(paste0(GEP))
+  return(p)
+}</code></pre>
+<p>For each matching pair of GEPs, plot the volcano plots next to one
+another for comparison. I exclude the baseline here.</p>
+<pre class="r"><code>for(GEP.1 in names(matches)[-1]){
+  print(GEP.1)
+  GEP.2 &lt;- matches[[GEP.1]]
+  p.1 &lt;- volcano_plot(fit.snmf.k40.1, GEP.1)
+  p.2 &lt;- volcano_plot(fit.snmf.k40.2, GEP.2)
+  p = plot_grid(p.1, p.2,nrow=1)
+  plot(p)
+}</code></pre>
+<pre><code>[1] &quot;GEP1&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP2&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP3&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP4&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP5&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP6&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP7&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP8&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP9&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP10&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP11&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-11.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP12&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-12.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP14&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-13.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP15&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-14.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP16&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-15.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP18&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-16.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP19&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-17.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP22&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-18.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;GEP34&quot;</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-8-19.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="closer-look-at-gep12gep14" class="section level2">
+<h2>Closer look at GEP12,GEP14</h2>
+<p>Despite being “matches” these two look pretty different so I thought
+I would look a bit closer. It turns out this one is just above the
+correlation 0.5 threshold.</p>
+<pre class="r"><code>xcor[&quot;GEP14&quot;,&quot;GEP12&quot;]</code></pre>
+<pre><code>[1] 0.507127</code></pre>
+<pre class="r"><code>plot(fit.snmf.k40.1$F_pm[,&quot;GEP14&quot;],fit.snmf.k40.2$F_pm[,&quot;GEP12&quot;],
+     xlab = &quot;GEP14&quot;,ylab = &quot;GEP12&quot;,
+     main = paste0(&quot;xcor = &quot;,round(xcor[&quot;GEP14&quot;,&quot;GEP12&quot;],3)))</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Here I plot the structure plot for just these GEPs (I have to show
+baseline as the code requires at least two topics I think?) The
+distribution of the GEPs across cell types are similar, which is
+somewhat reassuring that it might be a meaningful signal of some kind,
+even if the driving genes are not very clear since they do not stand out
+greatly from the rest.</p>
+<pre class="r"><code>p1.sub &lt;- structure_plot(L.1[,c(&quot;Baseline&quot;,&quot;GEP14&quot;)],grouping = celltype[subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,color = &quot;factor&quot;)</code></pre>
+<pre><code>Running tsne on 145 x 2 matrix.</code></pre>
+<pre><code>Read the 145 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 47.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.01 seconds (sparsity = 0.992247)!
+Learning embedding...
+Iteration 50: error is 44.084897 (50 iterations in 0.01 seconds)
+Iteration 100: error is 42.866886 (50 iterations in 0.01 seconds)
+Iteration 150: error is 43.881152 (50 iterations in 0.01 seconds)
+Iteration 200: error is 44.420224 (50 iterations in 0.01 seconds)
+Iteration 250: error is 45.820369 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.854713 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.635208 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.631293 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.631291 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.631291 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.631292 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.631291 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.631291 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.631292 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.631291 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.631292 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.631291 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.631291 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.631291 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.631291 (50 iterations in 0.00 seconds)
+Fitting performed in 0.11 seconds.</code></pre>
+<pre><code>Running tsne on 122 x 2 matrix.</code></pre>
+<pre><code>Read the 122 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 39.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.989116)!
+Learning embedding...
+Iteration 50: error is 45.853701 (50 iterations in 0.01 seconds)
+Iteration 100: error is 50.827909 (50 iterations in 0.01 seconds)
+Iteration 150: error is 48.591525 (50 iterations in 0.01 seconds)
+Iteration 200: error is 48.347271 (50 iterations in 0.01 seconds)
+Iteration 250: error is 47.378354 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.937147 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.613840 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.600999 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.601007 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.601007 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.601007 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.601005 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.601007 (50 iterations in 0.00 seconds)
+Fitting performed in 0.09 seconds.</code></pre>
+<pre><code>Running tsne on 45 x 2 matrix.</code></pre>
+<pre><code>Read the 45 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 13.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.953086)!
+Learning embedding...
+Iteration 50: error is 52.703266 (50 iterations in 0.00 seconds)
+Iteration 100: error is 55.646102 (50 iterations in 0.00 seconds)
+Iteration 150: error is 50.998288 (50 iterations in 0.00 seconds)
+Iteration 200: error is 54.894312 (50 iterations in 0.00 seconds)
+Iteration 250: error is 56.751109 (50 iterations in 0.00 seconds)
+Iteration 300: error is 2.341956 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.661371 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.638239 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.638251 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.638251 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.638250 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.638250 (50 iterations in 0.00 seconds)
+Fitting performed in 0.02 seconds.</code></pre>
+<pre><code>Running tsne on 420 x 2 matrix.</code></pre>
+<pre><code>Read the 420 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.04 seconds (sparsity = 0.639410)!
+Learning embedding...
+Iteration 50: error is 47.801381 (50 iterations in 0.03 seconds)
+Iteration 100: error is 46.013928 (50 iterations in 0.03 seconds)
+Iteration 150: error is 45.985464 (50 iterations in 0.02 seconds)
+Iteration 200: error is 45.985295 (50 iterations in 0.02 seconds)
+Iteration 250: error is 45.985315 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.269414 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.264375 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.264331 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.264329 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.264329 (50 iterations in 0.02 seconds)
+Fitting performed in 0.48 seconds.</code></pre>
+<pre><code>Running tsne on 230 x 2 matrix.</code></pre>
+<pre><code>Read the 230 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.02 seconds (sparsity = 0.981512)!
+Learning embedding...
+Iteration 50: error is 42.528660 (50 iterations in 0.01 seconds)
+Iteration 100: error is 42.508817 (50 iterations in 0.01 seconds)
+Iteration 150: error is 42.500838 (50 iterations in 0.01 seconds)
+Iteration 200: error is 42.529741 (50 iterations in 0.01 seconds)
+Iteration 250: error is 42.517213 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.317630 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.316252 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 650: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 700: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.316254 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.316254 (50 iterations in 0.01 seconds)
+Fitting performed in 0.22 seconds.</code></pre>
+<pre><code>Running tsne on 92 x 2 matrix.</code></pre>
+<pre><code>Read the 92 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 29.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.985350)!
+Learning embedding...
+Iteration 50: error is 50.093165 (50 iterations in 0.00 seconds)
+Iteration 100: error is 52.010795 (50 iterations in 0.00 seconds)
+Iteration 150: error is 52.789892 (50 iterations in 0.00 seconds)
+Iteration 200: error is 52.165557 (50 iterations in 0.00 seconds)
+Iteration 250: error is 50.476129 (50 iterations in 0.00 seconds)
+Iteration 300: error is 1.261495 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.887699 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.885930 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.885929 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.885929 (50 iterations in 0.00 seconds)
+Fitting performed in 0.06 seconds.</code></pre>
+<pre><code>Running tsne on 56 x 2 matrix.</code></pre>
+<pre><code>Read the 56 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 17.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.970663)!
+Learning embedding...
+Iteration 50: error is 54.709976 (50 iterations in 0.00 seconds)
+Iteration 100: error is 53.521673 (50 iterations in 0.00 seconds)
+Iteration 150: error is 57.056712 (50 iterations in 0.00 seconds)
+Iteration 200: error is 54.510983 (50 iterations in 0.00 seconds)
+Iteration 250: error is 54.341461 (50 iterations in 0.00 seconds)
+Iteration 300: error is 2.678687 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.385055 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.330523 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.329894 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.329893 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.329893 (50 iterations in 0.00 seconds)
+Fitting performed in 0.03 seconds.</code></pre>
+<pre class="r"><code>p2.sub &lt;- structure_plot(L.2[,c(&quot;Baseline&quot;,&quot;GEP12&quot;)],grouping = celltype[-subset],
+                     gap = 20,perplexity = 70,n = Inf) +
+  labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,color = &quot;factor&quot;)</code></pre>
+<pre><code>Running tsne on 129 x 2 matrix.</code></pre>
+<pre><code>Read the 129 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 41.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.988643)!
+Learning embedding...
+Iteration 50: error is 44.303428 (50 iterations in 0.01 seconds)
+Iteration 100: error is 45.003201 (50 iterations in 0.01 seconds)
+Iteration 150: error is 45.842253 (50 iterations in 0.01 seconds)
+Iteration 200: error is 45.254638 (50 iterations in 0.01 seconds)
+Iteration 250: error is 44.247748 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.698424 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.569018 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.568202 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.568202 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.568202 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.568203 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.568202 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.568203 (50 iterations in 0.00 seconds)
+Fitting performed in 0.09 seconds.</code></pre>
+<pre><code>Running tsne on 136 x 2 matrix.</code></pre>
+<pre><code>Read the 136 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 44.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.01 seconds (sparsity = 0.991674)!
+Learning embedding...
+Iteration 50: error is 46.196423 (50 iterations in 0.01 seconds)
+Iteration 100: error is 46.854217 (50 iterations in 0.01 seconds)
+Iteration 150: error is 42.657960 (50 iterations in 0.01 seconds)
+Iteration 200: error is 43.358800 (50 iterations in 0.01 seconds)
+Iteration 250: error is 45.982494 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.310766 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.282203 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.282174 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.282174 (50 iterations in 0.00 seconds)
+Fitting performed in 0.10 seconds.</code></pre>
+<pre><code>Running tsne on 45 x 2 matrix.</code></pre>
+<pre><code>Read the 45 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 13.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.955062)!
+Learning embedding...
+Iteration 50: error is 57.179506 (50 iterations in 0.00 seconds)
+Iteration 100: error is 58.628256 (50 iterations in 0.00 seconds)
+Iteration 150: error is 57.798198 (50 iterations in 0.00 seconds)
+Iteration 200: error is 55.516469 (50 iterations in 0.00 seconds)
+Iteration 250: error is 55.131670 (50 iterations in 0.00 seconds)
+Iteration 300: error is 2.301697 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.814564 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.593449 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.593266 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.593268 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.593266 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.593239 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.593219 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.593243 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.593244 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.593243 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.593245 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.593218 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.593242 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.593219 (50 iterations in 0.00 seconds)
+Fitting performed in 0.02 seconds.</code></pre>
+<pre><code>Running tsne on 423 x 2 matrix.</code></pre>
+<pre><code>Read the 423 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.04 seconds (sparsity = 0.595644)!
+Learning embedding...
+Iteration 50: error is 46.653142 (50 iterations in 0.03 seconds)
+Iteration 100: error is 45.110279 (50 iterations in 0.02 seconds)
+Iteration 150: error is 45.105233 (50 iterations in 0.02 seconds)
+Iteration 200: error is 45.104960 (50 iterations in 0.02 seconds)
+Iteration 250: error is 45.105057 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.272985 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.267669 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.267644 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.267652 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.267651 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.267650 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.267650 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.267651 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.267652 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.267650 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.267650 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.267651 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.267651 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.267650 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.267650 (50 iterations in 0.02 seconds)
+Fitting performed in 0.47 seconds.</code></pre>
+<pre><code>Running tsne on 215 x 2 matrix.</code></pre>
+<pre><code>Read the 215 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 70.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.02 seconds (sparsity = 0.994657)!
+Learning embedding...
+Iteration 50: error is 41.047203 (50 iterations in 0.01 seconds)
+Iteration 100: error is 40.987134 (50 iterations in 0.01 seconds)
+Iteration 150: error is 40.822734 (50 iterations in 0.01 seconds)
+Iteration 200: error is 40.909295 (50 iterations in 0.01 seconds)
+Iteration 250: error is 40.817536 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.118778 (50 iterations in 0.01 seconds)
+Iteration 350: error is 0.117918 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.117915 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.117915 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.117916 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.117916 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.117916 (50 iterations in 0.01 seconds)
+Iteration 650: error is 0.117916 (50 iterations in 0.01 seconds)
+Iteration 700: error is 0.117916 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.117916 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.117913 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.117914 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.117915 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.117915 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.117915 (50 iterations in 0.01 seconds)
+Fitting performed in 0.20 seconds.</code></pre>
+<pre><code>Running tsne on 111 x 2 matrix.</code></pre>
+<pre><code>Read the 111 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 35.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.986933)!
+Learning embedding...
+Iteration 50: error is 49.836546 (50 iterations in 0.00 seconds)
+Iteration 100: error is 45.826491 (50 iterations in 0.00 seconds)
+Iteration 150: error is 46.983768 (50 iterations in 0.01 seconds)
+Iteration 200: error is 46.865395 (50 iterations in 0.00 seconds)
+Iteration 250: error is 47.275939 (50 iterations in 0.00 seconds)
+Iteration 300: error is 0.776404 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.623100 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.622829 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.622829 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.622829 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.622828 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.622828 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.622829 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.622828 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.622831 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.622831 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.622828 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.622829 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.622828 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.622829 (50 iterations in 0.00 seconds)
+Fitting performed in 0.08 seconds.</code></pre>
+<pre><code>Running tsne on 54 x 2 matrix.</code></pre>
+<pre><code>Read the 54 x 2 data matrix successfully!
+Using no_dims = 1, perplexity = 16.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.965021)!
+Learning embedding...
+Iteration 50: error is 57.186770 (50 iterations in 0.00 seconds)
+Iteration 100: error is 53.391237 (50 iterations in 0.00 seconds)
+Iteration 150: error is 51.967435 (50 iterations in 0.00 seconds)
+Iteration 200: error is 56.462053 (50 iterations in 0.00 seconds)
+Iteration 250: error is 51.654456 (50 iterations in 0.00 seconds)
+Iteration 300: error is 2.540945 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.761318 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.706027 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.706011 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.706011 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.706010 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.706012 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.706011 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.706010 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.706013 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.706010 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.706011 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.706011 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.706011 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.706010 (50 iterations in 0.00 seconds)
+Fitting performed in 0.03 seconds.</code></pre>
+<pre class="r"><code>plot_grid(p1.sub,p2.sub,ncol=1)</code></pre>
+<p><img src="figure/pancreas_celseq2_snmf_k40_ms.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.5
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ggrepel_0.9.6     cowplot_1.1.3     ggplot2_3.5.2     Matrix_1.7-2     
+[5] fastTopics_0.7-07
+
+loaded via a namespace (and not attached):
+ [1] softImpute_1.4-3     gtable_0.3.6         flashier_1.0.56     
+ [4] xfun_0.52            bslib_0.9.0          htmlwidgets_1.6.4   
+ [7] ebnm_1.1-34          lattice_0.22-6       quadprog_1.5-8      
+[10] vctrs_0.6.5          tools_4.4.2          generics_0.1.4      
+[13] parallel_4.4.2       Polychrome_1.5.4     tibble_3.3.0        
+[16] pkgconfig_2.0.3      data.table_1.17.6    SQUAREM_2021.1      
+[19] RColorBrewer_1.1-3   scatterplot3d_0.3-44 RcppParallel_5.1.10 
+[22] lifecycle_1.0.4      truncnorm_1.0-9      compiler_4.4.2      
+[25] farver_2.1.2         stringr_1.5.1        git2r_0.35.0        
+[28] progress_1.2.3       RhpcBLASctl_0.23-42  httpuv_1.6.15       
+[31] htmltools_0.5.8.1    sass_0.4.10          yaml_2.3.10         
+[34] lazyeval_0.2.2       plotly_4.11.0        later_1.4.2         
+[37] pillar_1.10.2        crayon_1.5.3         jquerylib_0.1.4     
+[40] whisker_0.4.1        tidyr_1.3.1          uwot_0.2.3          
+[43] cachem_1.1.0         trust_0.1-8          gtools_3.9.5        
+[46] tidyselect_1.2.1     digest_0.6.37        Rtsne_0.17          
+[49] stringi_1.8.7        dplyr_1.1.4          purrr_1.0.4         
+[52] ashr_2.2-66          labeling_0.4.3       splines_4.4.2       
+[55] rprojroot_2.0.4      fastmap_1.2.0        grid_4.4.2          
+[58] colorspace_2.1-1     cli_3.6.5            invgamma_1.1        
+[61] magrittr_2.0.3       withr_3.0.2          prettyunits_1.2.0   
+[64] scales_1.4.0         promises_1.3.3       float_0.3-2         
+[67] horseshoe_0.2.0      MatrixExtra_0.1.15   rmarkdown_2.29      
+[70] httr_1.4.7           deconvolveR_1.2-1    workflowr_1.7.1     
+[73] hms_1.1.3            pbapply_1.7-2        evaluate_1.0.4      
+[76] knitr_1.50           irlba_2.3.5.1        viridisLite_0.4.2   
+[79] rlang_1.1.6          Rcpp_1.0.14          mixsqp_0.3-54       
+[82] glue_1.8.0           rstudioapi_0.17.1    jsonlite_2.0.0      
+[85] R6_2.6.1             fs_1.6.6            </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
