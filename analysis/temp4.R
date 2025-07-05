@@ -39,14 +39,15 @@ pdat <- data.frame(tm   = poisson2multinom(tm)$F[,"k7"],
                    nmf  = F[,"k6"],
                    gene = rownames(F),
                    pathway = FALSE)
-pathway_genes <- names(which(gene_sets[,"M16779"] > 0))
+pathway_genes <- names(which(gene_sets[,"M973"] > 0))
 pdat[pathway_genes,"pathway"] <- TRUE
+pdat <- pdat[order(pdat$pathway),]
 rows <- which(with(pdat,tm < 0.005 & nmf < 0.8))
 pdat[rows,"gene"] <- ""
 ggplot(pdat,aes(x = tm,y = nmf,label = gene,color = pathway)) +
   geom_point() +
   geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
   scale_x_continuous(trans = "sqrt") +
-  scale_color_manual(values = c("darkblue","darkorange")) +
+  scale_color_manual(values = c("darkblue","orangered")) +
   labs(x = "topic 7",y = "factor 6") +
   theme_cowplot(font_size = 12)
