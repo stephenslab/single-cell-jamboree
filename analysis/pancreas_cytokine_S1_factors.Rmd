@@ -127,10 +127,11 @@ interpretation of the topics:
 + topic 2: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
 + topic 3: $\alpha$ cells (*Gcg*, *Mafb*)
 + topic 5: duct cells (*Krt19*)
-+ topic 6: replicate/batch effect
++ topic 6: replicate effect
 + topic 7: macrophages (*Ccr5*)
 + topic 8: $\delta$ cells (*Sst*)
 + topic 9: $\gamma$ cells (*Ppy*)
++ topic 12: cell cycle
 + topic 13: endothelial (*Pecam1*) and mesenchymal cells (*Col1a1*).
 
 Topic 10 is clearly capturing a technical difference in the two
@@ -203,10 +204,10 @@ Structure plot comparing the factors to the clusters:
 
 ```{r structure-plot-flashier-nmf, fig.height=4, fig.width=6.5, results="hide", message=FALSE}
 set.seed(1)
-celltype_factors <- paste0("k",c(2:6,8,9))
-other_factors <- paste0("k",c(1,7))
+celltype_factors <- paste0("k",c(1:5,9:11,13))
+other_factors <- paste0("k",c(6:8,12))
 L <- ldf(fl_nmf,type = "i")$L
-colnames(L) <- paste0("k",1:9)
+colnames(L) <- paste0("k",1:13)
 i <- c(sample(which(clusters == "beta"),400),
        which(clusters != "beta"))
 p1 <- structure_plot(L[i,],grouping = clusters[i],topics = celltype_factors,
@@ -215,17 +216,45 @@ p1 <- structure_plot(L[i,],grouping = clusters[i],topics = celltype_factors,
 p2 <- structure_plot(L[i,],grouping = clusters[i],topics = other_factors,
                     gap = 10,n = Inf) +
   labs(y = "membership",fill = "")
-plot_grid(p1,p2,nrow = 2,ncol = 1)
+print(plot_grid(p1,p2,nrow = 2,ncol = 1))
 ```
 
-Possible interpretation of the factors:
+Based on the estimated $\mathbf{F}$, we have the following potential
+interpretation of the topics:
 
-+ topic 4: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
-+ topic 7: *Ins1-* $\beta$ cells?
-+ topic 3: $\alpha$, $\delta$ and $\gamma$ cells
-+ topic 5: macrophages (*Ccr5*)
-+ topic 2: endothelial cells (*Pecam1*, *Esam*)
-+ topic 6: mesenchymal cells (*Col1a1*)
++ topic 1: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
++ topic 3: duct cells (*Krt19*)
++ topic 4: macrophages (*Ccr5*)
++ topic 5: $\alpha$ (*Gcg*, *Mafb*) and $\gamma$ cells (*Ppy*)
++ topic 6: replicate effect
++ topic 9: endothelial cells (*Pecam1*, *Esam*)
++ topic 10: mesenchymal cells (*Col1a1*)
++ topic 13: $\delta$ cells (*Sst*)
+
+Factor 6 almost perfectly captures the technical difference in the two
+replicates:
+
+```{r k6-vs-replicate, fig.height=2, fig.width=2}
+pdat <- cbind(samples,L)
+r <- cor(as.numeric(samples$replicate),L[,"k6"])
+ggplot(pdat,aes(x = replicate,y = k6)) +
+  geom_boxplot() +
+  ggtitle(paste("cor =",round(r,digits = 3))) +
+  theme_cowplot(font_size = 12)
+```
+
+Factor 12 appears to be capturing cell cycle:
+
+```{r cell-cycle}
+cell_cycle <-
+c("Ccnb1", "Ccnd1", "Ccnd2", "Ccnd3", "Ccne1", "Ccnh", "Cdc25a",
+"Cdk1", "Cdk2", "Cdk4", "Cdk6", "Cdk7", "Cdkn1a", "Cdkn1b", "Cdkn2a",
+"Cdkn2b", "Cdkn2c", "Cdkn2d", "E2f1", "Rb1", "Rbl1", "Tfdp1")
+F <- ldf(fl_nmf,type = "i")$F
+rownames(F) <- genes$symbol
+colnames(F) <- paste0("k",1:13)
+sort(colSums(F[cell_cycle,]))
+```
 
 TO DO: Add annotation heatmaps as a way to summarize the results of
 the EBNMF analysis.
@@ -247,3 +276,16 @@ colnames(F) <- paste0("k",1:7)
 factors <- paste0("k",c(4,7,3,5,2,6))
 annotation_heatmap(F[,factors],select_eatures = "all",verbose = FALSE)
 ```
+
+TO DO:
+
++ Run de_analysis with lfc.stat = "vsnull" to "shrink" the topics.
+
++ Compare topics and corresponding factors in scatterplots.
+  See temp2.R.
+  
++ Identify "distinctive" genes using de_analysis for topic model
+  and with a custom function from the singlecelljamboree package
+  for the factors.
+
++ Create annotation plots for the topic model and the EBNMF model.
