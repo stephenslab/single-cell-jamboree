@@ -1,3 +1,4 @@
+source("cell_cycle.R")
 F1 <- ldf(fl_nmf,type = "i")$F
 F2 <- poisson2multinom(tm)$F
 rownames(F1) <- genes$symbol
