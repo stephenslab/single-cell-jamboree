@@ -355,6 +355,61 @@ ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene)) +
 Indeed, factor 6 and topic 7 are cpaturing very similar expression
 patterns.
 
-NEXT: Perform a GSEA separately for topics 1 and 7, and factor 6.
+Next I ran GSEA on the on factor 6. (Running GSEA on topic 7 is
+complicated by the fact that it would be better to "shrink" the
+estimates before running GSEA, whereas this was automatically done for
+EBNMF result.)
+
+```{r gsea-fl-nmf-k6}
+data(gene_sets_mouse)
+gene_sets     <- gene_sets_mouse$gene_sets
+gene_info     <- gene_sets_mouse$gene_info
+gene_set_info <- gene_sets_mouse$gene_set_info
+j <- which(with(gene_sets_mouse$gene_set_info,
+                (database == "MSigDB-C2" &
+                 grepl("CP",sub_category_code,fixed = TRUE)) |
+                (database == "MSigDB-C5") &
+                 grepl("GO",sub_category_code,fixed = TRUE)))
+genes <- sort(intersect(rownames(F),gene_info$Symbol))
+i     <- which(is.element(gene_info$Symbol,genes))
+gene_info     <- gene_info[i,]
+gene_set_info <- gene_set_info[j,]
+gene_sets     <- gene_sets[i,j]
+rownames(gene_sets) <- gene_info$Symbol
+rownames(gene_set_info) <- gene_set_info$id
+gene_set_info <- gene_set_info[,-2]
+F <- ldf(fl_nmf,type = "i")$F
+colnames(F) <- paste0("k",1:15)
+gsea_fl_nmf <- singlecelljamboreeR::perform_gsea(F[,"k6"],gene_sets,
+                                                 gene_set_info,L = 15,
+                                                 verbose = FALSE)
+out <- gsea_fl_nmf$selected_gene_sets
+out$top_genes <- sapply(out$top_genes,function (x) paste(x,collapse = " "))
+write_csv(out,"lps_gsea_fl_nmf.csv",quote = "none")
+```
+
+The top gene set is the IFN-$\alpha/beta$ signaling pathway, but
+other gene sets clearly relate to inflammation and immune system
+function:
+
+```{r  gsea-fl-nmf-k6-summary, fig.height=2.5, fig.width=4}
+print(gsea_fl_nmf$selected_gene_sets[c(2:7,9)],n = Inf)
+```
+
+This is the same scatterplot as the one just above, but with the genes
+in the IFN-$\alpha/beta$ signaling pathway highlighted:
+
+```{r sepsis-tm-vs-nmf-with-gsea, fig.height=2.5, fig.width=5}
+pdat$pathway <- FALSE
+pathway_genes <- names(which(gene_sets[,"M973"] > 0))
+pdat[pathway_genes,"pathway"] <- TRUE
+pdat <- pdat[order(pdat$pathway),]
+ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene,color = pathway)) +
+  geom_point() +
+  geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
+  scale_color_manual(values = c("darkblue","orangered")) +
+  labs(x = "topic 7",y = "factor 6") +
+  theme_cowplot(font_size = 12)
+```
 
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
