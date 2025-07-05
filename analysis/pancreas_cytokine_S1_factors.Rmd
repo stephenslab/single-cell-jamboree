@@ -316,20 +316,21 @@ are very similar to each other. Note that the topics are shown on the
 (base-10) log scale.
 
 ```{r topics-vs-factors, fig.height=4, fig.width=6}
-F1 <- ldf(fl_nmf,type = "i")$F
-F2 <- poisson2multinom(tm)$F
-rownames(F1) <- genes$symbol
-colnames(F1) <- paste0("k",1:13)
-rownames(F2) <- genes$symbol
 topic_vs_factor_scatterplot <- function (factor, topic, title = "") {
   pdat <- data.frame(factor = factor,
                      topic  = log10(topic + 1e-5))
+  r <- cor(pdat$factor,pdat$topic)
   return(ggplot(pdat,aes_string(x = "factor",y = "topic")) +
          geom_point(color = "black") +
 		 ggtitle(title) +
          theme_cowplot(font_size = 10) +
 		 theme(plot.title = element_text(face = "plain",size = 10)))
 }
+F1 <- ldf(fl_nmf,type = "i")$F
+F2 <- poisson2multinom(tm)$F
+rownames(F1) <- genes$symbol
+colnames(F1) <- paste0("k",1:13)
+rownames(F2) <- genes$symbol
 p1 <- topic_vs_factor_scatterplot(F1[,"k1"],F2[,"k2"],"beta cells")
 p2 <- topic_vs_factor_scatterplot(F1[,"k5"],F2[,"k3"],"alpha cells")
 p3 <- topic_vs_factor_scatterplot(F1[,"k13"],F2[,"k8"],"delta cells")
@@ -378,6 +379,9 @@ TO DO:
 
 + Show that the topics and factors are "cluster-like" in that they are
   strongly correlated with each other, but less so for the factors.
+
++ Check whether one of the factors (e.g., k7, k8, k12) could
+  be a "baseline" factor for pancreas cells?
 
 + The cell cycle factors (k7, k12) are other examples where the factors
   are largely independent from the others.
