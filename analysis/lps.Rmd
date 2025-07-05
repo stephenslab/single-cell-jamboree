@@ -388,7 +388,7 @@ out$top_genes <- sapply(out$top_genes,function (x) paste(x,collapse = " "))
 write_csv(out,"lps_gsea_fl_nmf.csv",quote = "none")
 ```
 
-The top gene set is the IFN-$\alpha/beta$ signaling pathway, but
+The top gene set is the IFN-$\alpha/\beta$ signaling pathway, but
 other gene sets clearly relate to inflammation and immune system
 function:
 
@@ -397,7 +397,7 @@ print(gsea_fl_nmf$selected_gene_sets[c(2:7,9)],n = Inf)
 ```
 
 This is the same scatterplot as the one just above, but with the genes
-in the IFN-$\alpha/beta$ signaling pathway highlighted:
+in the IFN-$\alpha/\beta$ signaling pathway highlighted:
 
 ```{r sepsis-tm-vs-nmf-with-gsea, fig.height=2.5, fig.width=5}
 pdat$pathway <- FALSE

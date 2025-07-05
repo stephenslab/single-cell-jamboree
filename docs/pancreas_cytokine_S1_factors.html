@@ -301,13 +301,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-18
+<strong>Last updated:</strong> 2025-06-20
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 3
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -331,329 +331,35 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>Environment:</strong> objects present
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongobjectspresent"
-class="panel-collapse collapse">
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
-<p>
-The global environment had objects present when the code in the R
-Markdown file was run. These objects can affect the analysis in your R
-Markdown file in unknown ways. For reproduciblity it’s best to always
-run the code in an empty environment. Use <code>wflow_publish</code> or
-<code>wflow_build</code> to ensure that the code is always run in an
-empty environment.
-</p>
-<p>
-The following objects were defined in the global environment when these
-results were created:
-</p>
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th style="text-align:left;">
-Name
-</th>
-<th style="text-align:left;">
-Class
-</th>
-<th style="text-align:left;">
-Size
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-a
-</td>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-56 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-celltype_topics
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-504 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-clusters
-</td>
-<td style="text-align:left;">
-factor
-</td>
-<td style="text-align:left;">
-13.2 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-counts
-</td>
-<td style="text-align:left;">
-dgCMatrix
-</td>
-<td style="text-align:left;">
-148.6 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-de_le
-</td>
-<td style="text-align:left;">
-topic_model_de_analysis;list
-</td>
-<td style="text-align:left;">
-25.1 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-de_vsnull
-</td>
-<td style="text-align:left;">
-topic_model_de_analysis;list
-</td>
-<td style="text-align:left;">
-25.1 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fl_nmf
-</td>
-<td style="text-align:left;">
-flash;list
-</td>
-<td style="text-align:left;">
-164.8 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-genes
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-2.5 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-i
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-4.3 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-j
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-1.4 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-L
-</td>
-<td style="text-align:left;">
-matrix;array
-</td>
-<td style="text-align:left;">
-221.5 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-n
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-56 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-other_topics
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-432 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-out
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-283.4 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-outliers
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-320 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-p1
-</td>
-<td style="text-align:left;">
-gg;ggplot
-</td>
-<td style="text-align:left;">
-227.3 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-p2
-</td>
-<td style="text-align:left;">
-gg;ggplot
-</td>
-<td style="text-align:left;">
-120.2 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-s
-</td>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-294.1 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-s1
-</td>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-56 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-samples
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-370.5 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-shifted_log_counts
-</td>
-<td style="text-align:left;">
-dgCMatrix
-</td>
-<td style="text-align:left;">
-148.4 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-tm
-</td>
-<td style="text-align:left;">
-poisson_nmf_fit;list
-</td>
-<td style="text-align:left;">
-10.7 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-tm_merged
-</td>
-<td style="text-align:left;">
-multinom_topic_model_fit;list
-</td>
-<td style="text-align:left;">
-9.7 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-x
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-38.1 Mb
-</td>
-</tr>
-</tbody>
-</table>
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
 </div>
 </div>
 </div>
@@ -744,15 +450,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb7f4df581e305d84509e4f3a6d6987ee503a7110targetblankb7f4df5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4ac7821cc38083d663b7cba5803d1c72ab888259targetblank4ac7821a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b7f4df581e305d84509e4f3a6d6987ee503a7110" target="_blank">b7f4df5</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4ac7821cc38083d663b7cba5803d1c72ab888259" target="_blank">4ac7821</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb7f4df581e305d84509e4f3a6d6987ee503a7110targetblankb7f4df5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4ac7821cc38083d663b7cba5803d1c72ab888259targetblank4ac7821a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -762,7 +468,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b7f4df581e305d84509e4f3a6d6987ee503a7110" target="_blank">b7f4df5</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4ac7821cc38083d663b7cba5803d1c72ab888259" target="_blank">4ac7821</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -780,19 +486,16 @@ Untracked files:
     Untracked:  analysis/lps_cache/
     Untracked:  analysis/mcf7_cache/
     Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
+    Untracked:  analysis/pancreas_cytokine_S1_tm_k=13_clusters.csv
     Untracked:  analysis/temp2.R
+    Untracked:  analysis/temp3.R
+    Untracked:  analysis/temp3.R~
     Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE183010/
     Untracked:  data/Immune_ALL_human.h5ad
     Untracked:  data/pancreas_cytokine.RData
     Untracked:  data/pancreas_endocrine.RData
     Untracked:  data/pancreas_endocrine_alldays.h5ad
-
-Unstaged changes:
-    Modified:   analysis/pancreas_cytokine_S1_factors.Rmd
-
-Staged changes:
-    New:        data/pancreas_cytokine_S1_tm_k=13_clusters.csv
 
 </code></pre>
 <p>
@@ -839,6 +542,44 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4ac7821cc38083d663b7cba5803d1c72ab888259/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">4ac7821</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-18
+</td>
+<td>
+Created pancreas_cytokine_S1_tm_k=13_clusters.csv containing the
+topic-model based clustering for the pancreas cytokine data (untreated
+mouse only).
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/4ac7821cc38083d663b7cba5803d1c72ab888259/docs/pancreas_cytokine_S1_factors.html" target="_blank">4ac7821</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-18
+</td>
+<td>
+Created pancreas_cytokine_S1_tm_k=13_clusters.csv containing the
+topic-model based clustering for the pancreas cytokine data (untreated
+mouse only).
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1505,7 +1246,7 @@ Session information
 <pre class="r"><code>sessionInfo()
 # R version 4.3.3 (2024-02-29)
 # Platform: aarch64-apple-darwin20 (64-bit)
-# Running under: macOS 15.4.1
+# Running under: macOS 15.5
 # 
 # Matrix products: default
 # BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
@@ -1548,16 +1289,16 @@ Session information
 # [55] mixsqp_0.3-54        ggrepel_0.9.5        irlba_2.3.5.1       
 # [58] horseshoe_0.2.0      trust_0.1-8          plotly_4.10.4       
 # [61] jquerylib_0.1.4      tidyr_1.3.1          glue_1.8.0          
-# [64] codetools_0.2-19     ps_1.7.6             uwot_0.2.3          
-# [67] stringi_1.8.3        Polychrome_1.5.1     gtable_0.3.4        
-# [70] later_1.3.2          quadprog_1.5-8       munsell_0.5.0       
-# [73] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.8.1   
-# [76] truncnorm_1.0-9      R6_2.5.1             rprojroot_2.0.4     
-# [79] evaluate_1.0.3       lattice_0.22-5       highr_0.10          
-# [82] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-66         
-# [85] httpuv_1.6.14        bslib_0.6.1          Rcpp_1.0.12         
-# [88] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.42           
-# [91] fs_1.6.5             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
+# [64] ps_1.7.6             uwot_0.2.3           stringi_1.8.3       
+# [67] Polychrome_1.5.1     gtable_0.3.4         later_1.3.2         
+# [70] quadprog_1.5-8       munsell_0.5.0        tibble_3.2.1        
+# [73] pillar_1.9.0         htmltools_0.5.8.1    truncnorm_1.0-9     
+# [76] R6_2.5.1             rprojroot_2.0.4      evaluate_1.0.3      
+# [79] lattice_0.22-5       highr_0.10           RhpcBLASctl_0.23-42 
+# [82] SQUAREM_2021.1       ashr_2.2-66          httpuv_1.6.14       
+# [85] bslib_0.6.1          Rcpp_1.0.12          deconvolveR_1.2-1   
+# [88] whisker_0.4.1        xfun_0.42            fs_1.6.5            
+# [91] getPass_0.2-4        pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 
