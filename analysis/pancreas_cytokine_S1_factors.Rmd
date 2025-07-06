@@ -309,13 +309,16 @@ colnames(F) <- paste0("k",1:13)
 sort(colSums(F[cell_cycle,]))
 ```
 
+TO DO: Check whether one of the factors (e.g., k7, k8, k12) could
+be a "baseline" factor for pancreas cells.
+
 ## Closer examination of the topics and factors
 
 First, we confirm that many of the "cluster-like" topics and factors
 are very similar to each other. Note that the topics are shown on the
 (base-10) log scale.
 
-```{r topics-vs-factors, fig.height=4, fig.width=6}
+```{r topics-vs-factors, fig.height=4, fig.width=6, warning=FALSE}
 topic_vs_factor_scatterplot <- function (factor, topic, title = "") {
   pdat <- data.frame(factor = factor,
                      topic  = log10(topic + 1e-5))
@@ -339,7 +342,12 @@ p5 <- topic_vs_factor_scatterplot(F1[,"k4"],F2[,"k7"],"macrophages")
 plot_grid(p1,p2,p3,p4,p5,nrow = 2,ncol = 3)
 ```
 
-ADD TEXT HERE.
+These next scatterplots show that the topics remain very much
+"cluster-like" in the sense that much of the top genes by expression
+are shared across the different topics. Here to illustrate I am
+comparing topic 8 (the "delta cells" topic) to other topics. Notice
+that even fairly unrelated cell types such as ductal cells (k5) and
+macrophages (k7) still have a lot of shared expression.
 
 ```{r gene-matrix-scatterplots-topics, fig.height=4, fig.width=6}
 gene_matrix_scatterplot <- function (gene_matrix, k1, k2) {
@@ -365,7 +373,9 @@ p6 <- gene_matrix_scatterplot(F2,"k8","k13")
 plot_grid(p1,p2,p3,p4,p5,p6,nrow = 2,ncol = 3)
 ```
 
-ADD MORE TEXT HERE.
+Less so for the factors, particularly for factors that are less
+related, such as the delta cells topic (k13) vs. ductal cells (k3)
+or delta cells (k13) vs. macrophages (k4):
 
 ```{r gene-matrix-scaterplots-factors, fig.height=4, fig.width=4}
 p1 <- gene_matrix_scatterplot(F1,"k13","k1")
@@ -376,12 +386,6 @@ plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
 ```
 
 TO DO:
-
-+ Show that the topics and factors are "cluster-like" in that they are
-  strongly correlated with each other, but less so for the factors.
-
-+ Check whether one of the factors (e.g., k7, k8, k12) could
-  be a "baseline" factor for pancreas cells?
 
 + The cell cycle factors (k7, k12) are other examples where the factors
   are largely independent from the others.
