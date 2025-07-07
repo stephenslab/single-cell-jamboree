@@ -4,7 +4,7 @@ author: Eric Weine
 output: workflowr::wflow_html
 ---
 
-This is our initial NMF analysis of ther Stancill 2021 LSA data set.
+This is our initial NMF analysis of the Stancill 2021 LSA data set.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -35,12 +35,12 @@ conditions <- factor(barcodes$condition,
                      c("Untreated","IL-1B","IFNg","IL-1B_IFNg"))
 ```
 
-Fit the log1p models:
+Fit the log1p model:
 
 ```{r, eval=FALSE}
 cc_vec <- c(1)
 
-K_vec <- c(12, 15)
+K_vec <- c(12)
 
 init_method_vec <- c("rank1")
 
@@ -72,20 +72,43 @@ for (init_method in init_method_vec) {
 }
 ```
 
-Fit the topic models:
+Fit the topic model:
 
 ```{r, eval=FALSE}
-set.seed(1)
-tm_k12 <- fit_poisson_nmf(
-  X = as(counts, "CsparseMatrix"),
-  k = 12,
-  control = list(nc = 7)
+fit0 <- fastTopics:::fit_pnmf_rank1(counts)
+
+LL_init <- cbind(
+  fit0$L,
+  matrix(
+    data = 1e-8,
+    nrow = nrow(counts),
+    ncol = 11
+  )
 )
 
-set.seed(1)
-tm_k15 <- fit_poisson_nmf(
-  X = as(counts, "CsparseMatrix"),
-  k = 15,
+rownames(LL_init) <- rownames(counts)
+
+FF_init <- cbind(
+  fit0$F,
+  matrix(
+    data = 1e-8,
+    nrow = ncol(counts),
+    ncol = 11
+  )
+)
+
+rownames(FF_init) <- colnames(counts)
+
+nmf_fit <- init_poisson_nmf(
+  X = counts,
+  F = FF_init,
+  L = LL_init
+)
+
+nmf_fit_final <- fit_poisson_nmf(
+  X = counts, 
+  fit0 = nmf_fit, 
+  numiter = 250,
   control = list(nc = 7)
 )
 ```
@@ -97,7 +120,9 @@ Here, I attempt to separate out fitted topics based on their
 association with either celltype or treatment.
 
 ```{r load-topics-k12}
-tm_k12 <- read_rds("../output/panc_cyto_lsa_res/tm_k12.rds")
+tm_k12 <- read_rds(
+  "../output/panc_cyto_lsa_res/stancill_lsa_k12_r1_init_250_iter.rds"
+  )
 ```
 
 The topic model appears to have more factors that are specific to
@@ -105,8 +130,8 @@ celltype, and fewer that seem to capture the treatment effects.
 
 ```{r structure-plot-topic-model-k12, fig.height=5.5, fig.width=6.5, results="hide", message=FALSE}
 set.seed(1)
-celltype_topics <- c(2:3,5:11)
-other_topics <- c(1,4,12)
+celltype_topics <- c(1,2,3,5,6,7,8,9,11,12)
+other_topics <- c(4,10)
 topic_colors <- fastTopics:::kelly()[c(2:12,14)]
 i <- c(sample(which(clusters == "Beta"),800),
        which(clusters != "Beta"))
@@ -119,10 +144,32 @@ p3 <- structure_plot(L[i,],grouping = conditions[i],gap = 20,n = Inf,
                      topics = other_topics,colors = topic_colors)
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))
 ```
+## Topic Model, K = 14
 
-Topic 1 appears to be non-IL-1B specific, whereas topic 4 appears to
-be a general cytokine effect (but perhaps moreso capturing the effects
-of IL-1B).
+To make sure that the above inability of the topic model to capture treatments, I wanted to see if anything changed when I gave the topic model 2 additional topics.
+
+```{r load-topics-k14}
+tm_k14 <- read_rds(
+  "../output/panc_cyto_lsa_res/stancill_lsa_k14_r1_init_250_iter.rds"
+  )
+```
+
+```{r structure-plot-topic-model-k14, fig.height=5.5, fig.width=6.5, results="hide", message=FALSE}
+set.seed(1)
+celltype_topics <- c(1,2,3,5,7,8,9,10,12,13)
+other_topics <- c(4,6,11,14)
+#topic_colors <- fastTopics:::kelly()[c(2:12,14)]
+i <- c(sample(which(clusters == "Beta"),800),
+       which(clusters != "Beta"))
+L <- poisson2multinom(tm_k14)$L
+p1 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
+                     topics = celltype_topics)	
+p2 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
+                     topics = other_topics)
+p3 <- structure_plot(L[i,],grouping = conditions[i],gap = 20,n = Inf,
+                     topics = other_topics)
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))
+```
 
 ## Poisson log1p NMF, K = 12
 
@@ -134,9 +181,7 @@ log1p_k12 <- read_rds(file.path("../output/panc_cyto_lsa_res",
                "lsa_pancreas_cytokine_log1p_c1_rank1_init_K12.rds"))
 ```
 
-Here are the factors that appeared most correlated with cell type.
-
-```{r structure-plot-log1p-nmf-k12, fig.height=6, fig.width=6.5, results="hide", message=FALSE}
+```{r structure-plot-log1p-nmf-k12, fig.height=6.5, fig.width=6.5, results="hide", message=FALSE}
 scale_cols <- function (A, b)
   t(t(A) * b)
 set.seed(1)
@@ -153,6 +198,37 @@ p2 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
   labs(y = "membership",fill = "")
 p3 <- structure_plot(L[i,],grouping = conditions[i],gap = 30,n = Inf,
                      topics = c(4,10,11,12),colors = topic_colors) +
+  labs(y = "membership",fill = "")					 
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+## log1p Model, K = 14
+
+I also wanted to look at what adding 2 topics to the log1p model would do.
+
+```{r load-log1p-nmf-k14}
+log1p_k14 <- read_rds(file.path("../output/panc_cyto_lsa_res",
+               "log1p_k14_lsa.rds"))
+```
+
+
+```{r structure-plot-log1p-nmf-k14, fig.height=6.5, fig.width=6.5, results="hide", message=FALSE}
+scale_cols <- function (A, b)
+  t(t(A) * b)
+set.seed(1)
+celltype_topics = c(1,2,3,5,6,10,11,13,14)
+other_topics <- c(4,7,8,9,12)
+L <- log1p_k14$LL
+d <- apply(L,2,max)
+L <- scale_cols(L,1/d)
+p1 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
+                     topics = celltype_topics) +
+  labs(y = "membership",fill = "")					 
+p2 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
+                     topics = other_topics) +
+  labs(y = "membership",fill = "")
+p3 <- structure_plot(L[i,],grouping = conditions[i],gap = 30,n = Inf,
+                     topics = other_topics) +
   labs(y = "membership",fill = "")					 
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 ```
