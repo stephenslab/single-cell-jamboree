@@ -394,6 +394,8 @@ p5 <- gene_matrix_scatterplot(F1,"k7","k13")
 plot_grid(p1,p2,p3,p4,p5,nrow = 2,ncol = 3)
 ```
 
+TO DO:
+
 + Based on these results, identify "top genes" for the topics and
   factors, either as "distinctive" genes (using de_analysis for topic
   model and with a custom function from the singlecelljamboreeR
