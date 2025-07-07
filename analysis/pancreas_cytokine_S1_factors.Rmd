@@ -394,7 +394,36 @@ p5 <- gene_matrix_scatterplot(F1,"k7","k13")
 plot_grid(p1,p2,p3,p4,p5,nrow = 2,ncol = 3)
 ```
 
+Also:
+
+```{r factor-correlations-k7-k12}
+cor(F1[,7],F1[,-7])
+cor(F1[,12],F1[,-12])
+```
+
+And yet the corresponding topics are much less independent from the
+other topics, again suggesting a much stronger "cluster-like" tendency
+for the factors, even in for cross-cutting factors that might be
+capturing cell cycle:
+
+```{r more-scatterplots, fig.height=4, fig.width=4}
+F2 <- poisson2multinom(tm)$F
+p1 <- topic_vs_factor_scatterplot(F1[,"k7"],F2[,"k10"],"") +
+  labs(x = "factor 7",y = "factor 10")
+p2 <- topic_vs_factor_scatterplot(F1[,"k12"],F2[,"k1"],"") +
+  labs(x = "factor 12",y = "factor 1")
+F2 <- log10(F2 + 1e-5)
+p3 <- gene_matrix_scatterplot(F2,"k2","k10")
+p4 <- gene_matrix_scatterplot(F2,"k2","k1")
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
+```
+
 TO DO:
+
+```{r de-analysis, eval=FALSE}
+tm_merged <- merge_topics(poisson2multinom(tm),c("k2","k11"))
+de <- de_analysis(tm_merged)
+```
 
 + Based on these results, identify "top genes" for the topics and
   factors, either as "distinctive" genes (using de_analysis for topic
