@@ -436,15 +436,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeeb06be51c3f3b3bd8e3392eec83e519c30f6cc4btargetblankeb06be5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreebd435d9166c4b46a2bd5a95fa79cbad023d63f61targetblankbd435d9a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/eb06be51c3f3b3bd8e3392eec83e519c30f6cc4b" target="_blank">eb06be5</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/bd435d9166c4b46a2bd5a95fa79cbad023d63f61" target="_blank">bd435d9</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeeb06be51c3f3b3bd8e3392eec83e519c30f6cc4btargetblankeb06be5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreebd435d9166c4b46a2bd5a95fa79cbad023d63f61targetblankbd435d9a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -454,7 +454,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/eb06be51c3f3b3bd8e3392eec83e519c30f6cc4b" target="_blank">eb06be5</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/bd435d9166c4b46a2bd5a95fa79cbad023d63f61" target="_blank">bd435d9</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -525,6 +525,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/bd435d9166c4b46a2bd5a95fa79cbad023d63f61/analysis/pancreas_cytokine_mf_comparison.Rmd" target="_blank">bd435d9</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-07-07
+</td>
+<td>
+added K = 14 fits
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/bd435d9166c4b46a2bd5a95fa79cbad023d63f61/docs/pancreas_cytokine_mf_comparison.html" target="_blank">bd435d9</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-07-07
+</td>
+<td>
+added K = 14 fits
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -776,12 +810,12 @@ i &lt;- c(sample(which(clusters == &quot;Beta&quot;),800),
        which(clusters != &quot;Beta&quot;))
 L &lt;- poisson2multinom(tm_k12)$L
 p1 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = celltype_topics,colors = topic_colors)    
+                     topics = celltype_topics,colors = topic_colors)$plot   
 p2 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = other_topics,colors = topic_colors)
+                     topics = other_topics,colors = topic_colors)$plot
 p3 &lt;- structure_plot(L[i,],grouping = conditions[i],gap = 20,n = Inf,
-                     topics = other_topics,colors = topic_colors)
-plot_grid(p1$plot,p2$plot,p3$plot,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))</code></pre>
+                     topics = other_topics,colors = topic_colors)$plot
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))</code></pre>
 <p><img src="figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-topic-model-k12-1.png" width="780" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plot-topic-model-k12-1">
@@ -805,6 +839,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/bd435d9166c4b46a2bd5a95fa79cbad023d63f61/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-topic-model-k12-1.png" target="_blank">bd435d9</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-07-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/3cf2b9b050e00d8ea58e362a1994724debd691ca/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-topic-model-k12-1.png" target="_blank">3cf2b9b</a>
@@ -848,13 +893,50 @@ i &lt;- c(sample(which(clusters == &quot;Beta&quot;),800),
        which(clusters != &quot;Beta&quot;))
 L &lt;- poisson2multinom(tm_k14)$L
 p1 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = celltype_topics)  
+                     topics = celltype_topics)$plot 
 p2 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = other_topics)
+                     topics = other_topics)$plot
 p3 &lt;- structure_plot(L[i,],grouping = conditions[i],gap = 20,n = Inf,
-                     topics = other_topics)
-plot_grid(p1$plot,p2$plot,p3$plot,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))</code></pre>
+                     topics = other_topics)$plot
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(3.3,3,2))</code></pre>
 <p><img src="figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-topic-model-k14-1.png" width="780" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plot-topic-model-k14-1">
+Past versions of structure-plot-topic-model-k14-1.png
+</button>
+</p>
+<div id="fig-structure-plot-topic-model-k14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/bd435d9166c4b46a2bd5a95fa79cbad023d63f61/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-topic-model-k14-1.png" target="_blank">bd435d9</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-07-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="poisson-log1p-nmf-k-12" class="section level2">
 <h2>Poisson log1p NMF, K = 12</h2>
@@ -866,7 +948,7 @@ class="math inline">\(K =
 <pre class="r"><code>scale_cols &lt;- function (A, b)
   t(t(A) * b)
 set.seed(1)
-celltype_topics = c(1,2,3,5,6,7,8,9)
+celltype_topics = c(1,2,3,5,6,7,8,9,12)
 topic_colors &lt;- fastTopics:::kelly()[c(2:12,14)]
 L &lt;- log1p_k12$LL
 d &lt;- apply(L,2,max)
@@ -875,10 +957,10 @@ p1 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
                      topics = celltype_topics,colors = topic_colors)$plot +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)                   
 p2 &lt;- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = c(4,10,11,12),colors = topic_colors)$plot +
+                     topics = c(4,10,11),colors = topic_colors)$plot +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)
 p3 &lt;- structure_plot(L[i,],grouping = conditions[i],gap = 30,n = Inf,
-                     topics = c(4,10,11,12),colors = topic_colors)$plot +
+                     topics = c(4,10,11),colors = topic_colors)$plot +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)                   
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)</code></pre>
 <p><img src="figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-log1p-nmf-k12-1.png" width="780" style="display: block; margin: auto;" /></p>
@@ -904,6 +986,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/bd435d9166c4b46a2bd5a95fa79cbad023d63f61/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-log1p-nmf-k12-1.png" target="_blank">bd435d9</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-07-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/3cf2b9b050e00d8ea58e362a1994724debd691ca/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-log1p-nmf-k12-1.png" target="_blank">3cf2b9b</a>
@@ -940,8 +1033,8 @@ would do.</p>
 <pre class="r"><code>scale_cols &lt;- function (A, b)
   t(t(A) * b)
 set.seed(1)
-celltype_topics = c(1,2,3,5,6,10,11,13,14)
-other_topics &lt;- c(4,7,8,9,12)
+celltype_topics = c(1,2,3,5,6,7,8,10,11,13,14)
+other_topics &lt;- c(4,9,12)
 L &lt;- log1p_k14$LL
 d &lt;- apply(L,2,max)
 L &lt;- scale_cols(L,1/d)
@@ -956,6 +1049,43 @@ p3 &lt;- structure_plot(L[i,],grouping = conditions[i],gap = 30,n = Inf,
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)                   
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)</code></pre>
 <p><img src="figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-log1p-nmf-k14-1.png" width="780" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plot-log1p-nmf-k14-1">
+Past versions of structure-plot-log1p-nmf-k14-1.png
+</button>
+</p>
+<div id="fig-structure-plot-log1p-nmf-k14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/bd435d9166c4b46a2bd5a95fa79cbad023d63f61/docs/figure/pancreas_cytokine_mf_comparison.Rmd/structure-plot-log1p-nmf-k14-1.png" target="_blank">bd435d9</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-07-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>NOTE: UPDATE THIS TEXT. The pockets of purple and yellow in the beta
 cell cluster may represent cells that were misclassified (though it is
 very hard to tell). Here, it appears that the pink factor is specific to

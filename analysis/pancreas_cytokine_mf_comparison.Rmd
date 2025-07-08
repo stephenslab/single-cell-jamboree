@@ -185,7 +185,7 @@ log1p_k12 <- read_rds(file.path("../output/panc_cyto_lsa_res",
 scale_cols <- function (A, b)
   t(t(A) * b)
 set.seed(1)
-celltype_topics = c(1,2,3,5,6,7,8,9)
+celltype_topics = c(1,2,3,5,6,7,8,9,12)
 topic_colors <- fastTopics:::kelly()[c(2:12,14)]
 L <- log1p_k12$LL
 d <- apply(L,2,max)
@@ -194,10 +194,10 @@ p1 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
                      topics = celltype_topics,colors = topic_colors) +
   labs(y = "membership",fill = "")					 
 p2 <- structure_plot(L[i,],grouping = clusters[i],gap = 15,n = Inf,
-                     topics = c(4,10,11,12),colors = topic_colors) +
+                     topics = c(4,10,11),colors = topic_colors) +
   labs(y = "membership",fill = "")
 p3 <- structure_plot(L[i,],grouping = conditions[i],gap = 30,n = Inf,
-                     topics = c(4,10,11,12),colors = topic_colors) +
+                     topics = c(4,10,11),colors = topic_colors) +
   labs(y = "membership",fill = "")					 
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 ```
@@ -216,8 +216,8 @@ log1p_k14 <- read_rds(file.path("../output/panc_cyto_lsa_res",
 scale_cols <- function (A, b)
   t(t(A) * b)
 set.seed(1)
-celltype_topics = c(1,2,3,5,6,10,11,13,14)
-other_topics <- c(4,7,8,9,12)
+celltype_topics = c(1,2,3,5,6,7,8,10,11,13,14)
+other_topics <- c(4,9,12)
 L <- log1p_k14$LL
 d <- apply(L,2,max)
 L <- scale_cols(L,1/d)
