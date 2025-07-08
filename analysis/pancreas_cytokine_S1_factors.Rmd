@@ -420,9 +420,11 @@ plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
 
 TO DO:
 
-```{r de-analysis, eval=FALSE}
+```{r de-analysis, cache=TRUE}
+set.seed(1)
 tm_merged <- merge_topics(poisson2multinom(tm),c("k2","k11"))
-de <- de_analysis(tm_merged)
+de <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "le",
+                  verbose = FALSE,control = list(ns = 1e4,nc = 8))
 ```
 
 + Based on these results, identify "top genes" for the topics and
