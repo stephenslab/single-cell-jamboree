@@ -60,50 +60,33 @@ barcodes$condition <- factor(barcodes$condition)
 
 Import the gene information:
 
-```{r import-gene-info}
+```{r import-gene-info, message=FALSE}
+genes1 <- read_tsv("../data/GSE156175_RAW/GSM5842388_Rep1_S1_features.tsv.gz",
+                   col_names = c("ensembl", "symbol", "type"))
+genes2 <- read_tsv("../data/GSE156175_RAW/GSM4726017_S2_features.tsv.gz",
+                   col_names = c("ensembl", "symbol", "type"))
+genes3 <- read_tsv("../data/GSE156175_RAW/GSM4726018_S3_features.tsv.gz",
+                   col_names = c("ensembl", "symbol", "type"))
+genes4 <- read_tsv("../data/GSE156175_RAW/GSM4726019_S4_features.tsv.gz",
+                   col_names = c("ensembl", "symbol", "type"))
+genes <- genes1
+genes$type <- factor(genes$type)
 ```
 
 Now import in the read counts:
 
-```{r import-counts}
-```
-
-```{r, eval=FALSE}
-counts1 <- Matrix::t(
-  Matrix::readMM("../data/GSE156175_RAW/GSM5842388_Rep1_S1_matrix.mtx")
-  )
-genes1 <- readr::read_tsv(
-  "../data/GSE156175_RAW/GSM5842388_Rep1_S1_features.tsv",
-  col_names = c("ensembl", "symbol", "type")
-  )
+```{r import-counts, message=FALSE}
+counts1 <- t(readMM("../data/GSE156175_RAW/GSM5842388_Rep1_S1_matrix.mtx.gz"))
+counts2 <- t(readMM("../data/GSE156175_RAW/GSM4726017_S2_matrix.mtx.gz"))
+counts3 <- t(readMM("../data/GSE156175_RAW/GSM4726018_S3_matrix.mtx.gz"))
+counts4 <- t(readMM("../data/GSE156175_RAW/GSM4726019_S4_matrix.mtx.gz"))
 rownames(counts1) <- paste0(barcodes1$barcode, "_", barcodes1$condition)
-colnames(counts1) <- genes1$symbol
-counts2 <- Matrix::t(
-  Matrix::readMM("../data/GSE156175_RAW/GSM4726017_S2_matrix.mtx")
-)
-genes2 <- readr::read_tsv(
-  "../data/GSE156175_RAW/GSM4726017_S2_features.tsv",
-  col_names = c("ensembl", "symbol", "type")
-)
 rownames(counts2) <- paste0(barcodes2$barcode, "_", barcodes2$condition)
-colnames(counts2) <- genes2$symbol
-counts3 <- Matrix::t(
-  Matrix::readMM("../data/GSE156175_RAW/GSM4726018_S3_matrix.mtx")
-)
-genes3 <- readr::read_tsv(
-  "../data/GSE156175_RAW/GSM4726018_S3_features.tsv",
-  col_names = c("ensembl", "symbol", "type")
-)
 rownames(counts3) <- paste0(barcodes3$barcode, "_", barcodes3$condition)
-colnames(counts3) <- genes3$symbol
-counts4 <- Matrix::t(
-  Matrix::readMM("../data/GSE156175_RAW/GSM4726019_S4_matrix.mtx")
-)
-genes4 <- readr::read_tsv(
-  "../data/GSE156175_RAW/GSM4726019_S4_features.tsv",
-  col_names = c("ensembl", "symbol", "type")
-)
 rownames(counts4) <- paste0(barcodes4$barcode, "_", barcodes4$condition)
+colnames(counts1) <- genes1$symbol
+colnames(counts2) <- genes2$symbol
+colnames(counts3) <- genes3$symbol
 colnames(counts4) <- genes4$symbol
 counts <- rbind(
   as.matrix(counts1),
@@ -114,21 +97,36 @@ counts <- rbind(
 counts <- as(counts, "CsparseMatrix")
 ```
 
-Remove outliers in terms of total UMI count and very few expressed genes:
+Removed genes that are not expressed in any cell:
 
-```{r, eval=FALSE}
-counts <- counts[, Matrix::colSums(counts) > 0]
-x <- rowSums(counts > 0)
-i <- which(x > 2000)
-counts  <- counts[i,]
-outliers <- rownames(counts)[Matrix::rowSums(counts) > 60000]
-i        <- which(!is.element(rownames(counts),outliers))
+```{r filter-genes-1}
+x      <- colSums(counts)
+j      <- which(x > 0)
+genes  <- genes[j,]
+counts <- counts[,j]
+```
+
+Remove cells in terms (i) total UMI count and (ii) very few
+expressed genes:
+
+```{r filter-cells}
+x        <- rowSums(counts > 0)
+i        <- which(x > 2000)
+barcodes <- barcodes[i,]
+counts   <- counts[i,]
+x        <- rowSums(counts)
+i        <- which(x > 60000)
+barcodes <- barcodes[i,]
 counts   <- counts[i,]
 ```
 
-Remove cells with high mitochondrial counts, and remove MALAT1, ribosomal, and mitochondrial genes for further analysis:
+PC: The first filtering step here (x > 2,000) seems a bit
+aggressive. I think we could have retained some more cells.
 
-```{r, eval=FALSE}
+Remove cells with high mitochondrial counts, and remove *MALAT1*,
+ribosomal genes, and mitochondrial genes for further analysis:
+
+```{r filter-genes-2, eval=FALSE}
 mito_genes <- which(substr(colnames(counts),1,2) == "mt")
 s          <- rowSums(counts)
 s_mito     <- counts[,mito_genes]
@@ -142,8 +140,7 @@ j      <- which(colnames(counts) != "Malat1")
 counts <- counts[,j]
 j      <- which(colSums(counts > 0) > 2)
 counts <- counts[,j]
-barcodes <- barcodes %>%
-  dplyr::filter(cell_bc %in% rownames(counts))
+barcodes <- barcodes %>% filter(cell_bc %in% rownames(counts))
 ```
 
 Fit a topic model with $K = 12$.
