@@ -22,6 +22,7 @@ analyses:
 
 ```{r load-pkgs, message=FALSE}
 library(Matrix)
+library(tools)
 library(readr)
 library(fastTopics)
 library(dplyr)
@@ -115,67 +116,84 @@ i        <- which(x > 2000)
 barcodes <- barcodes[i,]
 counts   <- counts[i,]
 x        <- rowSums(counts)
-i        <- which(x > 60000)
+i        <- which(x <= 60000)
 barcodes <- barcodes[i,]
 counts   <- counts[i,]
 ```
 
-PC: The first filtering step here (x > 2,000) seems a bit
-aggressive. I think we could have retained some more cells.
+PC: The filtering step `x > 2000` seems a bit aggressive. I think we
+could have retained some more cells.
 
-Remove cells with high mitochondrial counts, and remove *MALAT1*,
-ribosomal genes, and mitochondrial genes for further analysis:
+Remove cells with high mitochondrial counts:
 
-```{r filter-genes-2, eval=FALSE}
-mito_genes <- which(substr(colnames(counts),1,2) == "mt")
+```{r filter-cells-2}
+mito_genes <- which(substr(genes$symbol,1,2) == "mt")
 s          <- rowSums(counts)
-s_mito     <- counts[,mito_genes]
-prop_mito  <- rowSums(s_mito)/s
+s_mito     <- rowSums(counts[,mito_genes])
+prop_mito  <- s_mito/s
 i          <- which(prop_mito < 0.1)
-counts  <- counts[i,]
-j <- which(!(grepl("^mt-",colnames(counts)) |
-               grepl("^Rp[sl]",colnames(counts))))
+barcodes   <- barcodes[i,]
+counts     <- counts[i,]
+```
+
+PC: Again, the filtering step `prop_mito < 0.1` seems a bit
+aggressive.
+
+Remove *MALAT1*, ribosomal genes, and mitochondrial genes:
+
+```{r filter-genes-2}
+j <- which(!(grepl("^mt-",genes$symbol) | grepl("^Rp[sl]",genes$symbol)))
+genes  <- genes[j,]
 counts <- counts[,j]
-j      <- which(colnames(counts) != "Malat1")
+j      <- which(genes$symbol != "Malat1")
+genes  <- genes[j,]
 counts <- counts[,j]
-j      <- which(colSums(counts > 0) > 2)
+```
+
+Remove other genes that are expressed in only 1 or 2 cells:
+
+```{r filter-genes-3}
+x      <- colSums(counts > 0)
+j      <- which(x > 2)
+genes  <- genes[j,]
 counts <- counts[,j]
-barcodes <- barcodes %>% filter(cell_bc %in% rownames(counts))
+```
+
+Save the processed data to an RData file:
+
+```{r write-outputs, eval=FALSE}
+save(list = c("barcodes","genes","counts"),
+     file = "pancreas_cytokine_lsa_v2.RData")
+resaveRdaFiles("pancreas_cytokine_lsa_v2.RData")
 ```
 
 Fit a topic model with $K = 12$.
 
-```{r, eval=FALSE}
+```{r fit-topic-model, cache=TRUE}
 set.seed(1)
-tm_fit <- fit_poisson_nmf(
-  X = as(counts, "CsparseMatrix"),
-  k = 12,
-  control = list(nc = 7)
-)
+tm_fit <- fit_poisson_nmf(X = counts,k = 12,control = list(nc = 7))
 ```
 
-Here is the initial structure plot:
+Here is the Structure plot:
 
-```{r, eval=FALSE}
-structure_plot(tm_fit, n = Inf)
+```{r, fig.height=2, fig.width=7}
+set.seed(1)
+structure_plot(tm_fit,n = Inf)
 ```
 
 Below is a heatmap annotation of the marker genes given in the
 Stancill paper:
 
-```{r, eval=FALSE}
+```{r annotation-heatmap, fig.height=3, fig.width=3}
 scale_rows <- function (A)
   A / apply(A,1,max)
-# using marker genes, I would like to connect each topic to a celltype
-marker_genes <- c("Ins1","Ins2","Gcg","Sst",
-                  "Ppy","Krt17","Ccr5",
-                  "Col1a1", "Cd34", "Cpa1")
+marker_genes <- c("Ins1","Ins2","Gcg","Sst","Ppy","Krt17","Ccr5",
+                  "Col1a1","Cd34","Cpa1")
 F <- poisson2multinom(tm_fit)$F
 F <- F[marker_genes,]
 F <- scale_rows(F)
 rownames(F) <- marker_genes
-p <- annotation_heatmap(F,select_features = "all",verbose = FALSE)
-print(p)
+annotation_heatmap(F,select_features = "all",verbose = FALSE)
 ```
 
 Below are some comments relating my guesses about factor
