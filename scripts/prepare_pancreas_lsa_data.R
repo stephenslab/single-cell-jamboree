@@ -1,43 +1,22 @@
----
-title: Preparation and initial exploration of the LSA 2021 pancreas data set
-author: Eric Weine and Peter Carbonetto
-output: workflowr::wflow_html
----
-
-Here we will prepare the single-cell RNA-seq data from
-[Stancill et al 2021][stancill_2021_lsa] for analysis with the topic
-model and other matrix factorization methods. The data files were
-obtained by downloading and the `GSE156175_RAW.tar` file from
-[GEO accession GSE156175][stancill_2021_lsa_geo]. To run this script,
-download this file from GEO and extract the contents into a folder
-called "GSE156175_RAW" in the data directory.
-
-```{r knitr-opts, include=FALSE}
+## ----knitr-opts, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
-```
 
-Load the R packages used to perform the data processing and initial
-analyses:
 
-```{r load-pkgs, message=FALSE}
+## ----load-pkgs, message=FALSE-------------------------------------------------
 library(Matrix)
 library(tools)
 library(readr)
 library(fastTopics)
 library(dplyr)
 library(Seurat)
-```
 
-Set the seed for reproducibility:
 
-```{r set-seed}
+## ----set-seed-----------------------------------------------------------------
 set.seed(1)
-```
 
-Import the sample information:
 
-```{r import-barcodes, message=FALSE}
+## ----import-barcodes, message=FALSE-------------------------------------------
 barcodes1<-read_tsv("../data/GSE156175_RAW/GSM5842388_Rep1_S1_barcodes.tsv.gz",
                     col_names = "barcode")
 barcodes2 <- read_tsv("../data/GSE156175_RAW/GSM4726017_S2_barcodes.tsv.gz",
@@ -57,11 +36,9 @@ barcodes4$condition <- "IL-1B_IFNg"
 barcodes <- rbind(barcodes1, barcodes2, barcodes3, barcodes4)
 barcodes$cell_bc <- paste0(barcodes$barcode, "_", barcodes$condition)
 barcodes$condition <- factor(barcodes$condition)
-```
 
-Import the gene information:
 
-```{r import-gene-info, message=FALSE}
+## ----import-gene-info, message=FALSE------------------------------------------
 genes1 <- read_tsv("../data/GSE156175_RAW/GSM5842388_Rep1_S1_features.tsv.gz",
                    col_names = c("ensembl", "symbol", "type"))
 genes2 <- read_tsv("../data/GSE156175_RAW/GSM4726017_S2_features.tsv.gz",
@@ -72,11 +49,9 @@ genes4 <- read_tsv("../data/GSE156175_RAW/GSM4726019_S4_features.tsv.gz",
                    col_names = c("ensembl", "symbol", "type"))
 genes <- genes1
 genes$type <- factor(genes$type)
-```
 
-Now import in the read counts:
 
-```{r import-counts, message=FALSE}
+## ----import-counts, message=FALSE---------------------------------------------
 counts1 <- t(readMM("../data/GSE156175_RAW/GSM5842388_Rep1_S1_matrix.mtx.gz"))
 counts2 <- t(readMM("../data/GSE156175_RAW/GSM4726017_S2_matrix.mtx.gz"))
 counts3 <- t(readMM("../data/GSE156175_RAW/GSM4726018_S3_matrix.mtx.gz"))
@@ -96,21 +71,16 @@ counts <- rbind(
   as.matrix(counts4)
 )
 counts <- as(counts, "CsparseMatrix")
-```
 
-Remove genes that are not expressed in any cell:
 
-```{r filter-genes-1}
+## ----filter-genes-1-----------------------------------------------------------
 x      <- colSums(counts)
 j      <- which(x > 0)
 genes  <- genes[j,]
 counts <- counts[,j]
-```
 
-Remove cells in terms (i) total UMI count and (ii) very few
-expressed genes:
 
-```{r filter-cells}
+## ----filter-cells-------------------------------------------------------------
 x        <- rowSums(counts > 0)
 i        <- which(x > 2000)
 barcodes <- barcodes[i,]
@@ -119,14 +89,9 @@ x        <- rowSums(counts)
 i        <- which(x <= 60000)
 barcodes <- barcodes[i,]
 counts   <- counts[i,]
-```
 
-PC: The filtering step `x > 2000` seems a bit aggressive. I think we
-could have retained some more cells.
 
-Remove cells with high mitochondrial counts:
-
-```{r filter-cells-2}
+## ----filter-cells-2-----------------------------------------------------------
 mito_genes <- which(substr(genes$symbol,1,2) == "mt")
 s          <- rowSums(counts)
 s_mito     <- rowSums(counts[,mito_genes])
@@ -134,58 +99,42 @@ prop_mito  <- s_mito/s
 i          <- which(prop_mito < 0.1)
 barcodes   <- barcodes[i,]
 counts     <- counts[i,]
-```
 
-PC: Again, the filtering step `prop_mito < 0.1` seems a bit
-aggressive.
 
-Remove *MALAT1*, ribosomal genes, and mitochondrial genes:
-
-```{r filter-genes-2}
+## ----filter-genes-2-----------------------------------------------------------
 j <- which(!(grepl("^mt-",genes$symbol) | grepl("^Rp[sl]",genes$symbol)))
 genes  <- genes[j,]
 counts <- counts[,j]
 j      <- which(genes$symbol != "Malat1")
 genes  <- genes[j,]
 counts <- counts[,j]
-```
 
-Remove other genes that are expressed in only 1 or 2 cells:
 
-```{r filter-genes-3}
+## ----filter-genes-3-----------------------------------------------------------
 x      <- colSums(counts > 0)
 j      <- which(x > 2)
 genes  <- genes[j,]
 counts <- counts[,j]
-```
 
-Save the processed data to an RData file:
 
-```{r write-outputs, eval=FALSE}
-save(list = c("barcodes","genes","counts"),
-     file = "pancreas_cytokine_lsa_v2.RData")
-resaveRdaFiles("pancreas_cytokine_lsa_v2.RData")
-```
+## ----write-outputs, eval=FALSE------------------------------------------------
+# save(list = c("barcodes","genes","counts"),
+#      file = "pancreas_cytokine_lsa_v2.RData")
+# resaveRdaFiles("pancreas_cytokine_lsa_v2.RData")
 
-Fit a topic model with $K = 12$.
 
-```{r fit-topic-model, cache=TRUE}
+## ----fit-topic-model, cache=TRUE----------------------------------------------
 set.seed(1)
 tm_fit <- fit_poisson_nmf(X = counts,k = 12,control = list(nc = 7),
                           verbose = "none")
-```
 
-Here is the Structure plot:
 
-```{r structure-plot, fig.height=1.75, fig.width=7, results="hide"}
+## ----structure-plot, fig.height=1.75, fig.width=7, results="hide"-------------
 set.seed(1)
 structure_plot(tm_fit,n = Inf)
-```
 
-Below is a heatmap annotation of the marker genes given in the
-Stancill paper:
 
-```{r annotation-heatmap, fig.height=2.5, fig.width=4}
+## ----annotation-heatmap, fig.height=2.5, fig.width=4--------------------------
 scale_rows <- function (A)
   A / apply(A,1,max)
 marker_genes <- c("Ins1","Ins2","Gcg","Sst","Ppy","Krt17","Ccr5",
@@ -195,30 +144,9 @@ F <- F[marker_genes,]
 F <- scale_rows(F)
 rownames(F) <- marker_genes
 annotation_heatmap(F,select_features = "all",verbose = FALSE)
-```
 
-Below are some comments relating my guesses about factor
-associations. Many of the beta associated factors are non-specific:
 
-+ k1: ?
-+ k2: acinar
-+ k3: endothelial/mesenchymal
-+ k4: ? (presumably beta)
-+ k5: ductal
-+ k6: deta
-+ k7: ? (presumably beta)
-+ k8: delta
-+ k9: alpha
-+ k10: gamma (PP) 
-+ k11: macrophage
-+ k12: ? (presumably beta)
-
-Now, I do celltype assignments. I used 1/3 as a threshold on the topic
-proportions to determine celltype because this seemed to look
-reasonable visually. Below is the structure plot with cells grouped by
-type.
-
-```{r clustering, fig.height=2.5, fig.width=7, results="hide"}
+## ----clustering, fig.height=2.5, fig.width=7, results="hide"------------------
 L <- poisson2multinom(tm_fit)$L
 L_df <- as.data.frame(L)
 L_df <- L_df %>%
@@ -234,40 +162,20 @@ L_df <- L_df %>%
       TRUE ~ "Beta"
     )
   )
-structure_plot(tm_fit, grouping = L_df$cluster, gap = 30, n = Inf)
-```
+structure_plot(tm_fit, grouping = L_df$cluster, gap = 25, n = Inf)
 
-Overall, this clustering looks quite good, but there is a small pocket
-of beta cells that have loadings on the green, black, and grey
-factors, which indicate that they could also be alpha or delta
-cells. Perhaps additional investigation into these cells (e.g. with a
-UMAP) could help distinguish their precise types. Or, we could exclude
-them as not having a clear type.
 
-Next, I investigated a UMAP plot to see how our clusters looked. Below
-is an elbow plot of the PCs created by Seurat:
-
-```{r elbo-plot, fig.height=3, fig.width=3}
+## ----elbo-plot, fig.height=3, fig.width=3-------------------------------------
 barcodes$celltype <- L_df$cluster
 counts <- counts[,!duplicated(colnames(counts))]
 so <- CreateSeuratObject(counts = Matrix::t(counts), meta.data = barcodes)
 so <- SCTransform(so, verbose = FALSE)
 so <- RunPCA(so, verbose = FALSE)
 ElbowPlot(so)
-```
 
-And here is a UMAP plot:
 
-```{r umap-plot, fig.height=3.5, fig.width=4.5}
+## ----umap-plot, fig.height=3, fig.width=5-------------------------------------
 so <- RunUMAP(so, dims = 1:10, verbose = FALSE)
 DimPlot(so, group.by = "celltype") +
   theme_cowplot(font_size = 10)
-```
 
-There are clearly a few cells on the UMAP plot that appear to lie in a
-different cluster than their assignment. However, I'm not convinced
-that this plot is any more reliable than the topic model structure
-plot.
-
-[stancill_2021_lsa]: https://www.life-science-alliance.org/content/4/6/e202000949
-[stancill_2021_lsa_geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE156175
