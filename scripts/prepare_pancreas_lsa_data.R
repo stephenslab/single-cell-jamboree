@@ -32,7 +32,6 @@ barcodes2$condition <- "IL-1B"
 barcodes3$condition <- "IFNg"
 barcodes4$condition <- "IL-1B_IFNg"
 barcodes <- rbind(barcodes1, barcodes2, barcodes3, barcodes4)
-barcodes$cell_bc <- paste0(barcodes$barcode, "_", barcodes$condition)
 barcodes$condition <- factor(barcodes$condition)
 
 # Import the gene information.
@@ -79,12 +78,10 @@ j      <- which(x > 0)
 genes  <- genes[j,]
 counts <- counts[,j]
 
-stop()
-
 # Remove cells in terms (i) total UMI count and (ii) very few
 # expressed genes.
 x        <- rowSums(counts > 0)
-i        <- which(x > 2000)
+i        <- which(x > 1250)
 barcodes <- barcodes[i,]
 counts   <- counts[i,]
 x        <- rowSums(counts)
@@ -92,16 +89,16 @@ i        <- which(x <= 60000)
 barcodes <- barcodes[i,]
 counts   <- counts[i,]
 
-## ----filter-cells-2-----------------------------------------------------------
+# Remove cells with high mitochondrial counts.
 mito_genes <- which(substr(genes$symbol,1,2) == "mt")
 s          <- rowSums(counts)
 s_mito     <- rowSums(counts[,mito_genes])
 prop_mito  <- s_mito/s
-i          <- which(prop_mito < 0.1)
+i          <- which(prop_mito < 0.15)
 barcodes   <- barcodes[i,]
 counts     <- counts[i,]
 
-## ----filter-genes-2-----------------------------------------------------------
+# Remove MALAT1, ribosomal genes, and mitochondrial genes.
 j <- which(!(grepl("^mt-",genes$symbol) | grepl("^Rp[sl]",genes$symbol)))
 genes  <- genes[j,]
 counts <- counts[,j]
@@ -109,14 +106,15 @@ j      <- which(genes$symbol != "Malat1")
 genes  <- genes[j,]
 counts <- counts[,j]
 
-## ----filter-genes-3-----------------------------------------------------------
+# Remove again genes that not expressed in any cells.
 x      <- colSums(counts > 0)
-j      <- which(x > 2)
+j      <- which(x > 0)
 genes  <- genes[j,]
 counts <- counts[,j]
 
-## ----write-outputs, eval=FALSE------------------------------------------------
-# save(list = c("barcodes","genes","counts"),
-#      file = "pancreas_cytokine_lsa_v2.RData")
-# resaveRdaFiles("pancreas_cytokine_lsa_v2.RData")
-
+# Save the processed data to an .RData file.
+barcodes <- as.data.frame(barcodes)
+genes    <- as.data.frame(genes)
+save(list = c("barcodes","genes","counts"),
+     file = "pancreas_cytokine_lsa_v2.RData")
+resaveRdaFiles("pancreas_cytokine_lsa_v2.RData")
