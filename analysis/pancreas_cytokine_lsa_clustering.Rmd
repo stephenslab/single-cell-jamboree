@@ -24,6 +24,7 @@ analyses:
 library(Matrix)
 library(tools)
 library(readr)
+library(cowplot)
 library(fastTopics)
 library(dplyr)
 library(Seurat)
@@ -159,14 +160,6 @@ genes  <- genes[j,]
 counts <- counts[,j]
 ```
 
-Save the processed data to an RData file:
-
-```{r write-outputs, eval=FALSE}
-save(list = c("barcodes","genes","counts"),
-     file = "pancreas_cytokine_lsa_v2.RData")
-resaveRdaFiles("pancreas_cytokine_lsa_v2.RData")
-```
-
 Fit a topic model with $K = 12$.
 
 ```{r fit-topic-model, cache=TRUE}
@@ -258,7 +251,7 @@ ElbowPlot(so)
 
 And here is a UMAP plot:
 
-```{r umap-plot, fig.height=3.5, fig.width=4.5}
+```{r umap-plot, fig.height=3.25, fig.width=4.75}
 so <- RunUMAP(so, dims = 1:10, verbose = FALSE)
 DimPlot(so, group.by = "celltype") +
   theme_cowplot(font_size = 10)
@@ -268,6 +261,14 @@ There are clearly a few cells on the UMAP plot that appear to lie in a
 different cluster than their assignment. However, I'm not convinced
 that this plot is any more reliable than the topic model structure
 plot.
+
+Save the processed data to an RData file:
+
+```{r write-outputs}
+save(list = c("barcodes","genes","counts"),
+     file = "pancreas_cytokine_lsa.RData")
+# resaveRdaFiles("pancreas_cytokine.RData")
+```
 
 [stancill_2021_lsa]: https://www.life-science-alliance.org/content/4/6/e202000949
 [stancill_2021_lsa_geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE156175
