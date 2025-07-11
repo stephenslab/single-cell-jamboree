@@ -30,6 +30,8 @@ library(singlecelljamboreeR)
 library(ggplot2)
 library(ggrepel)
 library(cowplot)
+library(rsvd)
+library(uwot)
 ```
 
 ## Prepare the data for analysis with fastTopics and flashier
@@ -278,6 +280,59 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
         legend.key.width = unit(0.25,"cm"),
         legend.text = element_text(size = 7))
 ```
+
+## Comparison with UMAP
+
+Here I project the samples onto a 2-d embedding using UMAP to show
+that this LPS-related substructure is not obvious from a UMAP plot.
+
+```{r umap}
+set.seed(1)
+U <- rsvd(shifted_log_counts,k = 40)$u
+Y <- umap(U,n_neighbors = 20,metric = "cosine",min_dist = 0.3,
+          n_threads = 8,verbose = TRUE)
+x <- Y[,1]
+y <- Y[,2]
+samples$umap1 <- x
+samples$umap2 <- y
+```
+
+I color the samples in the UMAP plot by tissue (top-left) and by
+membership to factor 6 (top-right, bottom-left):
+
+```{r umap-plots, fig.height=5.5, fig.width=6.5}
+tissue_colors <- c("magenta","darkorange","darkblue","forestgreen",
+                   "dodgerblue","red","olivedrab","darkmagenta",
+                   "sienna","limegreen","royalblue","lightskyblue",
+                   "gold")
+L            <- ldf(fl_nmf,type = "i")$L
+colnames(L)  <- paste0("k",1:15)
+pdat         <- samples
+pdat$factor6 <- L[,"k6"]
+pdat$topic7  <- poisson2multinom(tm)$L[,"k7"]
+p1 <- ggplot(pdat,aes(x = umap1,y = umap2,color = tissue)) +
+  geom_point(size = 1) +
+  scale_color_manual(values = tissue_colors) +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(pdat,aes(x = umap1,y = umap2,color = factor6)) +
+  geom_point(size = 1) +
+  scale_color_gradient2(low = "deepskyblue",mid = "gold",high = "tomato",
+                        midpoint = 0.66) +
+  theme_cowplot(font_size = 10)
+p3 <- ggplot(pdat,aes(x = umap1,y = umap2,color = topic7)) +
+  geom_point(size = 1) +
+  scale_color_gradient2(low = "deepskyblue",mid = "gold",high = "tomato",
+                        midpoint = 0.15) +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,nrow = 2,ncol = 2)
+```
+
+As expected, the predominant structure is due to the different
+tissues, with more similar tissues clustering together. There is also
+some more subtle structure within each cluster that appears to
+correspond well with factor 6 (and topic 7). So althought the UMAP
+does seem to reveal the sepsis-related structure, it cannot isolate
+the sepsis-related gene expression signature.
 
 ## Factors isolating responses to LPS-induced sepsis
 
