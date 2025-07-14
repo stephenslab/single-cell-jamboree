@@ -436,6 +436,8 @@ de <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "le",
   annotation plots for genes based on these strategies: one for the
   topic model and one for the EBNMF.
 
-+ Also perform GSEA using these results.
++ Also perform GSEA using these results. For the factor analysis, do
+  so using F values and the "least extreme" F effect differences (See
+  "compute_le_diff" in code/annotation_plots.R.)
 
 [reactome-cell-cycle]: https://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/REACTOME_CELL_CYCLE.html
