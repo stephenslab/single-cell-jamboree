@@ -7,6 +7,27 @@ out <- rank_effects(lfc)
 rows <- NULL
 for (i in colnames(lfc))
   rows <- c(rows,which(out[,i] <= 5))
+rows <- unique(rows)
 lfc <- lfc[rows,]
-p <- effects_heatmap(lfc)
-print(p)
+p1 <- effects_heatmap(lfc)
+print(p1)
+
+celltype_factors <- c("k1","k2","k3","k4","k5","k9","k10","k11","k13")
+F <- ldf(fl_nmf,type = "i")$F
+rownames(F) <- genes$symbol
+colnames(F) <- paste0("k",1:13)
+F <- F[,celltype_factors]
+out <- rank_effects(F)
+rows <- NULL
+for (i in colnames(F))
+  rows <- c(rows,which(out[,i] <= 5))
+rows <- unique(rows)
+p2 <- effects_heatmap(F[rows,])
+
+out <- rank_effects(compute_le_effects(F))
+rows <- NULL
+for (i in colnames(F))
+  rows <- c(rows,which(out[,i] <= 5))
+rows <- unique(rows)
+p3 <- effects_heatmap(F[rows,])
+print(plot_grid(p2,p3,nrow = 1,ncol = 2))

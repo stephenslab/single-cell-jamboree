@@ -427,17 +427,9 @@ de <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "le",
                   verbose = FALSE,control = list(ns = 1e4,nc = 8))
 ```
 
-+ Based on these results, identify "top genes" for the topics and
-  factors, either as "distinctive" genes (using de_analysis for topic
-  model and with a custom function from the singlecelljamboreeR
-  package for the factors), or as simply the genes with the largest
-  entries in the F matrix. I first need to determine which of the two
-  strategies to use for each topic and factor. Then create two
-  annotation plots for genes based on these strategies: one for the
-  topic model and one for the EBNMF.
++ Incorporate code from temp2.R into this Rmd.
 
 + Also perform GSEA using these results. For the factor analysis, do
-  so using F values and the "least extreme" F effect differences (See
-  "compute_le_diff" in code/annotation_plots.R.)
+  so using F values and the "least extreme" F effect differences.
 
 [reactome-cell-cycle]: https://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/REACTOME_CELL_CYCLE.html
