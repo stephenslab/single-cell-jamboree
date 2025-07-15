@@ -6,10 +6,10 @@ lfc <- lfc[,celltype_topics]
 out <- rank_effects(lfc)
 rows <- NULL
 for (i in colnames(lfc))
-  rows <- c(rows,which(out[,i] <= 5))
+  rows <- c(rows,which(out[,i] <= 6))
 rows <- unique(rows)
 lfc <- lfc[rows,]
-p1 <- effects_heatmap(lfc)
+p1 <- effects_heatmap(lfc,font_size = 9)
 print(p1)
 
 celltype_factors <- c("k1","k2","k3","k4","k5","k9","k10","k11","k13")
@@ -20,14 +20,14 @@ F <- F[,celltype_factors]
 out <- rank_effects(F)
 rows <- NULL
 for (i in colnames(F))
-  rows <- c(rows,which(out[,i] <= 5))
+  rows <- c(rows,which(out[,i] <= 6))
 rows <- unique(rows)
-p2 <- effects_heatmap(F[rows,])
+p2 <- effects_heatmap(F[rows,],font_size = 9)
 
 out <- rank_effects(compute_le_effects(F))
 rows <- NULL
 for (i in colnames(F))
-  rows <- c(rows,which(out[,i] <= 5))
+  rows <- c(rows,which(out[,i] <= 6))
 rows <- unique(rows)
-p3 <- effects_heatmap(F[rows,])
+p3 <- effects_heatmap(F[rows,],font_size = 9)
 print(plot_grid(p2,p3,nrow = 1,ncol = 2))
