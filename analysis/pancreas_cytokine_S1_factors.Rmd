@@ -146,40 +146,17 @@ ggplot(pdat,aes(x = replicate,y = k10)) +
 
 ## EBNMF (flashier)
 
-Next we will fit an NMF to the *shifted log counts* using flashier,
-with $K = 13$. Since the greedy initialization does not seem to work
-well in this example, I'll use a different initialization strategy:
-obtain a "good" initialization using the NNLM package, then use this
-initialization to fit a NMF using flashier. This approach is
-implemented in the following function:
+Next fit an NMF to the *shifted log counts* using flashier,
+with $K = 13$.
 
-```{r flashier-nmf-function}
-flashier_nmf <- function (X, k = 3, n.threads = 1) {
-  n <- nrow(X)
-  m <- ncol(X)
-  Y <- as.matrix(X)
-  nmf0 <- nnmf(Y,k = 1,loss = "mse",method = "scd",max.iter = 10,
-               verbose = 2,n.threads = n.threads)
-  W0 <- nmf0$W
-  H0 <- nmf0$H
-  W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
-  H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
-  nmf <- nnmf(Y,k,init = list(W = W0,H = H0),loss = "mse",method = "scd",
-              max.iter = 10,verbose = 2,n.threads = n.threads)
-  x  <- rpois(1e7,1/n)
-  s1 <- sd(log(x + 1))
-  out <- flash_init(X,var_type = 2,S = s1)
-  out <- flash_factors_init(out,list(nmf$W,t(nmf$H)),ebnm_point_exponential)
-  out <- flash_backfit(out,extrapolate = FALSE,maxiter = 100,verbose = 2)
-  return(flash_backfit(out,extrapolate = TRUE,maxiter = 100,verbose = 2))
-}
-```
-
-Now fit an NMF to the shifted log counts, with $K = 13$:
-
-```{r flashier-nmf, cache=TRUE, warning=FALSE, cache=TRUE}
+```{r flashier-nmf, warning=FALSE, cache=TRUE}
 set.seed(1)
-fl_nmf <- flashier_nmf(shifted_log_counts,k = 13,n.threads = 8)
+n  <- nrow(shifted_log_counts)
+x  <- rpois(1e7,1/n)
+s1 <- sd(log(x + 1))
+set.seed(1)
+fl_nmf <- flashier_nmf(shifted_log_counts,k = 13,n.threads = 8,
+                       var_type = 2,S = s1)
 ```
 
 Structure plot comparing the factors to the clusters:
@@ -420,7 +397,7 @@ plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
 
 TO DO:
 
-```{r de-analysis, cache=TRUE}
+```{r de-analysis, eval=FALSE}
 set.seed(1)
 tm_merged <- merge_topics(poisson2multinom(tm),c("k2","k11"))
 de <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "le",
