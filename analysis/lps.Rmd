@@ -451,4 +451,27 @@ ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene,color = pathway)) +
   theme_cowplot(font_size = 12)
 ```
 
+Here's another view of the enrichment of the genes in the
+IFN-$\alpha/\beta$ pathway:
+
+```{r sepsis-tm-vs-nmf-with-gsea-2, fig.height=3.5, fig.width=4}
+p1 <- ggplot(subset(pdat,pathway),aes(x = nmf)) +
+  geom_histogram(color = "white",fill = "black",bins = 16) +
+  labs(x = "factor 6",y = "IFN-a/b genes") +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(subset(pdat,!pathway),aes(x = nmf)) +
+  geom_histogram(color = "white",fill = "black",bins = 24) +
+  labs(x = "factor 6",y = "other genes") +
+  theme_cowplot(font_size = 10)
+p3 <- ggplot(subset(pdat,pathway),aes(x = log10(tm + 1e-6))) +
+  geom_histogram(color = "white",fill = "black",bins = 16) +
+  labs(x = "topic 7",y = "IFN-a/b genes") +
+  theme_cowplot(font_size = 10)
+p4 <- ggplot(subset(pdat,!pathway),aes(x = log10(tm + 1e-6))) +
+  geom_histogram(color = "white",fill = "black",bins = 24) +
+  labs(x = "topic 7",y = "other genes") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
+```
+
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
