@@ -193,32 +193,16 @@ initialization using the NNLM package, then use this initialization to
 fit a NMF using flashier. This approach is implemented in the
 following function:
 
-```{r flashier-nmf-function}
-flashier_nmf <- function (X, k = 3, n.threads = 1) {
-  n <- nrow(X)
-  m <- ncol(X)
-  nmf0 <- nnmf(X,k = 1,loss = "mse",method = "scd",
-               max.iter = 10,verbose = 0,n.threads = n.threads)
-  W0 <- nmf0$W
-  H0 <- nmf0$H
-  W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
-  H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
-  nmf <- nnmf(X,k,init = list(W = W0,H = H0),loss = "mse",method = "scd",
-              max.iter = 10,verbose = 0,n.threads = n.threads)
-  x  <- rpois(1e7,1/n)
-  s1 <- sd(log(x + 1))
-  out <- flash_init(X,var_type = 2,S = s1)
-  out <- flash_factors_init(out,list(nmf$W,t(nmf$H)),ebnm_point_exponential)
-  out <- flash_backfit(out,extrapolate = FALSE,maxiter = 100,verbose = 0)
-  return(flash_backfit(out,extrapolate = TRUE,maxiter = 100,verbose = 0))
-}
-```
-
 Now fit an NMF to the shifted log counts, with $K = 9$:
 
 ```{r flashier-nmf-k9, cache=TRUE}
 set.seed(1)
-fl_nmf_k9 <- flashier_nmf(shifted_log_counts,k = 9,n.threads = 8)
+n  <- nrow(shifted_log_counts)
+x  <- rpois(1e7,1/n)
+s1 <- sd(log(x + 1))
+set.seed(1)
+fl_nmf_k9 <- flashier_nmf(shifted_log_counts,k = 9,n.threads = 8,
+                          var_type = 2,S = s1)
 ```
 
 Structure plot comparing the topics to the tissue types:
@@ -244,7 +228,7 @@ Next fit an NMF to the shifted log counts using flashier, with $K =
 
 ```{r flashier-nmf-k15, cache=TRUE, warning=FALSE}
 set.seed(1)
-fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,n.threads = 8)
+fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,n.threads = 8,S = s1)
 ```
 
 Structure plot comparing the factors to the tissue types:
