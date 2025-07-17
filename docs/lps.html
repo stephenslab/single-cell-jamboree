@@ -300,7 +300,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-07-16
+<strong>Last updated:</strong> 2025-07-17
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -449,15 +449,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree9682c188775daaff76a25aa18972795f54da9e34targetblank9682c18a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreed11223e5ec4c9727a4531ecb09a8722a04e9239etargetblankd11223ea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/9682c188775daaff76a25aa18972795f54da9e34" target="_blank">9682c18</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/d11223e5ec4c9727a4531ecb09a8722a04e9239e" target="_blank">d11223e</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree9682c188775daaff76a25aa18972795f54da9e34targetblank9682c18a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreed11223e5ec4c9727a4531ecb09a8722a04e9239etargetblankd11223ea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -467,7 +467,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/9682c188775daaff76a25aa18972795f54da9e34" target="_blank">9682c18</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/d11223e5ec4c9727a4531ecb09a8722a04e9239e" target="_blank">d11223e</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -485,8 +485,8 @@ Untracked files:
     Untracked:  analysis/lps_cache/
     Untracked:  analysis/lps_gsea_fl_nmf.csv
     Untracked:  analysis/mcf7_cache/
-    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
     Untracked:  analysis/pancreas_cytokine_lsa_clustering_cache/
+    Untracked:  analysis/temp4.R~
     Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE156175_RAW/
     Untracked:  data/GSE183010/
@@ -545,6 +545,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/d11223e5ec4c9727a4531ecb09a8722a04e9239e/analysis/lps.Rmd" target="_blank">d11223e</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-17
+</td>
+<td>
+wflow_publish("lps.Rmd", view = F, verbose = T)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/lps.html" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+<td>
+Switched to using the flashier_nmf function from the
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1498,6 +1532,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/structure-plot-flashier-nmf-1.png" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/e558f1753c6ec9edc1ffa77398ada9acbb5729bc/docs/figure/lps.Rmd/structure-plot-flashier-nmf-1.png" target="_blank">e558f17</a>
 </td>
 <td>
@@ -1564,6 +1609,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/structure-plot-flashier-nmf-2-1.png" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/e558f1753c6ec9edc1ffa77398ada9acbb5729bc/docs/figure/lps.Rmd/structure-plot-flashier-nmf-2-1.png" target="_blank">e558f17</a>
 </td>
 <td>
@@ -1597,21 +1653,21 @@ that this LPS-related substructure is not obvious from a UMAP plot.</p>
 U &lt;- rsvd(shifted_log_counts,k = 40)$u
 Y &lt;- umap(U,n_neighbors = 20,metric = &quot;cosine&quot;,min_dist = 0.3,
           n_threads = 8,verbose = TRUE)
-# 21:28:48 UMAP embedding parameters a = 0.9922 b = 1.112
-# 21:28:48 Read 363 rows and found 40 numeric columns
-# 21:28:48 Using Annoy for neighbor search, n_neighbors = 20
-# 21:28:48 Building Annoy index with metric = cosine, n_trees = 50
+# 11:36:52 UMAP embedding parameters a = 0.9922 b = 1.112
+# 11:36:52 Read 363 rows and found 40 numeric columns
+# 11:36:52 Using Annoy for neighbor search, n_neighbors = 20
+# 11:36:52 Building Annoy index with metric = cosine, n_trees = 50
 # 0%   10   20   30   40   50   60   70   80   90   100%
 # [----|----|----|----|----|----|----|----|----|----|
 # **************************************************|
-# 21:28:48 Writing NN index file to temp file /var/folders/9b/ck4lp8s140lcksryyh4dppdr0000gp/T//Rtmp6OUPBv/file4a9153faa2
-# 21:28:48 Searching Annoy index using 8 threads, search_k = 2000
-# 21:28:48 Annoy recall = 100%
-# 21:28:48 Commencing smooth kNN distance calibration using 8 threads with target n_neighbors = 20
-# 21:28:48 Initializing from normalized Laplacian + noise (using irlba)
-# 21:28:48 Commencing optimization for 500 epochs, with 7880 positive edges
-# 21:28:48 Using rng type: pcg
-# 21:28:48 Optimization finished
+# 11:36:52 Writing NN index file to temp file /var/folders/9b/ck4lp8s140lcksryyh4dppdr0000gp/T//RtmproCvdB/file12a87c7dca96
+# 11:36:52 Searching Annoy index using 8 threads, search_k = 2000
+# 11:36:52 Annoy recall = 100%
+# 11:36:52 Commencing smooth kNN distance calibration using 8 threads with target n_neighbors = 20
+# 11:36:52 Initializing from normalized Laplacian + noise (using irlba)
+# 11:36:52 Commencing optimization for 500 epochs, with 7880 positive edges
+# 11:36:52 Using rng type: pcg
+# 11:36:52 Optimization finished
 x &lt;- Y[,1]
 y &lt;- Y[,2]
 samples$umap1 &lt;- x
@@ -1665,6 +1721,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/umap-plots-1.png" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/61bec23064abf79cae4265fe42b9b1bd97d23183/docs/figure/lps.Rmd/umap-plots-1.png" target="_blank">61bec23</a>
@@ -1737,6 +1804,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/compare-topics-1-1.png" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/61bec23064abf79cae4265fe42b9b1bd97d23183/docs/figure/lps.Rmd/compare-topics-1-1.png" target="_blank">61bec23</a>
 </td>
 <td>
@@ -1807,6 +1885,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/compare-topics-2-1.png" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/61bec23064abf79cae4265fe42b9b1bd97d23183/docs/figure/lps.Rmd/compare-topics-2-1.png" target="_blank">61bec23</a>
 </td>
 <td>
@@ -1871,6 +1960,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-1.png" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/61bec23064abf79cae4265fe42b9b1bd97d23183/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-1.png" target="_blank">61bec23</a>
@@ -1990,6 +2090,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-1.png" target="_blank">34e8a3a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/61bec23064abf79cae4265fe42b9b1bd97d23183/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-1.png" target="_blank">61bec23</a>
 </td>
 <td>
@@ -2014,6 +2125,26 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Here’s another view of the enrichment of the genes in the IFN-<span
+class="math inline">\(\alpha/\beta\)</span> pathway:</p>
+<pre class="r"><code>p1 &lt;- ggplot(subset(pdat,pathway),aes(x = nmf)) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 16) +
+  labs(x = &quot;factor 6&quot;,y = &quot;IFN-a/b genes&quot;) +
+  theme_cowplot(font_size = 10)
+p2 &lt;- ggplot(subset(pdat,!pathway),aes(x = nmf)) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 24) +
+  labs(x = &quot;factor 6&quot;,y = &quot;other genes&quot;) +
+  theme_cowplot(font_size = 10)
+p3 &lt;- ggplot(subset(pdat,pathway),aes(x = log10(tm + 1e-6))) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 16) +
+  labs(x = &quot;topic 7&quot;,y = &quot;IFN-a/b genes&quot;) +
+  theme_cowplot(font_size = 10)
+p4 &lt;- ggplot(subset(pdat,!pathway),aes(x = log10(tm + 1e-6))) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 24) +
+  labs(x = &quot;topic 7&quot;,y = &quot;other genes&quot;) +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)</code></pre>
+<p><img src="figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-2-1.png" width="480" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2043,7 +2174,7 @@ Session information
 # other attached packages:
 #  [1] uwot_0.2.3                 rsvd_1.0.5                
 #  [3] cowplot_1.1.3              ggrepel_0.9.6             
-#  [5] ggplot2_3.5.2              singlecelljamboreeR_0.1-28
+#  [5] ggplot2_3.5.2              singlecelljamboreeR_0.1-31
 #  [7] pathways_0.1-20            flashier_1.0.56           
 #  [9] ebnm_1.1-34                NNLM_0.4.4                
 # [11] fastTopics_0.7-25          data.table_1.17.6         
