@@ -422,10 +422,13 @@ colnames(F) <- paste0("k",1:15)
 gsea_fl_nmf <- singlecelljamboreeR::perform_gsea(F[,"k6"],gene_sets,
                                                  gene_set_info,L = 15,
                                                  verbose = FALSE)
-out <- gsea_fl_nmf$selected_gene_sets
-out$top_genes <- sapply(out$top_genes,function (x) paste(x,collapse = " "))
 write.csv(data.frame(gene = rownames(F),signal = round(F[,"k6"],digits = 6)),
           "lps_fl_nmf_k6.csv",row.names = FALSE,quote = FALSE)
+out <- gsea_fl_nmf$selected_gene_sets
+out$top_genes <- sapply(out$top_genes,function (x) paste(x,collapse = " "))
+out$lbf  <- round(out$lbf,digits = 6)
+out$pip  <- round(out$pip,digits = 6)
+out$coef <- round(out$coef,digits = 6)
 write_csv(out,"lps_gsea_fl_nmf_k6.csv",quote = "none")
 ```
 
