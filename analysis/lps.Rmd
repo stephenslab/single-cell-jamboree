@@ -424,7 +424,9 @@ gsea_fl_nmf <- singlecelljamboreeR::perform_gsea(F[,"k6"],gene_sets,
                                                  verbose = FALSE)
 out <- gsea_fl_nmf$selected_gene_sets
 out$top_genes <- sapply(out$top_genes,function (x) paste(x,collapse = " "))
-write_csv(out,"lps_gsea_fl_nmf.csv",quote = "none")
+write.csv(data.frame(gene = rownames(F),signal = round(F[,"k6"],digits = 6)),
+          "lps_fl_nmf_k6.csv",row.names = FALSE,quote = FALSE)
+write_csv(out,"lps_gsea_fl_nmf_k6.csv",quote = "none")
 ```
 
 The top gene set is the IFN-$\alpha/\beta$ signaling pathway, but
