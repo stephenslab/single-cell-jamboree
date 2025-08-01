@@ -131,7 +131,8 @@ shifted_log_counts <- log1p(counts/(a*s))
 Let's see what happens when we apply PCA to the shifted log counts and
 GLM-PCA to the counts. As we will see, PCA and GLM-PCA both show a
 clear clustering of the data that corresponds to the different
-treatments. However, the PCs are not individually interpretable.
+treatments. However, the PCs are not necessarily individually
+interpretable.
 
 Run PCA on the shifted log counts, and plot the first 2 PCs:
 
@@ -290,6 +291,62 @@ print(plot_grid(p1,p2,p3,nrow = 1,ncol = 3))
 Note that the topics ("tm") are plotted along the x-axis on the log
 scale.
 
+## Other results
+
+Note that the EBNMF result with $K = 3$ is less satisfying---it does
+not identify a factor specifically for the RA exposure---which is why
+I have focussed above on the $K = 4$ result.
+
+```{r flashier-nmf-k3, cache=TRUE}
+fl_nmf_k3 <- flash(shifted_log_counts,ebnm_fn = ebnm_point_exponential,
+                   var_type = 2, greedy_Kmax = 3,S = s1,backfit = TRUE,
+		   		   verbose = 0)
+```
+
+Here's the Structure plot for this EBNMF model with $K = 3$:
+
+```{r structure-plot-nmf-k3, fig.height=1.75, fig.width=5}
+topic_colors <- c("dodgerblue","darkblue","tomato")
+L <- ldf(fl_nmf_k3,type = "i")$L
+structure_plot(L,grouping = samples$label,topics = 3:1,
+               loadings_order = 1:n,colors = topic_colors) +
+  labs(y = "membership") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
+
+Also, with $K = 4$, the topic model doesn't quite identify a
+"baseline", but instead identifies two "control condition" (ethanol)
+topics:
+
+```{r fit-topic-model-k4, fig.height=1.75, fig.width=5}
+topic_colors <- c("olivedrab","dodgerblue","darkblue","tomato")
+set.seed(1)
+tm_k4 <- fit_poisson_nmf(counts,k = 4,init.method = "random",
+                         numiter = 100,verbose = "none",
+                         control = list(nc = 4,extrapolate = FALSE))
+tm_k4 <- fit_poisson_nmf(counts,fit0 = tm_k4,numiter = 200,verbose = "none",
+                         control = list(nc = 4,extrapolate = TRUE))
+L <- poisson2multinom(tm_k4)$L
+structure_plot(L,grouping = samples$label,topics = 1:4,
+               loadings_order = 1:n,colors = topic_colors) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
+
+As before, the expression levels remain very strongly correlated amongst
+the topics, e.g.,
+
+```{r gene-matrix-scatterplot-topic-model-k4, fig.height=2, fig.width=6}
+F <- poisson2multinom(tm_k4)$F
+F <- log10(F + 1e-6)
+p1 <- gene_matrix_scatterplot(F,"k2","k3")
+p2 <- gene_matrix_scatterplot(F,"k2","k4")
+p3 <- gene_matrix_scatterplot(F,"k3","k4")
+plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
+```
+
+reinforcing the general point that the topic model has a tendency
+toward "cluster-like" structure.
+ 
 [sanford2020elife]: https://doi.org/10.7554/eLife.59388
 [mcf7-geo]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE152749
 

@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Eric Weine" />
+<meta name="author" content="Eric Weine and Peter Carbonetto" />
 
 
-<title>Preparation and initial exploration of the LSA 2021 “pancreas cytokine” data set</title>
+<title>Preparation and initial exploration of the LSA 2021 pancreas data set</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -271,8 +271,8 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Preparation and initial exploration of the
-LSA 2021 “pancreas cytokine” data set</h1>
-<h4 class="author">Eric Weine</h4>
+LSA 2021 pancreas data set</h1>
+<h4 class="author">Eric Weine and Peter Carbonetto</h4>
 
 </div>
 
@@ -301,7 +301,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-17
+<strong>Last updated:</strong> 2025-07-11
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -331,21 +331,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -405,16 +402,24 @@ versions is critical for reproducibility.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
 </p>
 </div>
-<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be
-confident that you successfully produced the results during this
-run.</p>
+The following chunks had caches available:
+<ul>
+<li>
+fit-topic-model
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory
+<code>pancreas_cytokine_lsa_clustering_cache</code> and re-run the
+analysis. To have workflowr automatically delete the cache directory
+prior to building the file, set <code>delete_cache = TRUE</code> when
+running <code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
 </div>
 </div>
 </div>
@@ -436,15 +441,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeba07b394b2984d9658f5d02232720b2734118dcctargetblankba07b39a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree17a796d815221fcdcbeb6b64bd19f93524112d32targetblank17a796da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ba07b394b2984d9658f5d02232720b2734118dcc" target="_blank">ba07b39</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/17a796d815221fcdcbeb6b64bd19f93524112d32" target="_blank">17a796d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeba07b394b2984d9658f5d02232720b2734118dcctargetblankba07b39a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree17a796d815221fcdcbeb6b64bd19f93524112d32targetblank17a796da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -454,7 +459,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/ba07b394b2984d9658f5d02232720b2734118dcc" target="_blank">ba07b39</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/17a796d815221fcdcbeb6b64bd19f93524112d32" target="_blank">17a796d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -469,14 +474,19 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
+    Untracked:  analysis/lps_cache/
+    Untracked:  analysis/mcf7_cache/
+    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
+    Untracked:  analysis/pancreas_cytokine_lsa_clustering_cache/
+    Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE156175_RAW/
-    Untracked:  data/panc_cyto_lsa.Rdata
-    Untracked:  data/panc_cyto_lsa_res/
-    Untracked:  data/panc_cyto_lsa_tm_k12.rds
-
-Unstaged changes:
-    Modified:   analysis/pancreas_cytokine_lsa_clustering.Rmd
-    Modified:   analysis/pancreas_cytokine_mf_comparison.Rmd
+    Untracked:  data/GSE183010/
+    Untracked:  data/Immune_ALL_human.h5ad
+    Untracked:  data/pancreas_cytokine.RData
+    Untracked:  data/pancreas_cytokine_lsa.RData
+    Untracked:  data/pancreas_endocrine.RData
+    Untracked:  data/pancreas_endocrine_alldays.h5ad
+    Untracked:  output/panc_cyto_lsa_res/
 
 </code></pre>
 <p>
@@ -528,6 +538,142 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/17a796d815221fcdcbeb6b64bd19f93524112d32/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">17a796d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-11
+</td>
+<td>
+wflow_publish("pancreas_cytokine_lsa_clustering.Rmd", verbose = T,
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/6f9bee5bfc6f24558a7426918c39120f906df05a/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">6f9bee5</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-11
+</td>
+<td>
+Added back the Seurat analysis to pancreas_cytokine_lsa_clustering.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/932597099a88745ff2267e2efa9261b05cf4066f/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">9325970</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-09
+</td>
+<td>
+A few edits to pancreas_cytokine_lsa_clustering.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/746b8f3ba53f627e26452d2981cdcc314118d4c9/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">746b8f3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-09
+</td>
+<td>
+A few small revisions to the pancreas_cytokine_lsa_clustering analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/5ec605ffa13f606ab306c786e71a3e26a62efe18/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">5ec605f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-09
+</td>
+<td>
+A few more edits to the pancreas_cytokine_lsa_clustering analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ac2f5f982536c9c381e2897afa6ff0e36827d98a/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">ac2f5f9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-09
+</td>
+<td>
+A few revisions/fixes to the pancreas_cytokine_lsa_clustering analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/7af0ecd58c483b71bcaf350ad008aacb3a3edc3e/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">7af0ecd</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-06-17
+</td>
+<td>
+added umap plot to clustering
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/7af0ecd58c483b71bcaf350ad008aacb3a3edc3e/docs/pancreas_cytokine_lsa_clustering.html" target="_blank">7af0ecd</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-06-17
+</td>
+<td>
+added umap plot to clustering
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/a7e6cd59545ebb400c5e99ce03e7f500e13fd71b/analysis/pancreas_cytokine_lsa_clustering.Rmd" target="_blank">a7e6cd5</a>
 </td>
 <td>
@@ -566,368 +712,174 @@ added initial clustering of LSA pancreas cytokine paper
 </div>
 <p>Here we will prepare the single-cell RNA-seq data from <a
 href="https://www.life-science-alliance.org/content/4/6/e202000949">Stancill
-et al 2021</a> for analysis with fastTopics and log1pNMF. The data files
-were obtained by downloading and extracting tar file GSE183010_RAW.tar
-from <a
+et al 2021</a> for analysis with the topic model and other matrix
+factorization methods. The data files were obtained by downloading and
+the <code>GSE156175_RAW.tar</code> file from <a
 href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE156175">GEO
-accession GSE156175</a>. To run this script, download the files from
-GEO, unzip each of the .gz files in GSE183010_RAW, and then put this
-directory into <code>../data/</code>.</p>
-<p>Load in the data:</p>
-<pre class="r"><code>counts1 &lt;- Matrix::t(
-  Matrix::readMM(&quot;../data/GSE156175_RAW/GSM5842388_Rep1_S1_matrix.mtx&quot;)
-  )
-
-genes1 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM5842388_Rep1_S1_features.tsv&quot;,
-  col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;)
-  )
-# Rows: 31053 Columns: 3
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (3): ensembl, symbol, type
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes1 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM5842388_Rep1_S1_barcodes.tsv&quot;,
-  col_names = c(&quot;barcode&quot;)
-  )
-# Rows: 3486 Columns: 1
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (1): barcode
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes1$barcode &lt;- substr(barcodes1$barcode, 1, nchar(barcodes1$barcode) - 2)
-
+accession GSE156175</a>. To run this script, download this file from GEO
+and extract the contents into a folder called “GSE156175_RAW” in the
+data directory.</p>
+<p>Load the R packages used to perform the data processing and initial
+analyses:</p>
+<pre class="r"><code>library(Matrix)
+library(tools)
+library(readr)
+library(cowplot)
+library(fastTopics)
+library(dplyr)
+library(Seurat)</code></pre>
+<p>Set the seed for reproducibility:</p>
+<pre class="r"><code>set.seed(1)</code></pre>
+<p>Import the sample information:</p>
+<pre class="r"><code>barcodes1&lt;-read_tsv(&quot;../data/GSE156175_RAW/GSM5842388_Rep1_S1_barcodes.tsv.gz&quot;,
+                    col_names = &quot;barcode&quot;)
+barcodes2 &lt;- read_tsv(&quot;../data/GSE156175_RAW/GSM4726017_S2_barcodes.tsv.gz&quot;,
+                      col_names = &quot;barcode&quot;)
+barcodes3 &lt;- read_tsv(&quot;../data/GSE156175_RAW/GSM4726018_S3_barcodes.tsv.gz&quot;,
+                      col_names = &quot;barcode&quot;)
+barcodes4 &lt;- read_tsv(&quot;../data/GSE156175_RAW/GSM4726019_S4_barcodes.tsv.gz&quot;,
+                      col_names = &quot;barcode&quot;)
+barcodes1$barcode &lt;- substr(barcodes1$barcode,1,nchar(barcodes1$barcode) - 2)
+barcodes2$barcode &lt;- substr(barcodes2$barcode,1,nchar(barcodes2$barcode) - 2)
+barcodes3$barcode &lt;- substr(barcodes3$barcode,1,nchar(barcodes3$barcode) - 2)
+barcodes4$barcode &lt;- substr(barcodes4$barcode,1,nchar(barcodes4$barcode) - 2)
 barcodes1$condition &lt;- &quot;Untreated&quot;
-
-rownames(counts1) &lt;- paste0(barcodes1$barcode, &quot;_&quot;, barcodes1$condition)
-colnames(counts1) &lt;- genes1$symbol
-
-
-counts2 &lt;- Matrix::t(
-  Matrix::readMM(&quot;../data/GSE156175_RAW/GSM4726017_S2_matrix.mtx&quot;)
-)
-
-genes2 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM4726017_S2_features.tsv&quot;,
-  col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;)
-)
-# Rows: 31053 Columns: 3
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (3): ensembl, symbol, type
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes2 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM4726017_S2_barcodes.tsv&quot;,
-  col_names = c(&quot;barcode&quot;)
-)
-# Rows: 2911 Columns: 1
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (1): barcode
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes2$barcode &lt;- substr(barcodes2$barcode, 1, nchar(barcodes2$barcode) - 2)
-
 barcodes2$condition &lt;- &quot;IL-1B&quot;
-
-rownames(counts2) &lt;- paste0(barcodes2$barcode, &quot;_&quot;, barcodes2$condition)
-colnames(counts2) &lt;- genes2$symbol
-
-counts3 &lt;- Matrix::t(
-  Matrix::readMM(&quot;../data/GSE156175_RAW/GSM4726018_S3_matrix.mtx&quot;)
-)
-
-genes3 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM4726018_S3_features.tsv&quot;,
-  col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;)
-)
-# Rows: 31053 Columns: 3
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (3): ensembl, symbol, type
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes3 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM4726018_S3_barcodes.tsv&quot;,
-  col_names = c(&quot;barcode&quot;)
-)
-# Rows: 3694 Columns: 1
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (1): barcode
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes3$barcode &lt;- substr(barcodes3$barcode, 1, nchar(barcodes3$barcode) - 2)
-
 barcodes3$condition &lt;- &quot;IFNg&quot;
-
-rownames(counts3) &lt;- paste0(barcodes3$barcode, &quot;_&quot;, barcodes3$condition)
-colnames(counts3) &lt;- genes3$symbol
-
-counts4 &lt;- Matrix::t(
-  Matrix::readMM(&quot;../data/GSE156175_RAW/GSM4726019_S4_matrix.mtx&quot;)
-)
-
-genes4 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM4726019_S4_features.tsv&quot;,
-  col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;)
-)
-# Rows: 31053 Columns: 3
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (3): ensembl, symbol, type
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes4 &lt;- readr::read_tsv(
-  &quot;../data/GSE156175_RAW/GSM4726019_S4_barcodes.tsv&quot;,
-  col_names = c(&quot;barcode&quot;)
-)
-# Rows: 2480 Columns: 1
-# ── Column specification ────────────────────────────────────────────────────────
-# Delimiter: &quot;\t&quot;
-# chr (1): barcode
-# 
-# ℹ Use `spec()` to retrieve the full column specification for this data.
-# ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-barcodes4$barcode &lt;- substr(barcodes4$barcode, 1, nchar(barcodes4$barcode) - 2)
-
 barcodes4$condition &lt;- &quot;IL-1B_IFNg&quot;
-
+barcodes &lt;- rbind(barcodes1, barcodes2, barcodes3, barcodes4)
+barcodes$cell_bc &lt;- paste0(barcodes$barcode, &quot;_&quot;, barcodes$condition)
+barcodes$condition &lt;- factor(barcodes$condition)</code></pre>
+<p>Import the gene information:</p>
+<pre class="r"><code>genes1 &lt;- read_tsv(&quot;../data/GSE156175_RAW/GSM5842388_Rep1_S1_features.tsv.gz&quot;,
+                   col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;))
+genes2 &lt;- read_tsv(&quot;../data/GSE156175_RAW/GSM4726017_S2_features.tsv.gz&quot;,
+                   col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;))
+genes3 &lt;- read_tsv(&quot;../data/GSE156175_RAW/GSM4726018_S3_features.tsv.gz&quot;,
+                   col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;))
+genes4 &lt;- read_tsv(&quot;../data/GSE156175_RAW/GSM4726019_S4_features.tsv.gz&quot;,
+                   col_names = c(&quot;ensembl&quot;, &quot;symbol&quot;, &quot;type&quot;))
+genes &lt;- genes1
+genes$type &lt;- factor(genes$type)</code></pre>
+<p>Now import in the read counts:</p>
+<pre class="r"><code>counts1 &lt;- t(readMM(&quot;../data/GSE156175_RAW/GSM5842388_Rep1_S1_matrix.mtx.gz&quot;))
+counts2 &lt;- t(readMM(&quot;../data/GSE156175_RAW/GSM4726017_S2_matrix.mtx.gz&quot;))
+counts3 &lt;- t(readMM(&quot;../data/GSE156175_RAW/GSM4726018_S3_matrix.mtx.gz&quot;))
+counts4 &lt;- t(readMM(&quot;../data/GSE156175_RAW/GSM4726019_S4_matrix.mtx.gz&quot;))
+rownames(counts1) &lt;- paste0(barcodes1$barcode, &quot;_&quot;, barcodes1$condition)
+rownames(counts2) &lt;- paste0(barcodes2$barcode, &quot;_&quot;, barcodes2$condition)
+rownames(counts3) &lt;- paste0(barcodes3$barcode, &quot;_&quot;, barcodes3$condition)
 rownames(counts4) &lt;- paste0(barcodes4$barcode, &quot;_&quot;, barcodes4$condition)
+colnames(counts1) &lt;- genes1$symbol
+colnames(counts2) &lt;- genes2$symbol
+colnames(counts3) &lt;- genes3$symbol
 colnames(counts4) &lt;- genes4$symbol
-
 counts &lt;- rbind(
   as.matrix(counts1),
   as.matrix(counts2),
   as.matrix(counts3),
   as.matrix(counts4)
 )
-
-counts &lt;- as(counts, &quot;CsparseMatrix&quot;)
-
-barcodes &lt;- rbind(
-  barcodes1, barcodes2, barcodes3, barcodes4
-)
-
-barcodes$cell_bc &lt;- paste0(barcodes$barcode, &quot;_&quot;, barcodes$condition)
-
-rm(counts1, counts2, counts3, counts4, barcodes1, barcodes2, barcodes3, barcodes4,
-   genes1, genes2, genes3, genes4
-   )
-gc()
-#            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
-# Ncells  3509540 187.5    6319158  337.5         NA   5243114  280.1
-# Vcells 51291359 391.4  815222764 6219.7      16384 892646075 6810.4</code></pre>
-<p>Remove outliers in terms of total UMI count and very few expressed
+counts &lt;- as(counts, &quot;CsparseMatrix&quot;)</code></pre>
+<p>Remove genes that are not expressed in any cell:</p>
+<pre class="r"><code>x      &lt;- colSums(counts)
+j      &lt;- which(x &gt; 0)
+genes  &lt;- genes[j,]
+counts &lt;- counts[,j]</code></pre>
+<p>Remove cells in terms (i) total UMI count and (ii) very few expressed
 genes:</p>
-<pre class="r"><code>counts &lt;- counts[, Matrix::colSums(counts) &gt; 0]
-
-x &lt;- rowSums(counts &gt; 0)
-i &lt;- which(x &gt; 2000)
-counts  &lt;- counts[i,]
-
-outliers &lt;- rownames(counts)[Matrix::rowSums(counts) &gt; 60000]
-i        &lt;- which(!is.element(rownames(counts),outliers))
+<pre class="r"><code>x        &lt;- rowSums(counts &gt; 0)
+i        &lt;- which(x &gt; 2000)
+barcodes &lt;- barcodes[i,]
+counts   &lt;- counts[i,]
+x        &lt;- rowSums(counts)
+i        &lt;- which(x &lt;= 60000)
+barcodes &lt;- barcodes[i,]
 counts   &lt;- counts[i,]</code></pre>
-<p>Remove cells with high mitochondrial counts, and remove MALAT1,
-ribosomal, and mitochondrial genes for further analysis:</p>
-<pre class="r"><code>mito_genes &lt;- which(substr(colnames(counts),1,2) == &quot;mt&quot;)
+<p>PC: The filtering step <code>x &gt; 2000</code> seems a bit
+aggressive. I think we could have retained some more cells.</p>
+<p>Remove cells with high mitochondrial counts:</p>
+<pre class="r"><code>mito_genes &lt;- which(substr(genes$symbol,1,2) == &quot;mt&quot;)
 s          &lt;- rowSums(counts)
-s_mito     &lt;- counts[,mito_genes]
-prop_mito  &lt;- rowSums(s_mito)/s
+s_mito     &lt;- rowSums(counts[,mito_genes])
+prop_mito  &lt;- s_mito/s
 i          &lt;- which(prop_mito &lt; 0.1)
-counts  &lt;- counts[i,]
-
-j &lt;- which(!(grepl(&quot;^mt-&quot;,colnames(counts)) |
-               grepl(&quot;^Rp[sl]&quot;,colnames(counts))))
+barcodes   &lt;- barcodes[i,]
+counts     &lt;- counts[i,]</code></pre>
+<p>PC: Again, the filtering step <code>prop_mito &lt; 0.1</code> seems a
+bit aggressive.</p>
+<p>Remove <em>MALAT1</em>, ribosomal genes, and mitochondrial genes:</p>
+<pre class="r"><code>j &lt;- which(!(grepl(&quot;^mt-&quot;,genes$symbol) | grepl(&quot;^Rp[sl]&quot;,genes$symbol)))
+genes  &lt;- genes[j,]
 counts &lt;- counts[,j]
-
-j      &lt;- which(colnames(counts) != &quot;Malat1&quot;)
-counts &lt;- counts[,j]
-
-j      &lt;- which(colSums(counts &gt; 0) &gt; 2)
-counts &lt;- counts[,j]
-
-rm(s_mito, i, j, prop_mito, s, x)
-gc()
-
-barcodes &lt;- barcodes %&gt;%
-  dplyr::filter(cell_bc %in% rownames(counts))
-#            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
-# Ncells  3498724 186.9    6319158  337.5         NA   5243114  280.1
-# Vcells 43331898 330.6  652178212 4975.8      16384 892646075 6810.4</code></pre>
+j      &lt;- which(genes$symbol != &quot;Malat1&quot;)
+genes  &lt;- genes[j,]
+counts &lt;- counts[,j]</code></pre>
+<p>Remove other genes that are expressed in only 1 or 2 cells:</p>
+<pre class="r"><code>x      &lt;- colSums(counts &gt; 0)
+j      &lt;- which(x &gt; 2)
+genes  &lt;- genes[j,]
+counts &lt;- counts[,j]</code></pre>
 <p>Fit a topic model with <span class="math inline">\(K =
 12\)</span>.</p>
 <pre class="r"><code>set.seed(1)
-tm_fit &lt;- fit_poisson_nmf(
-  X = as(counts, &quot;CsparseMatrix&quot;),
-  k = 12,
-  control = list(nc = 7)
-)</code></pre>
-<p>Here is the initial structure plot:</p>
-<pre class="r"><code>structure_plot(tm_fit, n = Inf)$plot
-# Running tsne on 7606 x 12 matrix.</code></pre>
-<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
+tm_fit &lt;- fit_poisson_nmf(X = counts,k = 12,control = list(nc = 7),
+                          verbose = &quot;none&quot;)</code></pre>
+<div class="alert alert-warning">
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
-Past versions of unnamed-chunk-7-1.png
-</button>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
 </p>
-<div id="fig-unnamed-chunk-7-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a7e6cd59545ebb400c5e99ce03e7f500e13fd71b/docs/figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-7-1.png" target="_blank">a7e6cd5</a>
-</td>
-<td>
-Eric Weine
-</td>
-<td>
-2025-06-16
-</td>
-</tr>
-</tbody>
-</table>
 </div>
-</div>
-<pre><code># Read the 7606 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 1.28 seconds (sparsity = 0.051079)!
-# Learning embedding...
-# Iteration 50: error is 80.693384 (50 iterations in 0.69 seconds)
-# Iteration 100: error is 69.957217 (50 iterations in 0.69 seconds)
-# Iteration 150: error is 67.787148 (50 iterations in 0.67 seconds)
-# Iteration 200: error is 67.279083 (50 iterations in 0.67 seconds)
-# Iteration 250: error is 67.091537 (50 iterations in 0.68 seconds)
-# Iteration 300: error is 2.356925 (50 iterations in 0.67 seconds)
-# Iteration 350: error is 2.061112 (50 iterations in 0.66 seconds)
-# Iteration 400: error is 1.875118 (50 iterations in 0.66 seconds)
-# Iteration 450: error is 1.759533 (50 iterations in 0.66 seconds)
-# Iteration 500: error is 1.675165 (50 iterations in 0.66 seconds)
-# Iteration 550: error is 1.611683 (50 iterations in 0.66 seconds)
-# Iteration 600: error is 1.560457 (50 iterations in 0.66 seconds)
-# Iteration 650: error is 1.517941 (50 iterations in 0.65 seconds)
-# Iteration 700: error is 1.482490 (50 iterations in 0.65 seconds)
-# Iteration 750: error is 1.452615 (50 iterations in 0.65 seconds)
-# Iteration 800: error is 1.427279 (50 iterations in 0.65 seconds)
-# Iteration 850: error is 1.405621 (50 iterations in 0.65 seconds)
-# Iteration 900: error is 1.386989 (50 iterations in 0.65 seconds)
-# Iteration 950: error is 1.370807 (50 iterations in 0.65 seconds)
-# Iteration 1000: error is 1.356731 (50 iterations in 0.65 seconds)
-# Fitting performed in 13.24 seconds.</code></pre>
+<p>Here is the Structure plot:</p>
+<pre class="r"><code>set.seed(1)
+structure_plot(tm_fit,n = Inf)
+# Running tsne on 7606 x 12 matrix.</code></pre>
+<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/structure-plot-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>Below is a heatmap annotation of the marker genes given in the
 Stancill paper:</p>
 <pre class="r"><code>scale_rows &lt;- function (A)
   A / apply(A,1,max)
-# using marker genes, I would like to connect each topic to a celltype
-marker_genes &lt;- c(&quot;Ins1&quot;,&quot;Ins2&quot;,&quot;Gcg&quot;,&quot;Sst&quot;,
-                  &quot;Ppy&quot;,&quot;Krt17&quot;,&quot;Ccr5&quot;,
-                  &quot;Col1a1&quot;, &quot;Cd34&quot;, &quot;Cpa1&quot;)
+marker_genes &lt;- c(&quot;Ins1&quot;,&quot;Ins2&quot;,&quot;Gcg&quot;,&quot;Sst&quot;,&quot;Ppy&quot;,&quot;Krt17&quot;,&quot;Ccr5&quot;,
+                  &quot;Col1a1&quot;,&quot;Cd34&quot;,&quot;Cpa1&quot;)
 F &lt;- poisson2multinom(tm_fit)$F
 F &lt;- F[marker_genes,]
 F &lt;- scale_rows(F)
 rownames(F) &lt;- marker_genes
-p &lt;- annotation_heatmap(F,select_features = &quot;all&quot;,verbose = FALSE)
-print(p)</code></pre>
-<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
-Past versions of unnamed-chunk-8-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-8-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a7e6cd59545ebb400c5e99ce03e7f500e13fd71b/docs/figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-8-1.png" target="_blank">a7e6cd5</a>
-</td>
-<td>
-Eric Weine
-</td>
-<td>
-2025-06-16
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+annotation_heatmap(F,select_features = &quot;all&quot;,verbose = FALSE)</code></pre>
+<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/annotation-heatmap-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>Below are some comments relating my guesses about factor
 associations. Many of the beta associated factors are non-specific:</p>
-<pre class="r"><code># factor associations
-# k1: ?
-# k2: Acinar
-# k3: Endothelial/Mesnchymal
-# k4: ? (presumably Beta)
-# k5: Ductal
-# k6: Beta
-# k7: ? (presumably Beta)
-# k8: Delta
-# k9: Alpha
-# k10: Gamma (PP) 
-# k11: Macrophage
-# k12: ? (presumably Beta)</code></pre>
+<ul>
+<li>k1: ?</li>
+<li>k2: acinar</li>
+<li>k3: endothelial/mesenchymal</li>
+<li>k4: ? (presumably beta)</li>
+<li>k5: ductal</li>
+<li>k6: deta</li>
+<li>k7: ? (presumably beta)</li>
+<li>k8: delta</li>
+<li>k9: alpha</li>
+<li>k10: gamma (PP)</li>
+<li>k11: macrophage</li>
+<li>k12: ? (presumably beta)</li>
+</ul>
 <p>Now, I do celltype assignments. I used 1/3 as a threshold on the
 topic proportions to determine celltype because this seemed to look
 reasonable visually. Below is the structure plot with cells grouped by
 type.</p>
 <pre class="r"><code>L &lt;- poisson2multinom(tm_fit)$L
-
 L_df &lt;- as.data.frame(L)
-
 L_df &lt;- L_df %&gt;%
-  dplyr::mutate(
+  mutate(
     cluster = case_when(
       k2 &gt; (1/3) ~ &quot;Acinar&quot;,
       k3 &gt; (1/3) ~ &quot;Endothelial/Mesnchymal&quot;,
@@ -939,8 +891,7 @@ L_df &lt;- L_df %&gt;%
       TRUE ~ &quot;Beta&quot;
     )
   )
-
-structure_plot(tm_fit, grouping = L_df$cluster, gap = 20, n = Inf)$plot
+structure_plot(tm_fit, grouping = L_df$cluster, gap = 30, n = Inf)
 # Running tsne on 860 x 12 matrix.
 # Running tsne on 5780 x 12 matrix.
 # Running tsne on 359 x 12 matrix.
@@ -948,233 +899,7 @@ structure_plot(tm_fit, grouping = L_df$cluster, gap = 20, n = Inf)$plot
 # Running tsne on 244 x 12 matrix.
 # Running tsne on 145 x 12 matrix.
 # Running tsne on 107 x 12 matrix.</code></pre>
-<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
-Past versions of unnamed-chunk-10-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a7e6cd59545ebb400c5e99ce03e7f500e13fd71b/docs/figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-10-1.png" target="_blank">a7e6cd5</a>
-</td>
-<td>
-Eric Weine
-</td>
-<td>
-2025-06-16
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code># Read the 860 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 0.13 seconds (sparsity = 0.435968)!
-# Learning embedding...
-# Iteration 50: error is 54.450555 (50 iterations in 0.06 seconds)
-# Iteration 100: error is 53.060370 (50 iterations in 0.06 seconds)
-# Iteration 150: error is 52.992331 (50 iterations in 0.05 seconds)
-# Iteration 200: error is 52.992325 (50 iterations in 0.05 seconds)
-# Iteration 250: error is 52.992325 (50 iterations in 0.05 seconds)
-# Iteration 300: error is 0.955465 (50 iterations in 0.05 seconds)
-# Iteration 350: error is 0.923065 (50 iterations in 0.05 seconds)
-# Iteration 400: error is 0.919553 (50 iterations in 0.05 seconds)
-# Iteration 450: error is 0.919322 (50 iterations in 0.05 seconds)
-# Iteration 500: error is 0.919307 (50 iterations in 0.05 seconds)
-# Iteration 550: error is 0.919306 (50 iterations in 0.05 seconds)
-# Iteration 600: error is 0.919305 (50 iterations in 0.05 seconds)
-# Iteration 650: error is 0.919306 (50 iterations in 0.06 seconds)
-# Iteration 700: error is 0.919306 (50 iterations in 0.05 seconds)
-# Iteration 750: error is 0.919306 (50 iterations in 0.05 seconds)
-# Iteration 800: error is 0.919306 (50 iterations in 0.05 seconds)
-# Iteration 850: error is 0.919306 (50 iterations in 0.05 seconds)
-# Iteration 900: error is 0.919307 (50 iterations in 0.05 seconds)
-# Iteration 950: error is 0.919306 (50 iterations in 0.05 seconds)
-# Iteration 1000: error is 0.919306 (50 iterations in 0.05 seconds)
-# Fitting performed in 1.08 seconds.
-# Read the 5780 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 0.97 seconds (sparsity = 0.067797)!
-# Learning embedding...
-# Iteration 50: error is 77.350304 (50 iterations in 0.50 seconds)
-# Iteration 100: error is 67.687150 (50 iterations in 0.55 seconds)
-# Iteration 150: error is 65.479529 (50 iterations in 0.64 seconds)
-# Iteration 200: error is 65.141657 (50 iterations in 0.47 seconds)
-# Iteration 250: error is 65.077157 (50 iterations in 0.62 seconds)
-# Iteration 300: error is 2.110690 (50 iterations in 0.58 seconds)
-# Iteration 350: error is 1.866561 (50 iterations in 0.73 seconds)
-# Iteration 400: error is 1.741297 (50 iterations in 0.70 seconds)
-# Iteration 450: error is 1.659457 (50 iterations in 0.49 seconds)
-# Iteration 500: error is 1.598966 (50 iterations in 0.62 seconds)
-# Iteration 550: error is 1.551741 (50 iterations in 0.56 seconds)
-# Iteration 600: error is 1.515450 (50 iterations in 0.60 seconds)
-# Iteration 650: error is 1.486684 (50 iterations in 0.56 seconds)
-# Iteration 700: error is 1.463431 (50 iterations in 0.64 seconds)
-# Iteration 750: error is 1.444508 (50 iterations in 0.49 seconds)
-# Iteration 800: error is 1.428971 (50 iterations in 0.70 seconds)
-# Iteration 850: error is 1.416041 (50 iterations in 0.53 seconds)
-# Iteration 900: error is 1.405163 (50 iterations in 0.47 seconds)
-# Iteration 950: error is 1.395816 (50 iterations in 0.47 seconds)
-# Iteration 1000: error is 1.387994 (50 iterations in 0.63 seconds)
-# Fitting performed in 11.54 seconds.
-# Read the 359 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 0.05 seconds (sparsity = 0.941659)!
-# Learning embedding...
-# Iteration 50: error is 44.081109 (50 iterations in 0.02 seconds)
-# Iteration 100: error is 44.081563 (50 iterations in 0.02 seconds)
-# Iteration 150: error is 44.082708 (50 iterations in 0.02 seconds)
-# Iteration 200: error is 44.081505 (50 iterations in 0.02 seconds)
-# Iteration 250: error is 44.083056 (50 iterations in 0.02 seconds)
-# Iteration 300: error is 0.508840 (50 iterations in 0.02 seconds)
-# Iteration 350: error is 0.505643 (50 iterations in 0.02 seconds)
-# Iteration 400: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 450: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 500: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 550: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 600: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 650: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 700: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 750: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 800: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 850: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 900: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 950: error is 0.505648 (50 iterations in 0.02 seconds)
-# Iteration 1000: error is 0.505648 (50 iterations in 0.02 seconds)
-# Fitting performed in 0.39 seconds.
-# Read the 101 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 32.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 0.00 seconds (sparsity = 0.987354)!
-# Learning embedding...
-# Iteration 50: error is 50.755288 (50 iterations in 0.00 seconds)
-# Iteration 100: error is 49.222799 (50 iterations in 0.00 seconds)
-# Iteration 150: error is 49.872689 (50 iterations in 0.00 seconds)
-# Iteration 200: error is 49.549441 (50 iterations in 0.00 seconds)
-# Iteration 250: error is 49.560218 (50 iterations in 0.00 seconds)
-# Iteration 300: error is 1.473837 (50 iterations in 0.00 seconds)
-# Iteration 350: error is 0.844872 (50 iterations in 0.00 seconds)
-# Iteration 400: error is 0.748577 (50 iterations in 0.00 seconds)
-# Iteration 450: error is 0.719521 (50 iterations in 0.00 seconds)
-# Iteration 500: error is 0.717439 (50 iterations in 0.00 seconds)
-# Iteration 550: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 600: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 650: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 700: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 750: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 800: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 850: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 900: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 950: error is 0.717405 (50 iterations in 0.00 seconds)
-# Iteration 1000: error is 0.717405 (50 iterations in 0.00 seconds)
-# Fitting performed in 0.07 seconds.
-# Read the 244 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 80.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 0.02 seconds (sparsity = 0.995599)!
-# Learning embedding...
-# Iteration 50: error is 41.382427 (50 iterations in 0.01 seconds)
-# Iteration 100: error is 41.375883 (50 iterations in 0.01 seconds)
-# Iteration 150: error is 41.380250 (50 iterations in 0.01 seconds)
-# Iteration 200: error is 41.378794 (50 iterations in 0.01 seconds)
-# Iteration 250: error is 41.372613 (50 iterations in 0.01 seconds)
-# Iteration 300: error is 0.308338 (50 iterations in 0.01 seconds)
-# Iteration 350: error is 0.305214 (50 iterations in 0.01 seconds)
-# Iteration 400: error is 0.305232 (50 iterations in 0.01 seconds)
-# Iteration 450: error is 0.305242 (50 iterations in 0.01 seconds)
-# Iteration 500: error is 0.305233 (50 iterations in 0.01 seconds)
-# Iteration 550: error is 0.305242 (50 iterations in 0.01 seconds)
-# Iteration 600: error is 0.305232 (50 iterations in 0.01 seconds)
-# Iteration 650: error is 0.305232 (50 iterations in 0.01 seconds)
-# Iteration 700: error is 0.305232 (50 iterations in 0.01 seconds)
-# Iteration 750: error is 0.305232 (50 iterations in 0.01 seconds)
-# Iteration 800: error is 0.305242 (50 iterations in 0.02 seconds)
-# Iteration 850: error is 0.305242 (50 iterations in 0.02 seconds)
-# Iteration 900: error is 0.305233 (50 iterations in 0.01 seconds)
-# Iteration 950: error is 0.305233 (50 iterations in 0.01 seconds)
-# Iteration 1000: error is 0.305242 (50 iterations in 0.01 seconds)
-# Fitting performed in 0.24 seconds.
-# Read the 145 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 47.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 0.01 seconds (sparsity = 0.992247)!
-# Learning embedding...
-# Iteration 50: error is 46.035930 (50 iterations in 0.01 seconds)
-# Iteration 100: error is 46.642462 (50 iterations in 0.01 seconds)
-# Iteration 150: error is 46.518155 (50 iterations in 0.01 seconds)
-# Iteration 200: error is 45.610519 (50 iterations in 0.01 seconds)
-# Iteration 250: error is 47.889982 (50 iterations in 0.01 seconds)
-# Iteration 300: error is 0.769707 (50 iterations in 0.01 seconds)
-# Iteration 350: error is 0.636049 (50 iterations in 0.01 seconds)
-# Iteration 400: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 450: error is 0.635994 (50 iterations in 0.00 seconds)
-# Iteration 500: error is 0.635983 (50 iterations in 0.00 seconds)
-# Iteration 550: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 600: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 650: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 700: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 750: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 800: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 850: error is 0.635994 (50 iterations in 0.00 seconds)
-# Iteration 900: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 950: error is 0.635995 (50 iterations in 0.00 seconds)
-# Iteration 1000: error is 0.635995 (50 iterations in 0.00 seconds)
-# Fitting performed in 0.11 seconds.
-# Read the 107 x 12 data matrix successfully!
-# Using no_dims = 1, perplexity = 34.000000, and theta = 0.100000
-# Computing input similarities...
-# Building tree...
-# Done in 0.00 seconds (sparsity = 0.988209)!
-# Learning embedding...
-# Iteration 50: error is 48.555386 (50 iterations in 0.00 seconds)
-# Iteration 100: error is 50.962431 (50 iterations in 0.00 seconds)
-# Iteration 150: error is 48.700230 (50 iterations in 0.00 seconds)
-# Iteration 200: error is 51.774051 (50 iterations in 0.00 seconds)
-# Iteration 250: error is 50.444804 (50 iterations in 0.00 seconds)
-# Iteration 300: error is 1.024895 (50 iterations in 0.00 seconds)
-# Iteration 350: error is 0.684024 (50 iterations in 0.00 seconds)
-# Iteration 400: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 450: error is 0.635491 (50 iterations in 0.00 seconds)
-# Iteration 500: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 550: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 600: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 650: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 700: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 750: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 800: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 850: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 900: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 950: error is 0.635492 (50 iterations in 0.00 seconds)
-# Iteration 1000: error is 0.635492 (50 iterations in 0.00 seconds)
-# Fitting performed in 0.07 seconds.</code></pre>
+<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/clustering-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>Overall, this clustering looks quite good, but there is a small
 pocket of beta cells that have loadings on the green, black, and grey
 factors, which indicate that they could also be alpha or delta cells.
@@ -1182,26 +907,31 @@ Perhaps additional investigation into these cells (e.g. with a UMAP)
 could help distinguish their precise types. Or, we could exclude them as
 not having a clear type.</p>
 <p>Next, I investigated a UMAP plot to see how our clusters looked.
-Below is an elbow plot of the PCs created by Seurat</p>
+Below is an elbow plot of the PCs created by Seurat:</p>
 <pre class="r"><code>barcodes$celltype &lt;- L_df$cluster
 counts &lt;- counts[,!duplicated(colnames(counts))]
-
 so &lt;- CreateSeuratObject(counts = Matrix::t(counts), meta.data = barcodes)
 # Warning: Setting row names on a tibble is deprecated.
 so &lt;- SCTransform(so, verbose = FALSE)
 so &lt;- RunPCA(so, verbose = FALSE)
 ElbowPlot(so)</code></pre>
-<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/elbo-plot-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>And here is a UMAP plot:</p>
 <pre class="r"><code>so &lt;- RunUMAP(so, dims = 1:10, verbose = FALSE)
 # Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 # To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 # This message will be shown once per session
-DimPlot(so, group.by = &quot;celltype&quot;)</code></pre>
-<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/unnamed-chunk-12-1.png" width="840" style="display: block; margin: auto;" /></p>
+DimPlot(so, group.by = &quot;celltype&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/pancreas_cytokine_lsa_clustering.Rmd/umap-plot-1.png" width="570" style="display: block; margin: auto;" /></p>
 <p>There are clearly a few cells on the UMAP plot that appear to lie in
 a different cluster than their assignment. However, I’m not convinced
 that this plot is any more reliable than the topic model structure
 plot.</p>
+<p>Save the processed data to an RData file:</p>
+<pre class="r"><code>save(list = c(&quot;barcodes&quot;,&quot;genes&quot;,&quot;counts&quot;),
+     file = &quot;pancreas_cytokine_lsa.RData&quot;)
+# resaveRdaFiles(&quot;pancreas_cytokine.RData&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1211,105 +941,105 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()
-# R version 4.4.0 (2024-04-24)
-# Platform: aarch64-apple-darwin20
-# Running under: macOS Ventura 13.5
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS 15.5
 # 
 # Matrix products: default
-# BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
-# LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
 # 
 # locale:
 # [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 # 
-# time zone: America/New_York
+# time zone: America/Chicago
 # tzcode source: internal
 # 
 # attached base packages:
-# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# [1] tools     stats     graphics  grDevices utils     datasets  methods  
+# [8] base     
 # 
 # other attached packages:
-# [1] Seurat_5.1.0       SeuratObject_5.0.2 sp_2.1-4           dplyr_1.1.4       
-# [5] fastTopics_0.7-24  Matrix_1.7-0      
+# [1] Seurat_5.0.3       SeuratObject_5.0.1 sp_2.1-4           dplyr_1.1.4       
+# [5] fastTopics_0.7-25  cowplot_1.1.3      readr_2.1.5        Matrix_1.6-5      
 # 
 # loaded via a namespace (and not attached):
-#   [1] RcppAnnoy_0.0.22            splines_4.4.0              
-#   [3] later_1.4.2                 tibble_3.2.1               
-#   [5] polyclip_1.10-6             fastDummies_1.7.3          
-#   [7] lifecycle_1.0.4             mixsqp_0.3-54              
-#   [9] rprojroot_2.0.4             globals_0.16.3             
-#  [11] lattice_0.22-6              vroom_1.6.5                
-#  [13] MASS_7.3-61                 magrittr_2.0.3             
-#  [15] plotly_4.10.4               sass_0.4.10                
-#  [17] rmarkdown_2.29              jquerylib_0.1.4            
-#  [19] yaml_2.3.10                 httpuv_1.6.15              
-#  [21] glmGamPoi_1.16.0            sctransform_0.4.1          
-#  [23] spam_2.10-0                 spatstat.sparse_3.1-0      
-#  [25] reticulate_1.38.0           cowplot_1.1.3              
+#   [1] RcppAnnoy_0.0.22            splines_4.3.3              
+#   [3] later_1.4.2                 bitops_1.0-7               
+#   [5] tibble_3.3.0                polyclip_1.10-6            
+#   [7] fastDummies_1.7.3           lifecycle_1.0.4            
+#   [9] mixsqp_0.3-54               rprojroot_2.0.4            
+#  [11] globals_0.16.3              lattice_0.22-5             
+#  [13] vroom_1.6.5                 MASS_7.3-60.0.1            
+#  [15] magrittr_2.0.3              plotly_4.11.0              
+#  [17] sass_0.4.10                 rmarkdown_2.29             
+#  [19] jquerylib_0.1.4             yaml_2.3.10                
+#  [21] httpuv_1.6.14               glmGamPoi_1.14.3           
+#  [23] sctransform_0.4.1           spam_2.10-0                
+#  [25] spatstat.sparse_3.0-3       reticulate_1.40.0          
 #  [27] pbapply_1.7-2               RColorBrewer_1.1-3         
-#  [29] abind_1.4-5                 zlibbioc_1.50.0            
+#  [29] abind_1.4-5                 zlibbioc_1.48.2            
 #  [31] Rtsne_0.17                  quadprog_1.5-8             
-#  [33] GenomicRanges_1.56.1        purrr_1.0.4                
-#  [35] BiocGenerics_0.50.0         git2r_0.33.0               
-#  [37] GenomeInfoDbData_1.2.12     IRanges_2.38.0             
-#  [39] S4Vectors_0.42.0            ggrepel_0.9.6              
-#  [41] irlba_2.3.5.1               listenv_0.9.1              
-#  [43] spatstat.utils_3.0-5        goftest_1.2-3              
-#  [45] RSpectra_0.16-2             spatstat.random_3.2-3      
-#  [47] fitdistrplus_1.1-11         parallelly_1.37.1          
-#  [49] DelayedMatrixStats_1.26.0   leiden_0.4.3.1             
-#  [51] codetools_0.2-20            DelayedArray_0.30.1        
-#  [53] tidyselect_1.2.1            UCSC.utils_1.0.0           
-#  [55] farver_2.1.2                matrixStats_1.3.0          
-#  [57] stats4_4.4.0                spatstat.explore_3.2-7     
-#  [59] jsonlite_2.0.0              progressr_0.14.0           
-#  [61] ggridges_0.5.6              survival_3.7-0             
-#  [63] tools_4.4.0                 progress_1.2.3             
-#  [65] ica_1.0-3                   Rcpp_1.0.14                
-#  [67] glue_1.8.0                  SparseArray_1.4.8          
+#  [33] GenomicRanges_1.54.1        purrr_1.0.4                
+#  [35] BiocGenerics_0.48.1         RCurl_1.98-1.14            
+#  [37] git2r_0.33.0                GenomeInfoDbData_1.2.11    
+#  [39] IRanges_2.36.0              S4Vectors_0.40.2           
+#  [41] ggrepel_0.9.6               irlba_2.3.5.1              
+#  [43] listenv_0.9.1               spatstat.utils_3.0-4       
+#  [45] goftest_1.2-3               RSpectra_0.16-2            
+#  [47] spatstat.random_3.2-3       fitdistrplus_1.1-11        
+#  [49] parallelly_1.37.1           DelayedMatrixStats_1.24.0  
+#  [51] DelayedArray_0.28.0         leiden_0.4.3.1             
+#  [53] codetools_0.2-19            tidyselect_1.2.1           
+#  [55] farver_2.1.2                matrixStats_1.2.0          
+#  [57] stats4_4.3.3                spatstat.explore_3.2-7     
+#  [59] jsonlite_2.0.0              ellipsis_0.3.2             
+#  [61] progressr_0.14.0            ggridges_0.5.6             
+#  [63] survival_3.5-8              progress_1.2.3             
+#  [65] ica_1.0-3                   Rcpp_1.1.0                 
+#  [67] glue_1.8.0                  SparseArray_1.2.4          
 #  [69] gridExtra_2.3               xfun_0.52                  
-#  [71] MatrixGenerics_1.16.0       GenomeInfoDb_1.40.1        
+#  [71] MatrixGenerics_1.14.0       GenomeInfoDb_1.38.8        
 #  [73] withr_3.0.2                 fastmap_1.2.0              
 #  [75] digest_0.6.37               truncnorm_1.0-9            
 #  [77] R6_2.6.1                    mime_0.13                  
-#  [79] colorspace_2.1-1            scattermore_1.2            
+#  [79] colorspace_2.1-0            scattermore_1.2            
 #  [81] gtools_3.9.5                tensor_1.5                 
-#  [83] spatstat.data_3.1-2         RhpcBLASctl_0.23-42        
-#  [85] tidyr_1.3.1                 generics_0.1.3             
-#  [87] data.table_1.17.0           prettyunits_1.2.0          
-#  [89] httr_1.4.7                  htmlwidgets_1.6.4          
-#  [91] S4Arrays_1.4.1              whisker_0.4.1              
-#  [93] uwot_0.2.3                  pkgconfig_2.0.3            
-#  [95] gtable_0.3.6                workflowr_1.7.1            
-#  [97] lmtest_0.9-40               XVector_0.44.0             
-#  [99] htmltools_0.5.8.1           dotCall64_1.1-1            
-# [101] scales_1.3.0                Biobase_2.64.0             
-# [103] png_0.1-8                   ashr_2.2-66                
-# [105] knitr_1.50                  rstudioapi_0.16.0          
+#  [83] dichromat_2.0-0.1           spatstat.data_3.0-4        
+#  [85] RhpcBLASctl_0.23-42         tidyr_1.3.1                
+#  [87] generics_0.1.4              data.table_1.17.6          
+#  [89] S4Arrays_1.2.1              prettyunits_1.2.0          
+#  [91] httr_1.4.7                  htmlwidgets_1.6.4          
+#  [93] whisker_0.4.1               uwot_0.2.3                 
+#  [95] pkgconfig_2.0.3             gtable_0.3.6               
+#  [97] workflowr_1.7.1             lmtest_0.9-40              
+#  [99] XVector_0.42.0              htmltools_0.5.8.1          
+# [101] dotCall64_1.1-1             Biobase_2.62.0             
+# [103] scales_1.4.0                png_0.1-8                  
+# [105] ashr_2.2-66                 knitr_1.50                 
 # [107] tzdb_0.4.0                  reshape2_1.4.4             
-# [109] nlme_3.1-165                cachem_1.1.0               
+# [109] nlme_3.1-164                cachem_1.1.0               
 # [111] zoo_1.8-12                  stringr_1.5.1              
-# [113] KernSmooth_2.23-24          parallel_4.4.0             
-# [115] miniUI_0.1.1.1              pillar_1.10.2              
-# [117] grid_4.4.0                  vctrs_0.6.5                
-# [119] RANN_2.6.1                  promises_1.3.2             
+# [113] KernSmooth_2.23-22          parallel_4.3.3             
+# [115] miniUI_0.1.1.1              pillar_1.11.0              
+# [117] grid_4.3.3                  vctrs_0.6.5                
+# [119] RANN_2.6.1                  promises_1.3.3             
 # [121] xtable_1.8-4                cluster_2.1.6              
-# [123] evaluate_1.0.3              readr_2.1.5                
-# [125] invgamma_1.1                cli_3.6.5                  
-# [127] compiler_4.4.0              rlang_1.1.6                
-# [129] crayon_1.5.3                SQUAREM_2021.1             
-# [131] future.apply_1.11.2         labeling_0.4.3             
-# [133] plyr_1.8.9                  fs_1.6.6                   
-# [135] stringi_1.8.7               viridisLite_0.4.2          
-# [137] deldir_2.0-4                munsell_0.5.1              
-# [139] lazyeval_0.2.2              spatstat.geom_3.2-9        
-# [141] RcppHNSW_0.6.0              hms_1.1.3                  
-# [143] patchwork_1.2.0             sparseMatrixStats_1.16.0   
-# [145] bit64_4.0.5                 future_1.33.2              
-# [147] ggplot2_3.5.2               shiny_1.8.1.1              
-# [149] SummarizedExperiment_1.34.0 ROCR_1.0-11                
-# [151] igraph_2.0.3                RcppParallel_5.1.10        
-# [153] bslib_0.9.0                 bit_4.0.5</code></pre>
+# [123] evaluate_1.0.4              invgamma_1.2               
+# [125] cli_3.6.5                   compiler_4.3.3             
+# [127] rlang_1.1.6                 crayon_1.5.3               
+# [129] SQUAREM_2021.1              future.apply_1.11.2        
+# [131] labeling_0.4.3              plyr_1.8.9                 
+# [133] fs_1.6.6                    stringi_1.8.7              
+# [135] viridisLite_0.4.2           deldir_2.0-4               
+# [137] lazyeval_0.2.2              spatstat.geom_3.2-9        
+# [139] RcppHNSW_0.6.0              hms_1.1.3                  
+# [141] patchwork_1.2.0             sparseMatrixStats_1.14.0   
+# [143] bit64_4.0.5                 future_1.33.2              
+# [145] ggplot2_3.5.2               shiny_1.8.0                
+# [147] SummarizedExperiment_1.32.0 ROCR_1.0-11                
+# [149] igraph_2.0.3                RcppParallel_5.1.10        
+# [151] bslib_0.9.0                 bit_4.0.5</code></pre>
 </div>
 
 

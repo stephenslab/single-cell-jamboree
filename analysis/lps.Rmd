@@ -18,15 +18,20 @@ Load packages used to process the data, perform the analyses, and
 create the plots.
 
 ```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(readr)
 library(data.table)
 library(fastTopics)
 library(NNLM)
 library(ebnm)
 library(flashier)
+library(pathways)
 library(singlecelljamboreeR)
 library(ggplot2)
 library(ggrepel)
 library(cowplot)
+library(rsvd)
+library(uwot)
 ```
 
 ## Prepare the data for analysis with fastTopics and flashier
@@ -188,32 +193,16 @@ initialization using the NNLM package, then use this initialization to
 fit a NMF using flashier. This approach is implemented in the
 following function:
 
-```{r flashier-nmf-function}
-flashier_nmf <- function (X, k = 3, n.threads = 1) {
-  n <- nrow(X)
-  m <- ncol(X)
-  nmf0 <- nnmf(shifted_log_counts,k = 1,loss = "mse",method = "scd",
-            max.iter = 10,verbose = 0,n.threads = n.threads)
-  W0 <- nmf0$W
-  H0 <- nmf0$H
-  W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
-  H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
-  nmf <- nnmf(X,k,init = list(W = W0,H = H0),loss = "mse",method = "scd",
-              max.iter = 10,verbose = 0,n.threads = n.threads)
-  x  <- rpois(1e7,1/n)
-  s1 <- sd(log(x + 1))
-  out <- flash_init(X,var_type = 2,S = s1)
-  out <- flash_factors_init(out,list(nmf$W,t(nmf$H)),ebnm_point_exponential)
-  out <- flash_backfit(out,extrapolate = FALSE,maxiter = 100,verbose = 0)
-  return(flash_backfit(out,extrapolate = TRUE,maxiter = 100,verbose = 0))
-}
-```
-
 Now fit an NMF to the shifted log counts, with $K = 9$:
 
 ```{r flashier-nmf-k9, cache=TRUE}
 set.seed(1)
-fl_nmf_k9 <- flashier_nmf(shifted_log_counts,k = 9,n.threads = 8)
+n  <- nrow(shifted_log_counts)
+x  <- rpois(1e7,1/n)
+s1 <- sd(log(x + 1))
+set.seed(1)
+fl_nmf_k9 <- flashier_nmf(shifted_log_counts,k = 9,n.threads = 8,
+                          var_type = 2,S = s1)
 ```
 
 Structure plot comparing the topics to the tissue types:
@@ -239,7 +228,7 @@ Next fit an NMF to the shifted log counts using flashier, with $K =
 
 ```{r flashier-nmf-k15, cache=TRUE, warning=FALSE}
 set.seed(1)
-fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,n.threads = 8)
+fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,n.threads = 8,S = s1)
 ```
 
 Structure plot comparing the factors to the tissue types:
@@ -275,6 +264,59 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
         legend.key.width = unit(0.25,"cm"),
         legend.text = element_text(size = 7))
 ```
+
+## Comparison with UMAP
+
+Here I project the samples onto a 2-d embedding using UMAP to show
+that this LPS-related substructure is not obvious from a UMAP plot.
+
+```{r umap}
+set.seed(1)
+U <- rsvd(shifted_log_counts,k = 40)$u
+Y <- umap(U,n_neighbors = 20,metric = "cosine",min_dist = 0.3,
+          n_threads = 8,verbose = TRUE)
+x <- Y[,1]
+y <- Y[,2]
+samples$umap1 <- x
+samples$umap2 <- y
+```
+
+I color the samples in the UMAP plot by tissue (top-left) and by
+membership to factor 6 (top-right, bottom-left):
+
+```{r umap-plots, fig.height=5.5, fig.width=6.5}
+tissue_colors <- c("magenta","darkorange","darkblue","forestgreen",
+                   "dodgerblue","red","olivedrab","darkmagenta",
+                   "sienna","limegreen","royalblue","lightskyblue",
+                   "gold")
+L            <- ldf(fl_nmf,type = "i")$L
+colnames(L)  <- paste0("k",1:15)
+pdat         <- samples
+pdat$factor6 <- L[,"k6"]
+pdat$topic7  <- poisson2multinom(tm)$L[,"k7"]
+p1 <- ggplot(pdat,aes(x = umap1,y = umap2,color = tissue)) +
+  geom_point(size = 1) +
+  scale_color_manual(values = tissue_colors) +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(pdat,aes(x = umap1,y = umap2,color = factor6)) +
+  geom_point(size = 1) +
+  scale_color_gradient2(low = "deepskyblue",mid = "gold",high = "tomato",
+                        midpoint = 0.66) +
+  theme_cowplot(font_size = 10)
+p3 <- ggplot(pdat,aes(x = umap1,y = umap2,color = topic7)) +
+  geom_point(size = 1) +
+  scale_color_gradient2(low = "deepskyblue",mid = "gold",high = "tomato",
+                        midpoint = 0.15) +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,nrow = 2,ncol = 2)
+```
+
+As expected, the predominant structure is due to the different
+tissues, with more similar tissues clustering together. There is also
+some more subtle structure within each cluster that appears to
+correspond well with factor 6 (and topic 7). So althought the UMAP
+does seem to reveal the sepsis-related structure, it cannot isolate
+the sepsis-related gene expression signature.
 
 ## Factors isolating responses to LPS-induced sepsis
 
@@ -352,6 +394,89 @@ ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene)) +
 Indeed, factor 6 and topic 7 are cpaturing very similar expression
 patterns.
 
-NEXT: Perform a GSEA separately for topics 1 and 7, and factor 6.
+Next I ran GSEA on the on factor 6. (Running GSEA on topic 7 is
+complicated by the fact that it would be better to "shrink" the
+estimates before running GSEA, whereas this was automatically done for
+EBNMF result.)
+
+```{r gsea-fl-nmf-k6}
+data(gene_sets_mouse)
+gene_sets     <- gene_sets_mouse$gene_sets
+gene_info     <- gene_sets_mouse$gene_info
+gene_set_info <- gene_sets_mouse$gene_set_info
+j <- which(with(gene_sets_mouse$gene_set_info,
+                (database == "MSigDB-C2" &
+                 grepl("CP",sub_category_code,fixed = TRUE)) |
+                (database == "MSigDB-C5") &
+                 grepl("GO",sub_category_code,fixed = TRUE)))
+genes <- sort(intersect(rownames(F),gene_info$Symbol))
+i     <- which(is.element(gene_info$Symbol,genes))
+gene_info     <- gene_info[i,]
+gene_set_info <- gene_set_info[j,]
+gene_sets     <- gene_sets[i,j]
+rownames(gene_sets) <- gene_info$Symbol
+rownames(gene_set_info) <- gene_set_info$id
+gene_set_info <- gene_set_info[,-2]
+F <- ldf(fl_nmf,type = "i")$F
+colnames(F) <- paste0("k",1:15)
+gsea_fl_nmf <- singlecelljamboreeR::perform_gsea(F[,"k6"],gene_sets,
+                                                 gene_set_info,L = 15,
+                                                 verbose = FALSE)
+write.csv(data.frame(gene = rownames(F),signal = round(F[,"k6"],digits = 6)),
+          "lps_fl_nmf_k6.csv",row.names = FALSE,quote = FALSE)
+out <- gsea_fl_nmf$selected_gene_sets
+out$top_genes <- sapply(out$top_genes,function (x) paste(x,collapse = " "))
+out$lbf  <- round(out$lbf,digits = 6)
+out$pip  <- round(out$pip,digits = 6)
+out$coef <- round(out$coef,digits = 6)
+write_csv(out,"lps_gsea_fl_nmf_k6.csv",quote = "none")
+```
+
+The top gene set is the IFN-$\alpha/\beta$ signaling pathway, but
+other gene sets clearly relate to inflammation and immune system
+function:
+
+```{r  gsea-fl-nmf-k6-summary, fig.height=2.5, fig.width=4}
+print(gsea_fl_nmf$selected_gene_sets[c(2:7,9)],n = Inf)
+```
+
+This is the same scatterplot as the one just above, but with the genes
+in the IFN-$\alpha/\beta$ signaling pathway highlighted:
+
+```{r sepsis-tm-vs-nmf-with-gsea, fig.height=2.5, fig.width=5}
+pdat$pathway <- FALSE
+pathway_genes <- names(which(gene_sets[,"M973"] > 0))
+pdat[pathway_genes,"pathway"] <- TRUE
+pdat <- pdat[order(pdat$pathway),]
+ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene,color = pathway)) +
+  geom_point() +
+  geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
+  scale_color_manual(values = c("darkblue","orangered")) +
+  labs(x = "topic 7",y = "factor 6") +
+  theme_cowplot(font_size = 12)
+```
+
+Here's another view of the enrichment of the genes in the
+IFN-$\alpha/\beta$ pathway:
+
+```{r sepsis-tm-vs-nmf-with-gsea-2, fig.height=3.5, fig.width=4}
+p1 <- ggplot(subset(pdat,pathway),aes(x = nmf)) +
+  geom_histogram(color = "white",fill = "black",bins = 16) +
+  labs(x = "factor 6",y = "IFN-a/b genes") +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(subset(pdat,!pathway),aes(x = nmf)) +
+  geom_histogram(color = "white",fill = "black",bins = 24) +
+  labs(x = "factor 6",y = "other genes") +
+  theme_cowplot(font_size = 10)
+p3 <- ggplot(subset(pdat,pathway),aes(x = log10(tm + 1e-6))) +
+  geom_histogram(color = "white",fill = "black",bins = 16) +
+  labs(x = "topic 7",y = "IFN-a/b genes") +
+  theme_cowplot(font_size = 10)
+p4 <- ggplot(subset(pdat,!pathway),aes(x = log10(tm + 1e-6))) +
+  geom_histogram(color = "white",fill = "black",bins = 24) +
+  labs(x = "topic 7",y = "other genes") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
+```
 
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8

@@ -19,6 +19,7 @@ create the plots.
 ```{r load-pkgs, message=FALSE}
 library(Matrix)
 library(fastTopics)
+library(NNLM)
 library(flashier)
 library(singlecelljamboreeR)
 library(ggplot2)
@@ -120,83 +121,52 @@ p2 <- structure_plot(L[i,],grouping = clusters[i],topics = other_topics,
 plot_grid(p1,p2,nrow = 2,ncol = 1)
 ```
 
-Save this topic-model-based clustering because it could be useful
-elsewhere:
-
-```{r write-clusters}
-out <- data.frame(barcode = samples$barcode,
-                  cluster = clusters,
-				  stringsAsFactors = FALSE)
-write.csv(out,"pancreas_cytokine_S1_tm_k=13_clusters.csv",quote = FALSE,
-          row.names = FALSE)
-```
-
-Select genes in two ways: (a) genes that are different from the mean
-expression level, (b) genes that are "distinctive".
-
-```{r de-analysis, cache=TRUE}
-set.seed(1)
-tm_merged <- merge_topics(poisson2multinom(tm),paste0("k",c(1,2,4,11)))
-de_vsnull <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "vsnull",
-                         verbose = FALSE,control = list(ns = 1e4,nc = 8))
-de_le <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "le",
-                     verbose = FALSE,control = list(ns = 1e4,nc = 8))
-```
-
 Based on the estimated $\mathbf{F}$, we have the following potential
-interpretation of the topics:
+interpretation of these topics:
 
-+ k5 = $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
-+ k4 = *Ins1-* $\beta$ cells?
-+ k6 = $\alpha$ cells (*Gcg*, *Mafb*)
-+ k7 = $\delta$, $\gamma$ and $\epsilon$ cells (*Sst*, *Ghrl*)
-+ k2 = a non-$\alpha$ islet process
-+ k3 = macrophages, endothelial cells, mesenchymal cells and duct cells
++ topic 2: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
++ topic 3: $\alpha$ cells (*Gcg*, *Mafb*)
++ topic 5: duct cells (*Krt19*)
++ topic 6: replicate effect
++ topic 7: macrophages (*Ccr5*)
++ topic 8: $\delta$ cells (*Sst*)
++ topic 9: $\gamma$ cells (*Ppy*)
++ topic 12: cell cycle
++ topic 13: endothelial (*Pecam1*) and mesenchymal cells (*Col1a1*).
 
-```{r annotation-heatmap-topic-model, fig.height=3, fig.width=3, eval=FALSE}
-scale_rows <- function (A)
-  A / apply(A,1,max)
-marker_genes <- c("Ins1","Ins2","Mafa","Gcg","Mafb","Sst","Ghrl",
-                  "Ppy","Chga","Iapp","Krt19","Ccr5","Pecam1","Esam",
-				  "Col1a1","Ghrl")
-j <- match(marker_genes,genes$symbol)
-F <- poisson2multinom(tm)$F
-F <- F[j,]
-F <- scale_rows(F)
-rownames(F) <- marker_genes
-topics <- paste0("k",c(5,4,6,7,2,3))
-annotation_heatmap(F[,topics],select_features = "all",verbose = FALSE)
+Topic 10 is clearly capturing a technical difference in the two
+replicates:
+
+```{r k10-vs-replicate, fig.height=1.75, fig.width=2}
+pdat <- cbind(samples,L)
+ggplot(pdat,aes(x = replicate,y = k10)) +
+  geom_boxplot() +
+  theme_cowplot(font_size = 10)
 ```
 
 ## EBNMF (flashier)
 
-Next fit an NMF to the shifted log counts using flashier, with $K =
-9$:
+Next fit an NMF to the *shifted log counts* using flashier,
+with $K = 13$.
 
-```{r flashier-nmf, cache=TRUE, warning=FALSE, cache=TRUE}
+```{r flashier-nmf, warning=FALSE, cache=TRUE}
 set.seed(1)
-n  <- nrow(samples)
+n  <- nrow(shifted_log_counts)
 x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
-fl_nmf <- flash(shifted_log_counts,S = s1,ebnm_fn = ebnm_point_exponential,
-                var_type = 2,greedy_Kmax = 9,backfit = FALSE,
-				nullcheck = FALSE,verbose = 0)
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 40,verbose = 0)
-fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 80,verbose = 0)
+set.seed(1)
+fl_nmf <- flashier_nmf(shifted_log_counts,k = 13,n.threads = 8,
+                       var_type = 2,S = s1)
 ```
-
-(Note that I tried setting `greedy_Kmax > 9`, but this didn't result
-in more interesting fits—the additional factors loaded on only a
-single cell.)
 
 Structure plot comparing the factors to the clusters:
 
-```{r structure-plot-flashier-nmf, fig.height=4, fig.width=6.5, results="hide", message=FALSE}
+```{r structure-plot-flashier-nmf, fig.height=4.5, fig.width=6.5, results="hide", message=FALSE}
 set.seed(1)
-celltype_factors <- paste0("k",c(2:6,8,9))
-other_factors <- paste0("k",c(1,7))
+celltype_factors <- paste0("k",c(1:5,9:11,13))
+other_factors <- paste0("k",c(6:8,12))
 L <- ldf(fl_nmf,type = "i")$L
-colnames(L) <- paste0("k",1:9)
+colnames(L) <- paste0("k",1:13)
 i <- c(sample(which(clusters == "beta"),400),
        which(clusters != "beta"))
 p1 <- structure_plot(L[i,],grouping = clusters[i],topics = celltype_factors,
@@ -205,32 +175,238 @@ p1 <- structure_plot(L[i,],grouping = clusters[i],topics = celltype_factors,
 p2 <- structure_plot(L[i,],grouping = clusters[i],topics = other_factors,
                     gap = 10,n = Inf) +
   labs(y = "membership",fill = "")
-plot_grid(p1,p2,nrow = 2,ncol = 1)
+print(plot_grid(p1,p2,nrow = 2,ncol = 1))
 ```
 
-Possible interpretation of the factors:
+Based on the estimated $\mathbf{F}$, we have the following potential
+interpretation of these topics:
 
-+ k4 = $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
-+ k7 = *Ins1-* $\beta$ cells?
-+ k3 = $\alpha$, $\delta$ and $\gamma$ cells
-+ k5 = macrophages (*Ccr5*)
-+ k2 = endothelial cells (*Pecam1*, *Esam*)
-+ k6 = mesenchymal cells (*Col1a1*)
++ factor 1: $\beta$ cells (*Ins1*, *Ins2*, *Mafa*)
++ factors 2, 9, 11: endothelial cells (*Pecam1*, *Esam*)
++ factor 3: duct cells (*Krt19*)
++ factor 4: macrophages (*Ccr5*)
++ factor 5: $\alpha$ (*Gcg*, *Mafb*) and $\gamma$ cells (*Ppy*)
++ factor 6: replicate effect
++ factors 7, 12: cell cycle
++ factor 10: mesenchymal cells (*Col1a1*)
++ factor 13: $\delta$ cells (*Sst*)
 
-```{r annotation-heatmap-flashier-nmf, fig.height=3, fig.width=3, eval=FALSE}
-scale_cols <- function (A) {
-  b <- apply(A,2,max)
-  return(t(t(A) * b))
-}
-marker_genes <- c("Ins1","Ins2","Mafa","Gcg","Mafb","Sst","Ghrl",
-                  "Ppy","Chga","Iapp","Krt19",
-                  "Ccr5","Pecam1","Esam","Col1a1")
-j <- match(marker_genes,genes$symbol)
+Factor 6 almost perfectly captures the technical difference in the two
+replicates:
+
+```{r k6-vs-replicate, fig.height=2, fig.width=2}
+pdat <- cbind(samples,L)
+r <- cor(as.numeric(samples$replicate),L[,"k6"])
+ggplot(pdat,aes(x = replicate,y = k6)) +
+  geom_boxplot() +
+  ggtitle(paste("cor =",round(r,digits = 3))) +
+  theme_cowplot(font_size = 12)
+```
+
+Factors 7 and 12 seem to capture [cell cycle][reactome-cell-cycle]:
+
+```{r cell-cycle}
+cell_cycle <- 
+c("Aaas", "Abl1", "Abraxas1", "Acd", "Actr1a", "Adrm1", "Ahctf1",
+"Ajuba", "Akap9", "Akt1", "Akt2", "Akt3", "Alms1", "Anapc1",
+"Anapc10", "Anapc11", "Anapc15", "Anapc16", "Anapc2", "Anapc4",
+"Anapc5", "Anapc7", "Ankle2", "Ankrd28", "Arpp19", "Atm", "Atrip",
+"Atrx", "Aurka", "Aurkb", "B9d2", "Babam1", "Babam2", "Banf1",
+"Bard1", "Blm", "Blzf1", "Bora", "Brca1", "Brcc3", "Brip1", "Bub1b",
+"Bub3", "Cables1", "Cc2d1b", "Ccna2", "Ccnb1", "Ccnb2", "Ccnd1",
+"Ccnd2", "Ccnd3", "Ccne1", "Ccne2", "Ccnh", "Ccp110", "Cdc14a",
+"Cdc16", "Cdc20", "Cdc23", "Cdc25a", "Cdc25b", "Cdc26", "Cdc27",
+"Cdc45", "Cdc6", "Cdc7", "Cdca5", "Cdca8", "Cdk1", "Cdk11b",
+"Cdk2", "Cdk4", "Cdk5rap2", "Cdk6", "Cdk7", "Cdkn1a", "Cdkn1b",
+"Cdkn1c", "Cdkn2b", "Cdt1", "Cenpa", "Cenpc1", "Cenpe", "Cenpf",
+"Cenph", "Cenpi", "Cenpj", "Cenpk", "Cenpl", "Cenpm", "Cenpn",
+"Cenpo", "Cenpp", "Cenpq", "Cenps", "Cenpt", "Cenpu", "Cenpw",
+"Cenpx", "Cep131", "Cep135", "Cep152", "Cep164", "Cep192", "Cep250",
+"Cep290", "Cep41", "Cep57", "Cep63", "Cep70", "Cep72", "Cep76",
+"Cep78", "Cetn2", "Chek1", "Chek2", "Chmp2a", "Chmp2b", "Chmp3",
+"Chmp4b", "Chmp4c", "Chmp6", "Chmp7", "Chtf18", "Chtf8", "Ckap5",
+"Cks1b", "Clasp1", "Clasp2", "Clip1", "Clspn", "Cnep1r1", "Cop1",
+"Csnk1d", "Csnk1e", "Csnk2a1", "Csnk2a2", "Csnk2b", "Ctc1", "Ctdnep1",
+"Cul1", "Daxx", "Dbf4", "Dctn1", "Dctn2", "Dctn3", "Dkc1", "Dmc1",
+"Dna2", "Dscc1", "Dsn1", "Dync1h1", "Dync1i1", "Dync1i2", "Dync1li1",
+"Dync1li2", "Dynll1", "Dynll2", "Dyrk1a", "E2f1", "E2f2", "E2f3",
+"E2f4", "E2f5", "Emd", "Eml4", "Ercc6l", "Esco1", "Esco2", "Espl1",
+"Exo1", "Fbxl18", "Fbxl7", "Fbxo5", "Fbxw11", "Fen1", "Fignl1",
+"Fkbpl", "Foxm1", "Fzr1", "Gar1", "Gins1", "Gins2", "Gins3",
+"Gins4", "Gmnn", "Golga2", "Gorasp1", "Gorasp2", "Gtse1", "H3f3a",
+"H3f3b", "Haus1", "Haus2", "Haus3", "Haus4", "Haus5", "Haus6",
+"Haus7", "Haus8", "Hdac1", "Hdac8", "Herc2", "Hjurp", "Hmmr",
+"Hsp90aa1", "Hsp90ab1", "Hus1", "Incenp", "Ist1", "Itgb3bp",
+"Jak2", "Kat5", "Kif18a", "Kif20a", "Kif23", "Kif2a", "Kif2c",
+"Kntc1", "Kpnb1", "Lbr", "Lcmt1", "Lig1", "Lin37", "Lin52", "Lin54",
+"Lin9", "Lmna", "Lmnb1", "Lpin2", "Lpin3", "Lyn", "Mad1l1", "Mad2l1",
+"Mapk1", "Mapk3", "Mapre1", "Mastl", "Mau2", "Mcm10", "Mcm2",
+"Mcm3", "Mcm4", "Mcm5", "Mcm6", "Mcm7", "Mcm8", "Mcph1", "Mdc1",
+"Mdm2", "Mdm4", "Mis12", "Mis18a", "Mis18bp1", "Mnat1", "Mre11a",
+"Mzt1", "Mzt2", "Nbn", "Ncapd2", "Ncapd3", "Ncapg", "Ncapg2",
+"Ncaph", "Ncaph2", "Ndc1", "Ndc80", "Nde1", "Ndel1", "Nedd1",
+"Nek2", "Nek9", "Nhp2", "Ninl", "Nipbl", "Nme7", "Nop10", "Npm1",
+"Nsd2", "Nsl1", "Nudc", "Nuf2", "Numa1", "Nup107", "Nup133",
+"Nup153", "Nup155", "Nup160", "Nup188", "Nup205", "Nup210", "Nup214",
+"Nup35", "Nup37", "Nup43", "Nup50", "Nup54", "Nup62", "Nup85",
+"Nup88", "Nup93", "Nup98", "Odf2", "Ofd1", "Oip5", "Optn", "Orc2",
+"Orc3", "Orc4", "Orc5", "Orc6", "Pafah1b1", "Pcm1", "Pcna", "Pds5a",
+"Pds5b", "Phf20", "Phlda1", "Pias4", "Pkmyt1", "Plk1", "Plk4",
+"Pmf1", "Pola1", "Pola2", "Pold1", "Pold2", "Pold3", "Pold4",
+"Pole", "Pole2", "Pole3", "Pole4", "Pom121", "Pot1a", "Ppme1",
+"Ppp1cb", "Ppp1cc", "Ppp1r12a", "Ppp1r12b", "Ppp2ca", "Ppp2cb",
+"Ppp2r1a", "Ppp2r1b", "Ppp2r2a", "Ppp2r3d", "Ppp2r5a", "Ppp2r5b",
+"Ppp2r5c", "Ppp2r5d", "Ppp2r5e", "Ppp6c", "Ppp6r3", "Prim1",
+"Prim2", "Prkaca", "Prkcb", "Psma1", "Psma2", "Psma3", "Psma4",
+"Psma5", "Psma6", "Psma7", "Psmb1", "Psmb2", "Psmb3", "Psmb4",
+"Psmb5", "Psmb6", "Psmb7", "Psmc1", "Psmc2", "Psmc3", "Psmc4",
+"Psmc5", "Psmc6", "Psmd1", "Psmd11", "Psmd12", "Psmd13", "Psmd14",
+"Psmd2", "Psmd3", "Psmd6", "Psmd7", "Psmd8", "Pttg1", "Rab1a",
+"Rab1b", "Rab2a", "Rab8a", "Rad1", "Rad17", "Rad21", "Rad50",
+"Rad51", "Rad9a", "Rad9b", "Rae1", "Ran", "Ranbp2", "Rangap1",
+"Rb1", "Rbbp4", "Rbbp7", "Rbbp8", "Rbl1", "Rbl2", "Rbm39", "Rbx1",
+"Rcc1", "Rcc2", "Rfc1", "Rfc2", "Rfc3", "Rfc4", "Rfc5", "Rhno1",
+"Rmi1", "Rmi2", "Rnf168", "Rnf8", "Rpa1", "Rpa2", "Rpa3", "Rsf1",
+"Rtel1", "Ruvbl1", "Sdccag8", "Sec13", "Seh1l", "Set", "Sfi1",
+"Sfn", "Sgo1", "Sgo2a", "Shq1", "Sirt2", "Ska2", "Skp2", "Smarca5",
+"Smc1a", "Smc2", "Smc3", "Smc4", "Spast", "Spc24", "Spc25", "Spdl1",
+"Src", "Ssna1", "Stag1", "Stag2", "Stn1", "Sumo1", "Taok1", "Ten1",
+"Terf1", "Terf2", "Terf2ip", "Tert", "Tfdp1", "Top3a", "Topbp1",
+"Tpr", "Tpx2", "Trp53", "Trp53bp1", "Tuba1a", "Tuba1b", "Tuba1c",
+"Tuba4a", "Tuba8", "Tubb2a", "Tubb2b", "Tubb3", "Tubb4a", "Tubb4b",
+"Tubb5", "Tubb6", "Tubg1", "Tubg2", "Tubgcp2", "Tubgcp3", "Tubgcp4",
+"Tubgcp5", "Tubgcp6", "Uba52", "Ubb", "Ubc", "Ube2c", "Ube2d1",
+"Ube2e1", "Ube2i", "Ube2n", "Ube2s", "Ube2v2", "Uimc1", "Vps4a",
+"Vrk1", "Vrk2", "Wapl", "Wee1", "Wrap53", "Wrn", "Xpo1", "Ywhab",
+"Ywhae", "Ywhag", "Ywhah", "Ywhaq", "Ywhaz", "Zfp385a", "Zw10",
+"Zwilch", "Zwint")
 F <- ldf(fl_nmf,type = "i")$F
-F <- scale_cols(F)
-F <- F[j,]
-rownames(F) <- marker_genes
-colnames(F) <- paste0("k",1:7)
-factors <- paste0("k",c(4,7,3,5,2,6))
-annotation_heatmap(F[,factors],select_eatures = "all",verbose = FALSE)
+rownames(F) <- genes$symbol
+colnames(F) <- paste0("k",1:13)
+sort(colSums(F[cell_cycle,]))
 ```
+
+## Closer examination of the topics and factors
+
+First, we confirm that many of the "cluster-like" topics and factors
+are very similar to each other. Note that the topics are shown on the
+(base-10) log scale.
+
+```{r topics-vs-factors, fig.height=4, fig.width=6, warning=FALSE}
+topic_vs_factor_scatterplot <- function (factor, topic, title = "") {
+  pdat <- data.frame(factor = factor,
+                     topic  = log10(topic + 1e-5))
+  r <- cor(pdat$factor,pdat$topic)
+  return(ggplot(pdat,aes_string(x = "factor",y = "topic")) +
+         geom_point(color = "black") +
+		 ggtitle(title) +
+         theme_cowplot(font_size = 10) +
+		 theme(plot.title = element_text(face = "plain",size = 10)))
+}
+F1 <- ldf(fl_nmf,type = "i")$F
+F2 <- poisson2multinom(tm)$F
+rownames(F1) <- genes$symbol
+colnames(F1) <- paste0("k",1:13)
+rownames(F2) <- genes$symbol
+p1 <- topic_vs_factor_scatterplot(F1[,"k1"],F2[,"k2"],"beta cells")
+p2 <- topic_vs_factor_scatterplot(F1[,"k5"],F2[,"k3"],"alpha cells")
+p3 <- topic_vs_factor_scatterplot(F1[,"k13"],F2[,"k8"],"delta cells")
+p4 <- topic_vs_factor_scatterplot(F1[,"k3"],F2[,"k5"],"ductal cells")
+p5 <- topic_vs_factor_scatterplot(F1[,"k4"],F2[,"k7"],"macrophages")
+plot_grid(p1,p2,p3,p4,p5,nrow = 2,ncol = 3)
+```
+
+These next scatterplots show that the topics remain very much
+"cluster-like" in the sense that much of the top genes by expression
+are shared across the different topics. Here to illustrate I am
+comparing topic 8 (the "delta cells" topic) to other topics. Notice
+that even fairly unrelated cell types such as ductal cells (k5) and
+macrophages (k7) still have a lot of shared expression.
+
+```{r gene-matrix-scatterplots-topics, fig.height=4, fig.width=6}
+gene_matrix_scatterplot <- function (gene_matrix, k1, k2) {
+  gene_matrix <- as.data.frame(gene_matrix)
+  cor(gene_matrix)
+  return(ggplot(gene_matrix,aes_string(x = k1,y = k2)) +
+         geom_point(color = "black") +
+         geom_abline(intercept = 0,slope = 1,color = "orangered",
+	                 linetype = "dashed") +
+		 ggtitle(paste("cor =",
+		               round(cor(gene_matrix[,k1],
+		                         gene_matrix[,k2]),digits = 3))) +
+         theme_cowplot(font_size = 10) +
+		 theme(plot.title = element_text(face = "plain",size = 10)))
+}
+F2 <- log10(F2 + 1e-5)
+p1 <- gene_matrix_scatterplot(F2,"k8","k2")
+p2 <- gene_matrix_scatterplot(F2,"k8","k3")
+p4 <- gene_matrix_scatterplot(F2,"k8","k5")
+p3 <- gene_matrix_scatterplot(F2,"k8","k7")
+p5 <- gene_matrix_scatterplot(F2,"k8","k9")
+p6 <- gene_matrix_scatterplot(F2,"k8","k13")
+plot_grid(p1,p2,p3,p4,p5,p6,nrow = 2,ncol = 3)
+```
+
+Less so for the factors, particularly for factors that are less
+related, such as the delta cells topic (k13) vs. ductal cells (k3)
+or delta cells (k13) vs. macrophages (k4):
+
+```{r gene-matrix-scaterplots-factors, fig.height=4, fig.width=4}
+p1 <- gene_matrix_scatterplot(F1,"k13","k1")
+p2 <- gene_matrix_scatterplot(F1,"k13","k3")
+p3 <- gene_matrix_scatterplot(F1,"k13","k5")
+p4 <- gene_matrix_scatterplot(F1,"k13","k4")
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
+```
+
+The cell cycle factors (k7, k12) are other examples where the factors
+are very independent from the others, e.g.,
+
+```{r gene-matrix-scatterplots-k7-factor, fig.height=4, fig.width=6}
+p1 <- gene_matrix_scatterplot(F1,"k7","k1")
+p2 <- gene_matrix_scatterplot(F1,"k7","k3")
+p3 <- gene_matrix_scatterplot(F1,"k7","k4")
+p4 <- gene_matrix_scatterplot(F1,"k7","k5")
+p5 <- gene_matrix_scatterplot(F1,"k7","k13")
+plot_grid(p1,p2,p3,p4,p5,nrow = 2,ncol = 3)
+```
+
+Also:
+
+```{r factor-correlations-k7-k12}
+cor(F1[,7],F1[,-7])
+cor(F1[,12],F1[,-12])
+```
+
+And yet the corresponding topics are much less independent from the
+other topics, again suggesting a much stronger "cluster-like" tendency
+for the factors, even in for cross-cutting factors that might be
+capturing cell cycle:
+
+```{r more-scatterplots, fig.height=4, fig.width=4}
+F2 <- poisson2multinom(tm)$F
+p1 <- topic_vs_factor_scatterplot(F1[,"k7"],F2[,"k10"],"") +
+  labs(x = "factor 7",y = "factor 10")
+p2 <- topic_vs_factor_scatterplot(F1[,"k12"],F2[,"k1"],"") +
+  labs(x = "factor 12",y = "factor 1")
+F2 <- log10(F2 + 1e-5)
+p3 <- gene_matrix_scatterplot(F2,"k2","k10")
+p4 <- gene_matrix_scatterplot(F2,"k2","k1")
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
+```
+
+TO DO:
+
+```{r de-analysis, eval=FALSE}
+set.seed(1)
+tm_merged <- merge_topics(poisson2multinom(tm),c("k2","k11"))
+de <- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = "le",
+                  verbose = FALSE,control = list(ns = 1e4,nc = 8))
+```
+
++ Incorporate code from temp2.R into this Rmd.
+
++ Also perform GSEA using these results. For the factor analysis, do
+  so using F values and the "least extreme" F effect differences.
+
+[reactome-cell-cycle]: https://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/REACTOME_CELL_CYCLE.html
