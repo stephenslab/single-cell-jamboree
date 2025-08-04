@@ -226,6 +226,8 @@ any changes downstream of the LPS-induced sepsis.
 Next fit an NMF to the shifted log counts using flashier, with $K =
 15$:
 
+**BUG**: "var_type = 2" is missing from the flashier-nmf call.
+
 ```{r flashier-nmf-k15, cache=TRUE, warning=FALSE}
 set.seed(1)
 fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,n.threads = 8,S = s1)
