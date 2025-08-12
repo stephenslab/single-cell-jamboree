@@ -1,0 +1,67 @@
+---
+title: Initial exploration of the budding yeast data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+Paper: Jackson et al eLife 2020 (doi:10.7554/eLife.51254)
+
+Downloaded GSE125162_ALL-fastqTomat0-Counts.tsv.gz from GEO, accession
+GSE125162. Added an extra column name, "id", to the header.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages needed for this analysis.
+
+```{r load-pkgs}
+library(Matrix)
+library(readr)
+```
+
+Load the count data:
+
+```{r load-data, message=FALSE}
+counts <- read_tsv("../data/GSE125162_ALL-fastqTomat0-Counts.tsv.gz",
+                   col_names = TRUE)
+counts <- as.data.frame(counts)
+ids    <- counts$id
+counts <- counts[-1]
+sample_info <- cbind(data.frame(id = ids),counts[6830:6834])
+counts <- counts[1:6829]
+counts <- as.matrix(counts)
+counts <- as(counts,"CsparseMatrix")
+rownames(counts) <- ids
+sample_info <- transform(sample_info,
+                         Genotype       = factor(Genotype),
+				      	 Genotype_Group = factor(Genotype_Group),
+					     Replicate      = factor(Replicate),
+					     Condition      = factor(Condition))
+```
+
+Number of cells, number of samples, proportion of counts that are nonzero:
+
+```{r examine-data-1}
+nrow(counts)
+ncol(counts)
+mean(counts > 0)
+```
+
+```{r examine-data-2}
+table(sample_info$Condition)
+```
+
+TO DO:
+
++ Check for total expression in cells and expression in genes, and
+filter cells and/or genes.
+
++ Create t-SNE or UMAP plot.
+
++ Save the data to an .Rdata file.
+
++ How to get info on genes?
+
+
