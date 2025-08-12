@@ -292,7 +292,7 @@ whereas this was clearly not true in the topic model.
 To reinforce this point, this last set of scatterplots compares the
 topics to the corresponding factors:
 
-```{r nmf-vs-tm, fig.height=2.25, fig.width=6}
+```{r nmf-vs-tm, fig.height=2, fig.width=6}
 F1 <- poisson2multinom(tm)$F
 F2 <- ldf(fl_nmf,type = "i")$F
 colnames(F1) <- c("TGFb_tm","RA_tm","EtOH_tm")
