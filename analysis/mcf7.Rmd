@@ -28,6 +28,7 @@ create the plots.
 
 ```{r load-pkgs, message=FALSE}
 library(rsvd)
+library(lsa)
 library(fastglmpca)
 library(fastTopics)
 library(flashier)
@@ -192,21 +193,37 @@ think about as capturing levels of gene expression. These next three
 scatterplots compare the estimated expression levels among the three
 topics (on the logarithmic scale).
 
-```{r gene-matrix-scatterplots-topic-model, fig.height=2, fig.width=6, warning=FALSE}
-gene_matrix_scatterplot <- function (gene_matrix, k1, k2) {
+TO DO: Add cosine similarity to the scatterplots.
+
+```{r gene-matrix-scatterplots-topic-model, fig.height=2.25, fig.width=6, warning=FALSE}
+gene_matrix_scatterplot <-
+  function (gene_matrix, k1, k2, log = "none", cosine = TRUE) {
   gene_matrix <- as.data.frame(gene_matrix)
-  ggplot(gene_matrix,aes_string(x = k1,y = k2)) +
-    geom_point(color = "black") +
-    geom_abline(intercept = 0,slope = 1,color = "orangered",
-	            linetype = "dashed") +
-    theme_cowplot(font_size = 10)
+  if (cosine)
+    s <- cosine(gene_matrix[,k1],gene_matrix[,k2])
+  if (log == "x")
+    gene_matrix[,k1] <- log10(gene_matrix[,k1] + 1e-6)
+  else if (log == "y")
+    gene_matrix[,k2] <- log10(gene_matrix[,k2] + 1e-6)
+  else if (log == "both")
+    gene_matrix[,c(k1,k2)] <- log10(gene_matrix[,c(k1,k2)] + 1e-6)
+  out <- ggplot(gene_matrix,aes_string(x = k1,y = k2)) +
+      geom_point(color = "black") +
+      geom_abline(intercept = 0,slope = 1,color = "orangered",
+	              linetype = "dashed") +
+      
+  	  theme_cowplot(font_size = 10) +
+	  theme(plot.title = element_text(face = "plain",size = 10))
+  if (cosine) {
+	out <- out + ggtitle(sprintf("cosine = %0.3f",s))
+  }
+  return(out)
 }
 F <- poisson2multinom(tm)$F
 colnames(F) <- c("TGFb","RA","EtOH")
-F <- log10(F + 1e-6)
-p1 <- gene_matrix_scatterplot(F,"EtOH","RA")
-p2 <- gene_matrix_scatterplot(F,"EtOH","TGFb")
-p3 <- gene_matrix_scatterplot(F,"RA","TGFb")
+p1 <- gene_matrix_scatterplot(F,"EtOH","RA",log = "both",cosine = TRUE)
+p2 <- gene_matrix_scatterplot(F,"EtOH","TGFb",log = "both",cosine = TRUE)
+p3 <- gene_matrix_scatterplot(F,"RA","TGFb",log = "both",cosine = TRUE)
 plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
 ```
 
@@ -257,13 +274,13 @@ structure_plot(L,grouping = samples$label,topics = 4:1,
 These next three scatterplots compare the factor estimates
 (approximately, LFCs) among the three factors other than the baseline:
 
-```{r gene-matrix-scatterplot, fig.height=2, fig.width=6}
+```{r gene-matrix-scatterplot, fig.height=2.25, fig.width=6}
 F <- ldf(fl_nmf,type = "i")$F
 colnames(F) <- c("baseline","EtOH","RA","TGFb")
 pdat <- cbind(genes[c("GeneID","Symbol")],F)
-p1 <- gene_matrix_scatterplot(F,"EtOH","RA")
-p2 <- gene_matrix_scatterplot(F,"EtOH","TGFb")
-p3 <- gene_matrix_scatterplot(F,"RA","TGFb")
+p1 <- gene_matrix_scatterplot(F,"EtOH","RA",log = "none",cosine = TRUE)
+p2 <- gene_matrix_scatterplot(F,"EtOH","TGFb",log = "none",cosine = TRUE)
+p3 <- gene_matrix_scatterplot(F,"RA","TGFb",log = "none",cosine = TRUE)
 print(plot_grid(p1,p2,p3,nrow = 1,ncol = 3))
 ```
 
@@ -275,16 +292,15 @@ whereas this was clearly not true in the topic model.
 To reinforce this point, this last set of scatterplots compares the
 topics to the corresponding factors:
 
-```{r nmf-vs-tm, fig.height=2, fig.width=6}
+```{r nmf-vs-tm, fig.height=2.25, fig.width=6}
 F1 <- poisson2multinom(tm)$F
-F1 <- log10(F1 + 1e-6)
 F2 <- ldf(fl_nmf,type = "i")$F
 colnames(F1) <- c("TGFb_tm","RA_tm","EtOH_tm")
 colnames(F2) <- c("baseline","EtOH_nmf","RA_nmf","TGFb_nmf")
 F <- cbind(F1,F2)
-p1 <- gene_matrix_scatterplot(F,"EtOH_tm","EtOH_nmf")
-p2 <- gene_matrix_scatterplot(F,"RA_tm","RA_nmf")
-p3 <- gene_matrix_scatterplot(F,"TGFb_tm","TGFb_nmf")
+p1 <- gene_matrix_scatterplot(F,"EtOH_tm","EtOH_nmf",log = "x",cosine = FALSE)
+p2 <- gene_matrix_scatterplot(F,"RA_tm","RA_nmf",log = "x",cosine = FALSE)
+p3 <- gene_matrix_scatterplot(F,"TGFb_tm","TGFb_nmf",log = "x",cosine = FALSE)
 print(plot_grid(p1,p2,p3,nrow = 1,ncol = 3))
 ```
 
@@ -335,12 +351,11 @@ structure_plot(L,grouping = samples$label,topics = 1:4,
 As before, the expression levels remain very strongly correlated amongst
 the topics, e.g.,
 
-```{r gene-matrix-scatterplot-topic-model-k4, fig.height=2, fig.width=6}
+```{r gene-matrix-scatterplot-topic-model-k4, fig.height=2.25, fig.width=6}
 F <- poisson2multinom(tm_k4)$F
-F <- log10(F + 1e-6)
-p1 <- gene_matrix_scatterplot(F,"k2","k3")
-p2 <- gene_matrix_scatterplot(F,"k2","k4")
-p3 <- gene_matrix_scatterplot(F,"k3","k4")
+p1 <- gene_matrix_scatterplot(F,"k2","k3",log = "both",cosine = TRUE)
+p2 <- gene_matrix_scatterplot(F,"k2","k4",log = "both",cosine = TRUE)
+p3 <- gene_matrix_scatterplot(F,"k3","k4",log = "both",cosine = TRUE)
 plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
 ```
 

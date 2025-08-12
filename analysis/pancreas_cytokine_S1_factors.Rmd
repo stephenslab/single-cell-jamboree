@@ -144,6 +144,8 @@ ggplot(pdat,aes(x = replicate,y = k10)) +
   theme_cowplot(font_size = 10)
 ```
 
+TO DISCUSS: Is the topic model capturing mostly "cluster-like" structure.
+
 ## EBNMF (flashier)
 
 Next fit an NMF to the *shifted log counts* using flashier,
@@ -193,6 +195,9 @@ interpretation of these topics:
 
 Factor 6 almost perfectly captures the technical difference in the two
 replicates:
+
+TO DO: Replace correlation with cosine similarity (first double-check
+that this makes sense).
 
 ```{r k6-vs-replicate, fig.height=2, fig.width=2}
 pdat <- cbind(samples,L)
@@ -285,6 +290,8 @@ rownames(F) <- genes$symbol
 colnames(F) <- paste0("k",1:13)
 sort(colSums(F[cell_cycle,]))
 ```
+
+TO DO: Are the topics more "cluster-like" than the flashier factors?
 
 ## Closer examination of the topics and factors
 
