@@ -278,7 +278,7 @@ jamboree</h1>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -289,8 +289,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -299,13 +299,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-16
+<strong>Last updated:</strong> 2025-08-13
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 1
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -329,36 +329,33 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb3f176cc22651a17ac0c4ecc11f698fe1c164e1dtargetblankb3f176ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree9d594b2a1449d7f1b828e3bd0a2e7661e575f229targetblank9d594b2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b3f176cc22651a17ac0c4ecc11f698fe1c164e1d" target="_blank">b3f176c</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/9d594b2a1449d7f1b828e3bd0a2e7661e575f229" target="_blank">9d594b2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb3f176cc22651a17ac0c4ecc11f698fe1c164e1dtargetblankb3f176ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree9d594b2a1449d7f1b828e3bd0a2e7661e575f229targetblank9d594b2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -368,7 +365,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b3f176cc22651a17ac0c4ecc11f698fe1c164e1d" target="_blank">b3f176c</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/9d594b2a1449d7f1b828e3bd0a2e7661e575f229" target="_blank">9d594b2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -383,16 +380,27 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
+    Untracked:  analysis/lps_cache/
+    Untracked:  analysis/lps_fl_nmf_k6.csv
+    Untracked:  analysis/lps_gsea_fl_nmf_k6.csv
+    Untracked:  analysis/mcf7_cache/
+    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
+    Untracked:  analysis/pancreas_cytokine_lsa_clustering_cache/
+    Untracked:  data/GSE125162_ALL-fastqTomat0-Counts.tsv.gz
+    Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE156175_RAW/
-    Untracked:  data/panc_cyto_lsa.Rdata
-    Untracked:  data/panc_cyto_lsa_res/
-    Untracked:  data/panc_cyto_lsa_tm_k12.rds
+    Untracked:  data/GSE183010/
+    Untracked:  data/Immune_ALL_human.h5ad
+    Untracked:  data/pancreas_cytokine.RData
+    Untracked:  data/pancreas_cytokine_lsa.RData
+    Untracked:  data/pancreas_cytokine_lsa_v2.RData
+    Untracked:  data/pancreas_endocrine.RData
+    Untracked:  data/pancreas_endocrine_alldays.h5ad
+    Untracked:  output/panc_cyto_lsa_res/
 
 Unstaged changes:
-    Modified:   analysis/index.Rmd
-
-Staged changes:
-    New:        analysis/pancreas_cytokine_mf_comparison.Rmd
+    Modified:   analysis/lps.Rmd
+    Modified:   analysis/pancreas_cytokine_S1_factors.Rmd
 
 </code></pre>
 <p>
@@ -437,6 +445,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/9d594b2a1449d7f1b828e3bd0a2e7661e575f229/analysis/index.Rmd" target="_blank">9d594b2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+wflow_publish("index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ba07b394b2984d9658f5d02232720b2734118dcc/analysis/index.Rmd" target="_blank">ba07b39</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-06-16
+</td>
+<td>
+added pancreas cytokine mf comparison
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/ba07b394b2984d9658f5d02232720b2734118dcc/docs/index.html" target="_blank">ba07b39</a>
+</td>
+<td>
+Eric Weine
+</td>
+<td>
+2025-06-16
+</td>
+<td>
+added pancreas cytokine mf comparison
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1027,7 +1086,7 @@ html
 junmingguan
 </td>
 <td>
-2024-11-17
+2024-11-16
 </td>
 <td>
 Build site.
@@ -1044,7 +1103,7 @@ Rmd
 junmingguan
 </td>
 <td>
-2024-11-17
+2024-11-16
 </td>
 <td>
 Change link for human brain cell COP analysis
@@ -1562,6 +1621,8 @@ and Clustering of Pancreas Cytokine Data from Stancill LSA
 Paper</a></p></li>
 <li><p><a href="pancreas_cytokine_mf_comparison.html">Comparison of
 log1pNMF and Topic Model fits on Pancreas Cytokine Dataset</a></p></li>
+<li><p><a href="budding_yeast.html">Initial exploration of the budding
+yeast data set</a></p></li>
 </ul>
 
 
