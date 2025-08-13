@@ -209,10 +209,10 @@ Structure plot comparing the topics to the tissue types:
 
 ```{r structure-plot-flashier-nmf-k9, fig.height=2, fig.width=7}
 rows <- order(samples$timepoint)
-topic_colors <- c("powderblue","dodgerblue","olivedrab","limegreen",
-                  "forestgreen","red","darkmagenta","gray","darkorange",
-                  "cyan","royalblue","darkblue","lightskyblue",
-                  "gold","sienna")
+topic_colors <- c("powderblue","darkorange","olivedrab","limegreen",
+                  "forestgreen","cyan","darkmagenta","gray","dodgerblue",
+                  "red","gold","darkblue","lightskyblue",
+                  "royalblue","sienna")
 L <- ldf(fl_nmf_k9,type = "i")$L
 structure_plot(L,grouping = samples$tissue,gap = 4,
                topics = 1:9,colors = topic_colors,
@@ -252,8 +252,8 @@ processes that are driven or may be driven by LPS-induced sepsis:
 ```{r structure-plot-flashier-nmf-2, fig.height=2, fig.width=7}
 rows <- order(samples$timepoint)
 topic_colors <- c("gray95","gray70","gray80","gray50",
-                  "gray60","red","gray75","gray","gray85",
-                  "gray90","gray65","darkblue","gray45",
+                  "gray60","gray90","gray75","gray","gray85",
+                  "red","gold","gray65","gray45",
                   "gray35","gray75")
 L <- ldf(fl_nmf,type = "i")$L
 structure_plot(L,grouping = samples$tissue,gap = 4,
