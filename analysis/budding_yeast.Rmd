@@ -4,17 +4,18 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-Paper: Jackson et al eLife 2020 (doi:10.7554/eLife.51254)
-
-Downloaded GSE125162_ALL-fastqTomat0-Counts.tsv.gz from GEO, accession
-GSE125162. Added an extra column name, "id", to the header.
+The paper is Jackson et al *eLife* 2020
+([doi:10.7554/eLife.51254][jackson-2020]).  First, I downloaded the
+file `GSE125162_ALL-fastqTomat0-Counts.tsv.gz` from GEO, accession
+GSE125162. (To read the data correctly using `read_tsv`, I first added
+"id" to the beginning of the header.)
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
-First, load the packages needed for this analysis.
+First, load the packages needed for this analysis:
 
 ```{r load-pkgs}
 library(Matrix)
@@ -46,38 +47,39 @@ sample_info <- transform(sample_info,
 					     Condition      = factor(Condition))
 ```
 
-Number of cell and number of genes:
+This is the number of cells and genes before any filtering:
 
 ```{r examine-data-1}
 nrow(counts)
 ncol(counts)
 ```
 
-Many cells have much smaller sequencing depth; out of caution, I
-filter these out:
+Many cells have much smaller sequencing depth so, out of caution, I
+filter out the cells with the smaller sequencing depths:
 
 ```{r filter-cells, fig.height=2.5, fig.width=3}
 par(mar = c(4,4,1,1))
 x <- rowSums(counts)
-hist(log10(x),n = 64,xlab = "",ylab = "",main = "")
 i <- which(x >= 1000)
 sample_info <- sample_info[i,]
 counts <- counts[i,]
+hist(log10(x),n = 64,xlab = "",ylab = "",main = "")
 ```
 
 Further, a handful of genes are expressed in only a very small number
-of cells. Here I filter out genes that are expressed in fewer than 10
+of cells. I filter out genes that are expressed in fewer than 10
 cells:
 
 ```{r filter-genes, fig.height=2.75, fig.width=3}
 par(mar = c(4,4,1,1))
 x <- colSums(counts > 0)
-hist(log10(x),n = 64,xlab = "",ylab = "",main = "")
 j <- which(x >= 10)
 counts <- counts[,j]
+hist(log10(x),n = 64,xlab = "",ylab = "",main = "")
 ```
 
-Number of cells, number of genes, proportion of counts that are nonzero:
+This gives the number of cells, the number of genes, and the
+proportion of counts that are nonzero after these filtering steps:
 
 ```{r examine-data-2}
 nrow(counts)
@@ -85,14 +87,15 @@ ncol(counts)
 mean(counts > 0)
 ```
 
-Number of cells by condition:
+And here is the number of cells in each of the 11 growth conditions:
 
 ```{r examine-data-3}
 table(sample_info$Condition)
 ```
 
-Let's now generate a 2-d nonlinear embedding of the cells using
-UMAP. First, transform the counts into "shifted log counts":
+To get an initial sense for the structure underlying the data, I
+generate a 2-d nonlinear embedding of the cells using UMAP. First,
+I transform the counts into "shifted log counts":
 
 ```{r shifted-log-counts}
 a <- 1
@@ -101,15 +104,14 @@ s <- s/mean(s)
 shifted_log_counts <- MatrixExtra::mapSparse(counts/(a*s),log1p)
 ```
 
-Next, project the cells onto the top 50 PCs:
-
+Next, I project the cells onto the top 50 PCs:
 
 ```{r pca}
 set.seed(1)
 U <- rsvd(shifted_log_counts,k = 50)$u
 ```
 
-Now run UMAP on the 50 PCs:
+Then I run UMAP on the 50 PCs:
 
 ```{r embeddings}
 Y <- umap(U,n_neighbors = 20,metric = "cosine",min_dist = 0.3,
@@ -118,7 +120,7 @@ sample_info$umap1 <- Y[,1]
 sample_info$umap2 <- Y[,2]
 ```
 
-UMAP with cells colored by condition:
+UMAP with the cells colored by growth condition:
 
 ```{r umap-vs-condition, fig.height=3.75, fig.width=5}
 umap_colors <- c("#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c",
@@ -131,7 +133,9 @@ p <- ggplot(sample_info,aes(x = umap1,y = umap2,color = Condition)) +
 print(p)
 ```
 
-This UMAP projection is very similar to Fig. 2B of the *eLife* paper.
+From this result, it is quite clear that the predominant structure
+corresponds to the different growth conditions. (This UMAP plot closely
+replicates Fig. 2B of the *eLife* paper.)
 
 Finally, save the data and UMAP results to an .Rdata file for more
 convenient analysis in R:
@@ -146,3 +150,5 @@ TO DO:
 + How to get info on genes?
 
 + Save the data to an .Rdata file.
+
+[jackson-2020]: https://doi.org/10.7554/eLife.51254
