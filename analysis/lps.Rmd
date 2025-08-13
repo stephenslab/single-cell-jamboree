@@ -266,9 +266,33 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
         legend.text = element_text(size = 7))
 ```
 
-## EBNMF with "modifying" factor(s)
+## EBNMF with "cross-cutting" factor(s)
 
-TO DO
+ADD TEXT HERE.
+
+```{r flashier-nmf-cc, cache=TRUE}
+set.seed(1)
+fl_nmf_cc <- flash_init(shifted_log_counts,S = s1,var_type = 2)
+nn_factors <- c(1:9,12:15)
+cc_factors <- 10:11
+for (k in nn_factors) {
+  l <- fl_nmf$L_pm[,k,drop = FALSE]
+  f <- fl_nmf$F_pm[,k,drop = FALSE]
+  fl_nmf_cc <- flash_factors_init(fl_nmf_cc,list(l,f),
+                                  ebnm_fn = ebnm_point_exponential)
+}
+for (k in cc_factors) {
+  l <- fl_nmf$L_pm[,k,drop = FALSE]
+  f <- fl_nmf$F_pm[,k,drop = FALSE]
+  fl_nmf_cc <- flash_factors_init(fl_nmf_cc,list(l,f),
+                                  ebnm_fn = c(ebnm_point_exponential,
+								              ebnm_point_laplace))
+}
+fl_nmf_cc <- flash_backfit(fl_nmf_cc,extrapolate = FALSE,maxiter = 100,
+                           verbose = 2)
+fl_nmf_cc <- flash_backfit(fl_nmf_cc,extrapolate = TRUE,maxiter = 100,
+                           verbose = 2)
+```
 
 ## Comparison with UMAP
 
