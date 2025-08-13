@@ -20,6 +20,10 @@ First, load the packages needed for this analysis.
 library(Matrix)
 library(tools)
 library(readr)
+library(rsvd)
+library(uwot)
+library(ggplot2)
+library(cowplot)
 ```
 
 Load the count data:
@@ -42,6 +46,13 @@ sample_info <- transform(sample_info,
 					     Condition      = factor(Condition))
 ```
 
+Number of cell and number of genes:
+
+```{r examine-data-1}
+nrow(counts)
+ncol(counts)
+```
+
 Many cells have much smaller sequencing depth; out of caution, I
 filter these out:
 
@@ -58,7 +69,7 @@ Further, a handful of genes are expressed in only a very small number
 of cells. Here I filter out genes that are expressed in fewer than 10
 cells:
 
-```{r filter-genes, fig.height=3, fig.width=3}
+```{r filter-genes, fig.height=2.75, fig.width=3}
 par(mar = c(4,4,1,1))
 x <- colSums(counts > 0)
 hist(log10(x),n = 64,xlab = "",ylab = "",main = "")
@@ -66,9 +77,9 @@ j <- which(x >= 10)
 counts <- counts[,j]
 ```
 
-Number of cells, number of samples, proportion of counts that are nonzero:
+Number of cells, number of genes, proportion of counts that are nonzero:
 
-```{r examine-data-1}
+```{r examine-data-2}
 nrow(counts)
 ncol(counts)
 mean(counts > 0)
@@ -76,11 +87,53 @@ mean(counts > 0)
 
 Number of cells by condition:
 
-```{r examine-data-2}
+```{r examine-data-3}
 table(sample_info$Condition)
 ```
 
-Finally, save the data and t-SNE results to an .Rdata file for more
+Let's now generate a 2-d nonlinear embedding of the cells using
+UMAP. First, transform the counts into "shifted log counts":
+
+```{r shifted-log-counts}
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+shifted_log_counts <- MatrixExtra::mapSparse(counts/(a*s),log1p)
+```
+
+Next, project the cells onto the top 50 PCs:
+
+
+```{r pca}
+set.seed(1)
+U <- rsvd(shifted_log_counts,k = 50)$u
+```
+
+Now run UMAP on the 50 PCs:
+
+```{r embeddings}
+Y <- umap(U,n_neighbors = 20,metric = "cosine",min_dist = 0.3,
+          n_threads = 8,verbose = FALSE)
+sample_info$umap1 <- Y[,1]
+sample_info$umap2 <- Y[,2]
+```
+
+UMAP with cells colored by condition:
+
+```{r umap-vs-condition, fig.height=3.75, fig.width=5}
+umap_colors <- c("#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c",
+                 "#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99")
+p <- ggplot(sample_info,aes(x = umap1,y = umap2,color = Condition)) +
+  geom_point(size = 1.5) +
+  scale_color_manual(values = umap_colors) +
+  labs(x = "UMAP 1",y = "UMAP 2") + 
+  theme_cowplot(font_size = 10)
+print(p)
+```
+
+This UMAP projection is very similar to Fig. 2B of the *eLife* paper.
+
+Finally, save the data and UMAP results to an .Rdata file for more
 convenient analysis in R:
 
 ```{r save-data, eval=FALSE}
@@ -90,11 +143,6 @@ resaveRdaFiles("yeast.RData")
 
 TO DO:
 
-+ Create t-SNE or UMAP plot.
-
 + How to get info on genes?
 
 + Save the data to an .Rdata file.
-
-
-
