@@ -47,6 +47,19 @@ sample_info <- transform(sample_info,
 					     Condition      = factor(Condition))
 ```
 
+Load the gene data:
+
+```{r gene-data, message=FALSE}
+genes <- read_tsv("../data/Saccharomyces_cerevisiae.gene_info.gz",
+                  col_names = TRUE,comment = "#")
+genes <- as.data.frame(genes)
+genes <- genes[c("tax_id","GeneID","Symbol","LocusTag","Synonyms",
+                 "dbXrefs","chromosome","type_of_gene")]
+genes <- transform(genes,
+                   chromosome   = factor(chromosome),
+                   type_of_gene = factor(type_of_gene))
+```
+
 This is the number of cells and genes before any filtering:
 
 ```{r examine-data-1}
@@ -141,14 +154,8 @@ Finally, save the data and UMAP results to an .Rdata file for more
 convenient analysis in R:
 
 ```{r save-data, eval=FALSE}
-save(list = c("sample_info","counts"),file = "yeast.RData")
+save(list = c("sample_info","genes","counts"),file = "yeast.RData")
 resaveRdaFiles("yeast.RData")
 ```
-
-TO DO:
-
-+ How to get info on genes?
-
-+ Save the data to an .Rdata file.
 
 [jackson-2020]: https://doi.org/10.7554/eLife.51254
