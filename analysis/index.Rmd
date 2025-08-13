@@ -49,7 +49,7 @@ via [this link][box].
 
 + [Comparison of log1pNMF and Topic Model fits on Pancreas Cytokine Dataset](pancreas_cytokine_mf_comparison.html)
 
-+ [Initial exploration of the budding yeast data set](budding_yeast.html)
++ [Initial exploration of the budding yeast data set.](budding_yeast.html)
 
 [hca]: https://data.humancellatlas.org
 [google-sheet-data-sets]: https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing
