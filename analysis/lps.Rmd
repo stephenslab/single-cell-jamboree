@@ -270,7 +270,7 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
 
 ADD TEXT HERE.
 
-```{r flashier-nmf-cc, cache=TRUE}
+```{r flashier-nmf-cc, eval=FALSE}
 set.seed(1)
 fl_nmf_cc <- flash_init(shifted_log_counts,S = s1,var_type = 2)
 nn_factors <- c(1:9,12:15)
