@@ -73,6 +73,8 @@ dim(counts)
 For the Gaussian-based analyses (later), we will need the shifted log
 counts:
 
+TO DO: Use MatrixExtra::mapSparse to compute the shifted log counts.
+
 ```{r shifted-log-counts}
 a <- 1
 s <- rowSums(counts)
