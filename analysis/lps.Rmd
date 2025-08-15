@@ -257,8 +257,8 @@ topic_colors <- c("gray95","gray70","gray80","gray50",
                   "gray35","gray75")
 L <- ldf(fl_nmf,type = "i")$L
 structure_plot(L,grouping = samples$tissue,gap = 4,
-                    topics = 1:15,colors = topic_colors,
-					loadings_order = rows) +
+               topics = 1:15,colors = topic_colors,
+   		       loadings_order = rows) +
   labs(fill = "",y = "membership") +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
         legend.key.height = unit(0.01,"cm"),
@@ -268,30 +268,81 @@ structure_plot(L,grouping = samples$tissue,gap = 4,
 
 ## EBNMF with "cross-cutting" factor(s)
 
-ADD TEXT HERE.
+One question I have is whether it is sufficient to model increases in
+expression for these "cross-cutting" factors, or whether it is better
+to allow for both decreases in expression (negative on log-scale) and
+increases (positive on log-scale). Let's test this.
 
-```{r flashier-nmf-cc, eval=FALSE}
-set.seed(1)
-fl_nmf_cc <- flash_init(shifted_log_counts,S = s1,var_type = 2)
-nn_factors <- c(1:9,12:15)
+```{r flashier-nmf-cc, cache=TRUE}
 cc_factors <- 10:11
-for (k in nn_factors) {
-  l <- fl_nmf$L_pm[,k,drop = FALSE]
-  f <- fl_nmf$F_pm[,k,drop = FALSE]
-  fl_nmf_cc <- flash_factors_init(fl_nmf_cc,list(l,f),
-                                  ebnm_fn = ebnm_point_exponential)
-}
-for (k in cc_factors) {
-  l <- fl_nmf$L_pm[,k,drop = FALSE]
-  f <- fl_nmf$F_pm[,k,drop = FALSE]
-  fl_nmf_cc <- flash_factors_init(fl_nmf_cc,list(l,f),
-                                  ebnm_fn = c(ebnm_point_exponential,
-								              ebnm_point_laplace))
-}
+nn_factors <- c(1:9,12:15)
+fl_nmf_cc <- convert_factors_nn_to_pn(fl_nmf,cc_factors,shifted_log_counts,
+                                      S = s1,var_type = 2)
 fl_nmf_cc <- flash_backfit(fl_nmf_cc,extrapolate = FALSE,maxiter = 100,
                            verbose = 2)
 fl_nmf_cc <- flash_backfit(fl_nmf_cc,extrapolate = TRUE,maxiter = 100,
                            verbose = 2)
+```
+
+For the two cross-cutting factors, modeling both decreases and
+increases does seem to produce a number of decreases in expression,
+but overall the LFCs remain very similar:
+
+```{r compare-nmf-vs-cc-1, fig.height=2.5, fig.width=2.5}
+pdat <- data.frame(nmf    = as.vector(ldf(fl_nmf,type="i")$F[,cc_factors]),
+                   nmf_cc = as.vector(ldf(fl_nmf_cc,type="i")$F[,cc_factors]))
+ggplot(pdat,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",linetype = "dotted") +
+  theme_cowplot(font_size = 10)
+```
+
+This suggests that while modeling both positive and negative changes
+is useful, it is perhaps not essential.
+
+The following three plots compare: (i) F for the non-negative factors
+only; (ii) L for the non-negative factors only; (iii) L for the
+(positive and negative) cross-cutting factors. Overall, these parameter
+estimates did not change much.
+
+```{r compare-nmf-vs-cc-2, fig.height=2, fig.width=6}
+pdat1 <- data.frame(nmf    = as.vector(ldf(fl_nmf,type="i")$F[,nn_factors]),
+                    nmf_cc = as.vector(ldf(fl_nmf_cc,type="i")$F[,nn_factors]))
+pdat1 <- subset(pdat1,abs(nmf) > 0.01 & abs(nmf_cc) > 0.01)
+p1 <- ggplot(pdat1,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",linetype = "dotted") +
+  theme_cowplot(font_size = 10)
+pdat2 <- data.frame(nmf    = as.vector(ldf(fl_nmf,type="i")$L[,nn_factors]),
+                    nmf_cc = as.vector(ldf(fl_nmf_cc,type="i")$L[,nn_factors]))
+pdat2 <- subset(pdat2,abs(nmf) > 0.01 & abs(nmf_cc) > 0.01)
+p2 <- ggplot(pdat2,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",linetype = "dotted") +
+  theme_cowplot(font_size = 10)
+pdat3 <- data.frame(nmf    = as.vector(ldf(fl_nmf,type="i")$L[,cc_factors]),
+                    nmf_cc = as.vector(ldf(fl_nmf_cc,type="i")$L[,cc_factors]))
+p3 <- ggplot(pdat3,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",linetype = "dotted") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,nrow = 1,ncol = 3)
+```
+
+Here is the updated Structure plot, highlighting again the
+sepsis-related ("cross-cutting") factors:
+
+```{r structure-plot-flashier-nmf-cc, fig.height=2, fig.width=7}
+rows <- order(samples$timepoint)
+L <- ldf(fl_nmf_cc,type = "i")$L
+structure_plot(L,grouping = samples$tissue,gap = 4,
+                    topics = 1:15,colors = topic_colors,
+					loadings_order = rows) +
+  labs(fill = "",y = "membership") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,"cm"),
+        legend.key.width = unit(0.25,"cm"),
+        legend.text = element_text(size = 7))
 ```
 
 ## Comparison with UMAP
@@ -311,7 +362,7 @@ samples$umap2 <- y
 ```
 
 I color the samples in the UMAP plot by tissue (top-left) and by
-membership to factor 6 (top-right, bottom-left):
+membership to factor 10 (top-right, bottom-left):
 
 ```{r umap-plots, fig.height=5.5, fig.width=6.5}
 tissue_colors <- c("magenta","darkorange","darkblue","forestgreen",
@@ -321,13 +372,13 @@ tissue_colors <- c("magenta","darkorange","darkblue","forestgreen",
 L            <- ldf(fl_nmf,type = "i")$L
 colnames(L)  <- paste0("k",1:15)
 pdat         <- samples
-pdat$factor6 <- L[,"k6"]
+pdat$factor10 <- L[,"k10"]
 pdat$topic7  <- poisson2multinom(tm)$L[,"k7"]
 p1 <- ggplot(pdat,aes(x = umap1,y = umap2,color = tissue)) +
   geom_point(size = 1) +
   scale_color_manual(values = tissue_colors) +
   theme_cowplot(font_size = 10)
-p2 <- ggplot(pdat,aes(x = umap1,y = umap2,color = factor6)) +
+p2 <- ggplot(pdat,aes(x = umap1,y = umap2,color = factor10)) +
   geom_point(size = 1) +
   scale_color_gradient2(low = "deepskyblue",mid = "gold",high = "tomato",
                         midpoint = 0.66) +
@@ -343,9 +394,9 @@ plot_grid(p1,p2,p3,nrow = 2,ncol = 2)
 As expected, the predominant structure is due to the different
 tissues, with more similar tissues clustering together. There is also
 some more subtle structure within each cluster that appears to
-correspond well with factor 6 (and topic 7). So althought the UMAP
-does seem to reveal the sepsis-related structure, it cannot isolate
-the sepsis-related gene expression signature.
+correspond well with factor 10 (and, correspondingly, topic 7). So
+althought the UMAP does seem to reveal the sepsis-related structure,
+it cannot isolate the sepsis-related gene expression signature.
 
 ## Factors isolating responses to LPS-induced sepsis
 
