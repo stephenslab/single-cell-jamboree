@@ -300,7 +300,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-13
+<strong>Last updated:</strong> 2025-08-16
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -417,6 +417,9 @@ fit-topic-model
 fit-topic-model-k9
 </li>
 <li>
+flashier-nmf-cc
+</li>
+<li>
 flashier-nmf-k15
 </li>
 <li>
@@ -449,15 +452,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreedaa0c2dcdbe4783da64a0140866dc2d906b8cd6atargetblankdaa0c2da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea13c906fcc3e7873892211a3d960dad808a1f489targetblanka13c906a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/daa0c2dcdbe4783da64a0140866dc2d906b8cd6a" target="_blank">daa0c2d</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a13c906fcc3e7873892211a3d960dad808a1f489" target="_blank">a13c906</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreedaa0c2dcdbe4783da64a0140866dc2d906b8cd6atargetblankdaa0c2da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreea13c906fcc3e7873892211a3d960dad808a1f489targetblanka13c906a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -467,7 +470,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/daa0c2dcdbe4783da64a0140866dc2d906b8cd6a" target="_blank">daa0c2d</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/a13c906fcc3e7873892211a3d960dad808a1f489" target="_blank">a13c906</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -483,8 +486,8 @@ were generated:
 <pre><code>
 Untracked files:
     Untracked:  analysis/lps_cache/
-    Untracked:  analysis/lps_fl_nmf_k6.csv
-    Untracked:  analysis/lps_gsea_fl_nmf_k6.csv
+    Untracked:  analysis/lps_fl_nmf_cc_k10.csv
+    Untracked:  analysis/lps_gsea_fl_nmf_cc_k10.csv
     Untracked:  analysis/mcf7_cache/
     Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
     Untracked:  analysis/pancreas_cytokine_lsa_clustering_cache/
@@ -498,6 +501,7 @@ Untracked files:
     Untracked:  data/pancreas_cytokine_lsa_v2.RData
     Untracked:  data/pancreas_endocrine.RData
     Untracked:  data/pancreas_endocrine_alldays.h5ad
+    Untracked:  data/yeast.RData
     Untracked:  output/panc_cyto_lsa_res/
 
 </code></pre>
@@ -543,6 +547,76 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a13c906fcc3e7873892211a3d960dad808a1f489/analysis/lps.Rmd" target="_blank">a13c906</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-16
+</td>
+<td>
+wflow_publish("lps.Rmd", view = F, verbose = T)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/62e1130adefc9f572579f252cb2b366d852fc139/analysis/lps.Rmd" target="_blank">62e1130</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-16
+</td>
+<td>
+Updated the GSEA to use factor 10 from the fl_nmf_cc model fit in
+lps.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/923976b7bc09d7dd1c29bed632c87497a9879307/analysis/lps.Rmd" target="_blank">923976b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-15
+</td>
+<td>
+In lps.Rmd, added additional MF analysis using selected pn factors; also
+updated the umap plots.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/63aa311673ba46aeac2ef2f05e0f6eca2c3ecc02/docs/lps.html" target="_blank">63aa311</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+Ran wflow_publish("lps.Rmd").
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1573,6 +1647,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/63aa311673ba46aeac2ef2f05e0f6eca2c3ecc02/docs/figure/lps.Rmd/structure-plot-flashier-nmf-k9-1.png" target="_blank">63aa311</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/e558f1753c6ec9edc1ffa77398ada9acbb5729bc/docs/figure/lps.Rmd/structure-plot-flashier-nmf-k9-1.png" target="_blank">e558f17</a>
 </td>
 <td>
@@ -1644,6 +1729,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/63aa311673ba46aeac2ef2f05e0f6eca2c3ecc02/docs/figure/lps.Rmd/structure-plot-flashier-nmf-1.png" target="_blank">63aa311</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/structure-plot-flashier-nmf-1.png" target="_blank">34e8a3a</a>
 </td>
 <td>
@@ -1689,8 +1785,8 @@ topic_colors &lt;- c(&quot;gray95&quot;,&quot;gray70&quot;,&quot;gray80&quot;,&q
                   &quot;gray35&quot;,&quot;gray75&quot;)
 L &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
 structure_plot(L,grouping = samples$tissue,gap = 4,
-                    topics = 1:15,colors = topic_colors,
-                    loadings_order = rows) +
+               topics = 1:15,colors = topic_colors,
+               loadings_order = rows) +
   labs(fill = &quot;&quot;,y = &quot;membership&quot;) +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
         legend.key.height = unit(0.01,&quot;cm&quot;),
@@ -1719,6 +1815,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/63aa311673ba46aeac2ef2f05e0f6eca2c3ecc02/docs/figure/lps.Rmd/structure-plot-flashier-nmf-2-1.png" target="_blank">63aa311</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/structure-plot-flashier-nmf-2-1.png" target="_blank">34e8a3a</a>
@@ -1759,28 +1866,95 @@ Peter Carbonetto
 </div>
 <div id="ebnmf-with-cross-cutting-factors" class="section level2">
 <h2>EBNMF with “cross-cutting” factor(s)</h2>
-<p>ADD TEXT HERE.</p>
-<pre class="r"><code>set.seed(1)
-fl_nmf_cc &lt;- flash_init(shifted_log_counts,S = s1,var_type = 2)
+<p>One question I have is whether it is sufficient to model increases in
+expression for these “cross-cutting” factors, or whether it is better to
+allow for both decreases in expression (negative on log-scale) and
+increases (positive on log-scale). Let’s test this.</p>
+<pre class="r"><code>cc_factors &lt;- 10:11
 nn_factors &lt;- c(1:9,12:15)
-cc_factors &lt;- 10:11
-for (k in nn_factors) {
-  l &lt;- fl_nmf$L_pm[,k,drop = FALSE]
-  f &lt;- fl_nmf$F_pm[,k,drop = FALSE]
-  fl_nmf_cc &lt;- flash_factors_init(fl_nmf_cc,list(l,f),
-                                  ebnm_fn = ebnm_point_exponential)
-}
-for (k in cc_factors) {
-  l &lt;- fl_nmf$L_pm[,k,drop = FALSE]
-  f &lt;- fl_nmf$F_pm[,k,drop = FALSE]
-  fl_nmf_cc &lt;- flash_factors_init(fl_nmf_cc,list(l,f),
-                                  ebnm_fn = c(ebnm_point_exponential,
-                                              ebnm_point_laplace))
-}
+fl_nmf_cc &lt;- convert_factors_nn_to_pn(fl_nmf,cc_factors,shifted_log_counts,
+                                      S = s1,var_type = 2)
 fl_nmf_cc &lt;- flash_backfit(fl_nmf_cc,extrapolate = FALSE,maxiter = 100,
                            verbose = 2)
 fl_nmf_cc &lt;- flash_backfit(fl_nmf_cc,extrapolate = TRUE,maxiter = 100,
-                           verbose = 2)</code></pre>
+                           verbose = 2)
+# Backfitting 15 factors (tolerance: 1.81e-01)...
+#   Difference between iterations is within 1.0e+03...
+#   Difference between iterations is within 1.0e+02...
+#   --Maximum number of iterations reached!
+# Wrapping up...
+# Done.
+# Backfitting 15 factors (tolerance: 1.81e-01)...
+#   Difference between iterations is within 1.0e+01...
+#   --Maximum number of iterations reached!
+#   Backfit complete. Objective: -3286910.603 
+# Wrapping up...
+# Done.</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>For the two cross-cutting factors, modeling both decreases and
+increases does seem to produce a number of decreases in expression, but
+overall the LFCs remain very similar:</p>
+<pre class="r"><code>pdat &lt;- data.frame(nmf    = as.vector(ldf(fl_nmf,type=&quot;i&quot;)$F[,cc_factors]),
+                   nmf_cc = as.vector(ldf(fl_nmf_cc,type=&quot;i&quot;)$F[,cc_factors]))
+ggplot(pdat,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,linetype = &quot;dotted&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/lps.Rmd/compare-nmf-vs-cc-1-1.png" width="300" style="display: block; margin: auto;" /></p>
+<p>This suggests that while modeling both positive and negative changes
+is useful, it is perhaps not essential.</p>
+<p>The following three plots compare: (i) F for the non-negative factors
+only; (ii) L for the non-negative factors only; (iii) L for the
+(positive and negative) cross-cutting factors. Overall, these parameter
+estimates did not change much.</p>
+<pre class="r"><code>pdat1 &lt;- data.frame(nmf    = as.vector(ldf(fl_nmf,type=&quot;i&quot;)$F[,nn_factors]),
+                    nmf_cc = as.vector(ldf(fl_nmf_cc,type=&quot;i&quot;)$F[,nn_factors]))
+pdat1 &lt;- subset(pdat1,abs(nmf) &gt; 0.01 &amp; abs(nmf_cc) &gt; 0.01)
+p1 &lt;- ggplot(pdat1,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,linetype = &quot;dotted&quot;) +
+  theme_cowplot(font_size = 10)
+pdat2 &lt;- data.frame(nmf    = as.vector(ldf(fl_nmf,type=&quot;i&quot;)$L[,nn_factors]),
+                    nmf_cc = as.vector(ldf(fl_nmf_cc,type=&quot;i&quot;)$L[,nn_factors]))
+pdat2 &lt;- subset(pdat2,abs(nmf) &gt; 0.01 &amp; abs(nmf_cc) &gt; 0.01)
+p2 &lt;- ggplot(pdat2,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,linetype = &quot;dotted&quot;) +
+  theme_cowplot(font_size = 10)
+pdat3 &lt;- data.frame(nmf    = as.vector(ldf(fl_nmf,type=&quot;i&quot;)$L[,cc_factors]),
+                    nmf_cc = as.vector(ldf(fl_nmf_cc,type=&quot;i&quot;)$L[,cc_factors]))
+p3 &lt;- ggplot(pdat3,aes(x = nmf,y = nmf_cc)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,linetype = &quot;dotted&quot;) +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,nrow = 1,ncol = 3)</code></pre>
+<p><img src="figure/lps.Rmd/compare-nmf-vs-cc-2-1.png" width="720" style="display: block; margin: auto;" /></p>
+<p>Here is the updated Structure plot, highlighting again the
+sepsis-related (“cross-cutting”) factors:</p>
+<pre class="r"><code>rows &lt;- order(samples$timepoint)
+L &lt;- ldf(fl_nmf_cc,type = &quot;i&quot;)$L
+structure_plot(L,grouping = samples$tissue,gap = 4,
+                    topics = 1:15,colors = topic_colors,
+                    loadings_order = rows) +
+  labs(fill = &quot;&quot;,y = &quot;membership&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5),
+        legend.key.height = unit(0.01,&quot;cm&quot;),
+        legend.key.width = unit(0.25,&quot;cm&quot;),
+        legend.text = element_text(size = 7))</code></pre>
+<p><img src="figure/lps.Rmd/structure-plot-flashier-nmf-cc-1.png" width="840" style="display: block; margin: auto;" /></p>
 </div>
 <div id="comparison-with-umap" class="section level2">
 <h2>Comparison with UMAP</h2>
@@ -1795,7 +1969,7 @@ y &lt;- Y[,2]
 samples$umap1 &lt;- x
 samples$umap2 &lt;- y</code></pre>
 <p>I color the samples in the UMAP plot by tissue (top-left) and by
-membership to factor 6 (top-right, bottom-left):</p>
+membership to factor 10 (top-right, bottom-left):</p>
 <pre class="r"><code>tissue_colors &lt;- c(&quot;magenta&quot;,&quot;darkorange&quot;,&quot;darkblue&quot;,&quot;forestgreen&quot;,
                    &quot;dodgerblue&quot;,&quot;red&quot;,&quot;olivedrab&quot;,&quot;darkmagenta&quot;,
                    &quot;sienna&quot;,&quot;limegreen&quot;,&quot;royalblue&quot;,&quot;lightskyblue&quot;,
@@ -1803,13 +1977,13 @@ membership to factor 6 (top-right, bottom-left):</p>
 L            &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
 colnames(L)  &lt;- paste0(&quot;k&quot;,1:15)
 pdat         &lt;- samples
-pdat$factor6 &lt;- L[,&quot;k6&quot;]
+pdat$factor10 &lt;- L[,&quot;k10&quot;]
 pdat$topic7  &lt;- poisson2multinom(tm)$L[,&quot;k7&quot;]
 p1 &lt;- ggplot(pdat,aes(x = umap1,y = umap2,color = tissue)) +
   geom_point(size = 1) +
   scale_color_manual(values = tissue_colors) +
   theme_cowplot(font_size = 10)
-p2 &lt;- ggplot(pdat,aes(x = umap1,y = umap2,color = factor6)) +
+p2 &lt;- ggplot(pdat,aes(x = umap1,y = umap2,color = factor10)) +
   geom_point(size = 1) +
   scale_color_gradient2(low = &quot;deepskyblue&quot;,mid = &quot;gold&quot;,high = &quot;tomato&quot;,
                         midpoint = 0.66) +
@@ -1845,6 +2019,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/63aa311673ba46aeac2ef2f05e0f6eca2c3ecc02/docs/figure/lps.Rmd/umap-plots-1.png" target="_blank">63aa311</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/umap-plots-1.png" target="_blank">34e8a3a</a>
 </td>
 <td>
@@ -1872,9 +2057,9 @@ Peter Carbonetto
 <p>As expected, the predominant structure is due to the different
 tissues, with more similar tissues clustering together. There is also
 some more subtle structure within each cluster that appears to
-correspond well with factor 6 (and topic 7). So althought the UMAP does
-seem to reveal the sepsis-related structure, it cannot isolate the
-sepsis-related gene expression signature.</p>
+correspond well with factor 10 (and, correspondingly, topic 7). So
+althought the UMAP does seem to reveal the sepsis-related structure, it
+cannot isolate the sepsis-related gene expression signature.</p>
 </div>
 <div id="factors-isolating-responses-to-lps-induced-sepsis"
 class="section level2">
@@ -1924,6 +2109,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/63aa311673ba46aeac2ef2f05e0f6eca2c3ecc02/docs/figure/lps.Rmd/compare-topics-1-1.png" target="_blank">63aa311</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/compare-topics-1-1.png" target="_blank">34e8a3a</a>
@@ -2007,6 +2203,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/63aa311673ba46aeac2ef2f05e0f6eca2c3ecc02/docs/figure/lps.Rmd/compare-topics-2-1.png" target="_blank">63aa311</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/de50dc2b081baf30b7bf8848c4548aaadc9f5027/docs/figure/lps.Rmd/compare-topics-2-1.png" target="_blank">de50dc2</a>
 </td>
 <td>
@@ -2058,92 +2265,22 @@ The key point here is that the topic model has selected genes for topic
 7 that are very independent of the tissue topics. So this looks quite
 promising. Let’s now see if the result is similar for the EBNMF model
 fitted to the shifted log counts:</p>
-<pre class="r"><code>F &lt;- ldf(fl_nmf,type = &quot;i&quot;)$F
+<pre class="r"><code>F &lt;- ldf(fl_nmf_cc,type = &quot;i&quot;)$F
 colnames(F) &lt;- paste0(&quot;k&quot;,1:15)
-pdat &lt;- data.frame(tm   = poisson2multinom(tm)$F[,&quot;k7&quot;],
-                   nmf  = F[,&quot;k6&quot;],
-                   gene = rownames(F))
-rows &lt;- which(with(pdat,tm &lt; 0.005 &amp; nmf &lt; 0.8))
+pdat &lt;- data.frame(tm     = poisson2multinom(tm)$F[,&quot;k7&quot;],
+                   nmf_cc = F[,&quot;k10&quot;],
+                   gene   = rownames(F))
+rows &lt;- which(with(pdat,tm &lt; 0.005 &amp; nmf_cc &lt; 0.8))
 pdat[rows,&quot;gene&quot;] &lt;- &quot;&quot;
-ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene)) +
+ggplot(pdat,aes(x = (tm)^(1/3),y = nmf_cc,label = gene)) +
   geom_point() +
   geom_text_repel(color = &quot;gray&quot;,size = 2.5,max.overlaps = Inf) +
-  labs(x = &quot;topic 7&quot;,y = &quot;factor 6&quot;) +
+  labs(x = &quot;topic 7&quot;,y = &quot;factor 10&quot;) +
   theme_cowplot(font_size = 12)</code></pre>
-<p><img src="figure/lps.Rmd/sepsis-tm-vs-nmf-1.png" width="480" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sepsis-tm-vs-nmf-1">
-Past versions of sepsis-tm-vs-nmf-1.png
-</button>
-</p>
-<div id="fig-sepsis-tm-vs-nmf-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/de50dc2b081baf30b7bf8848c4548aaadc9f5027/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-1.png" target="_blank">de50dc2</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-17
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-1.png" target="_blank">34e8a3a</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/61bec23064abf79cae4265fe42b9b1bd97d23183/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-1.png" target="_blank">61bec23</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-11
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e558f1753c6ec9edc1ffa77398ada9acbb5729bc/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-1.png" target="_blank">e558f17</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-04
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Indeed, factor 6 and topic 7 are cpaturing very similar expression
+<p><img src="figure/lps.Rmd/sepsis-tm-vs-nmf-cc-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>Indeed, factor 10 and topic 7 are cpaturing very similar expression
 patterns.</p>
-<p>Next I ran GSEA on the on factor 6. (Running GSEA on topic 7 is
+<p>Next I ran GSEA on the on factor 10. (Running GSEA on topic 7 is
 complicated by the fact that it would be better to “shrink” the
 estimates before running GSEA, whereas this was automatically done for
 EBNMF result.)</p>
@@ -2164,41 +2301,51 @@ gene_sets     &lt;- gene_sets[i,j]
 rownames(gene_sets) &lt;- gene_info$Symbol
 rownames(gene_set_info) &lt;- gene_set_info$id
 gene_set_info &lt;- gene_set_info[,-2]
-F &lt;- ldf(fl_nmf,type = &quot;i&quot;)$F
+F &lt;- ldf(fl_nmf_cc,type = &quot;i&quot;)$F
 colnames(F) &lt;- paste0(&quot;k&quot;,1:15)
-gsea_fl_nmf &lt;- singlecelljamboreeR::perform_gsea(F[,&quot;k6&quot;],gene_sets,
-                                                 gene_set_info,L = 15,
-                                                 verbose = FALSE)
-write.csv(data.frame(gene = rownames(F),signal = round(F[,&quot;k6&quot;],digits = 6)),
-          &quot;lps_fl_nmf_k6.csv&quot;,row.names = FALSE,quote = FALSE)
-out &lt;- gsea_fl_nmf$selected_gene_sets
+gsea_fl_nmf_cc &lt;- singlecelljamboreeR::perform_gsea(F[,&quot;k10&quot;],gene_sets,
+                                                    gene_set_info,L = 15,
+                                                    verbose = FALSE)
+write.csv(data.frame(gene = rownames(F),signal = round(F[,&quot;k10&quot;],digits = 6)),
+          &quot;lps_fl_nmf_cc_k10.csv&quot;,row.names = FALSE,quote = FALSE)
+out &lt;- gsea_fl_nmf_cc$selected_gene_sets
 out$top_genes &lt;- sapply(out$top_genes,function (x) paste(x,collapse = &quot; &quot;))
 out$lbf  &lt;- round(out$lbf,digits = 6)
 out$pip  &lt;- round(out$pip,digits = 6)
 out$coef &lt;- round(out$coef,digits = 6)
-write_csv(out,&quot;lps_gsea_fl_nmf_k6.csv&quot;,quote = &quot;none&quot;)</code></pre>
+write_csv(out,&quot;lps_gsea_fl_nmf_cc_k10.csv&quot;,quote = &quot;none&quot;)</code></pre>
 <p>The top gene set is the IFN-<span
 class="math inline">\(\alpha/\beta\)</span> signaling pathway, but other
 gene sets clearly relate to inflammation and immune system function:</p>
-<pre class="r"><code>print(gsea_fl_nmf$selected_gene_sets[c(2:7,9)],n = Inf)
-# # A tibble: 15 × 7
-#    CS    gene_set   lbf   pip   coef genes name                                 
-#    &lt;fct&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                                
-#  1 L1    M516     488.  1     0.225    157 REACTOME_THE_CITRIC_ACID_TCA_CYCLE_A…
-#  2 L2    M6298    193.  1     0.119    231 GO_CONTRACTILE_FIBER                 
-#  3 L4    M24087   124.  1.000 0.129    130 GO_CARDIAC_MUSCLE_CONTRACTION        
-#  4 L7    M8229    112.  1     0.0830   287 REACTOME_TRANSLATION                 
-#  5 L5    M13993   104.  1.000 0.0959   201 GO_CARDIAC_MUSCLE_TISSUE_DEVELOPMENT 
-#  6 L3    M17748   102.  1.000 0.0868   240 GO_MITOCHONDRIAL_PROTEIN_COMPLEX     
-#  7 L9    M23771    95.2 0.998 0.0780   280 GO_ATP_METABOLIC_PROCESS             
-#  8 L11   M39596    93.4 1     0.224     33 WP_FATTY_ACID_BETA_OXIDATION         
-#  9 L10   M17544    93.0 1     0.146     78 GO_SARCOPLASM                        
-# 10 L14   M17675    80.2 1.000 0.198     37 GO_A_BAND                            
-# 11 L13   M27932    80.2 1.000 0.0948   162 REACTOME_PROTEIN_LOCALIZATION        
-# 12 L8    M13855    67.3 1.000 0.0590   362 GO_POST_TRANSLATIONAL_PROTEIN_MODIFI…
-# 13 L12   M13349    62.6 0.980 0.135     64 GO_MYOFIBRIL_ASSEMBLY                
-# 14 L15   M835      46.4 0.999 0.101     89 KEGG_DILATED_CARDIOMYOPATHY          
-# 15 L6    M11835    44.9 0.992 0.147     41 KEGG_VALINE_LEUCINE_AND_ISOLEUCINE_D…</code></pre>
+<pre class="r"><code>print(gsea_fl_nmf_cc$selected_gene_sets[c(2:7,9)],n = Inf)
+# # A tibble: 25 × 7
+#    CS    gene_set   lbf    pip    coef genes name                               
+#    &lt;fct&gt; &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                              
+#  1 L1    M973     327.  1       0.272     49 REACTOME_INTERFERON_ALPHA_BETA_SIG…
+#  2 L2    M27605   171.  1       0.211     44 REACTOME_INTERLEUKIN_10_SIGNALING  
+#  3 L3    M14405   113.  0.999   0.0777   222 GO_DEFENSE_RESPONSE_TO_VIRUS       
+#  4 L4    M15265    79.7 1.000   0.0757   171 GO_RESPONSE_TO_INTERFERON_GAMMA    
+#  5 L7    M18914    58.5 1       0.223     15 GO_CXCR_CHEMOKINE_RECEPTOR_BINDING 
+#  6 L5    M13436    53.0 1.000   0.0609   186 GO_RESPONSE_TO_INTERLEUKIN_1       
+#  7 L10   M17358    31.6 1.000   0.0539   157 GO_SPECIFIC_GRANULE                
+#  8 L6    M39785    29.3 1.000  -0.146     20 WP_OVERVIEW_OF_INTERFERONSMEDIATED…
+#  9 L9    M26883    28.5 1.000   0.168     15 GO_PROTEIN_ADP_RIBOSYLASE_ACTIVITY 
+# 10 L12   M10974    27.7 0.997   0.0674    91 GO_NEGATIVE_REGULATION_OF_VIRAL_PR…
+# 11 L14   M12167    22.6 0.994   0.0432   192 GO_PATTERN_RECOGNITION_RECEPTOR_SI…
+# 12 L11   M39818    22.0 1.000   0.0366   264 WP_IL18_SIGNALING_PATHWAY          
+# 13 L8    M15261    21.2 0.652   0.0316   345 GO_REGULATION_OF_INFLAMMATORY_RESP…
+# 14 L8    M15877    21.2 0.346   0.0486   138 GO_POSITIVE_REGULATION_OF_INFLAMMA…
+# 15 L13   M39618    19.5 0.998   0.109     27 WP_PHOTODYNAMIC_THERAPYINDUCED_UNF…
+# 16 L15   M255      15.6 0.343   0.0644    65 PID_HIF1_TFPATHWAY                 
+# 17 L15   M39678    15.6 0.249  -0.0559    86 WP_RETINOBLASTOMA_GENE_IN_CANCER   
+# 18 L15   M12630    15.6 0.0935  0.0463   122 GO_TRANSITION_METAL_ION_HOMEOSTASIS
+# 19 L15   M15481    15.6 0.0790  0.0508   100 GO_CELLULAR_TRANSITION_METAL_ION_H…
+# 20 L15   M4217     15.6 0.0741 -0.0368   195 REACTOME_MITOTIC_PROMETAPHASE      
+# 21 L15   M11809    15.6 0.0355  0.0916    28 GO_RESPONSE_TO_INTERFERON_BETA     
+# 22 L15   M39363    15.6 0.0281  0.0843    33 WP_TYPE_II_INTERFERON_SIGNALING_IF…
+# 23 L15   M11125    15.6 0.0248  0.0666    54 GO_NEGATIVE_REGULATION_OF_INNATE_I…
+# 24 L15   M23341    15.6 0.0223  0.139     11 GO_CELLULAR_RESPONSE_TO_INTERFERON…
+# 25 L15   M17276    15.6 0.0132  0.0565    74 GO_PRERIBOSOME</code></pre>
 <p>This is the same scatterplot as the one just above, but with the
 genes in the IFN-<span class="math inline">\(\alpha/\beta\)</span>
 signaling pathway highlighted:</p>
@@ -2206,81 +2353,22 @@ signaling pathway highlighted:</p>
 pathway_genes &lt;- names(which(gene_sets[,&quot;M973&quot;] &gt; 0))
 pdat[pathway_genes,&quot;pathway&quot;] &lt;- TRUE
 pdat &lt;- pdat[order(pdat$pathway),]
-ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene,color = pathway)) +
+ggplot(pdat,aes(x = (tm)^(1/3),y = nmf_cc,label = gene,color = pathway)) +
   geom_point() +
   geom_text_repel(color = &quot;gray&quot;,size = 2.5,max.overlaps = Inf) +
   scale_color_manual(values = c(&quot;darkblue&quot;,&quot;orangered&quot;)) +
-  labs(x = &quot;topic 7&quot;,y = &quot;factor 6&quot;) +
+  labs(x = &quot;topic 7&quot;,y = &quot;factor 10&quot;) +
   theme_cowplot(font_size = 12)</code></pre>
-<p><img src="figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-1.png" width="600" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sepsis-tm-vs-nmf-with-gsea-1">
-Past versions of sepsis-tm-vs-nmf-with-gsea-1.png
-</button>
-</p>
-<div id="fig-sepsis-tm-vs-nmf-with-gsea-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/34e8a3a89bd218d00cd6c03c94f68e23da883870/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-1.png" target="_blank">34e8a3a</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/61bec23064abf79cae4265fe42b9b1bd97d23183/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-1.png" target="_blank">61bec23</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-11
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e558f1753c6ec9edc1ffa77398ada9acbb5729bc/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-1.png" target="_blank">e558f17</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-04
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/lps.Rmd/sepsis-tm-vs-nmf-cc-with-gsea-1.png" width="600" style="display: block; margin: auto;" /></p>
 <p>Here’s another view of the enrichment of the genes in the IFN-<span
 class="math inline">\(\alpha/\beta\)</span> pathway:</p>
-<pre class="r"><code>p1 &lt;- ggplot(subset(pdat,pathway),aes(x = nmf)) +
+<pre class="r"><code>p1 &lt;- ggplot(subset(pdat,pathway),aes(x = nmf_cc)) +
   geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 16) +
-  labs(x = &quot;factor 6&quot;,y = &quot;IFN-a/b genes&quot;) +
+  labs(x = &quot;factor 10&quot;,y = &quot;IFN-a/b genes&quot;) +
   theme_cowplot(font_size = 10)
-p2 &lt;- ggplot(subset(pdat,!pathway),aes(x = nmf)) +
+p2 &lt;- ggplot(subset(pdat,!pathway),aes(x = nmf_cc)) +
   geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 24) +
-  labs(x = &quot;factor 6&quot;,y = &quot;other genes&quot;) +
+  labs(x = &quot;factor 10&quot;,y = &quot;other genes&quot;) +
   theme_cowplot(font_size = 10)
 p3 &lt;- ggplot(subset(pdat,pathway),aes(x = log10(tm + 1e-6))) +
   geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 16) +
@@ -2290,45 +2378,8 @@ p4 &lt;- ggplot(subset(pdat,!pathway),aes(x = log10(tm + 1e-6))) +
   geom_histogram(color = &quot;white&quot;,fill = &quot;black&quot;,bins = 24) +
   labs(x = &quot;topic 7&quot;,y = &quot;other genes&quot;) +
   theme_cowplot(font_size = 10)
-plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)</code></pre>
-<p><img src="figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-2-1.png" width="480" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sepsis-tm-vs-nmf-with-gsea-2-1">
-Past versions of sepsis-tm-vs-nmf-with-gsea-2-1.png
-</button>
-</p>
-<div id="fig-sepsis-tm-vs-nmf-with-gsea-2-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/de50dc2b081baf30b7bf8848c4548aaadc9f5027/docs/figure/lps.Rmd/sepsis-tm-vs-nmf-with-gsea-2-1.png" target="_blank">de50dc2</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-07-17
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2,rel_widths = c(2,3))</code></pre>
+<p><img src="figure/lps.Rmd/sepsis-tm-vs-nmf-cc-with-gsea-2-1.png" width="480" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2358,7 +2409,7 @@ Session information
 # other attached packages:
 #  [1] uwot_0.2.3                 rsvd_1.0.5                
 #  [3] cowplot_1.1.3              ggrepel_0.9.6             
-#  [5] ggplot2_3.5.2              singlecelljamboreeR_0.1-36
+#  [5] ggplot2_3.5.2              singlecelljamboreeR_0.1-39
 #  [7] pathways_0.1-20            flashier_1.0.56           
 #  [9] ebnm_1.1-34                NNLM_0.4.4                
 # [11] fastTopics_0.7-25          data.table_1.17.6         
@@ -2367,7 +2418,7 @@ Session information
 # loaded via a namespace (and not attached):
 #   [1] pbapply_1.7-2        rlang_1.1.6          magrittr_2.0.3      
 #   [4] git2r_0.33.0         RcppAnnoy_0.0.22     horseshoe_0.2.0     
-#   [7] matrixStats_1.2.0    susieR_0.14.6        compiler_4.3.3      
+#   [7] matrixStats_1.2.0    susieR_0.14.2        compiler_4.3.3      
 #  [10] vctrs_0.6.5          reshape2_1.4.4       RcppZiggurat_0.1.6  
 #  [13] quadprog_1.5-8       stringr_1.5.1        pkgconfig_2.0.3     
 #  [16] crayon_1.5.3         fastmap_1.2.0        labeling_0.4.3      
