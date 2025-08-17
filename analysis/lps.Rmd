@@ -456,30 +456,30 @@ for topic 7 that are very independent of the tissue topics. So this
 looks quite promising. Let's now see if the result is similar for the
 EBNMF model fitted to the shifted log counts:
 
-```{r sepsis-tm-vs-nmf, fig.height=2.5, fig.width=4}
-F <- ldf(fl_nmf,type = "i")$F
+```{r sepsis-tm-vs-nmf-cc, fig.height=2.5, fig.width=4}
+F <- ldf(fl_nmf_cc,type = "i")$F
 colnames(F) <- paste0("k",1:15)
-pdat <- data.frame(tm   = poisson2multinom(tm)$F[,"k7"],
-                   nmf  = F[,"k6"],
-				   gene = rownames(F))
-rows <- which(with(pdat,tm < 0.005 & nmf < 0.8))
+pdat <- data.frame(tm     = poisson2multinom(tm)$F[,"k7"],
+                   nmf_cc = F[,"k10"],
+				   gene   = rownames(F))
+rows <- which(with(pdat,tm < 0.005 & nmf_cc < 0.8))
 pdat[rows,"gene"] <- ""
-ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene)) +
+ggplot(pdat,aes(x = (tm)^(1/3),y = nmf_cc,label = gene)) +
   geom_point() +
   geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
-  labs(x = "topic 7",y = "factor 6") +
+  labs(x = "topic 7",y = "factor 10") +
   theme_cowplot(font_size = 12)
 ```
 
-Indeed, factor 6 and topic 7 are cpaturing very similar expression
+Indeed, factor 10 and topic 7 are cpaturing very similar expression
 patterns.
 
-Next I ran GSEA on the on factor 6. (Running GSEA on topic 7 is
+Next I ran GSEA on the on factor 10. (Running GSEA on topic 7 is
 complicated by the fact that it would be better to "shrink" the
 estimates before running GSEA, whereas this was automatically done for
 EBNMF result.)
 
-```{r gsea-fl-nmf-k6}
+```{r gsea-fl-nmf-cc-k10}
 data(gene_sets_mouse)
 gene_sets     <- gene_sets_mouse$gene_sets
 gene_info     <- gene_sets_mouse$gene_info
@@ -497,56 +497,56 @@ gene_sets     <- gene_sets[i,j]
 rownames(gene_sets) <- gene_info$Symbol
 rownames(gene_set_info) <- gene_set_info$id
 gene_set_info <- gene_set_info[,-2]
-F <- ldf(fl_nmf,type = "i")$F
+F <- ldf(fl_nmf_cc,type = "i")$F
 colnames(F) <- paste0("k",1:15)
-gsea_fl_nmf <- singlecelljamboreeR::perform_gsea(F[,"k6"],gene_sets,
-                                                 gene_set_info,L = 15,
-                                                 verbose = FALSE)
-write.csv(data.frame(gene = rownames(F),signal = round(F[,"k6"],digits = 6)),
-          "lps_fl_nmf_k6.csv",row.names = FALSE,quote = FALSE)
-out <- gsea_fl_nmf$selected_gene_sets
+gsea_fl_nmf_cc <- singlecelljamboreeR::perform_gsea(F[,"k10"],gene_sets,
+                                                    gene_set_info,L = 15,
+                                                    verbose = FALSE)
+write.csv(data.frame(gene = rownames(F),signal = round(F[,"k10"],digits = 6)),
+          "lps_fl_nmf_cc_k10.csv",row.names = FALSE,quote = FALSE)
+out <- gsea_fl_nmf_cc$selected_gene_sets
 out$top_genes <- sapply(out$top_genes,function (x) paste(x,collapse = " "))
 out$lbf  <- round(out$lbf,digits = 6)
 out$pip  <- round(out$pip,digits = 6)
 out$coef <- round(out$coef,digits = 6)
-write_csv(out,"lps_gsea_fl_nmf_k6.csv",quote = "none")
+write_csv(out,"lps_gsea_fl_nmf_cc_k10.csv",quote = "none")
 ```
 
 The top gene set is the IFN-$\alpha/\beta$ signaling pathway, but
 other gene sets clearly relate to inflammation and immune system
 function:
 
-```{r  gsea-fl-nmf-k6-summary, fig.height=2.5, fig.width=4}
-print(gsea_fl_nmf$selected_gene_sets[c(2:7,9)],n = Inf)
+```{r  gsea-fl-nmf-k10-summary, fig.height=2.5, fig.width=4}
+print(gsea_fl_nmf_cc$selected_gene_sets[c(2:7,9)],n = Inf)
 ```
 
 This is the same scatterplot as the one just above, but with the genes
 in the IFN-$\alpha/\beta$ signaling pathway highlighted:
 
-```{r sepsis-tm-vs-nmf-with-gsea, fig.height=2.5, fig.width=5}
+```{r sepsis-tm-vs-nmf-cc-with-gsea, fig.height=2.5, fig.width=5}
 pdat$pathway <- FALSE
 pathway_genes <- names(which(gene_sets[,"M973"] > 0))
 pdat[pathway_genes,"pathway"] <- TRUE
 pdat <- pdat[order(pdat$pathway),]
-ggplot(pdat,aes(x = (tm)^(1/3),y = nmf,label = gene,color = pathway)) +
+ggplot(pdat,aes(x = (tm)^(1/3),y = nmf_cc,label = gene,color = pathway)) +
   geom_point() +
   geom_text_repel(color = "gray",size = 2.5,max.overlaps = Inf) +
   scale_color_manual(values = c("darkblue","orangered")) +
-  labs(x = "topic 7",y = "factor 6") +
+  labs(x = "topic 7",y = "factor 10") +
   theme_cowplot(font_size = 12)
 ```
 
 Here's another view of the enrichment of the genes in the
 IFN-$\alpha/\beta$ pathway:
 
-```{r sepsis-tm-vs-nmf-with-gsea-2, fig.height=3.5, fig.width=4}
-p1 <- ggplot(subset(pdat,pathway),aes(x = nmf)) +
+```{r sepsis-tm-vs-nmf-cc-with-gsea-2, fig.height=3.5, fig.width=4}
+p1 <- ggplot(subset(pdat,pathway),aes(x = nmf_cc)) +
   geom_histogram(color = "white",fill = "black",bins = 16) +
-  labs(x = "factor 6",y = "IFN-a/b genes") +
+  labs(x = "factor 10",y = "IFN-a/b genes") +
   theme_cowplot(font_size = 10)
-p2 <- ggplot(subset(pdat,!pathway),aes(x = nmf)) +
+p2 <- ggplot(subset(pdat,!pathway),aes(x = nmf_cc)) +
   geom_histogram(color = "white",fill = "black",bins = 24) +
-  labs(x = "factor 6",y = "other genes") +
+  labs(x = "factor 10",y = "other genes") +
   theme_cowplot(font_size = 10)
 p3 <- ggplot(subset(pdat,pathway),aes(x = log10(tm + 1e-6))) +
   geom_histogram(color = "white",fill = "black",bins = 16) +
