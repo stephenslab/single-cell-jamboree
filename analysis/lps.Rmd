@@ -556,7 +556,7 @@ p4 <- ggplot(subset(pdat,!pathway),aes(x = log10(tm + 1e-6))) +
   geom_histogram(color = "white",fill = "black",bins = 24) +
   labs(x = "topic 7",y = "other genes") +
   theme_cowplot(font_size = 10)
-plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2,rel_widths = c(2,3))
 ```
 
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
