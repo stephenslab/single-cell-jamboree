@@ -51,7 +51,7 @@ timings$fl_nmf <- t1 - t0
 
 # Save the model fits to an .Rdata file.
 session_info <- sessionInfo()
-save(list = c("tm","timings","session_info"),
+save(list = c("tm","fl_nmf","timings","session_info"),
      file = "yeast_factors.RData")
 # resaveRdaFiles("yeast_factors.RData")
 
