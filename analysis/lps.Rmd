@@ -559,4 +559,37 @@ p4 <- ggplot(subset(pdat,!pathway),aes(x = log10(tm + 1e-6))) +
 plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2,rel_widths = c(2,3))
 ```
 
+Yet another visualization of this enrichment result:
+
+```{r sepsis-tm-vs-nmf-cc-with-gsea-3, fig.height=3.5, fig.width=3.6}
+rank_random_tie <- function (x) {
+  n <- length(x)
+  return((rank(x,ties.method = "random",na.last = "keep") - 1)/(n-1))
+}
+F <- ldf(fl_nmf_cc,type = "i")$F
+colnames(F) <- paste0("k",1:15)
+pdat <- data.frame(factor = F[,"k10"],
+                   gene   = rownames(F))
+				   pdat$pathway <- FALSE
+pathway_genes <- names(which(gene_sets[,"M973"] > 0))
+pdat[pathway_genes,"pathway"] <- TRUE
+pdat1 <- subset(pdat,pathway)
+pdat2 <- subset(pdat,!pathway)
+pdat1 <- transform(pdat1,rank = rank_random_tie(factor))
+pdat2 <- transform(pdat2,rank = rank_random_tie(factor))
+rows  <- which(pdat1$rank < 0.5)
+pdat1[rows,"gene"] <- ""
+pdat2[,"gene"] <- ""
+pdat <- rbind(pdat1,pdat2)
+ggplot(pdat,aes(x = rank,y = factor,color = pathway,label = gene)) +
+  geom_point(size = 1) +
+  geom_text_repel(color = "black",size = 2.5,max.overlaps = Inf,
+                  min.segment.length = 0) +
+  scale_y_continuous(breaks = seq(-1,1,0.2)) +
+  scale_color_manual(values = c("darkblue","red")) +
+  guides(color = "none") +
+  labs(y = "factor 10") +
+  theme_cowplot(font_size = 10)
+```
+
 [takahama2024]: https://doi.org/10.1038/s41590-023-01722-8
