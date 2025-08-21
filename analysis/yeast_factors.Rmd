@@ -52,7 +52,7 @@ load("../output/yeast_factors.RData")
 
 ## Topic model (fastTopics)
 
-Structure plot comparing the topics to the conditions:
+TO DO: Structure plot comparing the topics to the conditions.
 
 ```{r structure-plot-topic-model, fig.height=2, fig.width=7, eval=FALSE}
 set.seed(1)
