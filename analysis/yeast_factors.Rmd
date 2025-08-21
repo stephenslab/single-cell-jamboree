@@ -52,11 +52,32 @@ load("../output/yeast_factors.RData")
 
 ## Topic model (fastTopics)
 
-TO DO: Structure plot comparing the topics to the conditions.
+Structure plots:
 
-```{r structure-plot-topic-model, fig.height=2, fig.width=7, eval=FALSE}
+```{r structure-plot-topic-model, fig.height=4, fig.width=7.5, message=FALSE}
+topic_colors <-
+  c("#000000","dodgerblue","darkmagenta","yellow","#FF6800","red",
+    "olivedrab","gold","greenyellow","#F6768E","darkblue","cornflowerblue",
+    "navyblue","#B32851","#007D34")
+cond_topics <- c(1,2,3,5,7,10,11,4,9)
+other_topics <- c(8,12,13,14,15,6)
 set.seed(1)
-structure_plot(tm,group = sample_info$Condition,gap = 10)
+L <- poisson2multinom(tm)$L
+rows1 <- which(is.element(sample_info$Condition,c("YPD","RAPA")))
+rows2 <- which(!is.element(sample_info$Condition,c("YPD","RAPA")))
+rows1 <- sample(rows1,600)
+rows2 <- sample(rows2,1000)
+rows  <- c(rows1,rows2)
+L <- L[rows,]
+p1 <- structure_plot(L,group = sample_info[rows,"Condition"],
+                     topics = cond_topics,colors = topic_colors,
+					 gap = 10,n = Inf,verbose = FALSE) +
+  labs(y = "membership")					 
+p2 <- structure_plot(L,group = sample_info[rows,"Condition"],
+                     topics = other_topics,colors = topic_colors,
+					 gap = 10,n = Inf,verbose = FALSE) +
+  labs(y = "membership")					 
+plot_grid(p1,p2,nrow = 2,ncol = 1)
 ```
 
 ## EBNMF (flashier)
@@ -81,11 +102,11 @@ rows  <- c(rows1,rows2)
 L <- L[rows,]
 p1 <- structure_plot(L,group = sample_info[rows,"Condition"],
                      topics = cond_factors,colors = factor_colors,
-					 gap = 10,verbose = FALSE) +
+					 gap = 10,n = Inf,verbose = FALSE) +
   labs(y = "membership")					 
 p2 <- structure_plot(L,group = sample_info[rows,"Condition"],
                      topics = other_factors,colors = factor_colors,
-					 gap = 10,verbose = FALSE) +
+					 gap = 10,n = Inf,verbose = FALSE) +
   labs(y = "membership")					 
 plot_grid(p1,p2,nrow = 2,ncol = 1)
 ```
