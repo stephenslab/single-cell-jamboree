@@ -1,0 +1,91 @@
+---
+title: NMF analysis of the budding yeast data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the packages needed for this analysis:
+
+```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(fastTopics)
+library(flashier)
+library(singlecelljamboreeR)
+library(ggplot2)
+library(cowplot)
+```
+
+Load the budding yeast data:
+
+```{r load-data}
+load("../data/yeast.RData")
+```
+
+Modify the condition labels to match the abbreviations used in the
+*eLife* paper:
+
+```{r condition-abbrvs}
+levels(sample_info$Condition) <-
+c("NLIM-NH4","CSTARVE","NLIM-GLN","MMEtOH","MMD","NLIM-PRO",
+  "NLIM-UREA","YPD","DIAUXY","RAPA","YPEtOH")
+```
+
+Reorder the growth conditions in a more logical manner:
+
+```{r reorder-conditions}
+conditions <- c("CSTARVE","NLIM-NH4","NLIM-UREA","MMEtOH","NLIM-PRO",
+                "NLIM-GLN","MMD","YPD","YPEtOH","RAPA","DIAUXY")
+sample_info <- transform(sample_info,
+                         Condition = factor(Condition,conditions))
+```
+
+Load the results of running fastTopics and flashier on these data:
+
+```{r load-results}
+load("../output/yeast_factors.RData")
+```
+
+## Topic model (fastTopics)
+
+Structure plot comparing the topics to the conditions:
+
+```{r structure-plot-topic-model, fig.height=2, fig.width=7, eval=FALSE}
+set.seed(1)
+structure_plot(tm,group = sample_info$Condition,gap = 10)
+```
+
+## EBNMF (flashier)
+
+Structure plots:
+
+```{r structure-plot-flashier-nmf, fig.height=4, fig.width=7.5, message=FALSE}
+factor_colors <-
+  c("#000000","dodgerblue","darkmagenta","#FF6800","gold","red",
+    "greenyellow","tomato","olivedrab","#F6768E","darkblue","cornflowerblue",
+    "navyblue","#B32851","#007D34")
+cond_factors <- c(2,3,6,9,10,13,4,1)
+other_factors <- c(5,7,8,11,12,14,15)
+set.seed(1)
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:15)
+rows1 <- which(is.element(sample_info$Condition,c("YPD","RAPA")))
+rows2 <- which(!is.element(sample_info$Condition,c("YPD","RAPA")))
+rows1 <- sample(rows1,600)
+rows2 <- sample(rows2,1000)
+rows  <- c(rows1,rows2)
+L <- L[rows,]
+p1 <- structure_plot(L,group = sample_info[rows,"Condition"],
+                     topics = cond_factors,colors = factor_colors,
+					 gap = 10,verbose = FALSE) +
+  labs(y = "membership")					 
+p2 <- structure_plot(L,group = sample_info[rows,"Condition"],
+                     topics = other_factors,colors = factor_colors,
+					 gap = 10,verbose = FALSE) +
+  labs(y = "membership")					 
+plot_grid(p1,p2,nrow = 2,ncol = 1)
+```
