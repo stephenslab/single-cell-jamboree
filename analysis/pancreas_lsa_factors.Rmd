@@ -1,0 +1,28 @@
+---
+title: NMF analysis of the pancreas LSA data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the packages needed for this analysis:
+
+```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(fastTopics)
+library(flashier)
+library(singlecelljamboreeR)
+library(ggplot2)
+library(cowplot)
+```
+
+Load the pancreas LSA data:
+
+```{r load-data}
+load("../data/pancreas_cytokine_lsa_v2.RData")
+dim(counts)
+```
