@@ -86,7 +86,7 @@ Structure plots:
 
 ```{r structure-plot-flashier-nmf, fig.height=4, fig.width=7.5, message=FALSE}
 factor_colors <-
-  c("#000000","dodgerblue","darkmagenta","#FF6800","gold","red",
+  c("#000000","dodgerblue","darkmagenta","yellow","gold","red",
     "greenyellow","tomato","olivedrab","#F6768E","darkblue","cornflowerblue",
     "navyblue","#B32851","#007D34")
 cond_factors <- c(2,3,6,9,10,13,4,1)

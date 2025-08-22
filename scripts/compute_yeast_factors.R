@@ -1,4 +1,4 @@
-# Analyze the pancreas data using flashier and fastTopics.
+# Analyze the budding yeast data using flashier and fastTopics.
 #
 # sinteractive --mem=16G -c 8 --time=12:00:00 -p mstephens \
 #   --account=pi-mstephens

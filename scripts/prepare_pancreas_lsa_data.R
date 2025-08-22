@@ -106,7 +106,7 @@ j      <- which(genes$symbol != "Malat1")
 genes  <- genes[j,]
 counts <- counts[,j]
 
-# Remove again genes that not expressed in any cells.
+# Remove again genes that are not expressed in any cells.
 x      <- colSums(counts > 0)
 j      <- which(x > 0)
 genes  <- genes[j,]
