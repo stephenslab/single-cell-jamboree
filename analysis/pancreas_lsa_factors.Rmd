@@ -24,5 +24,4 @@ Load the pancreas LSA data:
 
 ```{r load-data}
 load("../data/pancreas_cytokine_lsa_v2.RData")
-dim(counts)
 ```
