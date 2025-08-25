@@ -13,13 +13,13 @@ library(fastTopics)          # 0.7.25
 library(flashier)            # 1.0.56
 library(singlecelljamboreeR) # 0.1.41
 load("../data/pancreas_cytokine_lsa_v2.RData")
+colnames(counts) <- genes$ensembl
 set.seed(1)
 
 # Filter out genes that are expressed in fewer than 10 cells.
 j <- which(colSums(counts > 0) > 9)
 genes  <- genes[j,]
 counts <- counts[,j]
-colnames(counts) <- NULL
 
 # Set up the "timings" data structure.
 timings <- list(tm = 0,fl_nmf = 0)
