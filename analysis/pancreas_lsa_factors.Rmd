@@ -25,3 +25,59 @@ Load the pancreas LSA data:
 ```{r load-data}
 load("../data/pancreas_cytokine_lsa_v2.RData")
 ```
+
+Remove genes that are expressed in fewer than 10 cells:
+
+```{r filter-genes}
+j      <- which(colSums(counts > 0) > 9)
+genes  <- genes[j,]
+counts <- counts[,j]
+```
+
+This is the dimension of the data set we are analyzing:
+
+```{r dim-counts}
+dim(counts)
+```
+
+Load the results of running fastTopics and flashier on these data:
+
+```{r load-results}
+load("../output/pancreas_lsa_factors.RData")
+```
+
+## Topic model (fastTopics)
+
+TO DO.
+
+## EBNMF (flashier)
+
+Structure plots:
+
+```{r structure-plots-flashier, fig.height=4.5, fig.width=7}
+set.seed(1)
+cell_type_factors <- c(2,3,7,8,9,10,11,13)
+treatment_factors <- c(4,6,5,12)
+other_factors     <- c(1,14,15)
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:5)
+p1 <- structure_plot(L,grouping = barcodes$condition,gap = 10,
+               topics = cell_type_factors) +
+  labs(y = "membership",fill = "factor")
+p2 <- structure_plot(L,grouping = barcodes$condition,gap = 10,
+               topics = treatment_factors) +
+  labs(y = "membership",fill = "factor")
+p3 <- structure_plot(L,grouping = barcodes$condition,gap = 10,
+               topics = other_factors) +
+  labs(y = "membership",fill = "factor")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+TO DO:
+
++ Cluster the cells based on the cell types.
+
++ Create box plots for the treatment-associated factors.
+
++ Try to interpret the cell-type-associated factors using the
+  known "marker" genes.
