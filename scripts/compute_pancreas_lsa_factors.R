@@ -1,7 +1,7 @@
 # Analyze the pancreas LSA data set using flashier and fastTopics.
 # See prepare_pancreas_lsa_data.R for background on these data.
 #
-# sinteractive --mem=16G -c 8 --time=8:00:00 -p mstephens \
+# sinteractive --mem=20G -c 8 --time=8:00:00 -p mstephens \
 #   --account=pi-mstephens
 # module load R/4.2.0
 # .libPaths()[1]
