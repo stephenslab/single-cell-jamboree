@@ -35,14 +35,24 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Fit a Poisson NMF using fastTopics.
-#
-# TO DO: Use k = 15.
-#
+# This step is expected to take about X hours. 
+t0 <- proc.time()
+tm0 <- fit_poisson_nmf(counts,k = 15,numiter = 10,method = "em",
+                      control = list(numiter = 4,nc = 8,extrapolate = FALSE),
+                      init.method = "random",verbose = "detailed")
+tm <- fit_poisson_nmf(counts,fit0 = tm0,numiter = 10,method = "scd",
+                      control = list(numiter = 4,nc = 8,extrapolate = TRUE),
+                      verbose = "detailed")
+t1 <- proc.time()
+timings$tm <- t1 - t0
 
 # Fit an NMF using flashier.
-#
-# TO DO: Use k = 15.
-#
+# This step is expected to take about X h.
+t0 <- proc.time()
+fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,greedy_init = TRUE,
+                       var_type = 2,S = s1,verbose = 2,maxiter = 10)
+t1 <- proc.time()
+timings$fl_nmf <- t1 - t0
 
 # Fit an NMF with "cross-cutting" factors.
 # TO DO.
