@@ -19,6 +19,7 @@ set.seed(1)
 j <- which(colSums(counts > 0) > 9)
 genes  <- genes[j,]
 counts <- counts[,j]
+colnames(counts) <- NULL
 
 # Set up the "timings" data structure.
 timings <- list(tm = 0,fl_nmf = 0)
