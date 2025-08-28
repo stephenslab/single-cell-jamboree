@@ -46,38 +46,116 @@ Load the results of running fastTopics and flashier on these data:
 load("../output/pancreas_lsa_factors.RData")
 ```
 
-## Topic model (fastTopics)
-
-TO DO.
-
 ## EBNMF (flashier)
+
+Cluster the cells based on the EBNMF factors:
+
+```{r clustering}
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:15)
+n <- nrow(counts)
+clusters <- rep("beta",n)
+clusters[L[,"k3"]  > 0.35] <- "alpha"
+clusters[L[,"k13"] > 0.35] <- "delta+PP"
+clusters[L[,"k9"]  > 0.5]  <- "macrophages"
+clusters[L[,"k11"] > 0.35] <- "endothelial"
+clusters[L[,"k2"] + L[,"k8"] > 0.2] <- "mesenchymal"
+clusters[L[,"k7"]  > 0.2]  <- "acinar"
+clusters[L[,"k10"] > 0.25] <- "ductal"
+clusters <- factor(clusters)
+```
 
 Structure plots:
 
-```{r structure-plots-flashier, fig.height=4.5, fig.width=7}
+```{r structure-plots-flashier-by-treatment, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
 set.seed(1)
-cell_type_factors <- c(2,3,7,8,9,10,11,13)
-treatment_factors <- c(4,6,5,12)
+cell_type_factors <- c(2,3,4,6,7,8,9,10,11,13)
+treatment_factors <- c(4,5,6,12)
 other_factors     <- c(1,14,15)
+n <- nrow(counts)
+rows <- sample(n,2000)
 L <- fl_nmf_ldf$L
-colnames(L) <- paste0("k",1:5)
-p1 <- structure_plot(L,grouping = barcodes$condition,gap = 10,
-               topics = cell_type_factors) +
+colnames(L) <- paste0("k",1:15)
+p1 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = cell_type_factors) +
   labs(y = "membership",fill = "factor")
-p2 <- structure_plot(L,grouping = barcodes$condition,gap = 10,
-               topics = treatment_factors) +
+p2 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = treatment_factors) +
   labs(y = "membership",fill = "factor")
-p3 <- structure_plot(L,grouping = barcodes$condition,gap = 10,
-               topics = other_factors) +
+p3 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = other_factors) +
+  labs(y = "membership",fill = "factor")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+Group the cells by cell type:
+
+```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+set.seed(1)
+rows <- c(sample(clusters == "other",800),
+          sample(clusters != "other",800))
+rows <- sort(rows)
+p1 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = cell_type_factors) +
+  labs(y = "membership",fill = "factor")
+p2 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = treatment_factors) +
+  labs(y = "membership",fill = "factor")
+p3 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = other_factors) +
   labs(y = "membership",fill = "factor")
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 ```
 
 TO DO:
 
-+ Cluster the cells based on the cell types.
++ Cluster the cells based on the cell-type factors.
+
++ Downsample the beta cells in the Structure plots.
+
++ Show Structure plots in which we group by treatment and by cell
+  type.
+
++ See if this clustering also works for the topics.
 
 + Create box plots for the treatment-associated factors.
 
 + Try to interpret the cell-type-associated factors using the
   known "marker" genes.
+
+```{r}
+pdat <- cbind(barcodes,as.data.frame(L))
+cor(pdat$condition == "IL-1B_IFNg",pdat$k5)
+cor(pdat$condition == "IFNg",pdat$k12)
+p1 <- ggplot(pdat,aes(x = condition,y = k5)) +
+  geom_boxplot() +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(pdat,aes(x = condition,y = k12)) +
+  geom_boxplot() +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+Based on the estimated $\mathbf{F}$, we have the following potential
+interpretation of these topics:
+
+```{r}
+F <- fl_nmf_ldf$F
+colnames(F) <- paste0("k",1:15)
+j <- which(genes$symbol == "Ctrb1")
+round(sort(F[j,]),digits = 4)
+```
+
++ factors 2 + 8: mesenchymal cells (*Col1a1*)
++ factor 3: alpha cells (*Gcg*)
++ factors 4 + 6: beta cells (*Ins1*, *Ins2*)
++ factor 7: acinar cells (*Cpa1*, *Cpa2*, *Ctrb1*)
++ factor 9: macrophages (*Ccr5*)
++ factor 10: duct cells (*Krt17*, *Krt19*)
++ factor 11: endothelial cells (*Cd34*, *Pecam1*)
++ factor 13: $\delta$ (*Sst*) and PP cells (*Ppy*)
+
+## Topic model (fastTopics)
+
+TO DO.
+
