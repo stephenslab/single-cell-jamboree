@@ -57,7 +57,7 @@ t1 <- proc.time()
 print(t1 - t0)
 timings$fl_nmf <- t1 - t0
 
-# Fit an NMF with "cross-cutting" factors.
+# Fit an NMF with "cross-context" factors.
 # TO DO.
 
 # Save the model fits to an .Rdata file.
