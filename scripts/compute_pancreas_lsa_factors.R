@@ -15,6 +15,8 @@ library(singlecelljamboreeR) # 0.1.41
 load("../data/pancreas_cytokine_lsa_v2.RData")
 colnames(counts) <- genes$ensembl
 set.seed(1)
+# k <- 15
+k <- 13
 
 # Filter out genes that are expressed in fewer than 10 cells.
 j      <- which(colSums(counts > 0) > 9)
@@ -38,7 +40,7 @@ s1 <- sd(log(x + 1))
 # Fit a Poisson NMF using fastTopics.
 # This step is expected to take about 2 h. 
 t0 <- proc.time()
-tm0 <- fit_poisson_nmf(counts,k = 15,numiter = 200,method = "em",
+tm0 <- fit_poisson_nmf(counts,k = k,numiter = 200,method = "em",
                       control = list(numiter = 4,nc = 8,extrapolate = FALSE),
                       init.method = "random",verbose = "detailed")
 tm <- fit_poisson_nmf(counts,fit0 = tm0,numiter = 200,method = "scd",
@@ -51,7 +53,7 @@ timings$tm <- t1 - t0
 # Fit an NMF using flashier.
 # This step is expected to take about 3 h.
 t0 <- proc.time()
-fl_nmf <- flashier_nmf(shifted_log_counts,k = 15,greedy_init = TRUE,
+fl_nmf <- flashier_nmf(shifted_log_counts,k = k,greedy_init = TRUE,
                        var_type = 2,S = s1,verbose = 2,maxiter = 200)
 t1 <- proc.time()
 print(t1 - t0)
@@ -66,4 +68,3 @@ fl_nmf_ldf <- ldf(fl_nmf,type = "i")
 save(list = c("tm","fl_nmf_ldf","timings","session_info"),
      file = "pancreas_lsa_factors.RData")
 resaveRdaFiles("pancreas_lsa_factors.RData")
-
