@@ -65,7 +65,9 @@ clusters[L[,"k11"] > 0.3]  <- "endothelial"
 clusters[L[,"k2"] + L[,"k8"] > 0.2] <- "mesenchymal"
 clusters[L[,"k10"] > 0.3]  <- "ductal"
 clusters[L[,"k7"]  > 0.2]  <- "acinar"
-clusters <- factor(clusters)
+clusters <- factor(clusters,
+                   c("beta","alpha","delta+PP","acinar","ductal",
+				     "macrophages","endothelial","mesenchymal"))
 ```
 
 + factors 2 + 8: mesenchymal cells (*Col1a1*)
@@ -75,85 +77,31 @@ Structure plots:
 ```{r structure-plots-flashier-by-treatment, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
 set.seed(1)
 factor_colors <-
-  c("#000000","#FFB300","#803E75","#FF6800","#A6BDD7","#C10020",
-    "#CEA262","#817066","#007D34","#F6768E","#00538A","#FF7A5C",
-    "#53377A")
+  c("lightgray","limegreen","darkviolet","dodgerblue","darkorange","dimgray",
+    "gold","darkblue","forestgreen","tomato","orchid","red",
+    "olivedrab")
 cell_type_factors <- c(2:4,7:11,13)
 treatment_factors <- c(5,12)
 other_factors     <- c(1,6)
 L <- fl_nmf_ldf$L
 colnames(L) <- paste0("k",1:13)
-n <- nrow(counts)
-rows <- sample(n,2000)
+set.seed(1)
+rows <- c(sample(which(clusters == "beta"),600),
+          sample(which(clusters != "beta"),1000))
+rows <- sort(rows)
 p1 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
                      topics = cell_type_factors,colors = factor_colors) +
-  labs(y = "membership",fill = "factor")
+  labs(y = "membership",fill = "")
 p2 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
                      topics = treatment_factors,colors = factor_colors) +
-  labs(y = "membership",fill = "factor")
+  labs(y = "membership",fill = "")
 p3 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
                      topics = other_factors,colors = factor_colors) +
-  labs(y = "membership",fill = "factor")
+  labs(y = "membership",fill = "")
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 ```
 
-Group the cells by cell type:
-
-```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
-set.seed(1)
-rows <- c(sample(which(clusters == "beta"),800),
-          sample(which(clusters != "beta"),800))
-rows <- sort(rows)
-p1 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
-                     topics = cell_type_factors,colors = factor_colors) +
-  labs(y = "membership",fill = "factor")
-p2 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
-                     topics = treatment_factors,colors = factor_colors) +
-  labs(y = "membership",fill = "factor")
-p3 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
-                     topics = other_factors,colors = factor_colors) +
-  labs(y = "membership",fill = "factor")
-plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
-```
-
-The 4 treatment factors $\alpha$ cells very clearly separate the
-$\alpha$ cells by the 4 treatments.
-
-```{r structure-plots-flashier-alpha, fig.height=1.5, fig.width=5, results="hide", message=FALSE, eval=FALSE}
-set.seed(1)
-factors <- c(4,13,5,6,12,3)
-rows <- which(clusters == "alpha")
-structure_plot(L[rows,],grouping = barcodes[rows,"condition"],
-               topics = factors,colors = factor_colors,gap = 10) +
-  labs(y = "membership",fill = "",title = "alpha cells") +
-  theme(plot.title = element_text(size = 10,face = "plain"),
-        axis.text.x = element_text(angle = 0,hjust = 0.5))
-```
-
-NEXT: Add Structure plot(s) for delta+PP cells.
-
-TO DO:
-
-+ Cluster the cells based on the flashier results.
-
-+ Change the cluster labels to use the Greek letters.
-
-+ Create Structure plots separately for alpha, beta and delta+PP cells.
-
-+ Re-run flashier with "cross-context" factors.
-  (What factors should I choose for this?).
-
-+ Downsample the beta cells in the Structure plots.
-
-+ Show Structure plots in which we group by treatment and by cell
-  type.
-
-+ See if this clustering also works for the topics.
-
-+ Try to interpret the cell-type-associated factors using the
-  known "marker" genes.
-
-More plots showing that factor 5 clearly captures responses to
+Additional plots showing that factor 5 clearly captures responses to
 IL-1$\beta$, and factor 12 captures responses to IFN-$\gamma$:
 
 ```{r treatment-factors-box-plots-flashier, fig.height=2.25, fig.width=4}
@@ -172,6 +120,47 @@ p2 <- ggplot(pdat,aes(x = condition,y = k12)) +
   theme(axis.text.x = element_text(angle = 45,hjust = 1))
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
+
+Structured plots in which the cells are grouped by cell type:
+
+```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+set.seed(1)
+p1 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = cell_type_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p2 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = treatment_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p3 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = other_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+The 4 treatment factors $\alpha$ cells very clearly separate the
+$\alpha$ cells by the 4 treatments.
+
+```{r structure-plots-flashier-alpha, fig.height=1.5, fig.width=5, results="hide", message=FALSE}
+set.seed(1)
+factors <- c(1,6,5,12,13,4,3)
+rows <- which(clusters == "alpha")
+structure_plot(L[rows,],grouping = barcodes[rows,"condition"],
+               topics = factors,colors = factor_colors,gap = 10) +
+  labs(y = "membership",fill = "",title = "alpha cells") +
+  theme(plot.title = element_text(size = 10,face = "plain"),
+        axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
+
+NEXT: Add Structure plot(s) for beta cells and delta+PP cells.
+
+TO DO:
+
++ Create Structure plots separately for alpha, beta and delta+PP cells.
+
++ Re-run flashier with "cross-context" factors.
+  (What factors should I choose for this?).
+
++ See if this clustering also works for the topics.
 
 Based on the estimated $\mathbf{F}$, we have the following potential
 interpretation of these topics (to be improved later):
