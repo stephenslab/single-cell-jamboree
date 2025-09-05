@@ -53,10 +53,10 @@ load("../output/pancreas_lsa_factors_k=13.RData")
 
 Cluster the cells based on the EBNMF results:
 
-```{r clustering, eval=FALSE}
+```{r clustering}
 L <- fl_nmf_ldf$L
 colnames(L) <- paste0("k",1:13)
-n <- nrow(counts)
+n <- nrow(L)
 clusters <- rep("beta",n)
 clusters[L[,"k3"]  > 0.25] <- "alpha"
 clusters[L[,"k13"] > 0.25] <- "delta+PP"
