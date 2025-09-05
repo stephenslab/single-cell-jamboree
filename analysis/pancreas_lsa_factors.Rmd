@@ -24,6 +24,9 @@ Load the pancreas LSA data:
 
 ```{r load-data}
 load("../data/pancreas_cytokine_lsa_v2.RData")
+barcodes$condition <-
+  factor(barcodes$condition,
+         c("Untreated","IL-1B","IFNg","IL-1B_IFNg"))
 ```
 
 Remove genes that are expressed in fewer than 10 cells:
@@ -145,21 +148,26 @@ TO DO:
 
 + See if this clustering also works for the topics.
 
-+ Create box plots for the treatment-associated factors.
-
 + Try to interpret the cell-type-associated factors using the
   known "marker" genes.
 
-```{r, eval=FALSE}
+More plots showing that factor 5 clearly captures responses to
+IL-1$\beta$, and factor 12 captures responses to IFN-$\gamma$:
+
+```{r treatment-factors-box-plots, fig.height=2.25, fig.width=4}
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:13)
 pdat <- cbind(barcodes,as.data.frame(L))
-cor(pdat$condition == "IL-1B_IFNg",pdat$k5)
-cor(pdat$condition == "IFNg",pdat$k12)
 p1 <- ggplot(pdat,aes(x = condition,y = k5)) +
   geom_boxplot() +
-  theme_cowplot(font_size = 10)
+  labs(x = "") +
+  theme_cowplot(font_size = 10) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1))
 p2 <- ggplot(pdat,aes(x = condition,y = k12)) +
   geom_boxplot() +
-  theme_cowplot(font_size = 10)
+  labs(x = "") +
+  theme_cowplot(font_size = 10) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1))
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
