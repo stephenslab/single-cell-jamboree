@@ -43,14 +43,14 @@ dim(counts)
 Load the results of running fastTopics and flashier on these data:
 
 ```{r load-results}
-load("../output/pancreas_lsa_factors.RData")
+load("../output/pancreas_lsa_factors_k=13.RData")
 ```
 
 ## EBNMF (flashier)
 
 Cluster the cells based on the EBNMF factors:
 
-```{r clustering}
+```{r clustering, eval=FALSE}
 L <- fl_nmf_ldf$L
 colnames(L) <- paste0("k",1:15)
 n <- nrow(counts)
@@ -71,15 +71,15 @@ Structure plots:
 set.seed(1)
 factor_colors <-
   c("#000000","#FFB300","#803E75","#FF6800","#A6BDD7","#C10020",
-    "#CEA262","#817066","#007D34","#F6768E","#00538A","olivedrab",
-    "#53377A","#FF8E00","#B32851")
+    "#CEA262","#817066","#007D34","#F6768E","#00538A","#FF7A5C",
+    "#53377A")
 cell_type_factors <- c(2:4,7:11,13)
-treatment_factors <- c(4:6,12)
-other_factors     <- c(1,14,15)
+treatment_factors <- c(5,12)
+other_factors     <- c(1,6)
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:13)
 n <- nrow(counts)
 rows <- sample(n,2000)
-L <- fl_nmf_ldf$L
-colnames(L) <- paste0("k",1:15)
 p1 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
                      topics = cell_type_factors,colors = factor_colors) +
   labs(y = "membership",fill = "factor")
@@ -94,7 +94,7 @@ plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 
 Group the cells by cell type:
 
-```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE, eval=FALSE}
 set.seed(1)
 rows <- c(sample(which(clusters == "beta"),800),
           sample(which(clusters != "beta"),800))
@@ -114,7 +114,7 @@ plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 The 4 treatment factors $\alpha$ cells very clearly separate the
 $\alpha$ cells by the 4 treatments.
 
-```{r structure-plots-flashier-alpha, fig.height=1.5, fig.width=5, results="hide", message=FALSE}
+```{r structure-plots-flashier-alpha, fig.height=1.5, fig.width=5, results="hide", message=FALSE, eval=FALSE}
 set.seed(1)
 factors <- c(4,13,5,6,12,3)
 rows <- which(clusters == "alpha")
@@ -128,8 +128,6 @@ structure_plot(L[rows,],grouping = barcodes[rows,"condition"],
 NEXT: Add Structure plot(s) for delta+PP cells.
 
 TO DO:
-
-+ Also try with K = 13.
 
 + Cluster the cells based on the flashier results.
 
@@ -152,7 +150,7 @@ TO DO:
 + Try to interpret the cell-type-associated factors using the
   known "marker" genes.
 
-```{r}
+```{r, eval=FALSE}
 pdat <- cbind(barcodes,as.data.frame(L))
 cor(pdat$condition == "IL-1B_IFNg",pdat$k5)
 cor(pdat$condition == "IFNg",pdat$k12)
@@ -166,18 +164,18 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
 Based on the estimated $\mathbf{F}$, we have the following potential
-interpretation of these topics:
+interpretation of these topics (to be improved later):
 
 ```{r}
 F <- fl_nmf_ldf$F
-colnames(F) <- paste0("k",1:15)
-j <- which(genes$symbol == "Ctrb1")
+colnames(F) <- paste0("k",1:13)
+j <- which(genes$symbol == "Ins1")
 round(sort(F[j,]),digits = 4)
 ```
 
 + factors 2 + 8: mesenchymal cells (*Col1a1*)
 + factor 3: alpha cells (*Gcg*)
-+ factors 4 + 6: beta cells (*Ins1*, *Ins2*)
++ factor 4: beta cells (*Ins1*, *Ins2*)
 + factor 7: acinar cells (*Cpa1*, *Cpa2*, *Ctrb1*)
 + factor 9: macrophages (*Ccr5*)
 + factor 10: duct cells (*Krt17*, *Krt19*)
