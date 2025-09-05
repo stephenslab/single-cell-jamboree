@@ -51,22 +51,24 @@ load("../output/pancreas_lsa_factors_k=13.RData")
 
 ## EBNMF (flashier)
 
-Cluster the cells based on the EBNMF factors:
+Cluster the cells based on the EBNMF results:
 
 ```{r clustering, eval=FALSE}
 L <- fl_nmf_ldf$L
-colnames(L) <- paste0("k",1:15)
+colnames(L) <- paste0("k",1:13)
 n <- nrow(counts)
 clusters <- rep("beta",n)
-clusters[L[,"k3"]  > 0.35] <- "alpha"
-clusters[L[,"k13"] > 0.35] <- "delta+PP"
+clusters[L[,"k3"]  > 0.25] <- "alpha"
+clusters[L[,"k13"] > 0.25] <- "delta+PP"
 clusters[L[,"k9"]  > 0.5]  <- "macrophages"
-clusters[L[,"k11"] > 0.35] <- "endothelial"
+clusters[L[,"k11"] > 0.3]  <- "endothelial"
 clusters[L[,"k2"] + L[,"k8"] > 0.2] <- "mesenchymal"
+clusters[L[,"k10"] > 0.3]  <- "ductal"
 clusters[L[,"k7"]  > 0.2]  <- "acinar"
-clusters[L[,"k10"] > 0.25] <- "ductal"
 clusters <- factor(clusters)
 ```
+
++ factors 2 + 8: mesenchymal cells (*Col1a1*)
 
 Structure plots:
 
@@ -97,7 +99,7 @@ plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
 
 Group the cells by cell type:
 
-```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE, eval=FALSE}
+```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
 set.seed(1)
 rows <- c(sample(which(clusters == "beta"),800),
           sample(which(clusters != "beta"),800))
@@ -154,7 +156,7 @@ TO DO:
 More plots showing that factor 5 clearly captures responses to
 IL-1$\beta$, and factor 12 captures responses to IFN-$\gamma$:
 
-```{r treatment-factors-box-plots, fig.height=2.25, fig.width=4}
+```{r treatment-factors-box-plots-flashier, fig.height=2.25, fig.width=4}
 L <- fl_nmf_ldf$L
 colnames(L) <- paste0("k",1:13)
 pdat <- cbind(barcodes,as.data.frame(L))
@@ -174,7 +176,7 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 Based on the estimated $\mathbf{F}$, we have the following potential
 interpretation of these topics (to be improved later):
 
-```{r}
+```{r, eval=FALSE}
 F <- fl_nmf_ldf$F
 colnames(F) <- paste0("k",1:13)
 j <- which(genes$symbol == "Ins1")
