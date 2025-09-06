@@ -70,9 +70,11 @@ clusters <- factor(clusters,
 				     "macrophages","endothelial","mesenchymal"))
 ```
 
-+ factors 2 + 8: mesenchymal cells (*Col1a1*)
+TO DO (to continue improving the Structure plots):
 
-Structure plots:
++ Show the plots by cell type first.
+
++ Add titles to the plots.
 
 ```{r structure-plots-flashier-by-treatment, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
 set.seed(1)
@@ -151,11 +153,10 @@ structure_plot(L[rows,],grouping = barcodes[rows,"condition"],
         axis.text.x = element_text(angle = 0,hjust = 0.5))
 ```
 
-NEXT: Add Structure plot(s) for beta cells and delta+PP cells.
+NEXT: Add Structure plot(s) for beta cells, delta+PP cells, and then
+for the other cells.
 
 TO DO:
-
-+ Create Structure plots separately for alpha, beta and delta+PP cells.
 
 + Re-run flashier with "cross-context" factors.
   (What factors should I choose for this?).
@@ -184,6 +185,38 @@ round(sort(F[j,]),digits = 4)
 + factor 10: duct cells (*Krt17*, *Krt19*)
 + factor 11: endothelial cells (*Cd34*, *Pecam1*)
 + factor 13: $\delta$ (*Sst*) and PP cells (*Ppy*)
+
+Structure plot for k=15 result:
+
+```{r structure-plots-flashier-by-treatment-k-15, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+set.seed(1)
+load("../output/pancreas_lsa_factors_k=15.RData")
+factor_colors <-
+  c("#000000","#FFB300","#803E75","#FF6800","#A6BDD7","#C10020",
+    "#CEA262","#817066","#007D34","#F6768E","#00538A","#FF7A5C",
+    "#53377A","#FF8E00","#B32851")
+cell_type_factors <- c(2:4,7:11,13)
+treatment_factors <- c(5,6,12)
+other_factors     <- c(1,14,15)
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:15)
+rows <- c(sample(which(clusters == "beta"),600),
+          sample(which(clusters != "beta"),1000))
+rows <- sort(rows)
+p1 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = cell_type_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p2 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = treatment_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p3 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = other_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+TO DO: Fix the colors in these Structure plots to match the k=13
+Structure plots.
 
 ## Topic model (fastTopics)
 
