@@ -162,6 +162,10 @@ TO DO:
 
 + See if this clustering also works for the topics.
 
++ Add back Structure plot for k=15 to show that adding more
+  factors identifies the individual conditions, but it
+  arguably less biologically interesting.
+
 Based on the estimated $\mathbf{F}$, we have the following potential
 interpretation of these topics (to be improved later):
 
