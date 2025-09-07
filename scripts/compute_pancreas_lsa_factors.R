@@ -1,7 +1,7 @@
 # Analyze the pancreas LSA data set using flashier and fastTopics.
 # See prepare_pancreas_lsa_data.R for background on these data.
 #
-# sinteractive --mem=20G -c 8 --time=8:00:00 -p mstephens \
+# sinteractive --mem=20G -c 8 --time=12:00:00 -p mstephens \
 #   --account=pi-mstephens
 # module load R/4.2.0
 # .libPaths()[1]
@@ -60,11 +60,18 @@ print(t1 - t0)
 timings$fl_nmf <- t1 - t0
 
 # Fit an NMF with "cross-context" factors.
-# TO DO.
+cc_factors <- c(5,12)
+fl_nmf_cc <- convert_factors_nn_to_pn(fl_nmf,cc_factors,shifted_log_counts,
+                                      S = s1,var_type = 2)
+fl_nmf_cc <- flash_backfit(fl_nmf_cc,extrapolate = FALSE,maxiter = 100,
+                           verbose = 2)
+fl_nmf_cc <- flash_backfit(fl_nmf_cc,extrapolate = TRUE,maxiter = 100,
+                           verbose = 2)
 
 # Save the model fits to an .Rdata file.
 session_info <- sessionInfo()
 fl_nmf_ldf <- ldf(fl_nmf,type = "i")
-save(list = c("tm","fl_nmf_ldf","timings","session_info"),
+fl_nmf_cc_ldf <- ldf(fl_nmf_cc,type = "i")
+save(list = c("tm","fl_nmf_ldf","fl_nmf_cc_ldf","timings","session_info"),
      file = "pancreas_lsa_factors.RData")
 resaveRdaFiles("pancreas_lsa_factors.RData")
