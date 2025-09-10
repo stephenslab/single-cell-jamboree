@@ -167,6 +167,9 @@ TO DO:
   factors identifies the individual conditions, but it
   arguably less biologically interesting.
 
++ Add a UMAP plot and visualize the clusters and conditions
+  on this UMAP plot.
+
 Based on the estimated $\mathbf{F}$, we have the following potential
 interpretation of these topics (to be improved later):
 
