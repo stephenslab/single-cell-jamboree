@@ -9,27 +9,21 @@
 # │   └── matrix.mtx
 # ├── GSM3680208
 # │   ├── barcodes.tsv
-# │   ├── genes.tsv
 # │   └── matrix.mtx
 # ├── GSM3680209
 # │   ├── barcodes.tsv
-# │   ├── genes.tsv
 # │   └── matrix.mtx
 # ├── GSM3680210
 # │   ├── barcodes.tsv
-# │   ├── genes.tsv
 # │   └── matrix.mtx
 # ├── GSM3680211
 # │   ├── barcodes.tsv
-# │   ├── genes.tsv
 # │   └── matrix.mtx
 # ├── GSM3680212
 # │   ├── barcodes.tsv
-# │   ├── genes.tsv
 # │   └── matrix.mtx
 # └── GSM3680213
 #     ├── barcodes.tsv
-#     ├── genes.tsv
 #     └── matrix.mtx
 # 
 # This is the correspondence between the GEO accessions and the
@@ -80,3 +74,11 @@ barcodes <-
                                c("no_STZ","STZ","estrogen","GLP-1",
                                  "GLP-1-estrogen","insulin",
                                  "GLP-1-estrogen+insulin")))
+
+# Import the gene information.
+genes <- read_tsv("../data/GSE128565/GSM3680207/genes.tsv",
+                  col_names = c("ensembl","symbol"))
+genes <- as.data.frame(genes)
+
+# Now import in the read counts.
+# TO DO.
