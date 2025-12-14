@@ -241,6 +241,11 @@ L_df <- L_df %>%
 structure_plot(tm_fit, grouping = L_df$cluster, gap = 30, n = Inf)
 ```
 
+```{r}
+barcodes$celltype <- L_df$cluster
+```
+
+
 Overall, this clustering looks quite good.
 
 Save the processed data to an RData file:
