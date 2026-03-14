@@ -1,6 +1,6 @@
 # Fit an NMF to the combined GCA data using flashier.
 #
-# sinteractive --mem=36G -c 8 --time=24:00:00 -p mstephens \
+# sinteractive --mem=36G -c 8 --time=48:00:00 -p mstephens \
 #   --account=pi-mstephens
 # module load R/4.2.0
 # .libPaths()[1]
@@ -34,13 +34,10 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Fit an NMF using flashier.
-# This step is expected to take about X h.
-#
-# TO DO: Change to maxiter = 200.
-#
+# This step is expected to take about 30 h.
 t0 <- proc.time()
 fl_nmf <- flashier_nmf(shifted_log_counts,k = k,greedy_init = TRUE,
-                       var_type = 2,S = s1,verbose = 2,maxiter = 20)
+                       var_type = 2,S = s1,verbose = 2,maxiter = 200)
 t1 <- proc.time()
 print(t1 - t0)
 
