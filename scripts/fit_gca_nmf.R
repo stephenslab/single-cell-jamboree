@@ -1,6 +1,6 @@
 # Fit an NMF to the combined GCA data using flashier.
 #
-# sinteractive --mem=36G -c 8 --time=48:00:00 -p mstephens \
+# sinteractive --mem=40G -c 8 --time=72:00:00 -p mstephens \
 #   --account=pi-mstephens
 # module load R/4.2.0
 # .libPaths()[1]
@@ -13,7 +13,7 @@ library(flashier)            # 1.0.58
 library(singlecelljamboreeR) # 0.1.41
 load("../data/gca.RData")
 set.seed(1)
-k <- 20
+k <- 30
 outfile <- sprintf("gca_nmf_k=%d.RData",k)
 cat("k =",k,"\n")
 cat("outfile =",outfile,"\n")
@@ -34,7 +34,7 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Fit an NMF using flashier.
-# This step is expected to take about 30 h.
+# This step is expected to take about 30 h with k = 20.
 t0 <- proc.time()
 fl_nmf <- flashier_nmf(shifted_log_counts,k = k,greedy_init = TRUE,
                        var_type = 2,S = s1,verbose = 2,maxiter = 200)
