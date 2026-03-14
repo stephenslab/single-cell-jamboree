@@ -3,7 +3,7 @@
 # sinteractive -c 2 --mem=36G --time=24:00:00 -p mstephens \
 #   --account=pi-mstephens
 # module load R/4.2.0
-# > .libPaths()[1]
+# .libPaths()[1]
 # "/home/pcarbo/R_libs_4_20"
 #
 library(tools)
