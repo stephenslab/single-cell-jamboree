@@ -34,7 +34,7 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 
 # Fit an NMF using flashier.
-# This step is expected to take about 30 h with k = 20.
+# This step is expected to take about 18 h with k = 20.
 t0 <- proc.time()
 fl_nmf <- flashier_nmf(shifted_log_counts,k = k,greedy_init = TRUE,
                        var_type = 2,S = s1,verbose = 2,maxiter = 200)
