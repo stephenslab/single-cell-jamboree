@@ -45,6 +45,6 @@ print(t1 - t0)
 # Save the model fit to an .Rdata file.
 session_info <- sessionInfo()
 fl_nmf_ldf <- ldf(fl_nmf,type = "i")
-save(list = c("fl_nmf_ldf","session_info"),
+save(list = c("sample_info","fl_nmf_ldf","session_info"),
      file = outfile)
 resaveRdaFiles(outfile)
