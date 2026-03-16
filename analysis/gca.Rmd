@@ -34,8 +34,22 @@ Load the results from running fitting an NMF model using flashier,
 with $k = 30$:
 
 ```{r load-results}
-load("../output/gca_nmf_k=30.RData")
+load("../output/gca_nmf_k=20.RData")
 L <- fl_nmf_ldf$L
-colnames(L) <- paste0("k",1:30)
+colnames(L) <- paste0("k",1:20)
 ```
 
+*Add text here.*
+
+```{r structure-plots-shared, fig.height=5, fig.width=7.5, results="hide"}
+topics_shared <- c(2,5,7,9:11,16,19)
+rows1 <- which(pdat$origin == "Tissue")
+rows2 <- which(pdat$origin == "Org")
+p1 <- structure_plot(L[rows1,topics_shared],gap = 10,
+                     grouping = factor(sample_info[rows1,"celltype"])) +
+  labs(y = "membership")
+p2 <- structure_plot(L[rows2,topics_shared],gap = 10,
+                     grouping = factor(sample_info[rows2,"celltype"])) +
+  labs(y = "membership")
+plot_grid(p1,p2,nrow = 2,ncol = 1)
+```
