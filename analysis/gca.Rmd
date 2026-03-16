@@ -1,0 +1,41 @@
+---
+title: NMF analysis of the combined tissue + organoid GCA data
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+Here we explore whether non-negative matrix factorization (NMF)
+identifies factors (i.e., gene expression programs) common to both the
+tissues and organoids.
+
+These results were generated using the `fit_gca_nmf.R` script, found
+[here](https://github.com/stephenslab/single-cell-jamboree/blob/main/scripts/fit_gca_nmf.R).
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the packages needed for this analysis:
+
+```{r load-pkgs, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(cowplot)
+library(fastTopics)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
+
+Load the results from running fitting an NMF model using flashier,
+with $k = 30$:
+
+```{r load-results}
+load("../output/gca_nmf_k=30.RData")
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:30)
+```
+
