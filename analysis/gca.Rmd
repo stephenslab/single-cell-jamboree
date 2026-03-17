@@ -81,7 +81,7 @@ plot_grid(p3,p4,nrow = 2,ncol = 1)
 
 Gene programs shared by both:
 
-```{r structure-plots-shared, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+```{r structure-plots-shared, fig.height=4.75, fig.width=7.5, results="hide", message=FALSE}
 topics_shared <- c("k5","k7","k10","k16","k19")
 rows1 <- which(sample_info$origin == "Tissue")
 rows2 <- which(sample_info$origin == "Org")
