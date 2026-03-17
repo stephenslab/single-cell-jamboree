@@ -38,6 +38,18 @@ L <- fl_nmf_ldf$L
 colnames(L) <- paste0("k",1:20)
 ```
 
+For better structure plots, subsample the EC cells:
+
+```{r subsample-ec}
+rows1 <- which(sample_info$celltype == "EC")
+rows2 <- which(sample_info$celltype != "EC")
+rows1 <- sample(rows1,8000)
+rows  <- c(rows1,rows2)
+rows  <- sort(rows)
+L     <- L[rows,]
+sample_info <- sample_info[rows,]
+```
+
 Gene programs specific to tissues:
 
 ```{r structure-plots-tissues, fig.height=5, fig.width=7.5, results="hide", message=FALSE}
