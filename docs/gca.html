@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4a1993a232c798a83e2d237f48b2a8a40b7329a7targetblank4a1993aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree7e5b3fdee9f4fb8fe0352d0cd54759aba52bf5catargetblank7e5b3fda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4a1993a232c798a83e2d237f48b2a8a40b7329a7" target="_blank">4a1993a</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/7e5b3fdee9f4fb8fe0352d0cd54759aba52bf5ca" target="_blank">7e5b3fd</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4a1993a232c798a83e2d237f48b2a8a40b7329a7targetblank4a1993aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree7e5b3fdee9f4fb8fe0352d0cd54759aba52bf5catargetblank7e5b3fda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4a1993a232c798a83e2d237f48b2a8a40b7329a7" target="_blank">4a1993a</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/7e5b3fdee9f4fb8fe0352d0cd54759aba52bf5ca" target="_blank">7e5b3fd</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -466,8 +466,6 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  analysis/#gca.R#
-    Untracked:  analysis/.#gca.R
     Untracked:  analysis/lps_cache/
     Untracked:  analysis/mcf7_cache/
     Untracked:  data/GSE125162_ALL-fastqTomat0-Counts.tsv.gz
@@ -528,6 +526,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/7e5b3fdee9f4fb8fe0352d0cd54759aba52bf5ca/analysis/gca.Rmd" target="_blank">7e5b3fd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-03-17
+</td>
+<td>
+wflow_publish("gca.Rmd", verbose = T, view = F)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/028400323f096a888734e55a902a4e095455574d/docs/gca.html" target="_blank">0284003</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-03-17
+</td>
+<td>
+Subsampled the EC cells for the structure plots in the gca analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -687,7 +719,7 @@ with <span class="math inline">\(k = 30\)</span>:</p>
 <pre class="r"><code>load(&quot;../output/gca_nmf_k=20.RData&quot;)
 L &lt;- fl_nmf_ldf$L
 colnames(L) &lt;- paste0(&quot;k&quot;,1:20)</code></pre>
-<p>For better structure plots, subsample the EC cells:</p>
+<p>For better Structure Plots, subsample the EC cells:</p>
 <pre class="r"><code>rows1 &lt;- which(sample_info$celltype == &quot;EC&quot;)
 rows2 &lt;- which(sample_info$celltype != &quot;EC&quot;)
 rows1 &lt;- sample(rows1,8000)
@@ -695,13 +727,15 @@ rows  &lt;- c(rows1,rows2)
 rows  &lt;- sort(rows)
 L     &lt;- L[rows,]
 sample_info &lt;- sample_info[rows,]</code></pre>
-<p>Gene programs specific to tissues:</p>
+<p>These are the factors (gene programs) that are mostly specific to
+tissues. Observe that the memberships in the organoids (bottom) are
+mostly very small.</p>
 <pre class="r"><code>topics_tissue &lt;- c(&quot;k2&quot;,&quot;k3&quot;,&quot;k9&quot;,&quot;k12&quot;,&quot;k14&quot;,&quot;k15&quot;,&quot;k20&quot;)
 topic_colors &lt;-
   c(&quot;#FFB300&quot;,&quot;#803E75&quot;,&quot;#FF6800&quot;,&quot;#A6BDD7&quot;,&quot;#C10020&quot;,&quot;#CEA262&quot;,
-    &quot;#93AA00&quot;,&quot;#007D34&quot;,&quot;#F6768E&quot;,&quot;#00538A&quot;,&quot;#FF7A5C&quot;,&quot;#53377A&quot;,
-    &quot;#FF8E00&quot;,&quot;#B32851&quot;,&quot;#7F180D&quot;,&quot;#F4C800&quot;,&quot;#817066&quot;,&quot;#593315&quot;,
-    &quot;#F13A13&quot;,&quot;#232C16&quot;)
+    &quot;#93AA00&quot;,&quot;#007D34&quot;,&quot;#F6768E&quot;,&quot;#00538A&quot;,&quot;#FF7A5C&quot;,&quot;darkblue&quot;,
+    &quot;#FF8E00&quot;,&quot;yellow&quot;,&quot;cyan&quot;,&quot;#F4C800&quot;,&quot;#817066&quot;,&quot;#593315&quot;,
+    &quot;#F13A13&quot;,&quot;forestgreen&quot;)
 rows1 &lt;- which(sample_info$origin == &quot;Tissue&quot;)
 rows2 &lt;- which(sample_info$origin == &quot;Org&quot;)
 p1 &lt;- structure_plot(L[rows1,],gap = 10,topics = topics_tissue,
@@ -739,6 +773,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/028400323f096a888734e55a902a4e095455574d/docs/figure/gca.Rmd/structure-plots-tissues-1.png" target="_blank">0284003</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/96c06135655bfa663e488cd0e934803df8a76a0f/docs/figure/gca.Rmd/structure-plots-tissues-1.png" target="_blank">96c0613</a>
 </td>
 <td>
@@ -752,7 +797,12 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Gene programs pecific to organoids:</p>
+<p><em>Note:</em> that I’m using the cell-type labels in the “celltype”
+column of the meta data as a reference point for understanding the gene
+programs.</p>
+<p>Next, these are the gene programs mostly specific to organoids.
+Again, notice that the memberships are mostly very small in the
+tissues:</p>
 <pre class="r"><code>topics_organoid &lt;- c(&quot;k4&quot;,&quot;k6&quot;,&quot;k8&quot;,&quot;k11&quot;,&quot;k13&quot;,&quot;k17&quot;,&quot;k18&quot;)
 rows1 &lt;- which(sample_info$origin == &quot;Tissue&quot;)
 rows2 &lt;- which(sample_info$origin == &quot;Org&quot;)
@@ -791,6 +841,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/028400323f096a888734e55a902a4e095455574d/docs/figure/gca.Rmd/structure-plots-organoids-1.png" target="_blank">0284003</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/96c06135655bfa663e488cd0e934803df8a76a0f/docs/figure/gca.Rmd/structure-plots-organoids-1.png" target="_blank">96c0613</a>
 </td>
 <td>
@@ -804,7 +865,8 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Gene programs shared by both:</p>
+<p>Finally, these are the gene programs that appear in both the tissues
+and the organoids. Some of the</p>
 <pre class="r"><code>topics_shared &lt;- c(&quot;k5&quot;,&quot;k7&quot;,&quot;k10&quot;,&quot;k16&quot;,&quot;k19&quot;)
 rows1 &lt;- which(sample_info$origin == &quot;Tissue&quot;)
 rows2 &lt;- which(sample_info$origin == &quot;Org&quot;)
@@ -840,6 +902,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/028400323f096a888734e55a902a4e095455574d/docs/figure/gca.Rmd/structure-plots-shared-1.png" target="_blank">0284003</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/96c06135655bfa663e488cd0e934803df8a76a0f/docs/figure/gca.Rmd/structure-plots-shared-1.png" target="_blank">96c0613</a>
