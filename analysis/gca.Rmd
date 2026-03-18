@@ -38,7 +38,7 @@ L <- fl_nmf_ldf$L
 colnames(L) <- paste0("k",1:20)
 ```
 
-For better structure plots, subsample the EC cells:
+For better Structure Plots, subsample the EC cells:
 
 ```{r subsample-ec}
 rows1 <- which(sample_info$celltype == "EC")
@@ -50,15 +50,17 @@ L     <- L[rows,]
 sample_info <- sample_info[rows,]
 ```
 
-Gene programs specific to tissues:
+These are the factors (gene programs) that are mostly specific to
+tissues. Observe that the memberships in the organoids (bottom) are
+mostly very small.
 
 ```{r structure-plots-tissues, fig.height=5, fig.width=7.5, results="hide", message=FALSE}
 topics_tissue <- c("k2","k3","k9","k12","k14","k15","k20")
 topic_colors <-
   c("#FFB300","#803E75","#FF6800","#A6BDD7","#C10020","#CEA262",
-    "#93AA00","#007D34","#F6768E","#00538A","#FF7A5C","#53377A",
-    "#FF8E00","#B32851","#7F180D","#F4C800","#817066","#593315",
-    "#F13A13","#232C16")
+    "#93AA00","#007D34","#F6768E","#00538A","#FF7A5C","darkblue",
+    "#FF8E00","yellow","cyan","#F4C800","#817066","#593315",
+    "#F13A13","forestgreen")
 rows1 <- which(sample_info$origin == "Tissue")
 rows2 <- which(sample_info$origin == "Org")
 p1 <- structure_plot(L[rows1,],gap = 10,topics = topics_tissue,
@@ -73,7 +75,13 @@ p2 <- structure_plot(L[rows2,],gap = 10,topics = topics_tissue,
 plot_grid(p1,p2,nrow = 2,ncol = 1)
 ```
 
-Gene programs pecific to organoids:
+*Note:* that I'm using the cell-type labels in the "celltype" column
+of the meta data as a reference point for understanding the gene
+programs. 
+
+Next, these are the gene programs mostly specific to organoids.
+Again, notice that the memberships are mostly very small in the
+tissues:
 
 ```{r structure-plots-organoids, fig.height=5, fig.width=7.5, results="hide", message=FALSE}
 topics_organoid <- c("k4","k6","k8","k11","k13","k17","k18")
@@ -91,7 +99,8 @@ p4 <- structure_plot(L[rows2,],gap = 10,topics = topics_organoid,
 plot_grid(p3,p4,nrow = 2,ncol = 1)
 ```
 
-Gene programs shared by both:
+Finally, these are the gene programs that appear in both the tissues
+and the organoids. Some of the 
 
 ```{r structure-plots-shared, fig.height=4.75, fig.width=7.5, results="hide", message=FALSE}
 topics_shared <- c("k5","k7","k10","k16","k19")
