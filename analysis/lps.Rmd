@@ -516,7 +516,7 @@ The top gene set is the IFN-$\alpha/\beta$ signaling pathway, but
 other gene sets clearly relate to inflammation and immune system
 function:
 
-```{r  gsea-fl-nmf-k10-summary, fig.height=2.5, fig.width=4}
+```{r gsea-fl-nmf-k10-summary, fig.height=2.5, fig.width=4}
 print(gsea_fl_nmf_cc$selected_gene_sets[c(2:7,9)],n = Inf)
 ```
 

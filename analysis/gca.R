@@ -1,5 +1,5 @@
-# First look at the results of fitting NMF models to the combined GCA
-# data. (If promising, I will migrate this analysis to an .Rmd file.)
+# Some additional code for examining the results of fitting NMF models
+# to the combined GCA data.
 load("../output/gca_nmf_k=20.RData")
 L <- fl_nmf_ldf$L
 k <- ncol(L)
