@@ -6,6 +6,7 @@
 #   GTEx_Analysis_v11_Annotations_SampleAttributesDS.txt
 #   GTEx_Analysis_2026-05-19_v11_RNASeQCv2.4.3_gene_reads.gct.gz
 #
+library(tools)
 library(data.table)
 library(pathways)
 library(fastTopics)
@@ -88,7 +89,12 @@ print(dim(counts))
 rownames(sample_info) <- NULL
 rownames(gene_info) <- NULL
 print(all(sample_info$SAMPID == rownames(counts)))
-print(all(gene_info$Ensembl == colnames(counts)))
+print(all(gene_info$Symbol == colnames(counts)))
 
 # Save the prepared data to an .RData file.
-# TO DO.
+save(list = c("sample_info","gene_info"),
+     file = "gtex_meta_data_v11.RData")
+save(list = c("sample_info","gene_info","counts"),
+     file = "gtex_v11.RData")
+resaveRdaFiles("gtex_meta_data_v11.RData")
+resaveRdaFiles("gtex_v11.RData")
