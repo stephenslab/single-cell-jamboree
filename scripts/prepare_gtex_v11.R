@@ -60,16 +60,37 @@ counts <- counts[,j]
 gc(verbose = TRUE)
 storage.mode(counts) <- "double"
 gene_info <- gene_sets_human$gene_info
-gene_info <- subset(gene_info,is.element(Ensembl,colnames(counts)))
-rownames(gene_info) <- gene_info$Ensembl
-gene_info <- gene_info[colnames(counts),]
+ids       <- colnames(counts)
+j         <- match(ids,gene_info$Ensembl)
+gene_info <- gene_info[j,]
+colnames(counts) <-  gene_info$Symbol
 
-# Sanity check.
+# Remove unexpressed genes.
+j         <- which(colSums(counts) > 0)
+gene_info <- gene_info[j,]
+counts    <- counts[,j]
+
+# TO DO: Check for high ribosomal protein counts.
+
+# Remove all ribosomal protein genes.
+j <- which(grepl("^RP[SL]",gene_info$Symbol))
+gene_info <- gene_info[j,]
+counts    <- counts[,j]
+
+# Remove MALAT1, which may show variation mainly for technical reasons:
+j         <- which(gene_info$Symbol != "MALAT1")
+gene_info <- gene_info[j,]
+counts    <- counts[,j]
+
+# This is the dimension of the counts matrix after completing these
+# data preparation steps.
+print(dim(counts))
+
+# Sanity checks.
 rownames(sample_info) <- NULL
+rownames(gene_info) <- NULL
 print(all(sample_info$SAMPID == rownames(counts)))
+print(all(gene_info$Ensembl == colnames(counts)))
 
 # Save the prepared data to an .RData file.
-# TO DO.
-
-# Fit a topic model to the data.
 # TO DO.
