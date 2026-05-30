@@ -70,10 +70,8 @@ j         <- which(colSums(counts) > 0)
 gene_info <- gene_info[j,]
 counts    <- counts[,j]
 
-# TO DO: Check for high ribosomal protein counts.
-
 # Remove all ribosomal protein genes.
-j <- which(grepl("^RP[SL]",gene_info$Symbol))
+j <- which(!grepl("^RP[SL]",gene_info$Symbol))
 gene_info <- gene_info[j,]
 counts    <- counts[,j]
 
