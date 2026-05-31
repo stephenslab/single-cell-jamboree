@@ -1,5 +1,5 @@
-# arrayseq.RData can be downloaded from this shared Box folder: 
-# https://uchicago.box.com/s/51mzj6ohe4wq3att2n6cw3gvfsngijlq
+# gtex_v11.RData can be downloaded from this shared Box folder: 
+# https://uchicago.box.com/s/l0emrjcqpw5yat1zaygtr1v3akq7de1t
 #
 # sinteractive -p mstephens --mem=16G -c 20 --nodelist=midway2-0440 \
 #   --time=24:00:00
