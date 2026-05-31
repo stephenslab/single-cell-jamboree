@@ -9,14 +9,15 @@
 # 
 library(tools)
 library(fastTopics) # 0.7.46
-k <- 30
+k <- 31
 outfile <- sprintf("gtex_tm_k=%d.RData",k)
 cat("k =",k,"\n")
 cat("outfile =",outfile,"\n")
 load("../data/gtex_v11.RData")
 set.seed(1)
 
-# Fit a Poisson NMF using fastTopics.
+# Fit a Poisson NMF model using fastTopics.
+# This step is expected to take X h.
 t0 <- proc.time()
 tm <- fit_poisson_nmf(counts,k = k,numiter = 20,method = "em",
                       control = list(numiter = 4,nc = 20,extrapolate = FALSE),
