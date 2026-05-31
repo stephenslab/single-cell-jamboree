@@ -1,1 +1,33 @@
-# TO DO.
+# arrayseq.RData can be downloaded from this shared Box folder: 
+# https://uchicago.box.com/s/51mzj6ohe4wq3att2n6cw3gvfsngijlq
+#
+# sinteractive -p mstephens --mem=16G -c 20 --nodelist=midway2-0440 \
+#   --time=24:00:00
+# module load R/4.2.0
+# .libPaths()[1]
+# /home/pcarbo/R_libs_4_20
+# 
+library(tools)
+library(fastTopics) # 0.7.46
+k <- 30
+outfile <- sprintf("gtex_tm_k=%d.RData",k)
+cat("k =",k,"\n")
+cat("outfile =",outfile,"\n")
+load("../data/gtex_v11.RData")
+set.seed(1)
+
+# Fit a Poisson NMF using fastTopics.
+t0 <- proc.time()
+tm <- fit_poisson_nmf(counts,k = k,numiter = 20,method = "em",
+                      control = list(numiter = 4,nc = 20,extrapolate = FALSE),
+                      init.method = "random",verbose = "detailed")
+tm <- fit_poisson_nmf(counts,fit0 = tm,numiter = 20,method = "scd",
+                      control = list(numiter = 4,nc = 20,extrapolate = TRUE),
+                      verbose = "detailed")
+t1 <- proc.time()
+print(t1 - t0)
+
+# Save the model fits to an .Rdata file.
+session_info <- sessionInfo()
+save(list = c("tm","session_info"),file = outfile)
+resaveRdaFiles(outfile)
