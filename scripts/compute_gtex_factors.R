@@ -17,7 +17,7 @@ load("../data/gtex_v11.RData")
 set.seed(1)
 
 # Fit a Poisson NMF model using fastTopics.
-# This step is expected to take X h.
+# This step is expected to take 14 h.
 t0 <- proc.time()
 tm <- fit_poisson_nmf(counts,k = k,numiter = 100,method = "em",
                       control = list(numiter = 4,nc = 8,extrapolate = FALSE),
