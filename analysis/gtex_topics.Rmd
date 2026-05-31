@@ -24,3 +24,26 @@ Set the seed for reproducibility:
 ```{r set-seed}
 set.seed(1)
 ```
+
+Load the GTEx meta data:
+
+```{r load-data}
+load("../data/gtex_meta_data_v11.RData")
+```
+
+Load the results of the topic modeling analysis, with $K = 31$ topics:
+
+```{r load-results}
+load("../output/gtex_tm_k=31.RData")
+```
+
+Structure plot:
+
+```{r structure-plot, fig.height=4.5, fig.width=8, results="hide", message=FALSE}
+k <- ncol(tm$L)
+topics_to_plot <- setdiff(1:k,c(4,9))
+tissues <- factor(sample_info$SMTSD)
+levels(tissues) <- tolower(levels(tissues))
+structure_plot(tm,topics = topics_to_plot,gap = 5,grouping = tissues) +
+  theme(axis.text.x = element_text(angle = 90,hjust = 1,vjust = 0.5))
+```
