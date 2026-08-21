@@ -172,20 +172,20 @@ celltype_palette <- c(
   "#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666"
 )
 
-lhat_ggplot <- function(Lhat.pc, idx, title) {
+lhat_ggplot <- function(Lhat.pc, idx, title, si = sample_info) {
   if (sum(idx) == 0) return(invisible(NULL))
   Lhat.prune <- Lhat.pc$pruned_matrix
   Lhat_sub   <- Lhat.prune[, idx, drop = FALSE]
   obj_sub    <- colMeans(log(cosh(Lhat_sub)))
   o2         <- order(obj_sub)
-  cell_order <- order(sample_info$celltype)
+  cell_order <- order(si$celltype)
   n_cells    <- nrow(Lhat_sub)
   n_comp     <- sum(idx)
 
   comp_labels <- make.unique(paste0("n:", Lhat.pc$cluster_sizes[idx], " obj:", round(obj_sub, 3)))
   df <- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
-    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    celltype  = rep(si$celltype[cell_order], n_comp),
     loading   = as.vector(Lhat_sub[cell_order, ]),
     component = factor(rep(comp_labels, each = n_cells), levels = comp_labels[o2])
   )
@@ -203,27 +203,30 @@ lhat_ggplot <- function(Lhat.pc, idx, title) {
     guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
 }
 
-plot_Lhat_maxima <- function(Lhat.pc, obj_threshold = 0.42) {
+plot_Lhat_maxima <- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
   obj <- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj > obj_threshold, paste0("Maxima (obj > ", obj_threshold, ")"))
+  lhat_ggplot(Lhat.pc, obj > obj_threshold, paste0("Maxima (obj > ", obj_threshold, ")"), si)
 }
 
-plot_Lhat_minima <- function(Lhat.pc, obj_threshold = 0.42) {
+plot_Lhat_minima <- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
   obj <- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj <= obj_threshold, paste0("Minima (obj <= ", obj_threshold, ")"))
+  lhat_ggplot(Lhat.pc, obj <= obj_threshold, paste0("Minima (obj <= ", obj_threshold, ")"), si)
 }
 
 # General version for unlabeled/unordered loading matrices
-plot_loadings_matrix <- function(Lhat, label_prefix = "ct:") {
+plot_loadings_matrix <- function(Lhat, label_prefix = "ct:", si = sample_info) {
   obj <- colMeans(log(cosh(Lhat)))
-  cell_order <- order(sample_info$celltype)
+  cell_order <- order(si$celltype)
   n_cells <- nrow(Lhat)
   n_comp <- ncol(Lhat)
 
+  o    <- order(obj)
+  Lhat <- Lhat[, o, drop = FALSE]
+  obj  <- obj[o]
   comp_labels <- make.unique(paste0(label_prefix, seq_len(n_comp), " obj:", round(obj, 3)))
   df <- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
-    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    celltype  = rep(si$celltype[cell_order], n_comp),
     loading   = as.vector(Lhat[cell_order, ]),
     component = factor(rep(comp_labels, each = n_cells), levels = comp_labels)
   )
@@ -240,6 +243,87 @@ plot_loadings_matrix <- function(Lhat, label_prefix = "ct:") {
           strip.background = element_rect(fill = "grey90", color = NA),
           legend.position = "bottom") +
     guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+}
+
+# Polar factor of W: the nearest orthonormal matrix (W^T W = I).
+# Used after each rank-r update to keep columns orthonormal.
+polar <- function(W) {
+  s <- svd(W)
+  s$u %*% t(s$v)
+}
+
+# Rank-r fastICA update (maximise log-cosh, symmetric deflation via polar decomp).
+# U  : (n.comp+1) x n  — whitened data (plus intercept row)
+# W  : (n.comp+1) x r  — weight matrix with orthonormal columns
+fastica_update_rankr <- function(U, W) {
+  P  <- t(U) %*% W           # n x r
+  G  <- tanh(P)              # n x r
+  G2 <- 1 - G^2             # n x r
+  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
+  polar(W)
+}
+
+# Rank-r gradient descent update (minimise log-cosh, symmetric deflation via polar decomp).
+gradient_minica_update_rankr <- function(U, W, lr = 0.1) {
+  P    <- t(U) %*% W          # n x r
+  G    <- tanh(P)             # n x r
+  grad <- (U %*% G) / ncol(U)
+  W    <- W - lr * grad
+  polar(W)
+}
+
+# Tilted log-cosh (TLC) update — parallel rank-1 starts (maximise TLC objective).
+# G(z)  = log(cosh(z)) + lambda * z|z|
+# g(z)  = tanh(z) + 2*lambda*|z|
+# g'(z) = 1 - tanh^2(z) + 2*lambda*sign(z)
+fastica_update_tlc <- function(U, W, lambda = 1) {
+  P  <- t(U) %*% W
+  G  <- tanh(P) + 2 * lambda * abs(P)
+  G2 <- 1 - tanh(P)^2 + 2 * lambda * sign(P)
+  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
+# Rank-r TLC update with polar orthogonalisation.
+fastica_update_tlc_rankr <- function(U, W, lambda = 1) {
+  P  <- t(U) %*% W
+  G  <- tanh(P) + 2 * lambda * abs(P)
+  G2 <- 1 - tanh(P)^2 + 2 * lambda * sign(P)
+  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
+  polar(W)
+}
+
+# TLC objective per column of a loadings matrix L = t(U) %*% W.
+objective_tlc <- function(L, lambda = 1) {
+  colMeans(log(cosh(L)) + lambda * abs(L) * L)
+}
+
+# Log-Phi contrast: G(z) = log(Phi(alpha*z)), designed to be maximised.
+# g(z)  = alpha * phi(alpha*z)/Phi(alpha*z)   (scaled inverse Mills ratio)
+# g'(z) = alpha^2 * (-alpha*z * h - h^2)      h computed in log-scale for stability
+fastica_update_logphi <- function(U, W, alpha = 2) {
+  P  <- t(U) %*% W
+  u  <- alpha * P
+  h  <- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+  G  <- alpha * h
+  G2 <- alpha^2 * (-u * h - h^2)
+  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
+# Rank-r log-Phi update with polar orthogonalisation.
+fastica_update_logphi_rankr <- function(U, W, alpha = 2) {
+  P  <- t(U) %*% W
+  u  <- alpha * P
+  h  <- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+  G  <- alpha * h
+  G2 <- alpha^2 * (-u * h - h^2)
+  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
+  polar(W)
+}
+
+objective_logphi <- function(L, alpha = 2) {
+  colMeans(pnorm(alpha * L, log.p = TRUE))
 }
 ```
 
@@ -418,11 +502,93 @@ for (i in seq_len(n_iter))
 Lhat_thin    <- t(U_aug_thin) %*% W
 Lhat_thin.pc <- prune_and_count_cluster(Lhat_thin)
 
-# Plot using thinned sample_info (swap temporarily so plotting functions work)
-sample_info_save <- sample_info
-sample_info      <- sample_info_thin
-plot_Lhat_minima(Lhat_thin.pc)
-sample_info      <- sample_info_save
+plot_Lhat_minima(Lhat_thin.pc, si = sample_info_thin)
+```
+
+
+## Rank-r fastICA (r = 20)
+
+Run a single rank-20 ICA, simultaneously extracting 20 orthogonal components via the symmetric deflation approach. I use more iterations since the orthogonalization slows down convergence. This method finds many qualitatively-similar results to the parallel rank 1 method, but it finds a couple of additional factors that seem to correspond to subsets of alpha cells that might be interesting to look at further.
+
+```{r}
+set.seed(1)
+r <- 20
+n_iter = 500
+W_r <- polar(matrix(rnorm((n.comp + 1) * r), n.comp + 1, r))
+for (i in seq_len(n_iter))
+  W_r <- gradient_minica_update_rankr(U_aug, W_r)
+for (i in seq_len(n_iter))
+  W_r <- fastica_update_rankr(U_aug, W_r)
+
+Lhat_r <- t(U_aug) %*% W_r   # n x r
+plot_loadings_matrix(Lhat_r)
+```
+
+
+## Tilted log-cosh: 1000 random starts
+
+The tilted log-cosh (TLC) objective $G(z) = \log\cosh(z) + \lambda z|z|$ is designed to be maximised and scores sparse binary sources more highly than standard log-cosh, which can fail for very skewed groups. Here we run 1000 random starts maximising the TLC objective with $\lambda = 1$.
+At first I thought these looked good, but now I'm less sure: is it combining groups together that should not be combined? Eg combining delta with mast and macrophage seems potentially (probably?) wrong. Note that the group that showed the strongest minimum of log cosh now becomes the weakest maximum of this function. This makes me a bit uncomfortable.
+```{r}
+set.seed(1)
+n_iter = 50
+W <- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update_tlc(U_aug, W)
+
+Lhat_tlc    <- t(U_aug) %*% W
+Lhat_tlc.pc <- prune_and_count_cluster(Lhat_tlc)
+
+plot_Lhat_maxima(Lhat_tlc.pc, obj_threshold = -Inf)
+```
+
+
+## Tilted log-cosh: rank-r (r = 20)
+
+Single rank-20 TLC run with symmetric orthogonalisation. These results actually look more promising: the combining of groups seems to have gone (?) and there are some possibly interesting hints of splits that group subsets of alpha cells with other related cells (beta, delta). Maybe 13 and 6 suggest two different subtypes of acinar cells. However, we have to be careful maybe about the fact that orthogonality has been forced here....
+
+```{r}
+set.seed(1)
+n_iter = 500
+W_r_tlc <- polar(matrix(rnorm((n.comp + 1) * r), n.comp + 1, r))
+for (i in seq_len(n_iter))
+  W_r_tlc <- fastica_update_tlc_rankr(U_aug, W_r_tlc)
+
+Lhat_r_tlc <- t(U_aug) %*% W_r_tlc
+plot_loadings_matrix(Lhat_r_tlc)
+```
+
+
+## Log-Phi: 1000 random starts
+
+The log-Phi contrast $G(z) = \log\Phi(\alpha z)$ rewards large positive projections and is suited to one-sided sparse sources (cells that are "on" for a minority of observations). Here $\alpha = 2$. Using U_aug always converged to the intercept so I removed the intercept column for this contrast.
+
+```{r}
+set.seed(1)
+n_iter = 50
+W <- matrix(rnorm(nrow(U) * n_starts), nrow(U), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update_logphi(U, W)
+
+Lhat_lp    <- t(U) %*% W
+Lhat_lp.pc <- prune_and_count_cluster(Lhat_lp)
+plot_Lhat_maxima(Lhat_lp.pc, obj_threshold = -Inf)
+```
+
+
+## Log-Phi: rank-r (r = 20)
+
+```{r}
+set.seed(1)
+n_iter = 500
+W_r_lp <- polar(matrix(rnorm((n.comp) * r), n.comp, r))
+for (i in seq_len(n_iter))
+  W_r_lp <- fastica_update_logphi_rankr(U, W_r_lp)
+
+Lhat_r_lp <- t(U) %*% W_r_lp
+plot_loadings_matrix(Lhat_r_lp)
 ```
 
 
