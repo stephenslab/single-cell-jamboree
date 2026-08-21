@@ -1,0 +1,370 @@
+---
+title: "pancreas_celseq2_ica"
+author: "Matthew Stephens"
+date: "2025-10-27"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(fastICA)
+library("Matrix")
+```
+
+## Introduction
+
+I wanted to try fastICA on the pancreas data. I also experiment with a "warm start" 
+using gradient steps that *minimize* log cosh, because the minima of log-cosh tend to correspond to sparse binary (0,1) groups rather than sign (-1,1) groups that can combine clusters.
+
+```{r}
+#fits ica to the pancreas celseq2 data (and 2 random subsets)
+load("../data/pancreas.RData")
+set.seed(1)
+
+# Select the CEL-seq2 data (Muraro et al, 2016).
+# This should select 2,285 cells.
+i           <- which(sample_info$tech == "celseq2")
+sample_info <- sample_info[i,]
+counts      <- counts[i,]
+
+# Remove genes that are expressed in fewer than 10 cells.
+x      <- colSums(counts > 0)
+j      <- which(x > 9)
+counts <- counts[,j]
+
+# Compute the shifted log counts.
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+Y <- MatrixExtra::mapSparse(counts/(a*s),log1p)
+
+#randomly divide rows of Y into 2
+subset = sample(1:nrow(Y), nrow(Y)/2)
+
+```
+
+
+Helper functions: 
+```{r}
+# matrix version of r1 fastica
+# U is (n.comp+1) x n (whitened data plus intercept).  
+# W is (n.comp+1) x n_starts (one weight vector per column).
+# P = t(U) %*% W is n x n_starts (source estimates).
+fastica_update = function(U, W) {
+  P  <- t(U) %*% W          # n x n_starts: source estimates
+  G  <- tanh(P)
+  G2 <- 1 - G^2
+  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
+  # Add epsilon (1e-15) to prevent 0/0
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
+  
+# X is n x p; returns whitened data (centers columns of X, whiten to n.comp dimensions)
+# returned U is n.comp x n 
+preprocess = function(X, n.comp = 10) {
+  X <- scale(X, scale = FALSE)
+  sqrt(nrow(X)) * t(svd(X)$u[, 1:n.comp])
+}
+
+gradient_minica_update = function(U, W, lr = 0.1) {
+  # n_samples = ncol(U); n_features = nrow(U); n_starts = ncol(W)
+  
+  P <- t(U) %*% W          # n_samples x n_starts: source estimates
+  G <- tanh(P)             # First derivative of log-cosh
+  
+  # Calculate the gradient 
+  # We divide by ncol(U) to average over samples, keeping the learning rate 
+  # stable regardless of your dataset size.
+  grad <- (U %*% G) / ncol(U)
+  
+  # Gradient descent step (minimize log-cosh)
+  # Note: To MAXIMIZE log-cosh (standard for super-Gaussian sources), use + instead of -
+  W <- W - lr * grad
+  
+  # Normalize to project back to the unit sphere (norm = 1)
+  # Add epsilon (1e-15) to prevent 0/0
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
+# this is the projected version; i have not tested since the unprojected version seems to work fine
+gradient_minica_update_projected = function(U, W, lr = 0.1) {
+  # 1. Compute the Euclidean gradient
+  P <- t(U) %*% W
+  G <- tanh(P)
+  grad <- (U %*% G) / ncol(U)
+  
+  # 2. Project gradient onto the tangent space of the sphere
+  # Calculate the dot product (w^T g) for each column
+  w_T_grad <- colSums(W * grad) 
+  
+  # Subtract the radial component: g_proj = g - (w^T g) * w
+  proj_grad <- grad - sweep(W, 2, w_T_grad, "*")
+  
+  # 3. Take the gradient step using the projected gradient
+  W <- W - lr * proj_grad
+  
+  # 4. Retract back to the unit sphere
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
+# A greedy function to prune correlated columns of a matrix; written by Gemini
+# Install if necessary: install.packages("caret")
+library(caret)
+
+fast_prune_caret <- function(L, tau = 0.8) {
+  # Compute correlation matrix once
+  cor_mat <- abs(cor(L))
+  
+  # findCorrelation returns the indices to REMOVE
+  # Setting exact = FALSE uses a faster heuristic for large matrices
+  drop_indices <- findCorrelation(cor_mat, cutoff = tau, exact = FALSE)
+  
+  # Handle the case where no rows exceed the threshold
+  if (length(drop_indices) > 0) {
+    kept_indices <- setdiff(1:ncol(L), drop_indices)
+    pruned_matrix <- L[,-drop_indices,drop = FALSE]
+  } else {
+    kept_indices <- 1:ncol(L)
+    pruned_matrix <- L
+  }
+  
+  list(pruned_matrix = pruned_matrix, kept_indices = kept_indices)
+}
+
+
+prune_and_count_cluster <- function(L, tau = 0.9) {
+  # 1. Convert correlation to distance (1 - absolute correlation)
+  dist_mat <- as.dist(1 - abs(cor(L)))
+  
+  # 2. Hierarchical clustering 
+  # 'complete' linkage ensures no two rows in a cluster are further apart than the threshold
+  hc <- hclust(dist_mat, method = "complete")
+  
+  # 3. Cut the dendrogram to form clusters (distance of 1 - tau corresponds to correlation of tau)
+  clusters <- cutree(hc, h = 1 - tau)
+  
+  # 4. Select a representative from each cluster 
+  # match() quickly grabs the first index of each unique cluster ID
+  kept_indices <- match(unique(clusters), clusters)
+  
+  # 5. Map the sizes to the exact order of kept_indices
+  # Extract the cluster ID for each kept row, then use it to index the table
+  cluster_sizes_table = table(clusters)
+  kept_cluster_ids <- clusters[kept_indices]
+  cluster_sizes <- as.integer(cluster_sizes_table[as.character(kept_cluster_ids)])
+  
+  list(
+    pruned_matrix = L[,kept_indices , drop = FALSE],
+    cluster_sizes = cluster_sizes,
+    kept_indices = kept_indices,
+    cluster_assignments = clusters
+  )
+}
+```
+
+First plot the eigenvalues of Y to get some idea how many components to whiten to:
+```{r}
+Y.svd= svd(Y)
+plot(Y.svd$d[2:1000])
+plot(Y.svd$d[2:200])
+abline(v=30)
+```
+
+
+Whiten data: 
+```{r}
+n.comp = 25 # I found using slightly fewer that 30 PCs produced maybe better results
+U     <- preprocess(Y, n.comp = n.comp)
+U_aug <- rbind(rep(1, ncol(U)), U)
+```
+
+
+### Initialize from random normal starts
+
+I run fastICA (rank 1) from 1000 random normal starts and then cluster the results (using hierarchical clustering). The plot shows the number of starts that gave each result and the objective value obtained, with panels ordered by increasing objective value. 
+
+```{r}
+n_starts = 1000
+n_iter = 50  #you can get away with fewer
+set.seed(1)
+W <- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update(U_aug, W)
+
+Lhat <- t(U_aug) %*% W  # n x n_starts
+
+Lhat.pc = prune_and_count_cluster(Lhat)
+Lhat.prune = Lhat.pc$pruned_matrix
+o = order(sample_info$celltype)
+
+plot_Lhat = function(Lhat.pc){
+  Lhat.prune = Lhat.pc$pruned_matrix
+  o = order(sample_info$celltype)
+  obj = colMeans(log(cosh(Lhat.prune)))
+  o2 = order(obj)
+
+  par(mfcol=c(4,5),mai=rep(0.2,4))
+  for(i in o2){
+    plot(Lhat.prune[o,i],col=sample_info$celltype[o], main = paste0("num:",Lhat.pc$cluster_sizes[i],"; obj:",round(obj[i],3)))
+    abline(h=0)
+  }
+}
+
+table(sample_info$celltype)
+
+plot_Lhat(Lhat.pc)
+```
+
+
+### Initialize from binary starts
+
+Here I try initializing from binary starts with various fractions. Mostly this seems to just increase the number of times converging to the intercept.
+```{r}
+set.seed(1)
+n <- ncol(U_aug)
+
+p = c(0.99,0.95,0.9,0.85,0.8,0.7,0.6,0.5)
+X <- c()
+
+for(i in 1:length(p)){
+  X <- cbind(X,matrix(sample(c(0,1),n * n_starts/length(p),replace=TRUE, prob = c(p[i],1-p[i])), n, n_starts/length(p)))
+}
+
+
+W <- U_aug %*% X
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update(U_aug, W)
+
+Lhat_b <- t(U_aug) %*% W  # n x n_starts
+Lhat_b.pc = prune_and_count_cluster(Lhat_b)
+
+plot_Lhat(Lhat_b.pc)
+```
+
+
+### Initialize from known celltypes: binary
+
+Here I make a binary (0/1) matrix with one column for each cell type, and initialize the ica from that, using the warm start to minimize (which actually does not make much difference in this case; not shown).
+```{r}
+X_bin = model.matrix(~ sample_info$celltype - 1)
+
+W <- U_aug %*% X_bin
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- gradient_minica_update(U_aug, W)
+for (i in seq_len(n_iter))
+  W <- fastica_update(U_aug, W)
+
+par(mfcol=c(4,4),mai=rep(0.2,4))
+Lhat_ct <- t(U_aug) %*% W  # n x n_starts
+obj_ct = colMeans(log(cosh(Lhat_ct)))
+for(i in 1:13){
+  plot(Lhat_ct[o,i],col=sample_info$celltype[o], main = paste0("ct:",i,"; obj:",round(obj_ct[i],3)))
+}
+```
+
+### Initialize from known celltypes: sign
+
+Here I make a sign (-1/1) matrix with one column for each cell type, and initialize the ica from that:
+```{r}
+X_sign = 2*X_bin-1 
+
+W <- U_aug %*% X_sign
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update(U_aug, W)
+
+par(mfcol=c(4,4),mai=rep(0.2,4))
+Lhat_ct <- t(U_aug) %*% W  # n x n_starts
+obj_ct = colMeans(log(cosh(Lhat_ct)))
+for(i in 1:13){
+  plot(Lhat_ct[o,i],col=sample_info$celltype[o], main = paste0("ct:",i,"; obj:",round(obj_ct[i],3)))
+}
+```
+
+
+
+### Split the original results
+
+Many of the original solutions split about -1,1, and are close to a maximum of log cosh (around 0.43). From simulation results we know that some of these may be combining groups.
+I want to try initializing at the 0,a version of these solutions, again using warmstart to minimize.
+
+```{r}
+X = (sign(Lhat.prune)+1)/2
+W = U_aug %*% cbind(X,1-X)
+
+W <- sweep(W, 2, sqrt(colSums(W^2))+1e-15, "/")
+for (i in seq_len(n_iter))
+  W <- gradient_minica_update(U_aug, W)
+for (i in seq_len(n_iter))
+  W <- fastica_update(U_aug, W)
+
+Lhat2 <- t(U_aug) %*% W  # n x n_starts
+
+obj2 = colMeans(log(cosh(Lhat2)))
+sub = obj2<0.43
+Lhat2 = Lhat2[,sub]
+obj2 = obj2[sub]
+par(mfcol=c(4,4),mai=rep(0.2,4))
+for(i in 1:ncol(Lhat2)){
+  plot(Lhat2[o,i],col=sample_info$celltype[o], main = paste0("bin start:",i,"; obj:",round(obj2[i],3)))
+  abline(h=0)
+}
+
+```
+
+
+## Minimizing log cosh
+
+Here I try use the gradient update to minimize log cosh.
+Run fastICA (rank 1) from 25 random normal starts. It finds about 5 different solutions, all look something like minima.  (Running it 1000 times found about 11 different local minima, but the "best" ones are all in the 25 random starting points.)
+
+```{r}
+n_starts = 1000
+n_iter = 50  #you can get away with fewer
+set.seed(1)
+W <- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- gradient_minica_update(U_aug, W)
+for (i in seq_len(n_iter))
+  W <- fastica_update(U_aug, W)
+
+Lhat <- t(U_aug) %*% W  # n x n_starts
+
+Lhat.pc = prune_and_count_cluster(Lhat)
+Lhat.prune = Lhat.pc$pruned_matrix
+
+plot_Lhat(Lhat.pc)
+```
+
+
+
+
+This was old code, running it to cluster genes and looking how consistent the programs are from the two runs. While there is some consistency, there do not seem to be as many consistent programs as with semi-nmf (eg not as many with abs correlation >0.5). Note that, unlike with semi-nmf, the programs will not necessarily have a consistent sign.
+```{r}
+#fit.ica.k40 = fastICA(t(Y), n.comp=40)
+#fit.ica.k40.1 = fastICA(t(Y[subset,]), n.comp = 40)
+#fit.ica.k40.2 = fastICA(t(Y[-subset,]), n.comp = 40)
+
+#session_info <- sessionInfo()
+
+#save(list = c("fit.snmf.k40","fit.snmf.k40.1","fit.snmf.k40.2","session_info"),
+ #    file = "../output/pancreas_celseq2_snmf_k40.RData")
+
+
+# cormat <- cor(fit.ica.k40.1$S,fit.ica.k40.2$S)
+# apply(abs(cormat),1, max)
+# hist(cormat,nclass=100)
+# image(abs(cormat)>0.5)
+# assignment_problem <- RcppHungarian::HungarianSolver(-1*abs(cormat))
+# pairings <- assignment_problem$pairs
+# image(abs(cormat)[pairings[,1], pairings[,2]])
+
+```
+
+
