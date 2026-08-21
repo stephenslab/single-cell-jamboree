@@ -383,7 +383,47 @@ plot_Lhat_minima(Lhat2.pc)
 ```
 
 
+## Run with fewer alpha cells
 
+Here I try running with fewer alpha cells. Indeed it now finds a local minima that corresponds to the split of alpha cells vs others. This seems to point to a limitation of the fastICA with local minima. (However, it is possible that these larger groups may emerge when we have corrected for the many smaller groups?)
+```{r}
+set.seed(1)
+
+# Thin alpha cells: keep all non-alpha cells + 200 random alpha cells
+alpha_idx     <- which(sample_info$celltype == "alpha")
+keep_alpha    <- sample(alpha_idx, 200)
+thin_idx      <- sort(c(which(sample_info$celltype != "alpha"), keep_alpha))
+
+sample_info_thin <- sample_info[thin_idx, ]
+counts_thin      <- counts[thin_idx, ]
+
+# Recompute size-factor normalisation and log1p transform for thinned data
+s_thin  <- rowSums(counts_thin) / mean(rowSums(counts_thin))
+Y_thin  <- MatrixExtra::mapSparse(counts_thin / (a * s_thin), log1p)
+
+# Centre and SVD
+Y_thin       <- scale(Y_thin, scale = FALSE)
+Y_thin.svd   <- svd(Y_thin)
+U_thin       <- sqrt(nrow(Y_thin)) * t(Y_thin.svd$u[, 1:n.comp])
+U_aug_thin   <- rbind(rep(1, ncol(U_thin)), U_thin)
+
+# 1000 random starts
+W <- matrix(rnorm(nrow(U_aug_thin) * n_starts), nrow(U_aug_thin), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- gradient_minica_update(U_aug_thin, W)
+for (i in seq_len(n_iter))
+  W <- fastica_update(U_aug_thin, W)
+
+Lhat_thin    <- t(U_aug_thin) %*% W
+Lhat_thin.pc <- prune_and_count_cluster(Lhat_thin)
+
+# Plot using thinned sample_info (swap temporarily so plotting functions work)
+sample_info_save <- sample_info
+sample_info      <- sample_info_thin
+plot_Lhat_minima(Lhat_thin.pc)
+sample_info      <- sample_info_save
+```
 
 
 This was old code, running it to cluster genes and looking how consistent the programs are from the two runs. While there is some consistency, there do not seem to be as many consistent programs as with semi-nmf (eg not as many with abs correlation >0.5). Note that, unlike with semi-nmf, the programs will not necessarily have a consistent sign.
