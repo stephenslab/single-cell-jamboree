@@ -434,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree71a0c817e67e0f0cd9cbe769df50f390537472d6targetblank71a0c81a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree89bc5612cac07a891f879939eca94c7c0d8711fdtargetblank89bc561a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/71a0c817e67e0f0cd9cbe769df50f390537472d6" target="_blank">71a0c81</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/89bc5612cac07a891f879939eca94c7c0d8711fd" target="_blank">89bc561</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree71a0c817e67e0f0cd9cbe769df50f390537472d6targetblank71a0c81a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree89bc5612cac07a891f879939eca94c7c0d8711fdtargetblank89bc561a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -452,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/71a0c817e67e0f0cd9cbe769df50f390537472d6" target="_blank">71a0c81</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/89bc5612cac07a891f879939eca94c7c0d8711fd" target="_blank">89bc561</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -533,6 +533,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/89bc5612cac07a891f879939eca94c7c0d8711fd/analysis/pancreas_celseq2_ica.Rmd" target="_blank">89bc561</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+workflowr::wflow_publish("pancreas_celseq2_ica.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/pancreas_celseq2_ica.html" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/71a0c817e67e0f0cd9cbe769df50f390537472d6/analysis/pancreas_celseq2_ica.Rmd" target="_blank">71a0c81</a>
 </td>
 <td>
@@ -553,7 +587,9 @@ workflowr::wflow_publish("pancreas_celseq2_ica.Rmd")
 </div>
 </div>
 <pre class="r"><code>library(fastICA)
-library(&quot;Matrix&quot;)</code></pre>
+library(&quot;Matrix&quot;)
+library(ggplot2)</code></pre>
+<pre><code>Warning: package &#39;ggplot2&#39; was built under R version 4.4.3</code></pre>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>I wanted to try fastICA on the pancreas data. I also experiment with
@@ -649,8 +685,6 @@ gradient_minica_update_projected = function(U, W, lr = 0.1) {
 # A greedy function to prune correlated columns of a matrix; written by Gemini
 # Install if necessary: install.packages(&quot;caret&quot;)
 library(caret)</code></pre>
-<pre><code>Loading required package: ggplot2</code></pre>
-<pre><code>Warning: package &#39;ggplot2&#39; was built under R version 4.4.3</code></pre>
 <pre><code>Loading required package: lattice</code></pre>
 <pre><code>Warning: package &#39;lattice&#39; was built under R version 4.4.3</code></pre>
 <pre class="r"><code>fast_prune_caret &lt;- function(L, tau = 0.8) {
@@ -675,6 +709,8 @@ library(caret)</code></pre>
 
 
 prune_and_count_cluster &lt;- function(L, tau = 0.9) {
+  # Drop constant columns before computing correlation (zero variance -&gt; NaN in cor())
+  L &lt;- L[, apply(L, 2, sd) &gt; 1e-10, drop = FALSE]
   # 1. Convert correlation to distance (1 - absolute correlation)
   dist_mat &lt;- as.dist(1 - abs(cor(L)))
   
@@ -701,25 +737,191 @@ prune_and_count_cluster &lt;- function(L, tau = 0.9) {
     kept_indices = kept_indices,
     cluster_assignments = clusters
   )
+}
+
+celltype_palette &lt;- c(
+  &quot;#E41A1C&quot;, &quot;#377EB8&quot;, &quot;#4DAF4A&quot;, &quot;#984EA3&quot;, &quot;#FF7F00&quot;,
+  &quot;#A65628&quot;, &quot;#F781BF&quot;, &quot;#1B9E77&quot;, &quot;#D95F02&quot;, &quot;#7570B3&quot;,
+  &quot;#E7298A&quot;, &quot;#66A61E&quot;, &quot;#E6AB02&quot;, &quot;#A6761D&quot;, &quot;#666666&quot;
+)
+
+lhat_ggplot &lt;- function(Lhat.pc, idx, title) {
+  if (sum(idx) == 0) return(invisible(NULL))
+  Lhat.prune &lt;- Lhat.pc$pruned_matrix
+  Lhat_sub   &lt;- Lhat.prune[, idx, drop = FALSE]
+  obj_sub    &lt;- colMeans(log(cosh(Lhat_sub)))
+  o2         &lt;- order(obj_sub)
+  cell_order &lt;- order(sample_info$celltype)
+  n_cells    &lt;- nrow(Lhat_sub)
+  n_comp     &lt;- sum(idx)
+
+  comp_labels &lt;- make.unique(paste0(&quot;n:&quot;, Lhat.pc$cluster_sizes[idx], &quot; obj:&quot;, round(obj_sub, 3)))
+  df &lt;- data.frame(
+    rank      = rep(seq_len(n_cells), n_comp),
+    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    loading   = as.vector(Lhat_sub[cell_order, ]),
+    component = factor(rep(comp_labels, each = n_cells), levels = comp_labels[o2])
+  )
+  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
+    geom_point(size = 0.5, alpha = 0.7) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.3) +
+    facet_wrap(~ component, ncol = 5, scales = &quot;free_y&quot;) +
+    scale_color_manual(values = celltype_palette) +
+    labs(x = NULL, y = &quot;Loading&quot;, color = &quot;Cell type&quot;, title = title) +
+    theme_bw(base_size = 10) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+          strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
+          legend.position = &quot;bottom&quot;) +
+    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+}
+
+plot_Lhat_maxima &lt;- function(Lhat.pc, obj_threshold = 0.42) {
+  obj &lt;- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
+  lhat_ggplot(Lhat.pc, obj &gt; obj_threshold, paste0(&quot;Maxima (obj &gt; &quot;, obj_threshold, &quot;)&quot;))
+}
+
+plot_Lhat_minima &lt;- function(Lhat.pc, obj_threshold = 0.42) {
+  obj &lt;- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
+  lhat_ggplot(Lhat.pc, obj &lt;= obj_threshold, paste0(&quot;Minima (obj &lt;= &quot;, obj_threshold, &quot;)&quot;))
+}
+
+# General version for unlabeled/unordered loading matrices
+plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;ct:&quot;) {
+  obj &lt;- colMeans(log(cosh(Lhat)))
+  cell_order &lt;- order(sample_info$celltype)
+  n_cells &lt;- nrow(Lhat)
+  n_comp &lt;- ncol(Lhat)
+
+  comp_labels &lt;- make.unique(paste0(label_prefix, seq_len(n_comp), &quot; obj:&quot;, round(obj, 3)))
+  df &lt;- data.frame(
+    rank      = rep(seq_len(n_cells), n_comp),
+    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    loading   = as.vector(Lhat[cell_order, ]),
+    component = factor(rep(comp_labels, each = n_cells), levels = comp_labels)
+  )
+
+  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
+    geom_point(size = 0.5, alpha = 0.7) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.3) +
+    facet_wrap(~ component, ncol = 5, scales = &quot;free_y&quot;) +
+    scale_color_manual(values = celltype_palette) +
+    labs(x = NULL, y = &quot;Loading&quot;, color = &quot;Cell type&quot;) +
+    theme_bw(base_size = 10) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+          strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
+          legend.position = &quot;bottom&quot;) +
+    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
 }</code></pre>
+</div>
+<div id="eigenvalue-plots" class="section level2">
+<h2>Eigenvalue plots</h2>
 <p>First plot the eigenvalues of Y to get some idea how many components
 to whiten to:</p>
-<pre class="r"><code>Y.svd= svd(Y)
-plot(Y.svd$d[2:1000])</code></pre>
+<pre class="r"><code>Y     &lt;- scale(Y, scale = FALSE)  # center columns; also densifies for SVD
+Y.svd &lt;- svd(Y)
+df_scree &lt;- data.frame(k = 2:1000, d = Y.svd$d[2:1000])
+
+ggplot(df_scree, aes(k, d)) +
+  geom_point(size = 0.5) +
+  labs(x = &quot;Component&quot;, y = &quot;Singular value&quot;) +
+  theme_bw()</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(Y.svd$d[2:200])
-abline(v=30)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-4-1.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggplot(df_scree[df_scree$k &lt;= 200, ], aes(k, d)) +
+  geom_point(size = 0.5) +
+  geom_vline(xintercept = 30, color = &quot;red&quot;, linetype = &quot;dashed&quot;) +
+  labs(x = &quot;Component&quot;, y = &quot;Singular value&quot;) +
+  theme_bw()</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-4-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-4-2.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Whiten data:</p>
 <pre class="r"><code>n.comp = 25 # I found using slightly fewer that 30 PCs produced maybe better results
-U     &lt;- preprocess(Y, n.comp = n.comp)
+U     &lt;- sqrt(nrow(Y)) * t(Y.svd$u[, 1:n.comp])
 U_aug &lt;- rbind(rep(1, ncol(U)), U)</code></pre>
-<div id="initialize-from-random-normal-starts" class="section level3">
-<h3>Initialize from random normal starts</h3>
+</div>
+<div id="initialize-from-random-normal-starts" class="section level2">
+<h2>Initialize from random normal starts</h2>
 <p>I run fastICA (rank 1) from 1000 random normal starts and then
 cluster the results (using hierarchical clustering). The plot shows the
 number of starts that gave each result and the objective value obtained,
-with panels ordered by increasing objective value.</p>
+with panels ordered by increasing objective value. (I also tried
+minimizing from binary starts but this did not change the results much;
+if the binary starts were very unbalanced then they tended to converge
+more often to the intercept.)</p>
 <pre class="r"><code>n_starts = 1000
 n_iter = 50  #you can get away with fewer
 set.seed(1)
@@ -732,20 +934,6 @@ Lhat &lt;- t(U_aug) %*% W  # n x n_starts
 
 Lhat.pc = prune_and_count_cluster(Lhat)
 Lhat.prune = Lhat.pc$pruned_matrix
-o = order(sample_info$celltype)
-
-plot_Lhat = function(Lhat.pc){
-  Lhat.prune = Lhat.pc$pruned_matrix
-  o = order(sample_info$celltype)
-  obj = colMeans(log(cosh(Lhat.prune)))
-  o2 = order(obj)
-
-  par(mfcol=c(4,5),mai=rep(0.2,4))
-  for(i in o2){
-    plot(Lhat.prune[o,i],col=sample_info$celltype[o], main = paste0(&quot;num:&quot;,Lhat.pc$cluster_sizes[i],&quot;; obj:&quot;,round(obj[i],3)))
-    abline(h=0)
-  }
-}
 
 table(sample_info$celltype)</code></pre>
 <pre><code>
@@ -757,42 +945,156 @@ table(sample_info$celltype)</code></pre>
                110                 15                  6                 12 
            schwann             t_cell 
                  4                  0 </code></pre>
-<pre class="r"><code>plot_Lhat(Lhat.pc)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-6-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-6-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_Lhat_maxima(Lhat.pc)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-6-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-6-1.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="initialize-from-binary-starts" class="section level3">
-<h3>Initialize from binary starts</h3>
-<p>Here I try initializing from binary starts with various fractions.
-Mostly this seems to just increase the number of times converging to the
-intercept.</p>
-<pre class="r"><code>set.seed(1)
-n &lt;- ncol(U_aug)
-
-p = c(0.99,0.95,0.9,0.85,0.8,0.7,0.6,0.5)
-X &lt;- c()
-
-for(i in 1:length(p)){
-  X &lt;- cbind(X,matrix(sample(c(0,1),n * n_starts/length(p),replace=TRUE, prob = c(p[i],1-p[i])), n, n_starts/length(p)))
-}
-
-
-W &lt;- U_aug %*% X
+</div>
+<pre class="r"><code>plot_Lhat_minima(Lhat.pc)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-6-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-6-2.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="minimizing-log-cosh-random-init" class="section level2">
+<h2>Minimizing log cosh: random init</h2>
+<p>Here I try use the gradient warmstart to minimize log cosh from 1000
+different starting points. In this case the warm start (50 iterations)
+is enough to make all runs converge to local minima. This basically
+finds all the minima that the original did, plus one more (objective
+0.246 which corresponds to delta cells)</p>
+<pre class="r"><code>n_starts = 1000
+n_iter = 50  
+set.seed(1)
+W &lt;- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
 W &lt;- sweep(W, 2, sqrt(colSums(W^2)), &quot;/&quot;)
+for (i in seq_len(n_iter))
+  W &lt;- gradient_minica_update(U_aug, W)
 for (i in seq_len(n_iter))
   W &lt;- fastica_update(U_aug, W)
 
-Lhat_b &lt;- t(U_aug) %*% W  # n x n_starts
-Lhat_b.pc = prune_and_count_cluster(Lhat_b)
+Lhat &lt;- t(U_aug) %*% W  # n x n_starts
 
-plot_Lhat(Lhat_b.pc)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-7-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-7-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+Lhat.pc = prune_and_count_cluster(Lhat)
+Lhat.prune = Lhat.pc$pruned_matrix
+
+plot_Lhat_minima(Lhat.pc)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-7-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-7-1.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="initialize-from-known-celltypes-binary" class="section level3">
-<h3>Initialize from known celltypes: binary</h3>
+</div>
+</div>
+<div id="initialize-from-known-celltypes-binary" class="section level2">
+<h2>Initialize from known celltypes: binary</h2>
 <p>Here I make a binary (0/1) matrix with one column for each cell type,
 and initialize the ica from that, using the warm start to minimize
-(which actually does not make much difference in this case; not
-shown).</p>
+(which actually does not make much difference in this case; not shown).
+I wanted to see if there were local minima, corresponding to specific
+cell types, that were missed in the above random starts. The only result
+found here that is missing from the random starts is the component
+corresponding to beta cells (ct4, objective 0.303).</p>
 <pre class="r"><code>X_bin = model.matrix(~ sample_info$celltype - 1)
 
 W &lt;- U_aug %*% X_bin
@@ -802,18 +1104,60 @@ for (i in seq_len(n_iter))
 for (i in seq_len(n_iter))
   W &lt;- fastica_update(U_aug, W)
 
-par(mfcol=c(4,4),mai=rep(0.2,4))
 Lhat_ct &lt;- t(U_aug) %*% W  # n x n_starts
-obj_ct = colMeans(log(cosh(Lhat_ct)))
-for(i in 1:13){
-  plot(Lhat_ct[o,i],col=sample_info$celltype[o], main = paste0(&quot;ct:&quot;,i,&quot;; obj:&quot;,round(obj_ct[i],3)))
-}</code></pre>
+plot_loadings_matrix(Lhat_ct[, 1:13])</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-8-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-8-1.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="initialize-from-known-celltypes-sign" class="section level3">
-<h3>Initialize from known celltypes: sign</h3>
+</div>
+</div>
+<div id="initialize-from-known-celltypes-sign" class="section level2">
+<h2>Initialize from known celltypes: sign</h2>
 <p>Here I make a sign (-1/1) matrix with one column for each cell type,
-and initialize the ica from that:</p>
+and initialize the ica from that, just to see which of these splits are
+stable. The biggest difference from the 0/1 initialization is the alpha
+cells (ct3): here the split remains stable, but the minimization moved
+away from the split. One possibility is that the fact that these cells
+are quite common is penalizing them in the minimization which prefers
+sparser groups. It may be interesting to run the minimization with fewer
+alpha cells. A couple of other cell types (acinar, ct1; ductal, ct6)
+remain much more binary in this case than in the corresponding 0/1
+minima. It may be interesting to see how these behave under ELBO
+maximization with unbalanced binary priors.</p>
 <pre class="r"><code>X_sign = 2*X_bin-1 
 
 W &lt;- U_aug %*% X_sign
@@ -821,20 +1165,57 @@ W &lt;- sweep(W, 2, sqrt(colSums(W^2)), &quot;/&quot;)
 for (i in seq_len(n_iter))
   W &lt;- fastica_update(U_aug, W)
 
-par(mfcol=c(4,4),mai=rep(0.2,4))
 Lhat_ct &lt;- t(U_aug) %*% W  # n x n_starts
-obj_ct = colMeans(log(cosh(Lhat_ct)))
-for(i in 1:13){
-  plot(Lhat_ct[o,i],col=sample_info$celltype[o], main = paste0(&quot;ct:&quot;,i,&quot;; obj:&quot;,round(obj_ct[i],3)))
-}</code></pre>
+plot_loadings_matrix(Lhat_ct[, 1:13])</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-9-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-9-1.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="split-the-original-results" class="section level3">
-<h3>Split the original results</h3>
+</div>
+</div>
+<div id="initialize-by-splitting-the-original-results"
+class="section level2">
+<h2>Initialize by splitting the original results</h2>
 <p>Many of the original solutions split about -1,1, and are close to a
 maximum of log cosh (around 0.43). From simulation results we know that
-some of these may be combining groups. I want to try initializing at the
-0,a version of these solutions, again using warmstart to minimize.</p>
+some of these may be combining groups. Here I try initializing at the
+0,a version of these solutions, again using warmstart to minimize. It
+finds most of the ones found from random starts (all except the split
+that corresponds to gamma cells, obj 0.216), but no additional
+solutions.</p>
 <pre class="r"><code>X = (sign(Lhat.prune)+1)/2
 W = U_aug %*% cbind(X,1-X)
 
@@ -847,41 +1228,47 @@ for (i in seq_len(n_iter))
 Lhat2 &lt;- t(U_aug) %*% W  # n x n_starts
 
 obj2 = colMeans(log(cosh(Lhat2)))
-sub = obj2&lt;0.43
-Lhat2 = Lhat2[,sub]
-obj2 = obj2[sub]
-par(mfcol=c(4,4),mai=rep(0.2,4))
-for(i in 1:ncol(Lhat2)){
-  plot(Lhat2[o,i],col=sample_info$celltype[o], main = paste0(&quot;bin start:&quot;,i,&quot;; obj:&quot;,round(obj2[i],3)))
-  abline(h=0)
-}</code></pre>
-<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-10-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-10-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+Lhat2.pc = prune_and_count_cluster(Lhat2)
+
+plot_Lhat_minima(Lhat2.pc)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/2fc92f59cd00b82239eea69b08af4ebf61ac71d3/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-10-1.png" target="_blank">2fc92f5</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div id="minimizing-log-cosh" class="section level2">
-<h2>Minimizing log cosh</h2>
-<p>Here I try use the gradient update to minimize log cosh. Run fastICA
-(rank 1) from 25 random normal starts. It finds about 5 different
-solutions, all look something like minima. (Running it 1000 times found
-about 11 different local minima, but the “best” ones are all in the 25
-random starting points.)</p>
-<pre class="r"><code>n_starts = 1000
-n_iter = 50  #you can get away with fewer
-set.seed(1)
-W &lt;- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
-W &lt;- sweep(W, 2, sqrt(colSums(W^2)), &quot;/&quot;)
-for (i in seq_len(n_iter))
-  W &lt;- gradient_minica_update(U_aug, W)
-for (i in seq_len(n_iter))
-  W &lt;- fastica_update(U_aug, W)
-
-Lhat &lt;- t(U_aug) %*% W  # n x n_starts
-
-Lhat.pc = prune_and_count_cluster(Lhat)
-Lhat.prune = Lhat.pc$pruned_matrix
-
-plot_Lhat(Lhat.pc)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>This was old code, running it to cluster genes and looking how
 consistent the programs are from the two runs. While there is some
 consistency, there do not seem to be as many consistent programs as with
@@ -942,27 +1329,27 @@ loaded via a namespace (and not attached):
 [13] survival_3.8-6       MatrixExtra_0.1.15   magrittr_2.0.4      
 [16] compiler_4.4.2       rlang_1.1.7          sass_0.4.10         
 [19] tools_4.4.2          yaml_2.3.12          data.table_1.18.2.1 
-[22] knitr_1.51           plyr_1.8.9           RColorBrewer_1.1-3  
-[25] workflowr_1.7.2      withr_3.0.2          purrr_1.2.1         
-[28] stats4_4.4.2         nnet_7.3-20          grid_4.4.2          
-[31] git2r_0.36.2         future_1.69.0        globals_0.19.0      
-[34] scales_1.4.0         iterators_1.0.14     MASS_7.3-65         
-[37] cli_3.6.5            rmarkdown_2.30       generics_0.1.4      
-[40] otel_0.2.0           rstudioapi_0.18.0    future.apply_1.20.2 
-[43] reshape2_1.4.5       cachem_1.1.0         stringr_1.6.0       
-[46] splines_4.4.2        parallel_4.4.2       vctrs_0.7.2         
-[49] hardhat_1.4.2        jsonlite_2.0.0       listenv_0.10.0      
-[52] foreach_1.5.2        gower_1.0.2          jquerylib_0.1.4     
-[55] recipes_1.3.1        glue_1.8.0           parallelly_1.46.1   
-[58] codetools_0.2-20     lubridate_1.9.5      stringi_1.8.7       
-[61] gtable_0.3.6         later_1.4.6          tibble_3.3.1        
-[64] pillar_1.11.1        htmltools_0.5.9      ipred_0.9-15        
-[67] float_0.3-3          lava_1.8.2           R6_2.6.1            
-[70] rprojroot_2.1.1      evaluate_1.0.5       RhpcBLASctl_0.23-42 
-[73] httpuv_1.6.16        bslib_0.10.0         class_7.3-23        
-[76] Rcpp_1.1.1           nlme_3.1-168         prodlim_2026.03.11  
-[79] whisker_0.4.1        xfun_0.56            ModelMetrics_1.2.2.2
-[82] fs_1.6.6             pkgconfig_2.0.3     </code></pre>
+[22] knitr_1.51           labeling_0.4.3       plyr_1.8.9          
+[25] RColorBrewer_1.1-3   workflowr_1.7.2      withr_3.0.2         
+[28] purrr_1.2.1          stats4_4.4.2         nnet_7.3-20         
+[31] grid_4.4.2           git2r_0.36.2         future_1.69.0       
+[34] globals_0.19.0       scales_1.4.0         iterators_1.0.14    
+[37] MASS_7.3-65          cli_3.6.5            rmarkdown_2.30      
+[40] generics_0.1.4       otel_0.2.0           rstudioapi_0.18.0   
+[43] future.apply_1.20.2  reshape2_1.4.5       cachem_1.1.0        
+[46] stringr_1.6.0        splines_4.4.2        parallel_4.4.2      
+[49] vctrs_0.7.2          hardhat_1.4.2        jsonlite_2.0.0      
+[52] listenv_0.10.0       foreach_1.5.2        gower_1.0.2         
+[55] jquerylib_0.1.4      recipes_1.3.1        glue_1.8.0          
+[58] parallelly_1.46.1    codetools_0.2-20     lubridate_1.9.5     
+[61] stringi_1.8.7        gtable_0.3.6         later_1.4.6         
+[64] tibble_3.3.1         pillar_1.11.1        htmltools_0.5.9     
+[67] ipred_0.9-15         float_0.3-3          lava_1.8.2          
+[70] R6_2.6.1             rprojroot_2.1.1      evaluate_1.0.5      
+[73] RhpcBLASctl_0.23-42  httpuv_1.6.16        bslib_0.10.0        
+[76] class_7.3-23         Rcpp_1.1.1           nlme_3.1-168        
+[79] prodlim_2026.03.11   whisker_0.4.1        xfun_0.56           
+[82] ModelMetrics_1.2.2.2 fs_1.6.6             pkgconfig_2.0.3     </code></pre>
 </div>
 </div>
 </div>
