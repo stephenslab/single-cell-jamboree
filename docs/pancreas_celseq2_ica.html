@@ -434,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree69574bab76f6842d9ccb6cc8d6e3db1330432e52targetblank69574baa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1a948b136c65fd3fd26229473fa1a9e304aa0ba1targetblank1a948b1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/69574bab76f6842d9ccb6cc8d6e3db1330432e52" target="_blank">69574ba</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1a948b136c65fd3fd26229473fa1a9e304aa0ba1" target="_blank">1a948b1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree69574bab76f6842d9ccb6cc8d6e3db1330432e52targetblank69574baa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1a948b136c65fd3fd26229473fa1a9e304aa0ba1targetblank1a948b1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -452,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/69574bab76f6842d9ccb6cc8d6e3db1330432e52" target="_blank">69574ba</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1a948b136c65fd3fd26229473fa1a9e304aa0ba1" target="_blank">1a948b1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -473,6 +473,7 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/Rplot.pdf
+    Untracked:  analysis/figure/
     Untracked:  analysis/fit_pancreas_celseq2_gbcd.Rout
     Untracked:  analysis/fit_pancreas_celseq2_snmf_k100.R
     Untracked:  analysis/fit_pancreas_celseq2_snmf_k40.R
@@ -528,6 +529,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/1a948b136c65fd3fd26229473fa1a9e304aa0ba1/analysis/pancreas_celseq2_ica.Rmd" target="_blank">1a948b1</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+workflowr::wflow_publish("pancreas_celseq2_ica.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/0442a3c50bd73bbcbbf3f597fd388bf92aa1049b/docs/pancreas_celseq2_ica.html" target="_blank">0442a3c</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -779,20 +814,20 @@ celltype_palette &lt;- c(
   &quot;#E7298A&quot;, &quot;#66A61E&quot;, &quot;#E6AB02&quot;, &quot;#A6761D&quot;, &quot;#666666&quot;
 )
 
-lhat_ggplot &lt;- function(Lhat.pc, idx, title) {
+lhat_ggplot &lt;- function(Lhat.pc, idx, title, si = sample_info) {
   if (sum(idx) == 0) return(invisible(NULL))
   Lhat.prune &lt;- Lhat.pc$pruned_matrix
   Lhat_sub   &lt;- Lhat.prune[, idx, drop = FALSE]
   obj_sub    &lt;- colMeans(log(cosh(Lhat_sub)))
   o2         &lt;- order(obj_sub)
-  cell_order &lt;- order(sample_info$celltype)
+  cell_order &lt;- order(si$celltype)
   n_cells    &lt;- nrow(Lhat_sub)
   n_comp     &lt;- sum(idx)
 
   comp_labels &lt;- make.unique(paste0(&quot;n:&quot;, Lhat.pc$cluster_sizes[idx], &quot; obj:&quot;, round(obj_sub, 3)))
   df &lt;- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
-    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    celltype  = rep(si$celltype[cell_order], n_comp),
     loading   = as.vector(Lhat_sub[cell_order, ]),
     component = factor(rep(comp_labels, each = n_cells), levels = comp_labels[o2])
   )
@@ -810,27 +845,30 @@ lhat_ggplot &lt;- function(Lhat.pc, idx, title) {
     guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
 }
 
-plot_Lhat_maxima &lt;- function(Lhat.pc, obj_threshold = 0.42) {
+plot_Lhat_maxima &lt;- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
   obj &lt;- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj &gt; obj_threshold, paste0(&quot;Maxima (obj &gt; &quot;, obj_threshold, &quot;)&quot;))
+  lhat_ggplot(Lhat.pc, obj &gt; obj_threshold, paste0(&quot;Maxima (obj &gt; &quot;, obj_threshold, &quot;)&quot;), si)
 }
 
-plot_Lhat_minima &lt;- function(Lhat.pc, obj_threshold = 0.42) {
+plot_Lhat_minima &lt;- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
   obj &lt;- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj &lt;= obj_threshold, paste0(&quot;Minima (obj &lt;= &quot;, obj_threshold, &quot;)&quot;))
+  lhat_ggplot(Lhat.pc, obj &lt;= obj_threshold, paste0(&quot;Minima (obj &lt;= &quot;, obj_threshold, &quot;)&quot;), si)
 }
 
 # General version for unlabeled/unordered loading matrices
-plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;ct:&quot;) {
+plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;ct:&quot;, si = sample_info) {
   obj &lt;- colMeans(log(cosh(Lhat)))
-  cell_order &lt;- order(sample_info$celltype)
+  cell_order &lt;- order(si$celltype)
   n_cells &lt;- nrow(Lhat)
   n_comp &lt;- ncol(Lhat)
 
+  o    &lt;- order(obj)
+  Lhat &lt;- Lhat[, o, drop = FALSE]
+  obj  &lt;- obj[o]
   comp_labels &lt;- make.unique(paste0(label_prefix, seq_len(n_comp), &quot; obj:&quot;, round(obj, 3)))
   df &lt;- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
-    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    celltype  = rep(si$celltype[cell_order], n_comp),
     loading   = as.vector(Lhat[cell_order, ]),
     component = factor(rep(comp_labels, each = n_cells), levels = comp_labels)
   )
@@ -847,6 +885,87 @@ plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;ct:&quot;) {
           strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
           legend.position = &quot;bottom&quot;) +
     guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+}
+
+# Polar factor of W: the nearest orthonormal matrix (W^T W = I).
+# Used after each rank-r update to keep columns orthonormal.
+polar &lt;- function(W) {
+  s &lt;- svd(W)
+  s$u %*% t(s$v)
+}
+
+# Rank-r fastICA update (maximise log-cosh, symmetric deflation via polar decomp).
+# U  : (n.comp+1) x n  — whitened data (plus intercept row)
+# W  : (n.comp+1) x r  — weight matrix with orthonormal columns
+fastica_update_rankr &lt;- function(U, W) {
+  P  &lt;- t(U) %*% W           # n x r
+  G  &lt;- tanh(P)              # n x r
+  G2 &lt;- 1 - G^2             # n x r
+  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
+  polar(W)
+}
+
+# Rank-r gradient descent update (minimise log-cosh, symmetric deflation via polar decomp).
+gradient_minica_update_rankr &lt;- function(U, W, lr = 0.1) {
+  P    &lt;- t(U) %*% W          # n x r
+  G    &lt;- tanh(P)             # n x r
+  grad &lt;- (U %*% G) / ncol(U)
+  W    &lt;- W - lr * grad
+  polar(W)
+}
+
+# Tilted log-cosh (TLC) update — parallel rank-1 starts (maximise TLC objective).
+# G(z)  = log(cosh(z)) + lambda * z|z|
+# g(z)  = tanh(z) + 2*lambda*|z|
+# g&#39;(z) = 1 - tanh^2(z) + 2*lambda*sign(z)
+fastica_update_tlc &lt;- function(U, W, lambda = 1) {
+  P  &lt;- t(U) %*% W
+  G  &lt;- tanh(P) + 2 * lambda * abs(P)
+  G2 &lt;- 1 - tanh(P)^2 + 2 * lambda * sign(P)
+  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, &quot;/&quot;)
+}
+
+# Rank-r TLC update with polar orthogonalisation.
+fastica_update_tlc_rankr &lt;- function(U, W, lambda = 1) {
+  P  &lt;- t(U) %*% W
+  G  &lt;- tanh(P) + 2 * lambda * abs(P)
+  G2 &lt;- 1 - tanh(P)^2 + 2 * lambda * sign(P)
+  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
+  polar(W)
+}
+
+# TLC objective per column of a loadings matrix L = t(U) %*% W.
+objective_tlc &lt;- function(L, lambda = 1) {
+  colMeans(log(cosh(L)) + lambda * abs(L) * L)
+}
+
+# Log-Phi contrast: G(z) = log(Phi(alpha*z)), designed to be maximised.
+# g(z)  = alpha * phi(alpha*z)/Phi(alpha*z)   (scaled inverse Mills ratio)
+# g&#39;(z) = alpha^2 * (-alpha*z * h - h^2)      h computed in log-scale for stability
+fastica_update_logphi &lt;- function(U, W, alpha = 2) {
+  P  &lt;- t(U) %*% W
+  u  &lt;- alpha * P
+  h  &lt;- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+  G  &lt;- alpha * h
+  G2 &lt;- alpha^2 * (-u * h - h^2)
+  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, &quot;/&quot;)
+}
+
+# Rank-r log-Phi update with polar orthogonalisation.
+fastica_update_logphi_rankr &lt;- function(U, W, alpha = 2) {
+  P  &lt;- t(U) %*% W
+  u  &lt;- alpha * P
+  h  &lt;- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+  G  &lt;- alpha * h
+  G2 &lt;- alpha^2 * (-u * h - h^2)
+  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
+  polar(W)
+}
+
+objective_logphi &lt;- function(L, alpha = 2) {
+  colMeans(pnorm(alpha * L, log.p = TRUE))
 }</code></pre>
 </div>
 <div id="eigenvalue-plots" class="section level2">
@@ -1430,10 +1549,7 @@ for (i in seq_len(n_iter))
 Lhat_thin    &lt;- t(U_aug_thin) %*% W
 Lhat_thin.pc &lt;- prune_and_count_cluster(Lhat_thin)
 
-# Plot using thinned sample_info (swap temporarily so plotting functions work)
-sample_info_save &lt;- sample_info
-sample_info      &lt;- sample_info_thin
-plot_Lhat_minima(Lhat_thin.pc)</code></pre>
+plot_Lhat_minima(Lhat_thin.pc, si = sample_info_thin)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
@@ -1457,6 +1573,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/0442a3c50bd73bbcbbf3f597fd388bf92aa1049b/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-11-1.png" target="_blank">0442a3c</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ab0bc383e264b27d5385657e5e6cabf5391f6d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-11-1.png" target="_blank">f6ab0bc</a>
@@ -1483,7 +1610,104 @@ Matthew Stephens
 </table>
 </div>
 </div>
-<pre class="r"><code>sample_info      &lt;- sample_info_save</code></pre>
+</div>
+<div id="rank-r-fastica-r-20" class="section level2">
+<h2>Rank-r fastICA (r = 20)</h2>
+<p>Run a single rank-20 ICA, simultaneously extracting 20 orthogonal
+components via the symmetric deflation approach. I use more iterations
+since the orthogonalization slows down convergence. This method finds
+many qualitatively-similar results to the parallel rank 1 method, but it
+finds a couple of additional factors that seem to correspond to subsets
+of alpha cells that might be interesting to look at further.</p>
+<pre class="r"><code>set.seed(1)
+r &lt;- 20
+n_iter = 500
+W_r &lt;- polar(matrix(rnorm((n.comp + 1) * r), n.comp + 1, r))
+for (i in seq_len(n_iter))
+  W_r &lt;- gradient_minica_update_rankr(U_aug, W_r)
+for (i in seq_len(n_iter))
+  W_r &lt;- fastica_update_rankr(U_aug, W_r)
+
+Lhat_r &lt;- t(U_aug) %*% W_r   # n x r
+plot_loadings_matrix(Lhat_r)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-12-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="tilted-log-cosh-1000-random-starts" class="section level2">
+<h2>Tilted log-cosh: 1000 random starts</h2>
+<p>The tilted log-cosh (TLC) objective <span class="math inline">\(G(z)
+= \log\cosh(z) + \lambda z|z|\)</span> is designed to be maximised and
+scores sparse binary sources more highly than standard log-cosh, which
+can fail for very skewed groups. Here we run 1000 random starts
+maximising the TLC objective with <span class="math inline">\(\lambda =
+1\)</span>. At first I thought these looked good, but now I’m less sure:
+is it combining groups together that should not be combined? Eg
+combining delta with mast and macrophage seems potentially (probably?)
+wrong. Note that the group that showed the strongest minimum of log cosh
+now becomes the weakest maximum of this function. This makes me a bit
+uncomfortable.</p>
+<pre class="r"><code>set.seed(1)
+n_iter = 50
+W &lt;- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W &lt;- sweep(W, 2, sqrt(colSums(W^2)), &quot;/&quot;)
+for (i in seq_len(n_iter))
+  W &lt;- fastica_update_tlc(U_aug, W)
+
+Lhat_tlc    &lt;- t(U_aug) %*% W
+Lhat_tlc.pc &lt;- prune_and_count_cluster(Lhat_tlc)
+
+plot_Lhat_maxima(Lhat_tlc.pc, obj_threshold = -Inf)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="tilted-log-cosh-rank-r-r-20" class="section level2">
+<h2>Tilted log-cosh: rank-r (r = 20)</h2>
+<p>Single rank-20 TLC run with symmetric orthogonalisation. These
+results actually look more promising: the combining of groups seems to
+have gone (?) and there are some possibly interesting hints of splits
+that group subsets of alpha cells with other related cells (beta,
+delta). Maybe 13 and 6 suggest two different subtypes of acinar cells.
+However, we have to be careful maybe about the fact that orthogonality
+has been forced here….</p>
+<pre class="r"><code>set.seed(1)
+n_iter = 500
+W_r_tlc &lt;- polar(matrix(rnorm((n.comp + 1) * r), n.comp + 1, r))
+for (i in seq_len(n_iter))
+  W_r_tlc &lt;- fastica_update_tlc_rankr(U_aug, W_r_tlc)
+
+Lhat_r_tlc &lt;- t(U_aug) %*% W_r_tlc
+plot_loadings_matrix(Lhat_r_tlc)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-14-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="log-phi-1000-random-starts" class="section level2">
+<h2>Log-Phi: 1000 random starts</h2>
+<p>The log-Phi contrast <span class="math inline">\(G(z) =
+\log\Phi(\alpha z)\)</span> rewards large positive projections and is
+suited to one-sided sparse sources (cells that are “on” for a minority
+of observations). Here <span class="math inline">\(\alpha = 2\)</span>.
+Using U_aug always converged to the intercept so I removed the intercept
+column for this contrast.</p>
+<pre class="r"><code>set.seed(1)
+n_iter = 50
+W &lt;- matrix(rnorm(nrow(U) * n_starts), nrow(U), n_starts)
+W &lt;- sweep(W, 2, sqrt(colSums(W^2)), &quot;/&quot;)
+for (i in seq_len(n_iter))
+  W &lt;- fastica_update_logphi(U, W)
+
+Lhat_lp    &lt;- t(U) %*% W
+Lhat_lp.pc &lt;- prune_and_count_cluster(Lhat_lp)
+plot_Lhat_maxima(Lhat_lp.pc, obj_threshold = -Inf)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-15-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="log-phi-rank-r-r-20" class="section level2">
+<h2>Log-Phi: rank-r (r = 20)</h2>
+<pre class="r"><code>set.seed(1)
+n_iter = 500
+W_r_lp &lt;- polar(matrix(rnorm((n.comp) * r), n.comp, r))
+for (i in seq_len(n_iter))
+  W_r_lp &lt;- fastica_update_logphi_rankr(U, W_r_lp)
+
+Lhat_r_lp &lt;- t(U) %*% W_r_lp
+plot_loadings_matrix(Lhat_r_lp)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-16-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>This was old code, running it to cluster genes and looking how
 consistent the programs are from the two runs. While there is some
 consistency, there do not seem to be as many consistent programs as with
