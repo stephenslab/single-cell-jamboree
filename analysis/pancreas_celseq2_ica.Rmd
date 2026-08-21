@@ -10,6 +10,7 @@ editor_options:
 ```{r}
 library(fastICA)
 library("Matrix")
+library(ggplot2)
 ```
 
 ## Introduction
@@ -135,6 +136,8 @@ fast_prune_caret <- function(L, tau = 0.8) {
 
 
 prune_and_count_cluster <- function(L, tau = 0.9) {
+  # Drop constant columns before computing correlation (zero variance -> NaN in cor())
+  L <- L[, apply(L, 2, sd) > 1e-10, drop = FALSE]
   # 1. Convert correlation to distance (1 - absolute correlation)
   dist_mat <- as.dist(1 - abs(cor(L)))
   
@@ -162,28 +165,116 @@ prune_and_count_cluster <- function(L, tau = 0.9) {
     cluster_assignments = clusters
   )
 }
+
+celltype_palette <- c(
+  "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00",
+  "#A65628", "#F781BF", "#1B9E77", "#D95F02", "#7570B3",
+  "#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666"
+)
+
+lhat_ggplot <- function(Lhat.pc, idx, title) {
+  if (sum(idx) == 0) return(invisible(NULL))
+  Lhat.prune <- Lhat.pc$pruned_matrix
+  Lhat_sub   <- Lhat.prune[, idx, drop = FALSE]
+  obj_sub    <- colMeans(log(cosh(Lhat_sub)))
+  o2         <- order(obj_sub)
+  cell_order <- order(sample_info$celltype)
+  n_cells    <- nrow(Lhat_sub)
+  n_comp     <- sum(idx)
+
+  comp_labels <- make.unique(paste0("n:", Lhat.pc$cluster_sizes[idx], " obj:", round(obj_sub, 3)))
+  df <- data.frame(
+    rank      = rep(seq_len(n_cells), n_comp),
+    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    loading   = as.vector(Lhat_sub[cell_order, ]),
+    component = factor(rep(comp_labels, each = n_cells), levels = comp_labels[o2])
+  )
+  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
+    geom_point(size = 0.5, alpha = 0.7) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
+    facet_wrap(~ component, ncol = 5, scales = "free_y") +
+    scale_color_manual(values = celltype_palette) +
+    labs(x = NULL, y = "Loading", color = "Cell type", title = title) +
+    theme_bw(base_size = 10) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+          strip.background = element_rect(fill = "grey90", color = NA),
+          legend.position = "bottom") +
+    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+}
+
+plot_Lhat_maxima <- function(Lhat.pc, obj_threshold = 0.42) {
+  obj <- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
+  lhat_ggplot(Lhat.pc, obj > obj_threshold, paste0("Maxima (obj > ", obj_threshold, ")"))
+}
+
+plot_Lhat_minima <- function(Lhat.pc, obj_threshold = 0.42) {
+  obj <- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
+  lhat_ggplot(Lhat.pc, obj <= obj_threshold, paste0("Minima (obj <= ", obj_threshold, ")"))
+}
+
+# General version for unlabeled/unordered loading matrices
+plot_loadings_matrix <- function(Lhat, label_prefix = "ct:") {
+  obj <- colMeans(log(cosh(Lhat)))
+  cell_order <- order(sample_info$celltype)
+  n_cells <- nrow(Lhat)
+  n_comp <- ncol(Lhat)
+
+  comp_labels <- make.unique(paste0(label_prefix, seq_len(n_comp), " obj:", round(obj, 3)))
+  df <- data.frame(
+    rank      = rep(seq_len(n_cells), n_comp),
+    celltype  = rep(sample_info$celltype[cell_order], n_comp),
+    loading   = as.vector(Lhat[cell_order, ]),
+    component = factor(rep(comp_labels, each = n_cells), levels = comp_labels)
+  )
+
+  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
+    geom_point(size = 0.5, alpha = 0.7) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
+    facet_wrap(~ component, ncol = 5, scales = "free_y") +
+    scale_color_manual(values = celltype_palette) +
+    labs(x = NULL, y = "Loading", color = "Cell type") +
+    theme_bw(base_size = 10) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+          strip.background = element_rect(fill = "grey90", color = NA),
+          legend.position = "bottom") +
+    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+}
 ```
+
+## Eigenvalue plots
 
 First plot the eigenvalues of Y to get some idea how many components to whiten to:
 ```{r}
-Y.svd= svd(Y)
-plot(Y.svd$d[2:1000])
-plot(Y.svd$d[2:200])
-abline(v=30)
+Y     <- scale(Y, scale = FALSE)  # center columns; also densifies for SVD
+Y.svd <- svd(Y)
+df_scree <- data.frame(k = 2:1000, d = Y.svd$d[2:1000])
+
+ggplot(df_scree, aes(k, d)) +
+  geom_point(size = 0.5) +
+  labs(x = "Component", y = "Singular value") +
+  theme_bw()
+
+ggplot(df_scree[df_scree$k <= 200, ], aes(k, d)) +
+  geom_point(size = 0.5) +
+  geom_vline(xintercept = 30, color = "red", linetype = "dashed") +
+  labs(x = "Component", y = "Singular value") +
+  theme_bw()
 ```
 
 
-Whiten data: 
+Whiten data:
 ```{r}
 n.comp = 25 # I found using slightly fewer that 30 PCs produced maybe better results
-U     <- preprocess(Y, n.comp = n.comp)
+U     <- sqrt(nrow(Y)) * t(Y.svd$u[, 1:n.comp])
 U_aug <- rbind(rep(1, ncol(U)), U)
 ```
 
 
-### Initialize from random normal starts
+## Initialize from random normal starts
 
-I run fastICA (rank 1) from 1000 random normal starts and then cluster the results (using hierarchical clustering). The plot shows the number of starts that gave each result and the objective value obtained, with panels ordered by increasing objective value. 
+I run fastICA (rank 1) from 1000 random normal starts and then cluster the results (using hierarchical clustering). The plot shows the number of starts that gave each result and the objective value obtained, with panels ordered by increasing objective value. (I also tried minimizing from binary starts but this did not change the results much; if the binary starts were very unbalanced then they tended to converge more often to the intercept.) 
 
 ```{r}
 n_starts = 1000
@@ -198,57 +289,43 @@ Lhat <- t(U_aug) %*% W  # n x n_starts
 
 Lhat.pc = prune_and_count_cluster(Lhat)
 Lhat.prune = Lhat.pc$pruned_matrix
-o = order(sample_info$celltype)
-
-plot_Lhat = function(Lhat.pc){
-  Lhat.prune = Lhat.pc$pruned_matrix
-  o = order(sample_info$celltype)
-  obj = colMeans(log(cosh(Lhat.prune)))
-  o2 = order(obj)
-
-  par(mfcol=c(4,5),mai=rep(0.2,4))
-  for(i in o2){
-    plot(Lhat.prune[o,i],col=sample_info$celltype[o], main = paste0("num:",Lhat.pc$cluster_sizes[i],"; obj:",round(obj[i],3)))
-    abline(h=0)
-  }
-}
 
 table(sample_info$celltype)
 
-plot_Lhat(Lhat.pc)
+plot_Lhat_maxima(Lhat.pc)
+plot_Lhat_minima(Lhat.pc)
 ```
 
+## Minimizing log cosh: random init
 
-### Initialize from binary starts
+Here I try use the gradient warmstart to minimize log cosh from 1000 different starting points. In this case the warm start (50 iterations) is enough to make all runs converge to local minima. This basically finds all the minima that the original did, plus one more (objective 0.246 which corresponds to delta cells)
 
-Here I try initializing from binary starts with various fractions. Mostly this seems to just increase the number of times converging to the intercept.
 ```{r}
+n_starts = 1000
+n_iter = 50  
 set.seed(1)
-n <- ncol(U_aug)
-
-p = c(0.99,0.95,0.9,0.85,0.8,0.7,0.6,0.5)
-X <- c()
-
-for(i in 1:length(p)){
-  X <- cbind(X,matrix(sample(c(0,1),n * n_starts/length(p),replace=TRUE, prob = c(p[i],1-p[i])), n, n_starts/length(p)))
-}
-
-
-W <- U_aug %*% X
+W <- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
 W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- gradient_minica_update(U_aug, W)
 for (i in seq_len(n_iter))
   W <- fastica_update(U_aug, W)
 
-Lhat_b <- t(U_aug) %*% W  # n x n_starts
-Lhat_b.pc = prune_and_count_cluster(Lhat_b)
+Lhat <- t(U_aug) %*% W  # n x n_starts
 
-plot_Lhat(Lhat_b.pc)
+Lhat.pc = prune_and_count_cluster(Lhat)
+Lhat.prune = Lhat.pc$pruned_matrix
+
+plot_Lhat_minima(Lhat.pc)
 ```
 
 
-### Initialize from known celltypes: binary
+## Initialize from known celltypes: binary
 
-Here I make a binary (0/1) matrix with one column for each cell type, and initialize the ica from that, using the warm start to minimize (which actually does not make much difference in this case; not shown).
+Here I make a binary (0/1) matrix with one column for each cell type, and initialize the ica from that, using the warm start to minimize (which actually does not make much difference in this case; not shown). I wanted to see if there were local minima, corresponding to specific cell types, that were missed in the above random starts. 
+The only result found here that is missing from the random starts is the component corresponding to beta cells (ct4, objective 0.303).
+
+
 ```{r}
 X_bin = model.matrix(~ sample_info$celltype - 1)
 
@@ -259,17 +336,14 @@ for (i in seq_len(n_iter))
 for (i in seq_len(n_iter))
   W <- fastica_update(U_aug, W)
 
-par(mfcol=c(4,4),mai=rep(0.2,4))
 Lhat_ct <- t(U_aug) %*% W  # n x n_starts
-obj_ct = colMeans(log(cosh(Lhat_ct)))
-for(i in 1:13){
-  plot(Lhat_ct[o,i],col=sample_info$celltype[o], main = paste0("ct:",i,"; obj:",round(obj_ct[i],3)))
-}
+plot_loadings_matrix(Lhat_ct[, 1:13])
 ```
 
-### Initialize from known celltypes: sign
+## Initialize from known celltypes: sign
 
-Here I make a sign (-1/1) matrix with one column for each cell type, and initialize the ica from that:
+Here I make a sign (-1/1) matrix with one column for each cell type, and initialize the ica from that, just to see which of these splits are stable. The biggest difference from the 0/1 initialization is the alpha cells (ct3): here the split remains stable, but the minimization moved away from the split. One possibility is that the fact that these cells are quite common is penalizing them in the minimization which prefers sparser groups. It may be interesting to run the minimization with fewer alpha cells. A couple of other cell types (acinar, ct1; ductal, ct6) remain much more binary in this case than in the corresponding 0/1 minima. It may be interesting to see how these behave under ELBO maximization with unbalanced binary priors.
+
 ```{r}
 X_sign = 2*X_bin-1 
 
@@ -278,20 +352,16 @@ W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
 for (i in seq_len(n_iter))
   W <- fastica_update(U_aug, W)
 
-par(mfcol=c(4,4),mai=rep(0.2,4))
 Lhat_ct <- t(U_aug) %*% W  # n x n_starts
-obj_ct = colMeans(log(cosh(Lhat_ct)))
-for(i in 1:13){
-  plot(Lhat_ct[o,i],col=sample_info$celltype[o], main = paste0("ct:",i,"; obj:",round(obj_ct[i],3)))
-}
+plot_loadings_matrix(Lhat_ct[, 1:13])
 ```
 
 
 
-### Split the original results
+## Initialize by splitting the original results
 
 Many of the original solutions split about -1,1, and are close to a maximum of log cosh (around 0.43). From simulation results we know that some of these may be combining groups.
-I want to try initializing at the 0,a version of these solutions, again using warmstart to minimize.
+Here I try initializing at the 0,a version of these solutions, again using warmstart to minimize. It finds most of the ones found from random starts (all except the split that corresponds to gamma cells, obj 0.216), but no additional solutions.
 
 ```{r}
 X = (sign(Lhat.prune)+1)/2
@@ -306,41 +376,12 @@ for (i in seq_len(n_iter))
 Lhat2 <- t(U_aug) %*% W  # n x n_starts
 
 obj2 = colMeans(log(cosh(Lhat2)))
-sub = obj2<0.43
-Lhat2 = Lhat2[,sub]
-obj2 = obj2[sub]
-par(mfcol=c(4,4),mai=rep(0.2,4))
-for(i in 1:ncol(Lhat2)){
-  plot(Lhat2[o,i],col=sample_info$celltype[o], main = paste0("bin start:",i,"; obj:",round(obj2[i],3)))
-  abline(h=0)
-}
+Lhat2.pc = prune_and_count_cluster(Lhat2)
+
+plot_Lhat_minima(Lhat2.pc)
 
 ```
 
-
-## Minimizing log cosh
-
-Here I try use the gradient update to minimize log cosh.
-Run fastICA (rank 1) from 25 random normal starts. It finds about 5 different solutions, all look something like minima.  (Running it 1000 times found about 11 different local minima, but the "best" ones are all in the 25 random starting points.)
-
-```{r}
-n_starts = 1000
-n_iter = 50  #you can get away with fewer
-set.seed(1)
-W <- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
-W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
-for (i in seq_len(n_iter))
-  W <- gradient_minica_update(U_aug, W)
-for (i in seq_len(n_iter))
-  W <- fastica_update(U_aug, W)
-
-Lhat <- t(U_aug) %*% W  # n x n_starts
-
-Lhat.pc = prune_and_count_cluster(Lhat)
-Lhat.prune = Lhat.pc$pruned_matrix
-
-plot_Lhat(Lhat.pc)
-```
 
 
 
