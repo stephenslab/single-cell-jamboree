@@ -172,58 +172,82 @@ celltype_palette <- c(
   "#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666"
 )
 
-lhat_ggplot <- function(Lhat.pc, idx, title, si = sample_info) {
+obj_logcosh <- function(L) colMeans(log(cosh(L)))
+
+lhat_ggplot <- function(Lhat.pc, idx, title, si = sample_info,
+                         obj_fn = obj_logcosh, max_panels = 25) {
   if (sum(idx) == 0) return(invisible(NULL))
   Lhat.prune <- Lhat.pc$pruned_matrix
   Lhat_sub   <- Lhat.prune[, idx, drop = FALSE]
-  obj_sub    <- colMeans(log(cosh(Lhat_sub)))
+  obj_sub    <- obj_fn(Lhat_sub)
   o2         <- order(obj_sub)
   cell_order <- order(si$celltype)
   n_cells    <- nrow(Lhat_sub)
   n_comp     <- sum(idx)
 
   comp_labels <- make.unique(paste0("n:", Lhat.pc$cluster_sizes[idx], " obj:", round(obj_sub, 3)))
+  ordered_labels <- comp_labels[o2]
   df <- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
     celltype  = rep(si$celltype[cell_order], n_comp),
     loading   = as.vector(Lhat_sub[cell_order, ]),
-    component = factor(rep(comp_labels, each = n_cells), levels = comp_labels[o2])
+    component = factor(rep(comp_labels, each = n_cells), levels = ordered_labels)
   )
-  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
-    geom_point(size = 0.5, alpha = 0.7) +
-    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
-    facet_wrap(~ component, ncol = 5, scales = "free_y") +
-    scale_color_manual(values = celltype_palette) +
-    labs(x = NULL, y = "Loading", color = "Cell type", title = title) +
-    theme_bw(base_size = 10) +
-    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
-          strip.background = element_rect(fill = "grey90", color = NA),
-          legend.position = "bottom") +
-    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+
+  pages   <- split(ordered_labels, ceiling(seq_along(ordered_labels) / max_panels))
+  n_pages <- length(pages)
+  make_one_plot <- function(pg_labels, pg_title) {
+    df_pg <- df[df$component %in% pg_labels, ]
+    df_pg$component <- factor(as.character(df_pg$component), levels = pg_labels)
+    ggplot(df_pg, aes(x = rank, y = loading, color = celltype)) +
+      geom_point(size = 0.5, alpha = 0.7) +
+      geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
+      facet_wrap(~ component, ncol = 5, scales = "free_y") +
+      scale_color_manual(values = celltype_palette) +
+      labs(x = NULL, y = "Loading", color = "Cell type", title = pg_title) +
+      theme_bw(base_size = 10) +
+      theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+            strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+            strip.background = element_rect(fill = "grey90", color = NA),
+            legend.position = "bottom") +
+      guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+  }
+  plots <- lapply(seq_along(pages), function(i) {
+    pg_title <- if (n_pages > 1) paste0(title, " (", i, "/", n_pages, ")") else title
+    make_one_plot(pages[[i]], pg_title)
+  })
+  for (p in plots) print(p)
+  invisible(plots)
 }
 
-plot_Lhat_maxima <- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
-  obj <- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj > obj_threshold, paste0("Maxima (obj > ", obj_threshold, ")"), si)
+plot_Lhat_maxima <- function(Lhat.pc, obj_threshold = 0.42, si = sample_info,
+                              obj_fn = obj_logcosh, max_panels = 25) {
+  obj <- obj_fn(Lhat.pc$pruned_matrix)
+  lhat_ggplot(Lhat.pc, obj > obj_threshold, paste0("Maxima (obj > ", obj_threshold, ")"), si, obj_fn, max_panels)
 }
 
-plot_Lhat_minima <- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
-  obj <- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj <= obj_threshold, paste0("Minima (obj <= ", obj_threshold, ")"), si)
+plot_Lhat_minima <- function(Lhat.pc, obj_threshold = 0.42, si = sample_info,
+                              obj_fn = obj_logcosh, max_panels = 25) {
+  obj <- obj_fn(Lhat.pc$pruned_matrix)
+  lhat_ggplot(Lhat.pc, obj <= obj_threshold, paste0("Minima (obj <= ", obj_threshold, ")"), si, obj_fn, max_panels)
 }
 
 # General version for unlabeled/unordered loading matrices
-plot_loadings_matrix <- function(Lhat, label_prefix = "ct:", si = sample_info) {
-  obj <- colMeans(log(cosh(Lhat)))
+plot_loadings_matrix <- function(Lhat, label_prefix = "ct:", si = sample_info,
+                                  obj_fn = obj_logcosh, max_panels = 25, labels = NULL) {
+  obj <- obj_fn(Lhat)
   cell_order <- order(si$celltype)
   n_cells <- nrow(Lhat)
   n_comp <- ncol(Lhat)
 
-  o    <- order(obj)
-  Lhat <- Lhat[, o, drop = FALSE]
-  obj  <- obj[o]
-  comp_labels <- make.unique(paste0(label_prefix, seq_len(n_comp), " obj:", round(obj, 3)))
+  if (is.null(labels)) {
+    o    <- order(obj)
+    Lhat <- Lhat[, o, drop = FALSE]
+    obj  <- obj[o]
+    comp_labels <- make.unique(paste0(label_prefix, seq_len(n_comp), " obj:", round(obj, 3)))
+  } else {
+    comp_labels <- make.unique(paste0(labels, " obj:", round(obj, 3)))
+  }
   df <- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
     celltype  = rep(si$celltype[cell_order], n_comp),
@@ -231,18 +255,28 @@ plot_loadings_matrix <- function(Lhat, label_prefix = "ct:", si = sample_info) {
     component = factor(rep(comp_labels, each = n_cells), levels = comp_labels)
   )
 
-  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
-    geom_point(size = 0.5, alpha = 0.7) +
-    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
-    facet_wrap(~ component, ncol = 5, scales = "free_y") +
-    scale_color_manual(values = celltype_palette) +
-    labs(x = NULL, y = "Loading", color = "Cell type") +
-    theme_bw(base_size = 10) +
-    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
-          strip.background = element_rect(fill = "grey90", color = NA),
-          legend.position = "bottom") +
-    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+  pages   <- split(comp_labels, ceiling(seq_along(comp_labels) / max_panels))
+  n_pages <- length(pages)
+  plots <- lapply(seq_along(pages), function(i) {
+    pg_labels <- pages[[i]]
+    df_pg <- df[df$component %in% pg_labels, ]
+    df_pg$component <- factor(as.character(df_pg$component), levels = pg_labels)
+    pg_title <- if (n_pages > 1) paste0(i, "/", n_pages) else NULL
+    ggplot(df_pg, aes(x = rank, y = loading, color = celltype)) +
+      geom_point(size = 0.5, alpha = 0.7) +
+      geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
+      facet_wrap(~ component, ncol = 5, scales = "free_y") +
+      scale_color_manual(values = celltype_palette) +
+      labs(x = NULL, y = "Loading", color = "Cell type", title = pg_title) +
+      theme_bw(base_size = 10) +
+      theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+            strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+            strip.background = element_rect(fill = "grey90", color = NA),
+            legend.position = "bottom") +
+      guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+  })
+  for (p in plots) print(p)
+  invisible(plots)
 }
 
 # Polar factor of W: the nearest orthonormal matrix (W^T W = I).
@@ -589,6 +623,376 @@ for (i in seq_len(n_iter))
 
 Lhat_r_lp <- t(U) %*% W_r_lp
 plot_loadings_matrix(Lhat_r_lp)
+```
+
+
+
+### Binary ICA
+
+Now I try the binary version of ICA (from stephens999/misc/fastica_asymmetric_04.Rmd).
+
+```{r}
+# Newton update (ica-hessian approximation).
+# U is (n.comp) x n (whitened data).
+# W is (n.comp) x n_starts (one weight vector per column).
+# P = t(U) %*% W is n x n_starts (source estimates).
+# When p = 0.5 and c = s2 this is identical to standard fastica_update.
+binary_newton_update <- function(U, W, p = 0.5, c = 2 / (1 + sqrt(5)), s2 = c) {
+  y1  <- sqrt((1 - p) / p)
+  y0  <- -sqrt(p / (1 - p))
+  ey0 <- c * y0
+  ey1 <- c * y1
+
+  P   <- t(U) %*% W                              # n x n_starts
+
+  lp0 <- log(1 - p) + (2*P*ey0 - ey0^2) / (2*s2)
+  lp1 <- log(p)     + (2*P*ey1 - ey1^2) / (2*s2)
+  m   <- pmax(lp0, lp1)
+  e0  <- exp(lp0 - m);  e1 <- exp(lp1 - m)
+  pi1 <- e1 / (e0 + e1)                          # n x n_starts
+
+  Mx  <- (1 - pi1) * ey0 + pi1 * ey1             # posterior mean
+  Mpx <- pi1 * (1 - pi1) * (ey1 - ey0)^2 / s2   # dM/dx
+
+  W <- U %*% Mx - sweep(W, 2, colSums(Mpx), "*")
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
+# Gradient update (no Hessian correction; equivalent to hessian = "none" in ebproj).
+binary_gradient_update <- function(U, W, p = 0.5, c = 2 / (1 + sqrt(5)), s2 = c) {
+  y1  <- sqrt((1 - p) / p)
+  y0  <- -sqrt(p / (1 - p))
+  ey0 <- c * y0
+  ey1 <- c * y1
+
+  P   <- t(U) %*% W                              # n x n_starts
+
+  lp0 <- log(1 - p) + (2*P*ey0 - ey0^2) / (2*s2)
+  lp1 <- log(p)     + (2*P*ey1 - ey1^2) / (2*s2)
+  m   <- pmax(lp0, lp1)
+  e0  <- exp(lp0 - m);  e1 <- exp(lp1 - m)
+  pi1 <- e1 / (e0 + e1)                          # n x n_starts
+
+  Mx  <- (1 - pi1) * ey0 + pi1 * ey1             # posterior mean
+
+  W <- U %*% Mx
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
+# Objective J(W) = sum_i log Z(x_i, g, s2), returned as a vector of length n_starts.
+# this is a rewrite of the original binary_objective to take the source (L) as its parameter,
+# rather than U,W. This is just to make it work with the other code I had in this file. Possibly
+# it would be better to code everything here to work with U,W instead of L?
+binary_objective_L <- function(L, p = 0.5, c = 2 / (1 + sqrt(5)), s2 = c) {
+  y1  <- sqrt((1 - p) / p)
+  y0  <- -sqrt(p / (1 - p))
+  ey0 <- c * y0
+  ey1 <- c * y1
+
+  P   <- L                            # n x n_starts
+
+  lp0 <- log(1 - p) + (2*P*ey0 - ey0^2) / (2*s2)
+  lp1 <- log(p)     + (2*P*ey1 - ey1^2) / (2*s2)
+  m   <- pmax(lp0, lp1)
+  colSums(log(exp(lp0 - m) + exp(lp1 - m)) + m)  # length n_starts
+}
+```
+
+
+First try running with $p=0.25$. It finds more different solutions, many of which combine interesting groups/cell types. A fundamental question I do not yet know the answer to is whether some of the maxima are still combining groups in a somewhat arbitrary way (like ICA). Note that I think all of these are maybe maxima (rather than minima) since I tried also running warm start from gradient steps and it produced similar results. Note also that I tried running without the intercept (replace U_aug with U) and the results were quite different, and maybe harder to parse - lots of combinations and fewer sparse groups.
+```{r}
+set.seed(1)
+n_iter = 50
+W <- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- binary_newton_update(U_aug, W, p=0.25)
+
+Lhat_bin    <- t(U_aug) %*% W
+Lhat_bin.pc <- prune_and_count_cluster(Lhat_bin)
+plot(binary_objective_L(Lhat_bin,p=0.25))
+plot_Lhat_maxima(Lhat_bin.pc, obj_threshold = -Inf, obj_fn = function(L) binary_objective_L(L, p = 0.25))
+```
+
+Now try running with $p=0.05$. 
+
+```{r}
+set.seed(1)
+n_iter = 50
+W <- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- binary_newton_update(U_aug, W, p=0.05)
+
+Lhat_bin005    <- t(U_aug) %*% W
+Lhat_bin005.pc <- prune_and_count_cluster(Lhat_bin005)
+plot(binary_objective_L(Lhat_bin005, p=0.05))
+plot_Lhat_maxima(Lhat_bin005.pc, obj_threshold = -Inf, obj_fn = function(L) binary_objective_L(L, p = 0.05))
+```
+
+
+### EBproj from binary ICA solutions
+
+Here I take the binary ICA solutions found with $p=0.25$ above and use them to initialise the EBproj method (from `misc/fastica_asymmetric_03.Rmd`). EBproj is a Newton-based method that optimises an empirical Bayes projection objective with a binary prior; unlike binary ICA it also estimates $\tau$ (a precision parameter) and the prior parameters.
+
+Each binary ICA loading $\hat{L}_j$ lives in the $n$-dimensional observation space. To recover an approximate weight vector in the $k$-dimensional whitened space I project: $\hat{w}_j = U \hat{L}_j$ where $U$ is the $k \times n$ whitened data matrix (no intercept row). That vector is passed to `ebproj_init` as the starting $w$; EBproj then refines it.
+
+```{r ebproj-functions}
+# Helper functions for the binary prior (from fastica_asymmetric_03.Rmd)
+log_Z_binary = function(x, y_0, y_1, p, sigma2) {
+  # Use -(x-y_j)^2/(2*sigma2) <= 0 to avoid overflow; add back x^2/(2*sigma2) at the end
+  lp0 = log(1 - p) - (x - y_0)^2 / (2*sigma2)
+  lp1 = log(p)     - (x - y_1)^2 / (2*sigma2)
+  m   = pmax(lp0, lp1)
+  log(exp(lp0 - m) + exp(lp1 - m)) + m + x^2 / (2*sigma2)
+}
+
+post_prob1 = function(x, y_0, y_1, p, sigma2) {
+  # x^2/(2*sigma2) cancels in the ratio so omit it
+  lp0 = log(1 - p) - (x - y_0)^2 / (2*sigma2)
+  lp1 = log(p)     - (x - y_1)^2 / (2*sigma2)
+  m   = pmax(lp0, lp1)
+  e0  = exp(lp0 - m);  e1 = exp(lp1 - m)
+  e1 / (e0 + e1)
+}
+
+post_mean_binary = function(x, y_0, y_1, p, sigma2) {
+  pi1 = post_prob1(x, y_0, y_1, p, sigma2)
+  (1 - pi1)*y_0 + pi1*y_1
+}
+
+post_mean_deriv_binary = function(x, y_0, y_1, p, sigma2) {
+  pi1 = post_prob1(x, y_0, y_1, p, sigma2)
+  pi1 * (1 - pi1) * (y_1 - y_0)^2 / sigma2
+}
+
+ebproj_init = function(U, b=0, c=1, tau=NULL, sigma2=NULL, w=NULL, d.init=NULL) {
+  n = nrow(U); k = ncol(U); nu = n - k - 2*b
+  if (!is.null(tau) && !is.null(sigma2)) stop("specify at most one of tau and sigma2")
+  if (is.null(tau) && is.null(sigma2)) tau = 1
+  if (is.null(sigma2)) sigma2 = n / (nu * tau)
+  if (is.null(tau))    tau    = n / (nu * sigma2)
+  if (is.null(d.init)) d.init = rep(n, k)
+  d = rep(n, k)
+  if (is.null(w)) w = sqrt(d.init) * rnorm(k)
+  w = w / sqrt(sum(d * w^2))
+  list(U=U, d=d, b=b, n=n, k=k, nu=nu, sigma2=sigma2, w=w, c=c,
+       y_0=-1, y_1=1, p=0.5, objective=NULL, tau=tau)
+}
+
+ebproj_calc_x = function(fit) as.vector(fit$U %*% (fit$d * fit$w))
+
+ebproj_objective = function(fit) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x   = ebproj_calc_x(fit)
+  J   = sum(log_Z_binary(x, ey0, ey1, fit$p, fit$sigma2))
+  (fit$nu/2) * (log(fit$tau) - fit$tau + 1) + J
+}
+
+ebproj_update_w = function(fit, hessian="ica", eps=1e-6) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x        = ebproj_calc_x(fit)
+  Mx       = post_mean_binary(x, ey0, ey1, fit$p, fit$sigma2)
+  Mpx      = post_mean_deriv_binary(x, ey0, ey1, fit$p, fit$sigma2)
+  w_target = as.vector(t(fit$U) %*% Mx)
+  S_diag   = as.vector((fit$U^2) %*% fit$d)
+  H_diag   = switch(hessian,
+    diag  = { c_j = as.vector(t(fit$U^2) %*% Mpx); c_j * fit$d },
+    trace = { c_t = sum(Mpx * S_diag) / sum(fit$d); c_t * fit$d },
+    iso   = { c_i = sum(Mpx * S_diag) / fit$k; rep(c_i, fit$k) },
+    ica   = { c_c = sum(Mpx); rep(c_c, fit$k) },
+    none  = rep(0, fit$k),
+    stop("hessian must be 'diag', 'trace', 'iso', 'ica', or 'none'")
+  )
+  lambda  = max(sum(fit$d * fit$w * w_target), max(H_diag) + eps)
+  w_new   = (w_target - H_diag * fit$w) / (lambda - H_diag)
+  scale   = sqrt(sum(fit$d * w_new^2))
+  if (scale < 1e-10) w_new = w_target   # fall back to gradient step if Newton collapses
+  fit$w   = w_new / sqrt(sum(fit$d * w_new^2))
+  fit
+}
+
+ebproj_update_g = function(fit) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x   = ebproj_calc_x(fit)
+  pi1 = post_prob1(x, ey0, ey1, fit$p, fit$sigma2)
+  pi0 = 1 - pi1
+  fit$p  = mean(pi1)
+  s0 = sum(pi0); s1 = sum(pi1)
+  y0_new = if (s0 > 1e-10) sum(pi0 * x) / s0 else fit$c * fit$y_0
+  y1_new = if (s1 > 1e-10) sum(pi1 * x) / s1 else fit$c * fit$y_1
+  var_g   = (1 - fit$p) * y0_new^2 + fit$p * y1_new^2 -
+            ((1 - fit$p) * y0_new + fit$p * y1_new)^2
+  if (var_g < 1e-10) return(fit)   # degenerate posterior; keep current g
+  fit$c   = sqrt(var_g)
+  fit$y_0 = y0_new / fit$c
+  fit$y_1 = y1_new / fit$c
+  fit
+}
+
+ebproj_update_g0 = function(fit) {
+  x = ebproj_calc_x(fit)
+  obj_p = function(logit_p) {
+    pp = 1 / (1 + exp(-logit_p))
+    y1 =  sqrt((1 - pp) / pp);  y0 = -sqrt(pp / (1 - pp))
+    sum(log_Z_binary(x, fit$c * y0, fit$c * y1, pp, fit$sigma2))
+  }
+  res     = optimize(obj_p, c(-5, 5), maximum=TRUE)
+  pp      = 1 / (1 + exp(-res$maximum))
+  fit$p   = pp
+  fit$y_1 =  sqrt((1 - pp) / pp)
+  fit$y_0 = -sqrt(pp / (1 - pp))
+  fit
+}
+
+ebproj_update_tau = function(fit) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x    = ebproj_calc_x(fit)
+  pi1  = post_prob1(x, ey0, ey1, fit$p, fit$sigma2)
+  vbar = post_mean_binary(x, ey0, ey1, fit$p, fit$sigma2)
+  Uv         = as.vector(t(fit$U) %*% vbar)
+  Uq         = sum((1 - pi1) * ey0^2 + pi1 * ey1^2)
+  rho        = sum(fit$d * Uv^2) / (fit$n * Uq)
+  rho        = min(rho, 1 - 1/fit$n)   # cap tau at n to avoid numerical blow-up
+  fit$tau    = 1 / (1 - rho)
+  fit$sigma2 = fit$n / (fit$nu * fit$tau)
+  fit
+}
+
+ebproj_fit = function(fit, hessian="ica", fix_w=FALSE, g_update="g",
+                      fix_tau=FALSE, max_iter=200, tol=1e-6, verbose=FALSE) {
+  fit$objective = ebproj_objective(fit)
+  for (iter in seq_len(max_iter)) {
+    if (!fix_tau) fit = ebproj_update_tau(fit)
+    fit = switch(g_update,
+      g    = ebproj_update_g(fit),
+      g0   = ebproj_update_g0(fit),
+      none = fit,
+      stop("g_update must be 'g', 'g0', or 'none'")
+    )
+    if (!fix_w) fit = ebproj_update_w(fit, hessian=hessian)
+    obj_new = ebproj_objective(fit)
+    if (verbose) cat(sprintf("iter %3d  obj=%.4f  tau=%.2f  p=%.3f  c=%.4f\n",
+                             iter, obj_new, fit$tau, fit$p, fit$c))
+    if (!is.null(fit$objective) && abs(obj_new - fit$objective) < tol) {
+      fit$objective = obj_new; break
+    }
+    fit$objective = obj_new
+  }
+  fit$iter = iter
+  if (iter == max_iter) warning("ebproj_fit reached max_iter")
+  fit
+}
+```
+
+Now run EBproj from each pruned binary ICA ($p=0.25$) solution. I use the two-stage update: first optimise the constrained shape parameter $p$ (with mean-0, unit-variance $g_0$) to find the right sparsity level, then switch to the unconstrained update to refine further.
+
+```{r ebproj-from-binary}
+U_eb <- Y.svd$u[, 1:n.comp]   # n x n.comp: orthonormal columns, as ebproj expects
+b_eb <- n.comp / 2
+
+n_pruned <- ncol(Lhat_bin.pc$pruned_matrix)
+fits_eb  <- vector("list", n_pruned)
+for (j in seq_len(n_pruned)) {
+  L_col  <- Lhat_bin.pc$pruned_matrix[, j]
+  w_init <- t(U_eb) %*% L_col   # n.comp x 1
+  fit    <- ebproj_init(U_eb, b=b_eb, w=w_init)
+  fit    <- suppressWarnings(ebproj_fit(fit, g_update="g0", max_iter=200))
+  fit    <- suppressWarnings(ebproj_fit(fit, g_update="g",  max_iter=200))
+  fits_eb[[j]] <- fit
+}
+
+Lhat_eb <- sapply(fits_eb, ebproj_calc_x)   # n x n_pruned
+obj_eb  <- sapply(fits_eb, `[[`, "objective")
+
+plot_loadings_matrix(Lhat_eb, label_prefix="eb:",
+                     obj_fn=function(L) obj_eb,
+                     si=sample_info)
+```
+
+
+
+
+
+
+### EBproj from binary ICA solutions (p=0.05)
+
+Same as above but initialised from the $p=0.05$ binary ICA solutions.
+
+```{r ebproj-from-binary005}
+n_pruned005 <- ncol(Lhat_bin005.pc$pruned_matrix)
+fits_eb005  <- vector("list", n_pruned005)
+for (j in seq_len(n_pruned005)) {
+  L_col  <- Lhat_bin005.pc$pruned_matrix[, j]
+  w_init <- t(U_eb) %*% L_col
+  fit    <- ebproj_init(U_eb, b=b_eb, w=w_init)
+  fit    <- suppressWarnings(ebproj_fit(fit, g_update="g0", max_iter=200))
+  fit    <- suppressWarnings(ebproj_fit(fit, g_update="g",  max_iter=200))
+  fits_eb005[[j]] <- fit
+}
+
+Lhat_eb005 <- sapply(fits_eb005, ebproj_calc_x)
+obj_eb005  <- sapply(fits_eb005, `[[`, "objective")
+
+plot_loadings_matrix(Lhat_eb005, label_prefix="eb005:",
+                     obj_fn=function(L) obj_eb005,
+                     si=sample_info)
+```
+
+
+### EBproj: 1000 random starts (goldenplus)
+
+Here I run EBproj 1000 times from random starting points using the "goldenplus" strategy: first fix $\tau$ and optimise the constrained prior shape ($g_0$ update), then relax to full updates. This is analogous to the strategy used in the simulation comparisons in `fastica_asymmetric_03.Rmd`.
+
+```{r ebproj-goldenplus}
+set.seed(1)
+c_golden  <- 2 / (1 + sqrt(5))
+n_starts_eb <- 1000
+fits_gp   <- vector("list", n_starts_eb)
+for (i in seq_len(n_starts_eb)) {
+  fit.init   <- ebproj_init(U_eb, b=b_eb, c=c_golden, sigma2=c_golden)
+  fit_golden <- suppressWarnings(ebproj_fit(fit.init, fix_tau=TRUE, g_update="g0", max_iter=200))
+  fits_gp[[i]] <- suppressWarnings(ebproj_fit(fit_golden, max_iter=200))
+}
+
+Lhat_gp <- sapply(fits_gp, ebproj_calc_x)
+obj_gp  <- sapply(fits_gp, `[[`, "objective")
+
+Lhat_gp.pc <- prune_and_count_cluster(Lhat_gp)
+lhat_ggplot(Lhat_gp.pc, idx=rep(TRUE, ncol(Lhat_gp.pc$pruned_matrix)),
+            title="EBproj goldenplus (multiple random starts)",
+            obj_fn=function(L) obj_gp[Lhat_gp.pc$kept_indices],
+            si=sample_info)
+```
+
+
+
+### EBproj initialized from cell type labels
+
+Here I initialize EBproj from binary (0/1) cell type indicator vectors, analogous to the "Initialize from known celltypes: binary" section above. For each cell type I project its indicator column into the whitened space to get a starting $w$, then run the two-stage EBproj fit.
+
+```{r ebproj-from-celltypes}
+X_bin_ct <- model.matrix(~ sample_info$celltype - 1)   # n x n_celltypes
+X_bin_ct <- X_bin_ct[, colSums(X_bin_ct) > 0, drop=FALSE]   # drop empty levels
+
+n_ct     <- ncol(X_bin_ct)
+fits_ct  <- vector("list", n_ct)
+for (j in seq_len(n_ct)) {
+  w_init     <- t(U_eb) %*% X_bin_ct[, j]
+  fit.init   <- ebproj_init(U_eb, b=b_eb, c=c_golden, sigma2=c_golden, w=w_init)
+  fit_golden <- suppressWarnings(ebproj_fit(fit.init, fix_tau=TRUE, g_update="g0", max_iter=200))
+  fits_ct[[j]] <- suppressWarnings(ebproj_fit(fit_golden, max_iter=200))
+}
+
+Lhat_ct_eb <- sapply(fits_ct, ebproj_calc_x)
+obj_ct_eb  <- sapply(fits_ct, `[[`, "objective")
+
+colnames(Lhat_ct_eb) <- colnames(X_bin_ct)
+ct_labels <- gsub("sample_info\\$celltype", "", colnames(X_bin_ct))
+plot_loadings_matrix(Lhat_ct_eb,
+                     obj_fn=function(L) obj_ct_eb,
+                     labels=ct_labels,
+                     si=sample_info)
 ```
 
 
