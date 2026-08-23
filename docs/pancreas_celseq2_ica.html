@@ -302,7 +302,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-08-21
+<strong>Last updated:</strong> 2026-08-23
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -434,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1a948b136c65fd3fd26229473fa1a9e304aa0ba1targetblank1a948b1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4096a60367e4fc5ecd083254a098e1e513f7ecaetargetblank4096a60a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1a948b136c65fd3fd26229473fa1a9e304aa0ba1" target="_blank">1a948b1</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4096a60367e4fc5ecd083254a098e1e513f7ecae" target="_blank">4096a60</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree1a948b136c65fd3fd26229473fa1a9e304aa0ba1targetblank1a948b1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4096a60367e4fc5ecd083254a098e1e513f7ecaetargetblank4096a60a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -452,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/1a948b136c65fd3fd26229473fa1a9e304aa0ba1" target="_blank">1a948b1</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4096a60367e4fc5ecd083254a098e1e513f7ecae" target="_blank">4096a60</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -473,7 +473,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/Rplot.pdf
-    Untracked:  analysis/figure/
     Untracked:  analysis/fit_pancreas_celseq2_gbcd.Rout
     Untracked:  analysis/fit_pancreas_celseq2_snmf_k100.R
     Untracked:  analysis/fit_pancreas_celseq2_snmf_k40.R
@@ -529,6 +528,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4096a60367e4fc5ecd083254a098e1e513f7ecae/analysis/pancreas_celseq2_ica.Rmd" target="_blank">4096a60</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-23
+</td>
+<td>
+workflowr::wflow_publish("pancreas_celseq2_ica.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/pancreas_celseq2_ica.html" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -814,58 +847,82 @@ celltype_palette &lt;- c(
   &quot;#E7298A&quot;, &quot;#66A61E&quot;, &quot;#E6AB02&quot;, &quot;#A6761D&quot;, &quot;#666666&quot;
 )
 
-lhat_ggplot &lt;- function(Lhat.pc, idx, title, si = sample_info) {
+obj_logcosh &lt;- function(L) colMeans(log(cosh(L)))
+
+lhat_ggplot &lt;- function(Lhat.pc, idx, title, si = sample_info,
+                         obj_fn = obj_logcosh, max_panels = 25) {
   if (sum(idx) == 0) return(invisible(NULL))
   Lhat.prune &lt;- Lhat.pc$pruned_matrix
   Lhat_sub   &lt;- Lhat.prune[, idx, drop = FALSE]
-  obj_sub    &lt;- colMeans(log(cosh(Lhat_sub)))
+  obj_sub    &lt;- obj_fn(Lhat_sub)
   o2         &lt;- order(obj_sub)
   cell_order &lt;- order(si$celltype)
   n_cells    &lt;- nrow(Lhat_sub)
   n_comp     &lt;- sum(idx)
 
   comp_labels &lt;- make.unique(paste0(&quot;n:&quot;, Lhat.pc$cluster_sizes[idx], &quot; obj:&quot;, round(obj_sub, 3)))
+  ordered_labels &lt;- comp_labels[o2]
   df &lt;- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
     celltype  = rep(si$celltype[cell_order], n_comp),
     loading   = as.vector(Lhat_sub[cell_order, ]),
-    component = factor(rep(comp_labels, each = n_cells), levels = comp_labels[o2])
+    component = factor(rep(comp_labels, each = n_cells), levels = ordered_labels)
   )
-  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
-    geom_point(size = 0.5, alpha = 0.7) +
-    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.3) +
-    facet_wrap(~ component, ncol = 5, scales = &quot;free_y&quot;) +
-    scale_color_manual(values = celltype_palette) +
-    labs(x = NULL, y = &quot;Loading&quot;, color = &quot;Cell type&quot;, title = title) +
-    theme_bw(base_size = 10) +
-    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
-          strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
-          legend.position = &quot;bottom&quot;) +
-    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+
+  pages   &lt;- split(ordered_labels, ceiling(seq_along(ordered_labels) / max_panels))
+  n_pages &lt;- length(pages)
+  make_one_plot &lt;- function(pg_labels, pg_title) {
+    df_pg &lt;- df[df$component %in% pg_labels, ]
+    df_pg$component &lt;- factor(as.character(df_pg$component), levels = pg_labels)
+    ggplot(df_pg, aes(x = rank, y = loading, color = celltype)) +
+      geom_point(size = 0.5, alpha = 0.7) +
+      geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.3) +
+      facet_wrap(~ component, ncol = 5, scales = &quot;free_y&quot;) +
+      scale_color_manual(values = celltype_palette) +
+      labs(x = NULL, y = &quot;Loading&quot;, color = &quot;Cell type&quot;, title = pg_title) +
+      theme_bw(base_size = 10) +
+      theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+            strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+            strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
+            legend.position = &quot;bottom&quot;) +
+      guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+  }
+  plots &lt;- lapply(seq_along(pages), function(i) {
+    pg_title &lt;- if (n_pages &gt; 1) paste0(title, &quot; (&quot;, i, &quot;/&quot;, n_pages, &quot;)&quot;) else title
+    make_one_plot(pages[[i]], pg_title)
+  })
+  for (p in plots) print(p)
+  invisible(plots)
 }
 
-plot_Lhat_maxima &lt;- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
-  obj &lt;- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj &gt; obj_threshold, paste0(&quot;Maxima (obj &gt; &quot;, obj_threshold, &quot;)&quot;), si)
+plot_Lhat_maxima &lt;- function(Lhat.pc, obj_threshold = 0.42, si = sample_info,
+                              obj_fn = obj_logcosh, max_panels = 25) {
+  obj &lt;- obj_fn(Lhat.pc$pruned_matrix)
+  lhat_ggplot(Lhat.pc, obj &gt; obj_threshold, paste0(&quot;Maxima (obj &gt; &quot;, obj_threshold, &quot;)&quot;), si, obj_fn, max_panels)
 }
 
-plot_Lhat_minima &lt;- function(Lhat.pc, obj_threshold = 0.42, si = sample_info) {
-  obj &lt;- colMeans(log(cosh(Lhat.pc$pruned_matrix)))
-  lhat_ggplot(Lhat.pc, obj &lt;= obj_threshold, paste0(&quot;Minima (obj &lt;= &quot;, obj_threshold, &quot;)&quot;), si)
+plot_Lhat_minima &lt;- function(Lhat.pc, obj_threshold = 0.42, si = sample_info,
+                              obj_fn = obj_logcosh, max_panels = 25) {
+  obj &lt;- obj_fn(Lhat.pc$pruned_matrix)
+  lhat_ggplot(Lhat.pc, obj &lt;= obj_threshold, paste0(&quot;Minima (obj &lt;= &quot;, obj_threshold, &quot;)&quot;), si, obj_fn, max_panels)
 }
 
 # General version for unlabeled/unordered loading matrices
-plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;ct:&quot;, si = sample_info) {
-  obj &lt;- colMeans(log(cosh(Lhat)))
+plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;ct:&quot;, si = sample_info,
+                                  obj_fn = obj_logcosh, max_panels = 25, labels = NULL) {
+  obj &lt;- obj_fn(Lhat)
   cell_order &lt;- order(si$celltype)
   n_cells &lt;- nrow(Lhat)
   n_comp &lt;- ncol(Lhat)
 
-  o    &lt;- order(obj)
-  Lhat &lt;- Lhat[, o, drop = FALSE]
-  obj  &lt;- obj[o]
-  comp_labels &lt;- make.unique(paste0(label_prefix, seq_len(n_comp), &quot; obj:&quot;, round(obj, 3)))
+  if (is.null(labels)) {
+    o    &lt;- order(obj)
+    Lhat &lt;- Lhat[, o, drop = FALSE]
+    obj  &lt;- obj[o]
+    comp_labels &lt;- make.unique(paste0(label_prefix, seq_len(n_comp), &quot; obj:&quot;, round(obj, 3)))
+  } else {
+    comp_labels &lt;- make.unique(paste0(labels, &quot; obj:&quot;, round(obj, 3)))
+  }
   df &lt;- data.frame(
     rank      = rep(seq_len(n_cells), n_comp),
     celltype  = rep(si$celltype[cell_order], n_comp),
@@ -873,18 +930,28 @@ plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;ct:&quot;, si = s
     component = factor(rep(comp_labels, each = n_cells), levels = comp_labels)
   )
 
-  ggplot(df, aes(x = rank, y = loading, color = celltype)) +
-    geom_point(size = 0.5, alpha = 0.7) +
-    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.3) +
-    facet_wrap(~ component, ncol = 5, scales = &quot;free_y&quot;) +
-    scale_color_manual(values = celltype_palette) +
-    labs(x = NULL, y = &quot;Loading&quot;, color = &quot;Cell type&quot;) +
-    theme_bw(base_size = 10) +
-    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-          strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
-          strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
-          legend.position = &quot;bottom&quot;) +
-    guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+  pages   &lt;- split(comp_labels, ceiling(seq_along(comp_labels) / max_panels))
+  n_pages &lt;- length(pages)
+  plots &lt;- lapply(seq_along(pages), function(i) {
+    pg_labels &lt;- pages[[i]]
+    df_pg &lt;- df[df$component %in% pg_labels, ]
+    df_pg$component &lt;- factor(as.character(df_pg$component), levels = pg_labels)
+    pg_title &lt;- if (n_pages &gt; 1) paste0(i, &quot;/&quot;, n_pages) else NULL
+    ggplot(df_pg, aes(x = rank, y = loading, color = celltype)) +
+      geom_point(size = 0.5, alpha = 0.7) +
+      geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.3) +
+      facet_wrap(~ component, ncol = 5, scales = &quot;free_y&quot;) +
+      scale_color_manual(values = celltype_palette) +
+      labs(x = NULL, y = &quot;Loading&quot;, color = &quot;Cell type&quot;, title = pg_title) +
+      theme_bw(base_size = 10) +
+      theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+            strip.text = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+            strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
+            legend.position = &quot;bottom&quot;) +
+      guides(color = guide_legend(override.aes = list(size = 3, alpha = 1)))
+  })
+  for (p in plots) print(p)
+  invisible(plots)
 }
 
 # Polar factor of W: the nearest orthonormal matrix (W^T W = I).
@@ -1339,6 +1406,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-8-1.png" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ab0bc383e264b27d5385657e5e6cabf5391f6d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-8-1.png" target="_blank">f6ab0bc</a>
 </td>
 <td>
@@ -1409,6 +1487,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-9-1.png" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ab0bc383e264b27d5385657e5e6cabf5391f6d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-9-1.png" target="_blank">f6ab0bc</a>
@@ -1631,6 +1720,43 @@ for (i in seq_len(n_iter))
 Lhat_r &lt;- t(U_aug) %*% W_r   # n x r
 plot_loadings_matrix(Lhat_r)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-12-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-12-1.png" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="tilted-log-cosh-1000-random-starts" class="section level2">
 <h2>Tilted log-cosh: 1000 random starts</h2>
@@ -1657,6 +1783,43 @@ Lhat_tlc.pc &lt;- prune_and_count_cluster(Lhat_tlc)
 
 plot_Lhat_maxima(Lhat_tlc.pc, obj_threshold = -Inf)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-13-1.png" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="tilted-log-cosh-rank-r-r-20" class="section level2">
 <h2>Tilted log-cosh: rank-r (r = 20)</h2>
@@ -1676,6 +1839,43 @@ for (i in seq_len(n_iter))
 Lhat_r_tlc &lt;- t(U_aug) %*% W_r_tlc
 plot_loadings_matrix(Lhat_r_tlc)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-14-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-14-1.png" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="log-phi-1000-random-starts" class="section level2">
 <h2>Log-Phi: 1000 random starts</h2>
@@ -1696,6 +1896,43 @@ Lhat_lp    &lt;- t(U) %*% W
 Lhat_lp.pc &lt;- prune_and_count_cluster(Lhat_lp)
 plot_Lhat_maxima(Lhat_lp.pc, obj_threshold = -Inf)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-15-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-15-1.png" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="log-phi-rank-r-r-20" class="section level2">
 <h2>Log-Phi: rank-r (r = 20)</h2>
@@ -1708,6 +1945,422 @@ for (i in seq_len(n_iter))
 Lhat_r_lp &lt;- t(U) %*% W_r_lp
 plot_loadings_matrix(Lhat_r_lp)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-16-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-16-1.png" target="_blank">aae6c65</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="binary-ica" class="section level3">
+<h3>Binary ICA</h3>
+<p>Now I try the binary version of ICA (from
+stephens999/misc/fastica_asymmetric_04.Rmd).</p>
+<pre class="r"><code># Newton update (ica-hessian approximation).
+# U is (n.comp) x n (whitened data).
+# W is (n.comp) x n_starts (one weight vector per column).
+# P = t(U) %*% W is n x n_starts (source estimates).
+# When p = 0.5 and c = s2 this is identical to standard fastica_update.
+binary_newton_update &lt;- function(U, W, p = 0.5, c = 2 / (1 + sqrt(5)), s2 = c) {
+  y1  &lt;- sqrt((1 - p) / p)
+  y0  &lt;- -sqrt(p / (1 - p))
+  ey0 &lt;- c * y0
+  ey1 &lt;- c * y1
+
+  P   &lt;- t(U) %*% W                              # n x n_starts
+
+  lp0 &lt;- log(1 - p) + (2*P*ey0 - ey0^2) / (2*s2)
+  lp1 &lt;- log(p)     + (2*P*ey1 - ey1^2) / (2*s2)
+  m   &lt;- pmax(lp0, lp1)
+  e0  &lt;- exp(lp0 - m);  e1 &lt;- exp(lp1 - m)
+  pi1 &lt;- e1 / (e0 + e1)                          # n x n_starts
+
+  Mx  &lt;- (1 - pi1) * ey0 + pi1 * ey1             # posterior mean
+  Mpx &lt;- pi1 * (1 - pi1) * (ey1 - ey0)^2 / s2   # dM/dx
+
+  W &lt;- U %*% Mx - sweep(W, 2, colSums(Mpx), &quot;*&quot;)
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, &quot;/&quot;)
+}
+
+# Gradient update (no Hessian correction; equivalent to hessian = &quot;none&quot; in ebproj).
+binary_gradient_update &lt;- function(U, W, p = 0.5, c = 2 / (1 + sqrt(5)), s2 = c) {
+  y1  &lt;- sqrt((1 - p) / p)
+  y0  &lt;- -sqrt(p / (1 - p))
+  ey0 &lt;- c * y0
+  ey1 &lt;- c * y1
+
+  P   &lt;- t(U) %*% W                              # n x n_starts
+
+  lp0 &lt;- log(1 - p) + (2*P*ey0 - ey0^2) / (2*s2)
+  lp1 &lt;- log(p)     + (2*P*ey1 - ey1^2) / (2*s2)
+  m   &lt;- pmax(lp0, lp1)
+  e0  &lt;- exp(lp0 - m);  e1 &lt;- exp(lp1 - m)
+  pi1 &lt;- e1 / (e0 + e1)                          # n x n_starts
+
+  Mx  &lt;- (1 - pi1) * ey0 + pi1 * ey1             # posterior mean
+
+  W &lt;- U %*% Mx
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, &quot;/&quot;)
+}
+
+# Objective J(W) = sum_i log Z(x_i, g, s2), returned as a vector of length n_starts.
+# this is a rewrite of the original binary_objective to take the source (L) as its parameter,
+# rather than U,W. This is just to make it work with the other code I had in this file. Possibly
+# it would be better to code everything here to work with U,W instead of L?
+binary_objective_L &lt;- function(L, p = 0.5, c = 2 / (1 + sqrt(5)), s2 = c) {
+  y1  &lt;- sqrt((1 - p) / p)
+  y0  &lt;- -sqrt(p / (1 - p))
+  ey0 &lt;- c * y0
+  ey1 &lt;- c * y1
+
+  P   &lt;- L                            # n x n_starts
+
+  lp0 &lt;- log(1 - p) + (2*P*ey0 - ey0^2) / (2*s2)
+  lp1 &lt;- log(p)     + (2*P*ey1 - ey1^2) / (2*s2)
+  m   &lt;- pmax(lp0, lp1)
+  colSums(log(exp(lp0 - m) + exp(lp1 - m)) + m)  # length n_starts
+}</code></pre>
+<p>First try running with <span class="math inline">\(p=0.25\)</span>.
+It finds more different solutions, many of which combine interesting
+groups/cell types. A fundamental question I do not yet know the answer
+to is whether some of the maxima are still combining groups in a
+somewhat arbitrary way (like ICA). Note that I think all of these are
+maybe maxima (rather than minima) since I tried also running warm start
+from gradient steps and it produced similar results. Note also that I
+tried running without the intercept (replace U_aug with U) and the
+results were quite different, and maybe harder to parse - lots of
+combinations and fewer sparse groups.</p>
+<pre class="r"><code>set.seed(1)
+n_iter = 50
+W &lt;- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W &lt;- sweep(W, 2, sqrt(colSums(W^2)), &quot;/&quot;)
+for (i in seq_len(n_iter))
+  W &lt;- binary_newton_update(U_aug, W, p=0.25)
+
+Lhat_bin    &lt;- t(U_aug) %*% W
+Lhat_bin.pc &lt;- prune_and_count_cluster(Lhat_bin)
+plot(binary_objective_L(Lhat_bin,p=0.25))</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-18-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_Lhat_maxima(Lhat_bin.pc, obj_threshold = -Inf, obj_fn = function(L) binary_objective_L(L, p = 0.25))</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-18-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-18-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Now try running with <span class="math inline">\(p=0.05\)</span>.</p>
+<pre class="r"><code>set.seed(1)
+n_iter = 50
+W &lt;- matrix(rnorm(nrow(U_aug) * n_starts), nrow(U_aug), n_starts)
+W &lt;- sweep(W, 2, sqrt(colSums(W^2)), &quot;/&quot;)
+for (i in seq_len(n_iter))
+  W &lt;- binary_newton_update(U_aug, W, p=0.05)
+
+Lhat_bin005    &lt;- t(U_aug) %*% W
+Lhat_bin005.pc &lt;- prune_and_count_cluster(Lhat_bin005)
+plot(binary_objective_L(Lhat_bin005, p=0.05))</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-19-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_Lhat_maxima(Lhat_bin005.pc, obj_threshold = -Inf, obj_fn = function(L) binary_objective_L(L, p = 0.05))</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-19-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-19-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebproj-from-binary-ica-solutions" class="section level3">
+<h3>EBproj from binary ICA solutions</h3>
+<p>Here I take the binary ICA solutions found with <span
+class="math inline">\(p=0.25\)</span> above and use them to initialise
+the EBproj method (from <code>misc/fastica_asymmetric_03.Rmd</code>).
+EBproj is a Newton-based method that optimises an empirical Bayes
+projection objective with a binary prior; unlike binary ICA it also
+estimates <span class="math inline">\(\tau\)</span> (a precision
+parameter) and the prior parameters.</p>
+<p>Each binary ICA loading <span
+class="math inline">\(\hat{L}_j\)</span> lives in the <span
+class="math inline">\(n\)</span>-dimensional observation space. To
+recover an approximate weight vector in the <span
+class="math inline">\(k\)</span>-dimensional whitened space I project:
+<span class="math inline">\(\hat{w}_j = U \hat{L}_j\)</span> where <span
+class="math inline">\(U\)</span> is the <span class="math inline">\(k
+\times n\)</span> whitened data matrix (no intercept row). That vector
+is passed to <code>ebproj_init</code> as the starting <span
+class="math inline">\(w\)</span>; EBproj then refines it.</p>
+<pre class="r"><code># Helper functions for the binary prior (from fastica_asymmetric_03.Rmd)
+log_Z_binary = function(x, y_0, y_1, p, sigma2) {
+  # Use -(x-y_j)^2/(2*sigma2) &lt;= 0 to avoid overflow; add back x^2/(2*sigma2) at the end
+  lp0 = log(1 - p) - (x - y_0)^2 / (2*sigma2)
+  lp1 = log(p)     - (x - y_1)^2 / (2*sigma2)
+  m   = pmax(lp0, lp1)
+  log(exp(lp0 - m) + exp(lp1 - m)) + m + x^2 / (2*sigma2)
+}
+
+post_prob1 = function(x, y_0, y_1, p, sigma2) {
+  # x^2/(2*sigma2) cancels in the ratio so omit it
+  lp0 = log(1 - p) - (x - y_0)^2 / (2*sigma2)
+  lp1 = log(p)     - (x - y_1)^2 / (2*sigma2)
+  m   = pmax(lp0, lp1)
+  e0  = exp(lp0 - m);  e1 = exp(lp1 - m)
+  e1 / (e0 + e1)
+}
+
+post_mean_binary = function(x, y_0, y_1, p, sigma2) {
+  pi1 = post_prob1(x, y_0, y_1, p, sigma2)
+  (1 - pi1)*y_0 + pi1*y_1
+}
+
+post_mean_deriv_binary = function(x, y_0, y_1, p, sigma2) {
+  pi1 = post_prob1(x, y_0, y_1, p, sigma2)
+  pi1 * (1 - pi1) * (y_1 - y_0)^2 / sigma2
+}
+
+ebproj_init = function(U, b=0, c=1, tau=NULL, sigma2=NULL, w=NULL, d.init=NULL) {
+  n = nrow(U); k = ncol(U); nu = n - k - 2*b
+  if (!is.null(tau) &amp;&amp; !is.null(sigma2)) stop(&quot;specify at most one of tau and sigma2&quot;)
+  if (is.null(tau) &amp;&amp; is.null(sigma2)) tau = 1
+  if (is.null(sigma2)) sigma2 = n / (nu * tau)
+  if (is.null(tau))    tau    = n / (nu * sigma2)
+  if (is.null(d.init)) d.init = rep(n, k)
+  d = rep(n, k)
+  if (is.null(w)) w = sqrt(d.init) * rnorm(k)
+  w = w / sqrt(sum(d * w^2))
+  list(U=U, d=d, b=b, n=n, k=k, nu=nu, sigma2=sigma2, w=w, c=c,
+       y_0=-1, y_1=1, p=0.5, objective=NULL, tau=tau)
+}
+
+ebproj_calc_x = function(fit) as.vector(fit$U %*% (fit$d * fit$w))
+
+ebproj_objective = function(fit) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x   = ebproj_calc_x(fit)
+  J   = sum(log_Z_binary(x, ey0, ey1, fit$p, fit$sigma2))
+  (fit$nu/2) * (log(fit$tau) - fit$tau + 1) + J
+}
+
+ebproj_update_w = function(fit, hessian=&quot;ica&quot;, eps=1e-6) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x        = ebproj_calc_x(fit)
+  Mx       = post_mean_binary(x, ey0, ey1, fit$p, fit$sigma2)
+  Mpx      = post_mean_deriv_binary(x, ey0, ey1, fit$p, fit$sigma2)
+  w_target = as.vector(t(fit$U) %*% Mx)
+  S_diag   = as.vector((fit$U^2) %*% fit$d)
+  H_diag   = switch(hessian,
+    diag  = { c_j = as.vector(t(fit$U^2) %*% Mpx); c_j * fit$d },
+    trace = { c_t = sum(Mpx * S_diag) / sum(fit$d); c_t * fit$d },
+    iso   = { c_i = sum(Mpx * S_diag) / fit$k; rep(c_i, fit$k) },
+    ica   = { c_c = sum(Mpx); rep(c_c, fit$k) },
+    none  = rep(0, fit$k),
+    stop(&quot;hessian must be &#39;diag&#39;, &#39;trace&#39;, &#39;iso&#39;, &#39;ica&#39;, or &#39;none&#39;&quot;)
+  )
+  lambda  = max(sum(fit$d * fit$w * w_target), max(H_diag) + eps)
+  w_new   = (w_target - H_diag * fit$w) / (lambda - H_diag)
+  scale   = sqrt(sum(fit$d * w_new^2))
+  if (scale &lt; 1e-10) w_new = w_target   # fall back to gradient step if Newton collapses
+  fit$w   = w_new / sqrt(sum(fit$d * w_new^2))
+  fit
+}
+
+ebproj_update_g = function(fit) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x   = ebproj_calc_x(fit)
+  pi1 = post_prob1(x, ey0, ey1, fit$p, fit$sigma2)
+  pi0 = 1 - pi1
+  fit$p  = mean(pi1)
+  s0 = sum(pi0); s1 = sum(pi1)
+  y0_new = if (s0 &gt; 1e-10) sum(pi0 * x) / s0 else fit$c * fit$y_0
+  y1_new = if (s1 &gt; 1e-10) sum(pi1 * x) / s1 else fit$c * fit$y_1
+  var_g   = (1 - fit$p) * y0_new^2 + fit$p * y1_new^2 -
+            ((1 - fit$p) * y0_new + fit$p * y1_new)^2
+  if (var_g &lt; 1e-10) return(fit)   # degenerate posterior; keep current g
+  fit$c   = sqrt(var_g)
+  fit$y_0 = y0_new / fit$c
+  fit$y_1 = y1_new / fit$c
+  fit
+}
+
+ebproj_update_g0 = function(fit) {
+  x = ebproj_calc_x(fit)
+  obj_p = function(logit_p) {
+    pp = 1 / (1 + exp(-logit_p))
+    y1 =  sqrt((1 - pp) / pp);  y0 = -sqrt(pp / (1 - pp))
+    sum(log_Z_binary(x, fit$c * y0, fit$c * y1, pp, fit$sigma2))
+  }
+  res     = optimize(obj_p, c(-5, 5), maximum=TRUE)
+  pp      = 1 / (1 + exp(-res$maximum))
+  fit$p   = pp
+  fit$y_1 =  sqrt((1 - pp) / pp)
+  fit$y_0 = -sqrt(pp / (1 - pp))
+  fit
+}
+
+ebproj_update_tau = function(fit) {
+  ey0 = fit$c * fit$y_0;  ey1 = fit$c * fit$y_1
+  x    = ebproj_calc_x(fit)
+  pi1  = post_prob1(x, ey0, ey1, fit$p, fit$sigma2)
+  vbar = post_mean_binary(x, ey0, ey1, fit$p, fit$sigma2)
+  Uv         = as.vector(t(fit$U) %*% vbar)
+  Uq         = sum((1 - pi1) * ey0^2 + pi1 * ey1^2)
+  rho        = sum(fit$d * Uv^2) / (fit$n * Uq)
+  rho        = min(rho, 1 - 1/fit$n)   # cap tau at n to avoid numerical blow-up
+  fit$tau    = 1 / (1 - rho)
+  fit$sigma2 = fit$n / (fit$nu * fit$tau)
+  fit
+}
+
+ebproj_fit = function(fit, hessian=&quot;ica&quot;, fix_w=FALSE, g_update=&quot;g&quot;,
+                      fix_tau=FALSE, max_iter=200, tol=1e-6, verbose=FALSE) {
+  fit$objective = ebproj_objective(fit)
+  for (iter in seq_len(max_iter)) {
+    if (!fix_tau) fit = ebproj_update_tau(fit)
+    fit = switch(g_update,
+      g    = ebproj_update_g(fit),
+      g0   = ebproj_update_g0(fit),
+      none = fit,
+      stop(&quot;g_update must be &#39;g&#39;, &#39;g0&#39;, or &#39;none&#39;&quot;)
+    )
+    if (!fix_w) fit = ebproj_update_w(fit, hessian=hessian)
+    obj_new = ebproj_objective(fit)
+    if (verbose) cat(sprintf(&quot;iter %3d  obj=%.4f  tau=%.2f  p=%.3f  c=%.4f\n&quot;,
+                             iter, obj_new, fit$tau, fit$p, fit$c))
+    if (!is.null(fit$objective) &amp;&amp; abs(obj_new - fit$objective) &lt; tol) {
+      fit$objective = obj_new; break
+    }
+    fit$objective = obj_new
+  }
+  fit$iter = iter
+  if (iter == max_iter) warning(&quot;ebproj_fit reached max_iter&quot;)
+  fit
+}</code></pre>
+<p>Now run EBproj from each pruned binary ICA (<span
+class="math inline">\(p=0.25\)</span>) solution. I use the two-stage
+update: first optimise the constrained shape parameter <span
+class="math inline">\(p\)</span> (with mean-0, unit-variance <span
+class="math inline">\(g_0\)</span>) to find the right sparsity level,
+then switch to the unconstrained update to refine further.</p>
+<pre class="r"><code>U_eb &lt;- Y.svd$u[, 1:n.comp]   # n x n.comp: orthonormal columns, as ebproj expects
+b_eb &lt;- n.comp / 2
+
+n_pruned &lt;- ncol(Lhat_bin.pc$pruned_matrix)
+fits_eb  &lt;- vector(&quot;list&quot;, n_pruned)
+for (j in seq_len(n_pruned)) {
+  L_col  &lt;- Lhat_bin.pc$pruned_matrix[, j]
+  w_init &lt;- t(U_eb) %*% L_col   # n.comp x 1
+  fit    &lt;- ebproj_init(U_eb, b=b_eb, w=w_init)
+  fit    &lt;- suppressWarnings(ebproj_fit(fit, g_update=&quot;g0&quot;, max_iter=200))
+  fit    &lt;- suppressWarnings(ebproj_fit(fit, g_update=&quot;g&quot;,  max_iter=200))
+  fits_eb[[j]] &lt;- fit
+}
+
+Lhat_eb &lt;- sapply(fits_eb, ebproj_calc_x)   # n x n_pruned
+obj_eb  &lt;- sapply(fits_eb, `[[`, &quot;objective&quot;)
+
+plot_loadings_matrix(Lhat_eb, label_prefix=&quot;eb:&quot;,
+                     obj_fn=function(L) obj_eb,
+                     si=sample_info)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/ebproj-from-binary-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/ebproj-from-binary-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebproj-from-binary-ica-solutions-p0.05" class="section level3">
+<h3>EBproj from binary ICA solutions (p=0.05)</h3>
+<p>Same as above but initialised from the <span
+class="math inline">\(p=0.05\)</span> binary ICA solutions.</p>
+<pre class="r"><code>n_pruned005 &lt;- ncol(Lhat_bin005.pc$pruned_matrix)
+fits_eb005  &lt;- vector(&quot;list&quot;, n_pruned005)
+for (j in seq_len(n_pruned005)) {
+  L_col  &lt;- Lhat_bin005.pc$pruned_matrix[, j]
+  w_init &lt;- t(U_eb) %*% L_col
+  fit    &lt;- ebproj_init(U_eb, b=b_eb, w=w_init)
+  fit    &lt;- suppressWarnings(ebproj_fit(fit, g_update=&quot;g0&quot;, max_iter=200))
+  fit    &lt;- suppressWarnings(ebproj_fit(fit, g_update=&quot;g&quot;,  max_iter=200))
+  fits_eb005[[j]] &lt;- fit
+}
+
+Lhat_eb005 &lt;- sapply(fits_eb005, ebproj_calc_x)
+obj_eb005  &lt;- sapply(fits_eb005, `[[`, &quot;objective&quot;)
+
+plot_loadings_matrix(Lhat_eb005, label_prefix=&quot;eb005:&quot;,
+                     obj_fn=function(L) obj_eb005,
+                     si=sample_info)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/ebproj-from-binary005-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/ebproj-from-binary005-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebproj-1000-random-starts-goldenplus" class="section level3">
+<h3>EBproj: 1000 random starts (goldenplus)</h3>
+<p>Here I run EBproj 1000 times from random starting points using the
+“goldenplus” strategy: first fix <span
+class="math inline">\(\tau\)</span> and optimise the constrained prior
+shape (<span class="math inline">\(g_0\)</span> update), then relax to
+full updates. This is analogous to the strategy used in the simulation
+comparisons in <code>fastica_asymmetric_03.Rmd</code>.</p>
+<pre class="r"><code>set.seed(1)
+c_golden  &lt;- 2 / (1 + sqrt(5))
+n_starts_eb &lt;- 1000
+fits_gp   &lt;- vector(&quot;list&quot;, n_starts_eb)
+for (i in seq_len(n_starts_eb)) {
+  fit.init   &lt;- ebproj_init(U_eb, b=b_eb, c=c_golden, sigma2=c_golden)
+  fit_golden &lt;- suppressWarnings(ebproj_fit(fit.init, fix_tau=TRUE, g_update=&quot;g0&quot;, max_iter=200))
+  fits_gp[[i]] &lt;- suppressWarnings(ebproj_fit(fit_golden, max_iter=200))
+}
+
+Lhat_gp &lt;- sapply(fits_gp, ebproj_calc_x)
+obj_gp  &lt;- sapply(fits_gp, `[[`, &quot;objective&quot;)
+
+Lhat_gp.pc &lt;- prune_and_count_cluster(Lhat_gp)
+lhat_ggplot(Lhat_gp.pc, idx=rep(TRUE, ncol(Lhat_gp.pc$pruned_matrix)),
+            title=&quot;EBproj goldenplus (multiple random starts)&quot;,
+            obj_fn=function(L) obj_gp[Lhat_gp.pc$kept_indices],
+            si=sample_info)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/ebproj-goldenplus-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebproj-initialized-from-cell-type-labels"
+class="section level3">
+<h3>EBproj initialized from cell type labels</h3>
+<p>Here I initialize EBproj from binary (0/1) cell type indicator
+vectors, analogous to the “Initialize from known celltypes: binary”
+section above. For each cell type I project its indicator column into
+the whitened space to get a starting <span
+class="math inline">\(w\)</span>, then run the two-stage EBproj fit.</p>
+<pre class="r"><code>X_bin_ct &lt;- model.matrix(~ sample_info$celltype - 1)   # n x n_celltypes
+X_bin_ct &lt;- X_bin_ct[, colSums(X_bin_ct) &gt; 0, drop=FALSE]   # drop empty levels
+
+n_ct     &lt;- ncol(X_bin_ct)
+fits_ct  &lt;- vector(&quot;list&quot;, n_ct)
+for (j in seq_len(n_ct)) {
+  w_init     &lt;- t(U_eb) %*% X_bin_ct[, j]
+  fit.init   &lt;- ebproj_init(U_eb, b=b_eb, c=c_golden, sigma2=c_golden, w=w_init)
+  fit_golden &lt;- suppressWarnings(ebproj_fit(fit.init, fix_tau=TRUE, g_update=&quot;g0&quot;, max_iter=200))
+  fits_ct[[j]] &lt;- suppressWarnings(ebproj_fit(fit_golden, max_iter=200))
+}
+
+Lhat_ct_eb &lt;- sapply(fits_ct, ebproj_calc_x)
+obj_ct_eb  &lt;- sapply(fits_ct, `[[`, &quot;objective&quot;)
+
+colnames(Lhat_ct_eb) &lt;- colnames(X_bin_ct)
+ct_labels &lt;- gsub(&quot;sample_info\\$celltype&quot;, &quot;&quot;, colnames(X_bin_ct))
+plot_loadings_matrix(Lhat_ct_eb,
+                     obj_fn=function(L) obj_ct_eb,
+                     labels=ct_labels,
+                     si=sample_info)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/ebproj-from-celltypes-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>This was old code, running it to cluster genes and looking how
 consistent the programs are from the two runs. While there is some
 consistency, there do not seem to be as many consistent programs as with
@@ -1789,6 +2442,7 @@ loaded via a namespace (and not attached):
 [76] class_7.3-23         Rcpp_1.1.1           nlme_3.1-168        
 [79] prodlim_2026.03.11   whisker_0.4.1        xfun_0.56           
 [82] ModelMetrics_1.2.2.2 fs_1.6.6             pkgconfig_2.0.3     </code></pre>
+</div>
 </div>
 </div>
 </div>
