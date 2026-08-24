@@ -282,8 +282,9 @@ plot_loadings_matrix <- function(Lhat, label_prefix = "ct:", si = sample_info,
 # Polar factor of W: the nearest orthonormal matrix (W^T W = I).
 # Used after each rank-r update to keep columns orthonormal.
 polar <- function(W) {
-  s <- svd(W)
-  s$u %*% t(s$v)
+  eig <- eigen(t(W) %*% W, symmetric=TRUE)
+  Ainvhalf <- eig$vectors %*% diag(1/sqrt(pmax(eig$values, 1e-14))) %*% t(eig$vectors)
+  W %*% Ainvhalf
 }
 
 # Rank-r fastICA update (maximise log-cosh, symmetric deflation via polar decomp).
@@ -965,6 +966,299 @@ lhat_ggplot(Lhat_gp.pc, idx=rep(TRUE, ncol(Lhat_gp.pc$pruned_matrix)),
             si=sample_info)
 ```
 
+## Orthogonal EBproj approaches
+
+In this section I try multiple approaches that interleave EBproj updates with orthogonalization approaches (eg polar decomposition or Gram Schmidt). These are all very exploratory - I have not thought hard about the validity of these schemes, simply implementing them to see what happens.
+
+### EBproj rank-r orthogonalized goldenplus 
+
+Here I find $r=20$ components simultaneously by interleaving the per-component EBproj updates with a polar-decomposition orthogonalisation of the weight matrix $W = [w_1, \ldots, w_r]$ (analogous to `fastica_update_rankr`). The two-phase goldenplus strategy is preserved: first warm up with $\tau$ fixed and only the constrained $g_0$ update, then release to full updates.
+
+After each phase's iterations the polar step is `polar(W) / sqrt(n)`: `polar` returns orthonormal columns (Euclidean norm 1), dividing by $\sqrt{n}$ restores the ebproj constraint $w'Dw = 1$ (since $D = nI$).
+
+Note that because the objective functions are different for each factor, the symmetric orthogonalization is a bit weird, and maybe not a good idea(?) This motivates the following section where we use Gram-Schmidt instead, which is more of a "deflationary" approach and might be more appropriate here.
+
+```{r ebproj-rankr}
+set.seed(1)
+r_eb     <- 20
+n_warmup <- 50
+n_full   <- 100
+
+# Initialise r fits with c_golden and independent random w
+fits_rankr <- lapply(seq_len(r_eb), function(j)
+  ebproj_init(U_eb, b=b_eb, c=c_golden, sigma2=c_golden))
+
+polar_reorth <- function(fits) {
+  W <- sapply(fits, `[[`, "w")            # k x r
+  W <- polar(W) / sqrt(fits[[1]]$n)      # orthonormal cols, w'Dw = 1
+  for (j in seq_len(length(fits))) fits[[j]]$w <- W[, j]
+  fits
+}
+
+# Phase 0: gradient step (no Hessian), fix tau — steers toward maxima
+# g0 update comes AFTER polar so hyperparameters are always in sync with current w
+for (iter in seq_len(n_warmup)) {
+  for (j in seq_len(r_eb))
+    fits_rankr[[j]] <- ebproj_update_w(fits_rankr[[j]], hessian="none")
+  fits_rankr <- polar_reorth(fits_rankr)
+  for (j in seq_len(r_eb))
+    fits_rankr[[j]] <- ebproj_update_g0(fits_rankr[[j]])
+}
+
+# Phase 1: Newton (ICA Hessian), fix tau
+for (iter in seq_len(n_warmup)) {
+  for (j in seq_len(r_eb))
+    fits_rankr[[j]] <- ebproj_update_w(fits_rankr[[j]])
+  fits_rankr <- polar_reorth(fits_rankr)
+  for (j in seq_len(r_eb))
+    fits_rankr[[j]] <- ebproj_update_g0(fits_rankr[[j]])
+}
+
+# Phase 2: full updates — g and tau update AFTER polar to stay in sync
+for (iter in seq_len(n_full)) {
+  for (j in seq_len(r_eb))
+    fits_rankr[[j]] <- ebproj_update_w(fits_rankr[[j]])
+  fits_rankr <- polar_reorth(fits_rankr)
+  for (j in seq_len(r_eb)) {
+    fits_rankr[[j]] <- suppressWarnings(ebproj_update_tau(fits_rankr[[j]]))
+    fits_rankr[[j]] <- ebproj_update_g(fits_rankr[[j]])
+  }
+}
+
+Lhat_rankr <- sapply(fits_rankr, ebproj_calc_x)   # n x r
+obj_rankr  <- sapply(fits_rankr, ebproj_objective)
+
+plot_loadings_matrix(Lhat_rankr, label_prefix="er:",
+                     obj_fn=function(L) obj_rankr,
+                     si=sample_info)
+```
+
+Results look ok, but one of the objectives is very negative which seems odd. So I followed up the above with iterations that do not orthogonalize to see how results change. The results change a lot, but still look sensible (maybe more sensible?) But some results end up at the same solution
+(which may be saying something about whether the previous results really make sense). 
+```{r}
+# Phase 2: full updates — g and tau update AFTER polar to stay in sync
+for (iter in seq_len(n_full)) {
+  for (j in seq_len(r_eb))
+    fits_rankr[[j]] <- ebproj_update_w(fits_rankr[[j]])
+  #fits_rankr <- polar_reorth(fits_rankr)
+  for (j in seq_len(r_eb)) {
+    fits_rankr[[j]] <- suppressWarnings(ebproj_update_tau(fits_rankr[[j]]))
+    fits_rankr[[j]] <- ebproj_update_g(fits_rankr[[j]])
+  }
+}
+
+Lhat_rankr <- sapply(fits_rankr, ebproj_calc_x)   # n x r
+obj_rankr  <- sapply(fits_rankr, ebproj_objective)
+
+plot_loadings_matrix(Lhat_rankr, label_prefix="er:",
+                     obj_fn=function(L) obj_rankr,
+                     si=sample_info)
+```
+
+### EBproj rank-r orthogonalized goldenplus with Gram-Schmidt
+
+Same three-phase structure as the polar version, but each orthogonalisation step uses Gram-Schmidt rather than polar decomposition. The key difference: components are processed in order of *decreasing* objective value, so the highest-objective component is kept exactly, and each subsequent component has all preceding components projected out of it. This is a deflation-style procedure — the best-found direction is protected, and later components are forced to be orthogonal to it — whereas polar spreads the rotation evenly across all columns.
+
+```{r ebproj-rankr-gs}
+set.seed(1)
+r_gs     <- 20
+n_warmup_gs <- 50
+n_full_gs   <- 100
+
+fits_rankr_gs <- lapply(seq_len(r_gs), function(j)
+  ebproj_init(U_eb, b=b_eb, c=c_golden, sigma2=c_golden))
+
+gs_reorth <- function(fits) {
+  n    <- fits[[1]]$n
+  objs <- sapply(fits, ebproj_objective)
+  ord  <- order(objs, decreasing = TRUE)  # best first
+
+  # Work in unit-Euclidean-norm space: v = sqrt(n)*w  (w'Dw=1 => ||v||=1)
+  V <- sqrt(n) * sapply(fits, `[[`, "w")   # k x r
+  V <- V[, ord, drop = FALSE]              # sorted by decreasing objective
+
+  for (j in seq_len(ncol(V))) {
+    if (j > 1)
+      for (l in seq_len(j - 1))
+        V[, j] <- V[, j] - sum(V[, j] * V[, l]) * V[, l]
+    nrm <- sqrt(sum(V[, j]^2))
+    if (nrm > 1e-10) V[, j] <- V[, j] / nrm
+  }
+
+  # Assign back: fit with j-th highest obj gets the j-th GS column
+  for (j in seq_len(length(fits)))
+    fits[[ord[j]]]$w <- V[, j] / sqrt(n)
+  fits
+}
+
+# Phase 0: gradient (no Hessian), fix tau
+for (iter in seq_len(n_warmup_gs)) {
+  for (j in seq_len(r_gs))
+    fits_rankr_gs[[j]] <- ebproj_update_w(fits_rankr_gs[[j]], hessian="none")
+  fits_rankr_gs <- gs_reorth(fits_rankr_gs)
+  for (j in seq_len(r_gs))
+    fits_rankr_gs[[j]] <- ebproj_update_g0(fits_rankr_gs[[j]])
+}
+
+# Phase 1: Newton, fix tau
+for (iter in seq_len(n_warmup_gs)) {
+  for (j in seq_len(r_gs))
+    fits_rankr_gs[[j]] <- ebproj_update_w(fits_rankr_gs[[j]])
+  fits_rankr_gs <- gs_reorth(fits_rankr_gs)
+  for (j in seq_len(r_gs))
+    fits_rankr_gs[[j]] <- ebproj_update_g0(fits_rankr_gs[[j]])
+}
+
+# Phase 2: full updates — g and tau update AFTER GS to stay in sync
+for (iter in seq_len(n_full_gs)) {
+  for (j in seq_len(r_gs))
+    fits_rankr_gs[[j]] <- ebproj_update_w(fits_rankr_gs[[j]])
+  fits_rankr_gs <- gs_reorth(fits_rankr_gs)
+  for (j in seq_len(r_gs)) {
+    fits_rankr_gs[[j]] <- suppressWarnings(ebproj_update_tau(fits_rankr_gs[[j]]))
+    fits_rankr_gs[[j]] <- ebproj_update_g(fits_rankr_gs[[j]])
+  }
+}
+
+Lhat_rankr_gs <- sapply(fits_rankr_gs, ebproj_calc_x)
+obj_rankr_gs  <- sapply(fits_rankr_gs, ebproj_objective)
+
+plot_loadings_matrix(Lhat_rankr_gs, label_prefix="egs:",
+                     obj_fn=function(L) obj_rankr_gs,
+                     si=sample_info)
+```
+
+And follow up without orthogonalization. Noting here that these results look pretty interesting.
+In particular, there are several splits (eg 10, 4, 1) that seem to be associated with the *order* of the cells in the data file, which is almost certainly something real. Maybe it is a sample effect? I need to look at what determines the order of samples in the file.
+
+```{r}
+# Phase 2: full updates — g and tau update AFTER GS to stay in sync
+for (iter in seq_len(n_full_gs)) {
+  for (j in seq_len(r_gs))
+    fits_rankr_gs[[j]] <- ebproj_update_w(fits_rankr_gs[[j]])
+  #fits_rankr_gs <- gs_reorth(fits_rankr_gs)
+  for (j in seq_len(r_gs)) {
+    fits_rankr_gs[[j]] <- suppressWarnings(ebproj_update_tau(fits_rankr_gs[[j]]))
+    fits_rankr_gs[[j]] <- ebproj_update_g(fits_rankr_gs[[j]])
+  }
+}
+
+Lhat_rankr_gs <- sapply(fits_rankr_gs, ebproj_calc_x)
+obj_rankr_gs  <- sapply(fits_rankr_gs, ebproj_objective)
+
+plot_loadings_matrix(Lhat_rankr_gs, label_prefix="egs:",
+                     obj_fn=function(L) obj_rankr_gs,
+                     si=sample_info)
+```
+
+
+### EBproj rank-r leaky Gram-Schmidt (beta=0.5)
+
+Same three-phase structure as the GS version, but with a *leaky* projection:
+$$w_j \leftarrow w_j - \beta \sum_{i=1}^{j-1} (v_j^\top v_i)\, v_i, \qquad v = \sqrt{n}\,w$$
+With $\beta=1$ this is standard GS; with $\beta < 1$ components are only partially deflated against the already-processed ones, relaxing the strict orthogonality constraint and allowing components to share some direction when that is supported by the data.
+
+```{r ebproj-rankr-lgs}
+set.seed(1)
+beta_lgs    <- 0.5
+r_lgs       <- 20
+n_warmup_lgs <- 50
+n_full_lgs   <- 100
+
+fits_rankr_lgs <- lapply(seq_len(r_lgs), function(j)
+  ebproj_init(U_eb, b=b_eb, c=c_golden, sigma2=c_golden))
+
+lgs_reorth <- function(fits, beta = 0.5) {
+  n    <- fits[[1]]$n
+  objs <- sapply(fits, ebproj_objective)
+  ord  <- order(objs, decreasing = TRUE)
+
+  V <- sqrt(n) * sapply(fits, `[[`, "w")   # k x r, unit-norm cols
+  V <- V[, ord, drop = FALSE]
+
+  for (j in seq_len(ncol(V))) {
+    if (j > 1)
+      for (l in seq_len(j - 1))
+        V[, j] <- V[, j] - beta * sum(V[, j] * V[, l]) * V[, l]
+    nrm <- sqrt(sum(V[, j]^2))
+    if (nrm > 1e-10) V[, j] <- V[, j] / nrm
+  }
+
+  for (j in seq_len(length(fits)))
+    fits[[ord[j]]]$w <- V[, j] / sqrt(n)
+  fits
+}
+
+# Phase 0: gradient (no Hessian), fix tau
+for (iter in seq_len(n_warmup_lgs)) {
+  for (j in seq_len(r_lgs))
+    fits_rankr_lgs[[j]] <- ebproj_update_w(fits_rankr_lgs[[j]], hessian="none")
+  fits_rankr_lgs <- lgs_reorth(fits_rankr_lgs, beta=beta_lgs)
+  for (j in seq_len(r_lgs))
+    fits_rankr_lgs[[j]] <- ebproj_update_g0(fits_rankr_lgs[[j]])
+}
+
+# Phase 1: Newton, fix tau
+for (iter in seq_len(n_warmup_lgs)) {
+  for (j in seq_len(r_lgs))
+    fits_rankr_lgs[[j]] <- ebproj_update_w(fits_rankr_lgs[[j]])
+  fits_rankr_lgs <- lgs_reorth(fits_rankr_lgs, beta=beta_lgs)
+  for (j in seq_len(r_lgs))
+    fits_rankr_lgs[[j]] <- ebproj_update_g0(fits_rankr_lgs[[j]])
+}
+
+# Phase 2: full updates — g and tau update AFTER leaky GS to stay in sync
+for (iter in seq_len(n_full_lgs)) {
+  for (j in seq_len(r_lgs))
+    fits_rankr_lgs[[j]] <- ebproj_update_w(fits_rankr_lgs[[j]])
+  fits_rankr_lgs <- lgs_reorth(fits_rankr_lgs, beta=beta_lgs)
+  for (j in seq_len(r_lgs)) {
+    fits_rankr_lgs[[j]] <- suppressWarnings(ebproj_update_tau(fits_rankr_lgs[[j]]))
+    fits_rankr_lgs[[j]] <- ebproj_update_g(fits_rankr_lgs[[j]])
+  }
+}
+
+Lhat_rankr_lgs <- sapply(fits_rankr_lgs, ebproj_calc_x)
+obj_rankr_lgs  <- sapply(fits_rankr_lgs, ebproj_objective)
+
+plot_loadings_matrix(Lhat_rankr_lgs, label_prefix="elgs:",
+                     obj_fn=function(L) obj_rankr_lgs,
+                     si=sample_info)
+```
+
+
+### EBproj GS initialized from top-20 goldenplus solutions (1000 starts)
+
+Rather than random initializations, here I first run 1000 independent goldenplus fits, select the 20 with the highest objective values, and use those as the starting points for the leaky Gram-Schmidt orthogonalization. The idea is that the 20 best independent solutions likely cover a diverse and high-quality set of directions; the leaky GS then encourages them to spread out without forcing strict orthogonality. First impression is that these results don't look as good as interleaving the GS updates.
+
+```{r ebproj-rankr-lgs-gp}
+r_lgs_gp    <- 20
+beta_lgs_gp <- 0.5
+n_full_lgp  <- 100
+
+# Top-20 clustered goldenplus representatives by objective
+kept_objs  <- obj_gp[Lhat_gp.pc$kept_indices]
+top20_idx  <- Lhat_gp.pc$kept_indices[order(kept_objs, decreasing=TRUE)[seq_len(r_lgs_gp)]]
+fits_lgs_gp <- fits_gp[top20_idx]
+
+# Phase 2 only: full updates with leaky GS (good init means no warm-up needed)
+for (iter in seq_len(n_full_lgp)) {
+  for (j in seq_len(r_lgs_gp))
+    fits_lgs_gp[[j]] <- ebproj_update_w(fits_lgs_gp[[j]])
+  fits_lgs_gp <- lgs_reorth(fits_lgs_gp, beta=beta_lgs_gp)
+  for (j in seq_len(r_lgs_gp)) {
+    fits_lgs_gp[[j]] <- suppressWarnings(ebproj_update_tau(fits_lgs_gp[[j]]))
+    fits_lgs_gp[[j]] <- ebproj_update_g(fits_lgs_gp[[j]])
+  }
+}
+
+Lhat_lgs_gp <- sapply(fits_lgs_gp, ebproj_calc_x)
+obj_lgs_gp  <- sapply(fits_lgs_gp, ebproj_objective)
+
+plot_loadings_matrix(Lhat_lgs_gp, label_prefix="elgs_gp:",
+                     obj_fn=function(L) obj_lgs_gp,
+                     si=sample_info)
+```
 
 
 ### EBproj initialized from cell type labels
