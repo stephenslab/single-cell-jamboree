@@ -31,6 +31,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -231,6 +234,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -238,6 +304,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -389,16 +465,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree2cb14f110d455f6624cecc38157d626e3bcee1d9targetblank2cb14f1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephenslab/single-cell-jamboree/tree/2cb14f110d455f6624cecc38157d626e3bcee1d9" target="_blank">2cb14f1</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree25bc797ae07108456160ed9eeff3111ddae80001targetblank25bc797a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephenslab/single-cell-jamboree/tree/25bc797ae07108456160ed9eeff3111ddae80001" target="_blank">25bc797</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree2cb14f110d455f6624cecc38157d626e3bcee1d9targetblank2cb14f1a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree25bc797ae07108456160ed9eeff3111ddae80001targetblank25bc797a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephenslab/single-cell-jamboree/tree/2cb14f110d455f6624cecc38157d626e3bcee1d9" target="_blank">2cb14f1</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephenslab/single-cell-jamboree/tree/25bc797ae07108456160ed9eeff3111ddae80001" target="_blank">25bc797</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -460,6 +536,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/25bc797ae07108456160ed9eeff3111ddae80001/analysis/pancreas_celseq2_ica.Rmd" target="_blank">25bc797</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+<td>
+Add floating TOC for navigation
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/pancreas_celseq2_ica.html" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1763,6 +1873,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-13-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-13-1.png" target="_blank">aae6c65</a>
 </td>
 <td>
@@ -1816,6 +1937,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-14-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-14-1.png" target="_blank">aae6c65</a>
 </td>
 <td>
@@ -1830,6 +1962,43 @@ Matthew Stephens
 </div>
 </div>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-14-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-2">
+Past versions of unnamed-chunk-14-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-14-2.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="tilt-only-no-log-cosh" class="section level2">
 <h2>Tilt only (no log-cosh)</h2>
@@ -1868,6 +2037,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-15-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-15-1.png" target="_blank">aae6c65</a>
@@ -1920,6 +2100,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-16-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/aae6c65972e6e94ef24bd3936d8d8bb0414ea478/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-16-1.png" target="_blank">aae6c65</a>
 </td>
 <td>
@@ -1952,6 +2143,43 @@ Lhat_lp1.pc &lt;- prune_and_count_cluster(Lhat_lp1)
 plot_Lhat_maxima(Lhat_lp1.pc, obj_threshold = -Inf,
                  obj_fn = function(L) objective_logphi(L, alpha = 1))</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-17-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-17-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="alpha-2" class="section level3">
 <h3>alpha = 2</h3>
@@ -1988,6 +2216,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-18-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/eb26677fd307694bb7553f557dac7fb481cd3a05/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-18-1.png" target="_blank">eb26677</a>
@@ -2042,6 +2281,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-19-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/eb26677fd307694bb7553f557dac7fb481cd3a05/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-19-1.png" target="_blank">eb26677</a>
 </td>
 <td>
@@ -2089,6 +2339,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-20-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/943b6e330fd275a769250e169a5b32220ad6ce04/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-20-1.png" target="_blank">943b6e3</a>
@@ -2185,8 +2446,120 @@ Lhat_bin    &lt;- t(U_aug) %*% W
 Lhat_bin.pc &lt;- prune_and_count_cluster(Lhat_bin)
 plot(binary_objective_L(Lhat_bin,p=0.25))</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_Lhat_maxima(Lhat_bin.pc, obj_threshold = -Inf, obj_fn = function(L) binary_objective_L(L, p = 0.25))</code></pre>
-<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-2">
+Past versions of unnamed-chunk-22-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-2.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-3">
+Past versions of unnamed-chunk-22-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-22-3.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now try running with <span class="math inline">\(p=0.05\)</span>.</p>
 <pre class="r"><code>set.seed(1)
 n_iter = 50
@@ -2199,8 +2572,120 @@ Lhat_bin005    &lt;- t(U_aug) %*% W
 Lhat_bin005.pc &lt;- prune_and_count_cluster(Lhat_bin005)
 plot(binary_objective_L(Lhat_bin005, p=0.05))</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_Lhat_maxima(Lhat_bin005.pc, obj_threshold = -Inf, obj_fn = function(L) binary_objective_L(L, p = 0.05))</code></pre>
-<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-2">
+Past versions of unnamed-chunk-23-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-2.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-3">
+Past versions of unnamed-chunk-23-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-23-3.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="ebproj-from-binary-ica-solutions" class="section level3">
 <h3>EBproj from binary ICA solutions</h3>
 <p>Here I take the binary ICA solutions found with <span class="math inline">\(p=0.25\)</span> above and use them to initialise the EBproj method (from <code>misc/fastica_asymmetric_03.Rmd</code>). EBproj is a Newton-based method that optimises an empirical Bayes projection objective with a binary prior; unlike binary ICA it also estimates <span class="math inline">\(\tau\)</span> (a precision parameter) and the prior parameters.</p>
@@ -2645,6 +3130,43 @@ lhat_ggplot(Lhat_gp10_25.pc, idx=rep(TRUE, ncol(Lhat_gp10_25.pc$pruned_matrix)),
             obj_fn=function(L) obj_gp10_25[Lhat_gp10_25.pc$kept_indices],
             si=sample_info)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/ebproj-gp10-init25-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ebproj-gp10-init25-1">
+Past versions of ebproj-gp10-init25-1.png
+</button>
+</p>
+<div id="fig-ebproj-gp10-init25-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/ebproj-gp10-init25-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="orthogonal-ebproj-approaches" class="section level2">
@@ -2764,6 +3286,43 @@ plot_loadings_matrix(Lhat_rankr, label_prefix=&quot;er:&quot;,
                      obj_fn=function(L) obj_rankr,
                      si=sample_info)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-24-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
+Past versions of unnamed-chunk-24-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-24-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ebproj-rank-r-orthogonalized-goldenplus-with-gram-schmidt" class="section level3">
 <h3>EBproj rank-r orthogonalized goldenplus with Gram-Schmidt</h3>
@@ -2891,6 +3450,43 @@ plot_loadings_matrix(Lhat_rankr_gs, label_prefix=&quot;egs:&quot;,
                      obj_fn=function(L) obj_rankr_gs,
                      si=sample_info)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-25-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
+Past versions of unnamed-chunk-25-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/unnamed-chunk-25-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="closer-look-at-gs-loadings-1-4-10-colored-by-sample" class="section level3">
 <h3>Closer look at GS loadings 1, 4, 10 — colored by sample</h3>
@@ -2933,6 +3529,43 @@ p_batch &lt;- ggplot(df_gs, aes(x=rank, y=loading, color=donor_batch)) +
   guides(color=guide_legend(override.aes=list(size=3, alpha=1)))
 print(p_batch)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/gs-loadings-by-sample-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-gs-loadings-by-sample-1">
+Past versions of gs-loadings-by-sample-1.png
+</button>
+</p>
+<div id="fig-gs-loadings-by-sample-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/gs-loadings-by-sample-1.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>p_donor &lt;- ggplot(df_gs, aes(x=rank, y=loading, color=donor)) +
   geom_point(size=0.5, alpha=0.7) +
   geom_hline(yintercept=0, linetype=&quot;dashed&quot;, linewidth=0.3) +
@@ -2946,6 +3579,43 @@ print(p_batch)</code></pre>
   guides(color=guide_legend(override.aes=list(size=3, alpha=1)))
 print(p_donor)</code></pre>
 <p><img src="figure/pancreas_celseq2_ica.Rmd/gs-loadings-by-sample-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-gs-loadings-by-sample-2">
+Past versions of gs-loadings-by-sample-2.png
+</button>
+</p>
+<div id="fig-gs-loadings-by-sample-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f6ed69839d7a39814d9b11d60b29abcb9626b72d/docs/figure/pancreas_celseq2_ica.Rmd/gs-loadings-by-sample-2.png" target="_blank">f6ed698</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-08-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ebproj-rank-r-leaky-gram-schmidt-beta0.5" class="section level3">
 <h3>EBproj rank-r leaky Gram-Schmidt (beta=0.5)</h3>
@@ -3279,6 +3949,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -3311,6 +3983,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
