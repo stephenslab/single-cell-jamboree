@@ -57,6 +57,8 @@ via [this link][box].
 
 + [Topic modeling analysis of the GTEx v11 data set](gtex_topics.html)
 
++ [ICA and EBproj analysis of the pancreas CEL-seq2 data set.](pancreas_celseq2_ica.html)
+
 [hca]: https://data.humancellatlas.org
 [google-sheet-data-sets]: https://docs.google.com/spreadsheets/d/199GDholbNEgwo6IQ5sIODBGmSI2xZ0lFZCSTUm438hY/edit?usp=sharing
 [box]: https://uchicago.box.com/s/l0emrjcqpw5yat1zaygtr1v3akq7de1t
