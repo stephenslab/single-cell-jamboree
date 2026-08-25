@@ -2,7 +2,11 @@
 title: "pancreas_celseq2_ica"
 author: "Matthew Stephens"
 date: "2025-10-27"
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+    toc_depth: 3
 editor_options:
   chunk_output_type: console
 ---
