@@ -1,0 +1,227 @@
+---
+title: NMF analysis of the pancreas LSA data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the packages needed for this analysis:
+
+```{r load-pkgs, message=FALSE}
+library(Matrix)
+library(fastTopics)
+library(flashier)
+library(singlecelljamboreeR)
+library(ggplot2)
+library(cowplot)
+```
+
+Load the pancreas LSA data:
+
+```{r load-data}
+load("../data/pancreas_cytokine_lsa_v2.RData")
+barcodes$condition <-
+  factor(barcodes$condition,
+         c("Untreated","IL-1B","IFNg","IL-1B_IFNg"))
+```
+
+Remove genes that are expressed in fewer than 10 cells:
+
+```{r filter-genes}
+j      <- which(colSums(counts > 0) > 9)
+genes  <- genes[j,]
+counts <- counts[,j]
+```
+
+This is the dimension of the data set we are analyzing:
+
+```{r dim-counts}
+dim(counts)
+```
+
+Load the results of running fastTopics and flashier on these data:
+
+```{r load-results}
+load("../output/pancreas_lsa_factors_k=13.RData")
+```
+
+## EBNMF (flashier)
+
+Cluster the cells based on the EBNMF results:
+
+```{r clustering}
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:13)
+n <- nrow(L)
+clusters <- rep("beta",n)
+clusters[L[,"k3"]  > 0.25] <- "alpha"
+clusters[L[,"k13"] > 0.25] <- "delta+PP"
+clusters[L[,"k9"]  > 0.5]  <- "macrophages"
+clusters[L[,"k11"] > 0.3]  <- "endothelial"
+clusters[L[,"k2"] + L[,"k8"] > 0.2] <- "mesenchymal"
+clusters[L[,"k10"] > 0.3]  <- "ductal"
+clusters[L[,"k7"]  > 0.2]  <- "acinar"
+clusters <- factor(clusters,
+                   c("beta","alpha","delta+PP","acinar","ductal",
+				     "macrophages","endothelial","mesenchymal"))
+```
+
+TO DO (to continue improving the Structure plots):
+
++ Show the plots by cell type first.
+
++ Add titles to the plots.
+
+```{r structure-plots-flashier-by-treatment, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+set.seed(1)
+factor_colors <-
+  c("lightgray","limegreen","darkviolet","dodgerblue","darkorange","dimgray",
+    "gold","darkblue","forestgreen","tomato","orchid","red",
+    "olivedrab")
+cell_type_factors <- c(2:4,7:11,13)
+treatment_factors <- c(5,12)
+other_factors     <- c(1,6)
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:13)
+set.seed(1)
+rows <- c(sample(which(clusters == "beta"),600),
+          sample(which(clusters != "beta"),1000))
+rows <- sort(rows)
+p1 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = cell_type_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p2 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = treatment_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p3 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = other_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+Additional plots showing that factor 5 clearly captures responses to
+IL-1$\beta$, and factor 12 captures responses to IFN-$\gamma$:
+
+```{r treatment-factors-box-plots-flashier, fig.height=2.25, fig.width=4}
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:13)
+pdat <- cbind(barcodes,as.data.frame(L))
+p1 <- ggplot(pdat,aes(x = condition,y = k5)) +
+  geom_boxplot() +
+  labs(x = "") +
+  theme_cowplot(font_size = 10) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1))
+p2 <- ggplot(pdat,aes(x = condition,y = k12)) +
+  geom_boxplot() +
+  labs(x = "") +
+  theme_cowplot(font_size = 10) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1))
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+Structured plots in which the cells are grouped by cell type:
+
+```{r structure-plots-flashier-by-cell-type, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+set.seed(1)
+p1 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = cell_type_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p2 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = treatment_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p3 <- structure_plot(L[rows,],grouping = clusters[rows],gap = 10,
+                     topics = other_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+The 4 treatment factors $\alpha$ cells very clearly separate the
+$\alpha$ cells by the 4 treatments.
+
+```{r structure-plots-flashier-alpha, fig.height=1.5, fig.width=5, results="hide", message=FALSE}
+set.seed(1)
+factors <- c(1,6,5,12,13,4,3)
+rows <- which(clusters == "alpha")
+structure_plot(L[rows,],grouping = barcodes[rows,"condition"],
+               topics = factors,colors = factor_colors,gap = 10) +
+  labs(y = "membership",fill = "",title = "alpha cells") +
+  theme(plot.title = element_text(size = 10,face = "plain"),
+        axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
+
+NEXT: Add Structure plot(s) for beta cells, delta+PP cells, and then
+for the other cells.
+
+TO DO:
+
++ Re-run flashier with "cross-context" factors.
+  (What factors should I choose for this?).
+
++ See if this clustering also works for the topics.
+
++ Add back Structure plot for k=15 to show that adding more
+  factors identifies the individual conditions, but it
+  arguably less biologically interesting.
+
++ Add a UMAP plot and visualize the clusters and conditions
+  on this UMAP plot.
+
+Based on the estimated $\mathbf{F}$, we have the following potential
+interpretation of these topics (to be improved later):
+
+```{r, eval=FALSE}
+F <- fl_nmf_ldf$F
+colnames(F) <- paste0("k",1:13)
+j <- which(genes$symbol == "Ins1")
+round(sort(F[j,]),digits = 4)
+```
+
++ factors 2 + 8: mesenchymal cells (*Col1a1*)
++ factor 3: alpha cells (*Gcg*)
++ factor 4: beta cells (*Ins1*, *Ins2*)
++ factor 7: acinar cells (*Cpa1*, *Cpa2*, *Ctrb1*)
++ factor 9: macrophages (*Ccr5*)
++ factor 10: duct cells (*Krt17*, *Krt19*)
++ factor 11: endothelial cells (*Cd34*, *Pecam1*)
++ factor 13: $\delta$ (*Sst*) and PP cells (*Ppy*)
+
+Structure plot for k=15 result:
+
+```{r structure-plots-flashier-by-treatment-k-15, fig.height=4.5, fig.width=7.5, results="hide", message=FALSE}
+set.seed(1)
+load("../output/pancreas_lsa_factors_k=15.RData")
+factor_colors <-
+  c("#000000","#FFB300","#803E75","#FF6800","#A6BDD7","#C10020",
+    "#CEA262","#817066","#007D34","#F6768E","#00538A","#FF7A5C",
+    "#53377A","#FF8E00","#B32851")
+cell_type_factors <- c(2:4,7:11,13)
+treatment_factors <- c(5,6,12)
+other_factors     <- c(1,14,15)
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:15)
+rows <- c(sample(which(clusters == "beta"),600),
+          sample(which(clusters != "beta"),1000))
+rows <- sort(rows)
+p1 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = cell_type_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p2 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = treatment_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+p3 <- structure_plot(L[rows,],grouping = barcodes[rows,"condition"],gap = 10,
+                     topics = other_factors,colors = factor_colors) +
+  labs(y = "membership",fill = "")
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1)
+```
+
+TO DO: Fix the colors in these Structure plots to match the k=13
+Structure plots.
+
+## Topic model (fastTopics)
+
+TO DO.
+

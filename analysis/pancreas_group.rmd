@@ -244,8 +244,8 @@ colnames(L) <- paste0("k",1:k)
 Take a look at the elbow plot:
 
 ```{r, results="hide", message=FALSE, warning=FALSE, fig.height=8, fig.width=8}
-ordered_df_tech <- ANOVA_factors(W[cells,], sample_info$tech[cells], stats = "R2")
-ordered_df_celltype <- ANOVA_factors(W[cells,], sample_info$celltype[cells], stats = "R2")
+ordered_df_tech <- ANOVA_factors(L[cells,], sample_info$tech[cells], stats = "R2")
+ordered_df_celltype <- ANOVA_factors(L[cells,], sample_info$celltype[cells], stats = "R2")
 par(mfrow = c(2,1))
 plot(ordered_df_tech$rank, ordered_df_tech$stats, type = "o", xlab = "Rank", ylab = "R2", main = "batchtypes", ylim = c(0,1.1))
 text(ordered_df_tech$rank, ordered_df_tech$stats, labels = ordered_df_tech$factor, pos = 3, cex = 0.6)

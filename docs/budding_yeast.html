@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Peter Carbonetto" />
+
+
+<title>Initial exploration of the budding yeast data set</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">single-cell jamboree</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephenslab/single-cell-jamboree">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Initial exploration of the budding yeast
+data set</h1>
+<h4 class="author">Peter Carbonetto</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-08-13
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>single-cell-jamboree/analysis/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed1code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(1)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed1code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(1)</code> was run prior to running the
+code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb99041c6993af33d3118b383ec7e9f2f1dbe31dbtargetblankb99041ca">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b99041c6993af33d3118b383ec7e9f2f1dbe31db" target="_blank">b99041c</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb99041c6993af33d3118b383ec7e9f2f1dbe31dbtargetblankb99041ca"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b99041c6993af33d3118b383ec7e9f2f1dbe31db" target="_blank">b99041c</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Untracked files:
+    Untracked:  analysis/lps_cache/
+    Untracked:  analysis/lps_fl_nmf_k6.csv
+    Untracked:  analysis/lps_gsea_fl_nmf_k6.csv
+    Untracked:  analysis/mcf7_cache/
+    Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
+    Untracked:  analysis/pancreas_cytokine_lsa_clustering_cache/
+    Untracked:  analysis/yeast.RData
+    Untracked:  data/GSE125162_ALL-fastqTomat0-Counts.tsv.gz
+    Untracked:  data/GSE132188_adata.h5ad.h5
+    Untracked:  data/GSE156175_RAW/
+    Untracked:  data/GSE183010/
+    Untracked:  data/Immune_ALL_human.h5ad
+    Untracked:  data/pancreas_cytokine.RData
+    Untracked:  data/pancreas_cytokine_lsa.RData
+    Untracked:  data/pancreas_cytokine_lsa_v2.RData
+    Untracked:  data/pancreas_endocrine.RData
+    Untracked:  data/pancreas_endocrine_alldays.h5ad
+    Untracked:  output/panc_cyto_lsa_res/
+
+Unstaged changes:
+    Modified:   analysis/lps.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/budding_yeast.Rmd</code>) and
+HTML (<code>docs/budding_yeast.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/b99041c6993af33d3118b383ec7e9f2f1dbe31db/analysis/budding_yeast.Rmd" target="_blank">b99041c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+Added info about the yeast genes.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/f83850c640178fbc9883c168394b53ce80fc4644/analysis/budding_yeast.Rmd" target="_blank">f83850c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+Added some descriptions to the budding_yeast analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/7a67df44f3a14d9f851e24cbd07e6c58d4d4bdf9/analysis/budding_yeast.Rmd" target="_blank">7a67df4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+Added UMAP to budding_yeast analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/c36cb9407c502d25f55cffb1e62be1911fa07094/analysis/budding_yeast.Rmd" target="_blank">c36cb94</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+Added steps to budding_yeast analysis to filter out cells and genes.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/83ce75dc7140ad08cc61f091e6438cde9d3020ed/analysis/budding_yeast.Rmd" target="_blank">83ce75d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-08-12
+</td>
+<td>
+Started initial steps for processing of budding yeast data (GSE125162).
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>The paper is Jackson et al <em>eLife</em> 2020 (<a
+href="https://doi.org/10.7554/eLife.51254">doi:10.7554/eLife.51254</a>).
+First, I downloaded the file
+<code>GSE125162_ALL-fastqTomat0-Counts.tsv.gz</code> from GEO, accession
+GSE125162. (To read the data correctly using <code>read_tsv</code>, I
+first added “id” to the beginning of the header.)</p>
+<p>First, load the packages needed for this analysis:</p>
+<pre class="r"><code>library(Matrix)
+library(tools)
+library(readr)
+library(rsvd)
+library(uwot)
+library(ggplot2)
+library(cowplot)</code></pre>
+<p>Load the count data:</p>
+<pre class="r"><code>counts &lt;- read_tsv(&quot;../data/GSE125162_ALL-fastqTomat0-Counts.tsv.gz&quot;,
+                   col_names = TRUE)
+counts &lt;- as.data.frame(counts)
+ids    &lt;- counts$id
+counts &lt;- counts[-1]
+sample_info &lt;- cbind(data.frame(id = ids),counts[6830:6834])
+counts &lt;- counts[1:6829]
+counts &lt;- as.matrix(counts)
+counts &lt;- as(counts,&quot;CsparseMatrix&quot;)
+rownames(counts) &lt;- ids
+sample_info &lt;- transform(sample_info,
+                         Genotype       = factor(Genotype),
+                         Genotype_Group = factor(Genotype_Group),
+                         Replicate      = factor(Replicate),
+                         Condition      = factor(Condition))</code></pre>
+<p>Load the gene data:</p>
+<pre class="r"><code>genes &lt;- read_tsv(&quot;../data/Saccharomyces_cerevisiae.gene_info.gz&quot;,
+                  col_names = TRUE,comment = &quot;#&quot;)
+genes &lt;- as.data.frame(genes)
+genes &lt;- genes[c(&quot;tax_id&quot;,&quot;GeneID&quot;,&quot;Symbol&quot;,&quot;LocusTag&quot;,&quot;Synonyms&quot;,
+                 &quot;dbXrefs&quot;,&quot;chromosome&quot;,&quot;type_of_gene&quot;)]
+genes &lt;- transform(genes,
+                   chromosome   = factor(chromosome),
+                   type_of_gene = factor(type_of_gene))</code></pre>
+<p>This is the number of cells and genes before any filtering:</p>
+<pre class="r"><code>nrow(counts)
+ncol(counts)
+# [1] 38225
+# [1] 6829</code></pre>
+<p>Many cells have much smaller sequencing depth so, out of caution, I
+filter out the cells with the smaller sequencing depths:</p>
+<pre class="r"><code>par(mar = c(4,4,1,1))
+x &lt;- rowSums(counts)
+i &lt;- which(x &gt;= 1000)
+sample_info &lt;- sample_info[i,]
+counts &lt;- counts[i,]
+hist(log10(x),n = 64,xlab = &quot;&quot;,ylab = &quot;&quot;,main = &quot;&quot;)</code></pre>
+<p><img src="figure/budding_yeast.Rmd/filter-cells-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>Further, a handful of genes are expressed in only a very small number
+of cells. I filter out genes that are expressed in fewer than 10
+cells:</p>
+<pre class="r"><code>par(mar = c(4,4,1,1))
+x &lt;- colSums(counts &gt; 0)
+j &lt;- which(x &gt;= 10)
+counts &lt;- counts[,j]
+hist(log10(x),n = 64,xlab = &quot;&quot;,ylab = &quot;&quot;,main = &quot;&quot;)</code></pre>
+<p><img src="figure/budding_yeast.Rmd/filter-genes-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>This gives the number of cells, the number of genes, and the
+proportion of counts that are nonzero after these filtering steps:</p>
+<pre class="r"><code>nrow(counts)
+ncol(counts)
+mean(counts &gt; 0)
+# [1] 33834
+# [1] 6128
+# [1] 0.1394832</code></pre>
+<p>And here is the number of cells in each of the 11 growth
+conditions:</p>
+<pre class="r"><code>table(sample_info$Condition)
+# 
+# AmmoniumSulfate         CStarve       Glutamine     MinimalEtOH  MinimalGlucose 
+#             738             492            1644             449            1894 
+#         Proline            Urea             YPD      YPDDiauxic         YPDRapa 
+#             401             615           11037            3332           11805 
+#          YPEtOH 
+#            1427</code></pre>
+<p>To get an initial sense for the structure underlying the data, I
+generate a 2-d nonlinear embedding of the cells using UMAP. First, I
+transform the counts into “shifted log counts”:</p>
+<pre class="r"><code>a &lt;- 1
+s &lt;- rowSums(counts)
+s &lt;- s/mean(s)
+shifted_log_counts &lt;- MatrixExtra::mapSparse(counts/(a*s),log1p)</code></pre>
+<p>Next, I project the cells onto the top 50 PCs:</p>
+<pre class="r"><code>set.seed(1)
+U &lt;- rsvd(shifted_log_counts,k = 50)$u</code></pre>
+<p>Then I run UMAP on the 50 PCs:</p>
+<pre class="r"><code>Y &lt;- umap(U,n_neighbors = 20,metric = &quot;cosine&quot;,min_dist = 0.3,
+          n_threads = 8,verbose = FALSE)
+sample_info$umap1 &lt;- Y[,1]
+sample_info$umap2 &lt;- Y[,2]</code></pre>
+<p>UMAP with the cells colored by growth condition:</p>
+<pre class="r"><code>umap_colors &lt;- c(&quot;#a6cee3&quot;,&quot;#1f78b4&quot;,&quot;#b2df8a&quot;,&quot;#33a02c&quot;,&quot;#fb9a99&quot;,&quot;#e31a1c&quot;,
+                 &quot;#fdbf6f&quot;,&quot;#ff7f00&quot;,&quot;#cab2d6&quot;,&quot;#6a3d9a&quot;,&quot;#ffff99&quot;)
+p &lt;- ggplot(sample_info,aes(x = umap1,y = umap2,color = Condition)) +
+  geom_point(size = 1.5) +
+  scale_color_manual(values = umap_colors) +
+  labs(x = &quot;UMAP 1&quot;,y = &quot;UMAP 2&quot;) + 
+  theme_cowplot(font_size = 10)
+print(p)</code></pre>
+<p><img src="figure/budding_yeast.Rmd/umap-vs-condition-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>From this result, it is quite clear that the predominant structure
+corresponds to the different growth conditions. (This UMAP plot closely
+replicates Fig. 2B of the <em>eLife</em> paper.)</p>
+<p>Finally, save the data and UMAP results to an .Rdata file for more
+convenient analysis in R:</p>
+<pre class="r"><code>save(list = c(&quot;sample_info&quot;,&quot;genes&quot;,&quot;counts&quot;),file = &quot;yeast.RData&quot;)
+resaveRdaFiles(&quot;yeast.RData&quot;)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS 15.5
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/Chicago
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] tools     stats     graphics  grDevices utils     datasets  methods  
+# [8] base     
+# 
+# other attached packages:
+# [1] cowplot_1.1.3 ggplot2_3.5.2 uwot_0.2.3    rsvd_1.0.5    readr_2.1.5  
+# [6] Matrix_1.6-5 
+# 
+# loaded via a namespace (and not attached):
+#  [1] sass_0.4.10         generics_0.1.4      stringi_1.8.7      
+#  [4] lattice_0.22-5      hms_1.1.3           digest_0.6.37      
+#  [7] magrittr_2.0.3      evaluate_1.0.4      grid_4.3.3         
+# [10] RColorBrewer_1.1-3  float_0.3-2         fastmap_1.2.0      
+# [13] rprojroot_2.0.4     workflowr_1.7.1     jsonlite_2.0.0     
+# [16] whisker_0.4.1       promises_1.3.3      scales_1.4.0       
+# [19] RhpcBLASctl_0.23-42 codetools_0.2-19    jquerylib_0.1.4    
+# [22] cli_3.6.5           rlang_1.1.6         crayon_1.5.3       
+# [25] RcppAnnoy_0.0.22    bit64_4.0.5         withr_3.0.2        
+# [28] cachem_1.1.0        yaml_2.3.10         parallel_4.3.3     
+# [31] tzdb_0.4.0          dplyr_1.1.4         httpuv_1.6.14      
+# [34] vctrs_0.6.5         R6_2.6.1            lifecycle_1.0.4    
+# [37] git2r_0.33.0        stringr_1.5.1       fs_1.6.6           
+# [40] bit_4.0.5           vroom_1.6.5         irlba_2.3.5.1      
+# [43] MatrixExtra_0.1.15  pkgconfig_2.0.3     pillar_1.11.0      
+# [46] bslib_0.9.0         later_1.4.2         gtable_0.3.6       
+# [49] glue_1.8.0          Rcpp_1.1.0          xfun_0.52          
+# [52] tibble_3.3.0        tidyselect_1.2.1    knitr_1.50         
+# [55] dichromat_2.0-0.1   farver_2.1.2        htmltools_0.5.8.1  
+# [58] labeling_0.4.3      rmarkdown_2.29      compiler_4.3.3</code></pre>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

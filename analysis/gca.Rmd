@@ -1,0 +1,152 @@
+---
+title: NMF analysis of the combined tissue + organoid GCA data
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+Here we explore whether non-negative matrix factorization (NMF)
+identifies factors (i.e., gene programs) common to both the tissues
+and organoids. These results were generated using the `fit_gca_nmf.R`
+script, found
+[here](https://github.com/stephenslab/single-cell-jamboree/blob/main/scripts/fit_gca_nmf.R).
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the packages needed for this analysis:
+
+```{r load-pkgs, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(cowplot)
+library(fastTopics)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
+
+Load the results from running fitting an NMF model using flashier,
+with $k = 30$:
+
+```{r load-results}
+load("../output/gca_nmf_k=20.RData")
+L <- fl_nmf_ldf$L
+colnames(L) <- paste0("k",1:20)
+```
+
+For better Structure Plots, subsample the EC cells:
+
+```{r subsample-ec}
+rows1 <- which(sample_info$celltype == "EC")
+rows2 <- which(sample_info$celltype != "EC")
+rows1 <- sample(rows1,8000)
+rows  <- c(rows1,rows2)
+rows  <- sort(rows)
+L     <- L[rows,]
+sample_info <- sample_info[rows,]
+```
+
+These are the factors (gene programs) that are mostly specific to
+tissues. Observe that the memberships in the organoids (bottom) are
+mostly very small.
+
+```{r structure-plots-tissues, fig.height=5, fig.width=7.5, results="hide", message=FALSE}
+topics_tissue <- c("k2","k3","k9","k12","k14","k15","k20")
+topic_colors <-
+  c("#FFB300","#803E75","#FF6800","#A6BDD7","#C10020","#CEA262",
+    "#93AA00","#007D34","#F6768E","#00538A","#FF7A5C","darkblue",
+    "#FF8E00","yellow","cyan","#F4C800","#817066","#593315",
+    "#F13A13","forestgreen")
+rows1 <- which(sample_info$origin == "Tissue")
+rows2 <- which(sample_info$origin == "Org")
+p1 <- structure_plot(L[rows1,],gap = 10,topics = topics_tissue,
+                     grouping = factor(sample_info[rows1,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "tissues")
+p2 <- structure_plot(L[rows2,],gap = 10,topics = topics_tissue,
+                     grouping = factor(sample_info[rows2,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "organoids") +
+  ylim(0,1)
+plot_grid(p1,p2,nrow = 2,ncol = 1)
+```
+
+*Note:* that I'm using the cell-type labels in the "celltype" column
+of the meta data as a reference point for understanding the gene
+programs. 
+
+Next, these are the gene programs mostly specific to organoids.
+Again, notice that the memberships are mostly very small in the
+tissues:
+
+```{r structure-plots-organoids, fig.height=5, fig.width=7.5, results="hide", message=FALSE}
+topics_organoid <- c("k4","k6","k8","k11","k13","k17","k18")
+rows1 <- which(sample_info$origin == "Tissue")
+rows2 <- which(sample_info$origin == "Org")
+p3 <- structure_plot(L[rows1,],gap = 10,topics = topics_organoid,
+                     grouping = factor(sample_info[rows1,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "tissues") +
+  ylim(0,2)
+p4 <- structure_plot(L[rows2,],gap = 10,topics = topics_organoid,
+                     grouping = factor(sample_info[rows2,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "organoids")
+plot_grid(p3,p4,nrow = 2,ncol = 1)
+```
+
+Finally, these are the gene programs that appear in both the tissues
+and the organoids. 
+
+```{r structure-plots-shared, fig.height=4.75, fig.width=7.5, results="hide", message=FALSE}
+topics_shared <- c("k5","k7","k10","k16","k19")
+rows1 <- which(sample_info$origin == "Tissue")
+rows2 <- which(sample_info$origin == "Org")
+p5 <- structure_plot(L[rows1,],gap = 10,topics = topics_shared,
+                     grouping = factor(sample_info[rows1,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "tissues")
+p6 <- structure_plot(L[rows2,],gap = 10,topics = topics_shared,
+                     grouping = factor(sample_info[rows2,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "organoids")
+plot_grid(p5,p6,nrow = 2,ncol = 1)
+```
+
+In organoids, factor 16 is most active in the TI, in non-CD-adj groups:
+
+```{r structure-plots-shared-more, fig.height=4.75, fig.width=7.5, results="hide", message=FALSE}
+rows1 <- with(sample_info,
+              which(region == "TI" & group != "CD adj" & origin == "Org"))
+rows2 <- with(sample_info,
+              which(!(region == "TI" & group != "CD adj") & origin == "Org"))
+p7 <- structure_plot(L[rows1,],gap = 10,topics = topics_shared,
+                     grouping = factor(sample_info[rows1,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "TI, non-CD-adj")
+p8 <- structure_plot(L[rows2,],gap = 10,topics = topics_shared,
+                     grouping = factor(sample_info[rows2,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "all other cells")
+plot_grid(p7,p8,nrow = 2,ncol = 1)
+```
+
+In organoids, factor 7 is most active in the non-CD-adj cells:
+
+```{r structure-plots-shared-yet-more, fig.height=4.75, fig.width=7.5, results="hide", message=FALSE}
+rows1 <- with(sample_info,which(group != "CD adj" & origin == "Org"))
+rows2 <- with(sample_info,which(group == "CD adj" & origin == "Org"))
+p9 <- structure_plot(L[rows1,],gap = 10,topics = topics_shared,
+                     grouping = factor(sample_info[rows1,"celltype"]),
+					 colors = topic_colors) +
+  labs(y = "membership",title = "organoids (non-CD-adj)")
+p10 <- structure_plot(L[rows2,],gap = 10,topics = topics_shared,
+                      grouping = factor(sample_info[rows2,"celltype"]),
+ 					  colors = topic_colors) +
+  labs(y = "membership",title = "organoids (CD-adj)")
+plot_grid(p9,p10,nrow = 2,ncol = 1)
+```

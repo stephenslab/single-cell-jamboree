@@ -301,13 +301,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-18
+<strong>Last updated:</strong> 2025-07-05
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 3
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -331,329 +331,35 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>Environment:</strong> objects present
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongobjectspresent"
-class="panel-collapse collapse">
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
-<p>
-The global environment had objects present when the code in the R
-Markdown file was run. These objects can affect the analysis in your R
-Markdown file in unknown ways. For reproduciblity it’s best to always
-run the code in an empty environment. Use <code>wflow_publish</code> or
-<code>wflow_build</code> to ensure that the code is always run in an
-empty environment.
-</p>
-<p>
-The following objects were defined in the global environment when these
-results were created:
-</p>
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th style="text-align:left;">
-Name
-</th>
-<th style="text-align:left;">
-Class
-</th>
-<th style="text-align:left;">
-Size
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-a
-</td>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-56 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-celltype_topics
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-504 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-clusters
-</td>
-<td style="text-align:left;">
-factor
-</td>
-<td style="text-align:left;">
-13.2 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-counts
-</td>
-<td style="text-align:left;">
-dgCMatrix
-</td>
-<td style="text-align:left;">
-148.6 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-de_le
-</td>
-<td style="text-align:left;">
-topic_model_de_analysis;list
-</td>
-<td style="text-align:left;">
-25.1 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-de_vsnull
-</td>
-<td style="text-align:left;">
-topic_model_de_analysis;list
-</td>
-<td style="text-align:left;">
-25.1 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fl_nmf
-</td>
-<td style="text-align:left;">
-flash;list
-</td>
-<td style="text-align:left;">
-164.8 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-genes
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-2.5 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-i
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-4.3 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-j
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-1.4 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-L
-</td>
-<td style="text-align:left;">
-matrix;array
-</td>
-<td style="text-align:left;">
-221.5 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-n
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-56 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-other_topics
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-432 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-out
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-283.4 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-outliers
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-320 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-p1
-</td>
-<td style="text-align:left;">
-gg;ggplot
-</td>
-<td style="text-align:left;">
-227.3 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-p2
-</td>
-<td style="text-align:left;">
-gg;ggplot
-</td>
-<td style="text-align:left;">
-120.2 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-s
-</td>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-294.1 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-s1
-</td>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-56 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-samples
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-370.5 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-shifted_log_counts
-</td>
-<td style="text-align:left;">
-dgCMatrix
-</td>
-<td style="text-align:left;">
-148.4 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-tm
-</td>
-<td style="text-align:left;">
-poisson_nmf_fit;list
-</td>
-<td style="text-align:left;">
-10.7 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-tm_merged
-</td>
-<td style="text-align:left;">
-multinom_topic_model_fit;list
-</td>
-<td style="text-align:left;">
-9.7 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-x
-</td>
-<td style="text-align:left;">
-integer
-</td>
-<td style="text-align:left;">
-38.1 Mb
-</td>
-</tr>
-</tbody>
-</table>
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
 </div>
 </div>
 </div>
@@ -744,15 +450,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb7f4df581e305d84509e4f3a6d6987ee503a7110targetblankb7f4df5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4e1bb00f5165d61b7ae2db00d45f9c283b02b396targetblank4e1bb00a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b7f4df581e305d84509e4f3a6d6987ee503a7110" target="_blank">b7f4df5</a>
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4e1bb00f5165d61b7ae2db00d45f9c283b02b396" target="_blank">4e1bb00</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreeb7f4df581e305d84509e4f3a6d6987ee503a7110targetblankb7f4df5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree4e1bb00f5165d61b7ae2db00d45f9c283b02b396targetblank4e1bb00a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -762,7 +468,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/single-cell-jamboree/tree/b7f4df581e305d84509e4f3a6d6987ee503a7110" target="_blank">b7f4df5</a>.
+<a href="https://github.com/stephenslab/single-cell-jamboree/tree/4e1bb00f5165d61b7ae2db00d45f9c283b02b396" target="_blank">4e1bb00</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -777,22 +483,24 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
+    Untracked:  .DS_Store
+    Untracked:  analysis/#pancreas_cytokine_S1_factors.Rmd#
+    Untracked:  analysis/.#pancreas_cytokine_S1_factors.Rmd
+    Untracked:  analysis/.DS_Store
     Untracked:  analysis/lps_cache/
     Untracked:  analysis/mcf7_cache/
     Untracked:  analysis/pancreas_cytokine_S1_factors_cache/
-    Untracked:  analysis/temp2.R
     Untracked:  data/GSE132188_adata.h5ad.h5
     Untracked:  data/GSE183010/
     Untracked:  data/Immune_ALL_human.h5ad
     Untracked:  data/pancreas_cytokine.RData
+    Untracked:  data/pancreas_cytokine_lsa.RData
     Untracked:  data/pancreas_endocrine.RData
     Untracked:  data/pancreas_endocrine_alldays.h5ad
+    Untracked:  output/panc_cyto_lsa_res/
 
 Unstaged changes:
-    Modified:   analysis/pancreas_cytokine_S1_factors.Rmd
-
-Staged changes:
-    New:        data/pancreas_cytokine_S1_tm_k=13_clusters.csv
+    Modified:   analysis/temp2.R
 
 </code></pre>
 <p>
@@ -839,6 +547,201 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4e1bb00f5165d61b7ae2db00d45f9c283b02b396/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">4e1bb00</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-05
+</td>
+<td>
+wflow_publish("pancreas_cytokine_S1_factors.Rmd", verbose = T,
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/8e8767119ece4312144ec9ca609c98df608fd1f8/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">8e87671</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-05
+</td>
+<td>
+A few more slight improvements to the pancreas_cytokine_S1_factors
+analysis (still very much a work-in-progress).
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/69e66137de594f8efe8e28b4bcf1fa5ae9162ed9/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">69e6613</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-04
+</td>
+<td>
+Working on improvements/changes to the pancreas_cytokine_S1_factors
+analysis; these improvements are still a bit rough and need to refine
+them.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/65bedc4c9f40dc4dea9d92dfe0231f61094220c8/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">65bedc4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-04
+</td>
+<td>
+Updated code for running flashier on the pancreas_cytokine data.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/9147de4cd2f9cc76a5d0a38bb5d287e6315e6e0e/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">9147de4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-04
+</td>
+<td>
+Fixed a bug in lps.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/14db9858a2c23b25d58087dffb0055e069a3818b/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">14db985</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-04
+</td>
+<td>
+Added note to pancreas_cytokine_S1_factors.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/a8de13f9eaf84f457a722df88fc45fd86d6025c9/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">a8de13f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-04
+</td>
+<td>
+Updated interpretation of topics in pancreas_cytokine_S1_factors
+analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/3d8a2aa81fe4b8589b32b2e4b8e5cffac58586d5/docs/pancreas_cytokine_S1_factors.html" target="_blank">3d8a2aa</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-07-04
+</td>
+<td>
+Added lps_gsea_fl_nmf.csv output.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/7476abf5cfb3540d04c038a7b3dbd04cd45b9cb7/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">7476abf</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-20
+</td>
+<td>
+Small edit to the pancreas_cytokine_S1_factors analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/4ac7821cc38083d663b7cba5803d1c72ab888259/analysis/pancreas_cytokine_S1_factors.Rmd" target="_blank">4ac7821</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-18
+</td>
+<td>
+Created pancreas_cytokine_S1_tm_k=13_clusters.csv containing the
+topic-model based clustering for the pancreas cytokine data (untreated
+mouse only).
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/4ac7821cc38083d663b7cba5803d1c72ab888259/docs/pancreas_cytokine_S1_factors.html" target="_blank">4ac7821</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-18
+</td>
+<td>
+Created pancreas_cytokine_S1_tm_k=13_clusters.csv containing the
+topic-model based clustering for the pancreas cytokine data (untreated
+mouse only).
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1184,6 +1087,7 @@ focussing on the scRNA-seq data from untreated mouse only.</p>
 create the plots.</p>
 <pre class="r"><code>library(Matrix)
 library(fastTopics)
+library(NNLM)
 library(flashier)
 library(singlecelljamboreeR)
 library(ggplot2)
@@ -1312,21 +1216,32 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Save this topic-model-based clustering because it could be useful
-elsewhere:</p>
-<pre class="r"><code>out &lt;- data.frame(barcode = samples$barcode,
-                  cluster = clusters,
-                  stringsAsFactors = FALSE)
-write.csv(out,&quot;pancreas_cytokine_S1_tm_k=13_clusters.csv&quot;,quote = FALSE,
-          row.names = FALSE)</code></pre>
-<p>Select genes in two ways: (a) genes that are different from the mean
-expression level, (b) genes that are “distinctive”.</p>
-<pre class="r"><code>set.seed(1)
-tm_merged &lt;- merge_topics(poisson2multinom(tm),paste0(&quot;k&quot;,c(1,2,4,11)))
-de_vsnull &lt;- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = &quot;vsnull&quot;,
-                         verbose = FALSE,control = list(ns = 1e4,nc = 8))
-de_le &lt;- de_analysis(tm_merged,counts,pseudocount = 0.1,lfc.stat = &quot;le&quot;,
-                     verbose = FALSE,control = list(ns = 1e4,nc = 8))</code></pre>
+<p>Based on the estimated <span
+class="math inline">\(\mathbf{F}\)</span>, we have the following
+potential interpretation of these topics:</p>
+<ul>
+<li>topic 2: <span class="math inline">\(\beta\)</span> cells
+(<em>Ins1</em>, <em>Ins2</em>, <em>Mafa</em>)</li>
+<li>topic 3: <span class="math inline">\(\alpha\)</span> cells
+(<em>Gcg</em>, <em>Mafb</em>)</li>
+<li>topic 5: duct cells (<em>Krt19</em>)</li>
+<li>topic 6: replicate effect</li>
+<li>topic 7: macrophages (<em>Ccr5</em>)</li>
+<li>topic 8: <span class="math inline">\(\delta\)</span> cells
+(<em>Sst</em>)</li>
+<li>topic 9: <span class="math inline">\(\gamma\)</span> cells
+(<em>Ppy</em>)</li>
+<li>topic 12: cell cycle</li>
+<li>topic 13: endothelial (<em>Pecam1</em>) and mesenchymal cells
+(<em>Col1a1</em>).</li>
+</ul>
+<p>Topic 10 is clearly capturing a technical difference in the two
+replicates:</p>
+<pre class="r"><code>pdat &lt;- cbind(samples,L)
+ggplot(pdat,aes(x = replicate,y = k10)) +
+  geom_boxplot() +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/pancreas_cytokine_S1_factors.Rmd/k10-vs-replicate-1.png" width="240" style="display: block; margin: auto;" /></p>
 <div class="alert alert-warning">
 <p>
 <strong>Warning:</strong> The above code chunk cached its results, but
@@ -1341,52 +1256,71 @@ remove this warning. See the
 >knitr cache options</a> for more details.
 </p>
 </div>
-<p>Based on the estimated <span
-class="math inline">\(\mathbf{F}\)</span>, we have the following
-potential interpretation of the topics:</p>
-<ul>
-<li>k5 = <span class="math inline">\(\beta\)</span> cells
-(<em>Ins1</em>, <em>Ins2</em>, <em>Mafa</em>)</li>
-<li>k4 = <em>Ins1-</em> <span class="math inline">\(\beta\)</span>
-cells?</li>
-<li>k6 = <span class="math inline">\(\alpha\)</span> cells
-(<em>Gcg</em>, <em>Mafb</em>)</li>
-<li>k7 = <span class="math inline">\(\delta\)</span>, <span
-class="math inline">\(\gamma\)</span> and <span
-class="math inline">\(\epsilon\)</span> cells (<em>Sst</em>,
-<em>Ghrl</em>)</li>
-<li>k2 = a non-<span class="math inline">\(\alpha\)</span> islet
-process</li>
-<li>k3 = macrophages, endothelial cells, mesenchymal cells and duct
-cells</li>
-</ul>
-<pre class="r"><code>scale_rows &lt;- function (A)
-  A / apply(A,1,max)
-marker_genes &lt;- c(&quot;Ins1&quot;,&quot;Ins2&quot;,&quot;Mafa&quot;,&quot;Gcg&quot;,&quot;Mafb&quot;,&quot;Sst&quot;,&quot;Ghrl&quot;,
-                  &quot;Ppy&quot;,&quot;Chga&quot;,&quot;Iapp&quot;,&quot;Krt19&quot;,&quot;Ccr5&quot;,&quot;Pecam1&quot;,&quot;Esam&quot;,
-                  &quot;Col1a1&quot;,&quot;Ghrl&quot;)
-j &lt;- match(marker_genes,genes$symbol)
-F &lt;- poisson2multinom(tm)$F
-F &lt;- F[j,]
-F &lt;- scale_rows(F)
-rownames(F) &lt;- marker_genes
-topics &lt;- paste0(&quot;k&quot;,c(5,4,6,7,2,3))
-annotation_heatmap(F[,topics],select_features = &quot;all&quot;,verbose = FALSE)</code></pre>
 </div>
 <div id="ebnmf-flashier" class="section level2">
 <h2>EBNMF (flashier)</h2>
-<p>Next fit an NMF to the shifted log counts using flashier, with <span
-class="math inline">\(K =
-9\)</span>:</p>
+<p>Next we will fit an NMF to the <em>shifted log counts</em> using
+flashier, with <span class="math inline">\(K = 13\)</span>. Since the
+greedy initialization does not seem to work well in this example, I’ll
+use a different initialization strategy: obtain a “good” initialization
+using the NNLM package, then use this initialization to fit a NMF using
+flashier. This approach is implemented in the following function:</p>
+<pre class="r"><code>flashier_nmf &lt;- function (X, k = 3, n.threads = 1) {
+  n &lt;- nrow(X)
+  m &lt;- ncol(X)
+  Y &lt;- as.matrix(X)
+  nmf0 &lt;- nnmf(Y,k = 1,loss = &quot;mse&quot;,method = &quot;scd&quot;,max.iter = 10,
+               verbose = 2,n.threads = n.threads)
+  W0 &lt;- nmf0$W
+  H0 &lt;- nmf0$H
+  W0 &lt;- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
+  H0 &lt;- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
+  nmf &lt;- nnmf(Y,k,init = list(W = W0,H = H0),loss = &quot;mse&quot;,method = &quot;scd&quot;,
+              max.iter = 10,verbose = 2,n.threads = n.threads)
+  x  &lt;- rpois(1e7,1/n)
+  s1 &lt;- sd(log(x + 1))
+  out &lt;- flash_init(X,var_type = 2,S = s1)
+  out &lt;- flash_factors_init(out,list(nmf$W,t(nmf$H)),ebnm_point_exponential)
+  out &lt;- flash_backfit(out,extrapolate = FALSE,maxiter = 100,verbose = 2)
+  return(flash_backfit(out,extrapolate = TRUE,maxiter = 100,verbose = 2))
+}</code></pre>
+<p>Now fit an NMF to the shifted log counts, with <span
+class="math inline">\(K = 13\)</span>:</p>
 <pre class="r"><code>set.seed(1)
-n  &lt;- nrow(samples)
-x  &lt;- rpois(1e7,1/n)
-s1 &lt;- sd(log(x + 1))
-fl_nmf &lt;- flash(shifted_log_counts,S = s1,ebnm_fn = ebnm_point_exponential,
-                var_type = 2,greedy_Kmax = 9,backfit = FALSE,
-                nullcheck = FALSE,verbose = 0)
-fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 40,verbose = 0)
-fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 80,verbose = 0)</code></pre>
+fl_nmf &lt;- flashier_nmf(shifted_log_counts,k = 13,n.threads = 8)
+# 
+#  Iteration |        MSE |        MKL |     Target |  Rel. Err.
+# --------------------------------------------------------------
+#          1 |     0.1441 |     0.1960 |     0.0721 |          2
+#          3 |     0.1426 |     0.1967 |     0.0713 |       0.01
+#          5 |     0.1426 |     0.1967 |     0.0713 |      1e-08
+# --------------------------------------------------------------
+#  Iteration |        MSE |        MKL |     Target |  Rel. Err.
+# 
+# 
+#  Iteration |        MSE |        MKL |     Target |  Rel. Err.
+# --------------------------------------------------------------
+#          1 |     0.1356 |     0.1913 |     0.0678 |          2
+#          3 |     0.1248 |     0.1804 |     0.0624 |       0.08
+#          5 |     0.1226 |     0.1779 |     0.0613 |       0.02
+#          7 |     0.1218 |     0.1768 |     0.0609 |      0.007
+#          9 |     0.1214 |     0.1763 |     0.0607 |      0.003
+#         11 |     0.1213 |     0.1762 |     0.0606 |      0.001
+# --------------------------------------------------------------
+#  Iteration |        MSE |        MKL |     Target |  Rel. Err.
+# 
+# Backfitting 13 factors (tolerance: 7.64e-01)...
+#   Difference between iterations is within 1.0e+03...
+#   Difference between iterations is within 1.0e+02...
+#   --Maximum number of iterations reached!
+# Wrapping up...
+# Done.
+# Backfitting 13 factors (tolerance: 7.64e-01)...
+#   Difference between iterations is within 1.0e+02...
+#   --Maximum number of iterations reached!
+#   Backfit complete. Objective: 4345377.189 
+# Wrapping up...
+# Done.</code></pre>
 <div class="alert alert-warning">
 <p>
 <strong>Warning:</strong> The above code chunk cached its results, but
@@ -1401,22 +1335,21 @@ remove this warning. See the
 >knitr cache options</a> for more details.
 </p>
 </div>
-<p>(Note that I tried setting <code>greedy_Kmax &gt; 9</code>, but this
-didn’t result in more interesting fits—the additional factors loaded on
-only a single cell.)</p>
 <p>Structure plot comparing the factors to the clusters:</p>
 <pre class="r"><code>set.seed(1)
+celltype_factors &lt;- paste0(&quot;k&quot;,c(1:5,9:11,13))
+other_factors &lt;- paste0(&quot;k&quot;,c(6:8,12))
 L &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
-colnames(L) &lt;- paste0(&quot;k&quot;,1:9)
+colnames(L) &lt;- paste0(&quot;k&quot;,1:13)
 i &lt;- c(sample(which(clusters == &quot;beta&quot;),400),
        which(clusters != &quot;beta&quot;))
-p1 &lt;- structure_plot(L[i,],grouping = clusters[i],topics = c(2:6,8,9),
+p1 &lt;- structure_plot(L[i,],grouping = clusters[i],topics = celltype_factors,
                     gap = 10,n = Inf) +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)
-p2 &lt;- structure_plot(L[i,],grouping = clusters[i],topics = c(1,7),
+p2 &lt;- structure_plot(L[i,],grouping = clusters[i],topics = other_factors,
                     gap = 10,n = Inf) +
   labs(y = &quot;membership&quot;,fill = &quot;&quot;)
-plot_grid(p1,p2,nrow = 2,ncol = 1)</code></pre>
+print(plot_grid(p1,p2,nrow = 2,ncol = 1))</code></pre>
 <p><img src="figure/pancreas_cytokine_S1_factors.Rmd/structure-plot-flashier-nmf-1.png" width="780" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plot-flashier-nmf-1">
@@ -1466,34 +1399,139 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Possible interpretation of the factors:</p>
+<p>Based on the estimated <span
+class="math inline">\(\mathbf{F}\)</span>, we have the following
+potential interpretation of these topics:</p>
 <ul>
-<li>k4 = <span class="math inline">\(\beta\)</span> cells
+<li>factor 1: <span class="math inline">\(\beta\)</span> cells
 (<em>Ins1</em>, <em>Ins2</em>, <em>Mafa</em>)</li>
-<li>k7 = <em>Ins1-</em> <span class="math inline">\(\beta\)</span>
-cells?</li>
-<li>k3 = <span class="math inline">\(\alpha\)</span>, <span
-class="math inline">\(\delta\)</span> and <span
-class="math inline">\(\gamma\)</span> cells</li>
-<li>k5 = macrophages (<em>Ccr5</em>)</li>
-<li>k2 = endothelial cells (<em>Pecam1</em>, <em>Esam</em>)</li>
-<li>k6 = mesenchymal cells (<em>Col1a1</em>)</li>
+<li>factors 2, 9, 11: endothelial cells (<em>Pecam1</em>,
+<em>Esam</em>)</li>
+<li>factor 3: duct cells (<em>Krt19</em>)</li>
+<li>factor 4: macrophages (<em>Ccr5</em>)</li>
+<li>factor 5: <span class="math inline">\(\alpha\)</span> (<em>Gcg</em>,
+<em>Mafb</em>) and <span class="math inline">\(\gamma\)</span> cells
+(<em>Ppy</em>)</li>
+<li>factor 6: replicate effect</li>
+<li>factors 7, 12: cell cycle</li>
+<li>factor 10: mesenchymal cells (<em>Col1a1</em>)</li>
+<li>factor 13: <span class="math inline">\(\delta\)</span> cells
+(<em>Sst</em>)</li>
 </ul>
-<pre class="r"><code>scale_cols &lt;- function (A) {
-  b &lt;- apply(A,2,max)
-  return(t(t(A) * b))
-}
-marker_genes &lt;- c(&quot;Ins1&quot;,&quot;Ins2&quot;,&quot;Mafa&quot;,&quot;Gcg&quot;,&quot;Mafb&quot;,&quot;Sst&quot;,&quot;Ghrl&quot;,
-                  &quot;Ppy&quot;,&quot;Chga&quot;,&quot;Iapp&quot;,&quot;Krt19&quot;,
-                  &quot;Ccr5&quot;,&quot;Pecam1&quot;,&quot;Esam&quot;,&quot;Col1a1&quot;)
-j &lt;- match(marker_genes,genes$symbol)
+<p>Factor 6 almost perfectly captures the technical difference in the
+two replicates:</p>
+<pre class="r"><code>pdat &lt;- cbind(samples,L)
+r &lt;- cor(as.numeric(samples$replicate),L[,&quot;k6&quot;])
+ggplot(pdat,aes(x = replicate,y = k6)) +
+  geom_boxplot() +
+  ggtitle(paste(&quot;cor =&quot;,round(r,digits = 3))) +
+  theme_cowplot(font_size = 12)</code></pre>
+<p><img src="figure/pancreas_cytokine_S1_factors.Rmd/k6-vs-replicate-1.png" width="240" style="display: block; margin: auto;" /></p>
+<p>Factors 7 and 12 seem to capture <a
+href="https://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/REACTOME_CELL_CYCLE.html">cell
+cycle</a>:</p>
+<pre class="r"><code>cell_cycle &lt;- 
+c(&quot;Aaas&quot;, &quot;Abl1&quot;, &quot;Abraxas1&quot;, &quot;Acd&quot;, &quot;Actr1a&quot;, &quot;Adrm1&quot;, &quot;Ahctf1&quot;,
+&quot;Ajuba&quot;, &quot;Akap9&quot;, &quot;Akt1&quot;, &quot;Akt2&quot;, &quot;Akt3&quot;, &quot;Alms1&quot;, &quot;Anapc1&quot;,
+&quot;Anapc10&quot;, &quot;Anapc11&quot;, &quot;Anapc15&quot;, &quot;Anapc16&quot;, &quot;Anapc2&quot;, &quot;Anapc4&quot;,
+&quot;Anapc5&quot;, &quot;Anapc7&quot;, &quot;Ankle2&quot;, &quot;Ankrd28&quot;, &quot;Arpp19&quot;, &quot;Atm&quot;, &quot;Atrip&quot;,
+&quot;Atrx&quot;, &quot;Aurka&quot;, &quot;Aurkb&quot;, &quot;B9d2&quot;, &quot;Babam1&quot;, &quot;Babam2&quot;, &quot;Banf1&quot;,
+&quot;Bard1&quot;, &quot;Blm&quot;, &quot;Blzf1&quot;, &quot;Bora&quot;, &quot;Brca1&quot;, &quot;Brcc3&quot;, &quot;Brip1&quot;, &quot;Bub1b&quot;,
+&quot;Bub3&quot;, &quot;Cables1&quot;, &quot;Cc2d1b&quot;, &quot;Ccna2&quot;, &quot;Ccnb1&quot;, &quot;Ccnb2&quot;, &quot;Ccnd1&quot;,
+&quot;Ccnd2&quot;, &quot;Ccnd3&quot;, &quot;Ccne1&quot;, &quot;Ccne2&quot;, &quot;Ccnh&quot;, &quot;Ccp110&quot;, &quot;Cdc14a&quot;,
+&quot;Cdc16&quot;, &quot;Cdc20&quot;, &quot;Cdc23&quot;, &quot;Cdc25a&quot;, &quot;Cdc25b&quot;, &quot;Cdc26&quot;, &quot;Cdc27&quot;,
+&quot;Cdc45&quot;, &quot;Cdc6&quot;, &quot;Cdc7&quot;, &quot;Cdca5&quot;, &quot;Cdca8&quot;, &quot;Cdk1&quot;, &quot;Cdk11b&quot;,
+&quot;Cdk2&quot;, &quot;Cdk4&quot;, &quot;Cdk5rap2&quot;, &quot;Cdk6&quot;, &quot;Cdk7&quot;, &quot;Cdkn1a&quot;, &quot;Cdkn1b&quot;,
+&quot;Cdkn1c&quot;, &quot;Cdkn2b&quot;, &quot;Cdt1&quot;, &quot;Cenpa&quot;, &quot;Cenpc1&quot;, &quot;Cenpe&quot;, &quot;Cenpf&quot;,
+&quot;Cenph&quot;, &quot;Cenpi&quot;, &quot;Cenpj&quot;, &quot;Cenpk&quot;, &quot;Cenpl&quot;, &quot;Cenpm&quot;, &quot;Cenpn&quot;,
+&quot;Cenpo&quot;, &quot;Cenpp&quot;, &quot;Cenpq&quot;, &quot;Cenps&quot;, &quot;Cenpt&quot;, &quot;Cenpu&quot;, &quot;Cenpw&quot;,
+&quot;Cenpx&quot;, &quot;Cep131&quot;, &quot;Cep135&quot;, &quot;Cep152&quot;, &quot;Cep164&quot;, &quot;Cep192&quot;, &quot;Cep250&quot;,
+&quot;Cep290&quot;, &quot;Cep41&quot;, &quot;Cep57&quot;, &quot;Cep63&quot;, &quot;Cep70&quot;, &quot;Cep72&quot;, &quot;Cep76&quot;,
+&quot;Cep78&quot;, &quot;Cetn2&quot;, &quot;Chek1&quot;, &quot;Chek2&quot;, &quot;Chmp2a&quot;, &quot;Chmp2b&quot;, &quot;Chmp3&quot;,
+&quot;Chmp4b&quot;, &quot;Chmp4c&quot;, &quot;Chmp6&quot;, &quot;Chmp7&quot;, &quot;Chtf18&quot;, &quot;Chtf8&quot;, &quot;Ckap5&quot;,
+&quot;Cks1b&quot;, &quot;Clasp1&quot;, &quot;Clasp2&quot;, &quot;Clip1&quot;, &quot;Clspn&quot;, &quot;Cnep1r1&quot;, &quot;Cop1&quot;,
+&quot;Csnk1d&quot;, &quot;Csnk1e&quot;, &quot;Csnk2a1&quot;, &quot;Csnk2a2&quot;, &quot;Csnk2b&quot;, &quot;Ctc1&quot;, &quot;Ctdnep1&quot;,
+&quot;Cul1&quot;, &quot;Daxx&quot;, &quot;Dbf4&quot;, &quot;Dctn1&quot;, &quot;Dctn2&quot;, &quot;Dctn3&quot;, &quot;Dkc1&quot;, &quot;Dmc1&quot;,
+&quot;Dna2&quot;, &quot;Dscc1&quot;, &quot;Dsn1&quot;, &quot;Dync1h1&quot;, &quot;Dync1i1&quot;, &quot;Dync1i2&quot;, &quot;Dync1li1&quot;,
+&quot;Dync1li2&quot;, &quot;Dynll1&quot;, &quot;Dynll2&quot;, &quot;Dyrk1a&quot;, &quot;E2f1&quot;, &quot;E2f2&quot;, &quot;E2f3&quot;,
+&quot;E2f4&quot;, &quot;E2f5&quot;, &quot;Emd&quot;, &quot;Eml4&quot;, &quot;Ercc6l&quot;, &quot;Esco1&quot;, &quot;Esco2&quot;, &quot;Espl1&quot;,
+&quot;Exo1&quot;, &quot;Fbxl18&quot;, &quot;Fbxl7&quot;, &quot;Fbxo5&quot;, &quot;Fbxw11&quot;, &quot;Fen1&quot;, &quot;Fignl1&quot;,
+&quot;Fkbpl&quot;, &quot;Foxm1&quot;, &quot;Fzr1&quot;, &quot;Gar1&quot;, &quot;Gins1&quot;, &quot;Gins2&quot;, &quot;Gins3&quot;,
+&quot;Gins4&quot;, &quot;Gmnn&quot;, &quot;Golga2&quot;, &quot;Gorasp1&quot;, &quot;Gorasp2&quot;, &quot;Gtse1&quot;, &quot;H3f3a&quot;,
+&quot;H3f3b&quot;, &quot;Haus1&quot;, &quot;Haus2&quot;, &quot;Haus3&quot;, &quot;Haus4&quot;, &quot;Haus5&quot;, &quot;Haus6&quot;,
+&quot;Haus7&quot;, &quot;Haus8&quot;, &quot;Hdac1&quot;, &quot;Hdac8&quot;, &quot;Herc2&quot;, &quot;Hjurp&quot;, &quot;Hmmr&quot;,
+&quot;Hsp90aa1&quot;, &quot;Hsp90ab1&quot;, &quot;Hus1&quot;, &quot;Incenp&quot;, &quot;Ist1&quot;, &quot;Itgb3bp&quot;,
+&quot;Jak2&quot;, &quot;Kat5&quot;, &quot;Kif18a&quot;, &quot;Kif20a&quot;, &quot;Kif23&quot;, &quot;Kif2a&quot;, &quot;Kif2c&quot;,
+&quot;Kntc1&quot;, &quot;Kpnb1&quot;, &quot;Lbr&quot;, &quot;Lcmt1&quot;, &quot;Lig1&quot;, &quot;Lin37&quot;, &quot;Lin52&quot;, &quot;Lin54&quot;,
+&quot;Lin9&quot;, &quot;Lmna&quot;, &quot;Lmnb1&quot;, &quot;Lpin2&quot;, &quot;Lpin3&quot;, &quot;Lyn&quot;, &quot;Mad1l1&quot;, &quot;Mad2l1&quot;,
+&quot;Mapk1&quot;, &quot;Mapk3&quot;, &quot;Mapre1&quot;, &quot;Mastl&quot;, &quot;Mau2&quot;, &quot;Mcm10&quot;, &quot;Mcm2&quot;,
+&quot;Mcm3&quot;, &quot;Mcm4&quot;, &quot;Mcm5&quot;, &quot;Mcm6&quot;, &quot;Mcm7&quot;, &quot;Mcm8&quot;, &quot;Mcph1&quot;, &quot;Mdc1&quot;,
+&quot;Mdm2&quot;, &quot;Mdm4&quot;, &quot;Mis12&quot;, &quot;Mis18a&quot;, &quot;Mis18bp1&quot;, &quot;Mnat1&quot;, &quot;Mre11a&quot;,
+&quot;Mzt1&quot;, &quot;Mzt2&quot;, &quot;Nbn&quot;, &quot;Ncapd2&quot;, &quot;Ncapd3&quot;, &quot;Ncapg&quot;, &quot;Ncapg2&quot;,
+&quot;Ncaph&quot;, &quot;Ncaph2&quot;, &quot;Ndc1&quot;, &quot;Ndc80&quot;, &quot;Nde1&quot;, &quot;Ndel1&quot;, &quot;Nedd1&quot;,
+&quot;Nek2&quot;, &quot;Nek9&quot;, &quot;Nhp2&quot;, &quot;Ninl&quot;, &quot;Nipbl&quot;, &quot;Nme7&quot;, &quot;Nop10&quot;, &quot;Npm1&quot;,
+&quot;Nsd2&quot;, &quot;Nsl1&quot;, &quot;Nudc&quot;, &quot;Nuf2&quot;, &quot;Numa1&quot;, &quot;Nup107&quot;, &quot;Nup133&quot;,
+&quot;Nup153&quot;, &quot;Nup155&quot;, &quot;Nup160&quot;, &quot;Nup188&quot;, &quot;Nup205&quot;, &quot;Nup210&quot;, &quot;Nup214&quot;,
+&quot;Nup35&quot;, &quot;Nup37&quot;, &quot;Nup43&quot;, &quot;Nup50&quot;, &quot;Nup54&quot;, &quot;Nup62&quot;, &quot;Nup85&quot;,
+&quot;Nup88&quot;, &quot;Nup93&quot;, &quot;Nup98&quot;, &quot;Odf2&quot;, &quot;Ofd1&quot;, &quot;Oip5&quot;, &quot;Optn&quot;, &quot;Orc2&quot;,
+&quot;Orc3&quot;, &quot;Orc4&quot;, &quot;Orc5&quot;, &quot;Orc6&quot;, &quot;Pafah1b1&quot;, &quot;Pcm1&quot;, &quot;Pcna&quot;, &quot;Pds5a&quot;,
+&quot;Pds5b&quot;, &quot;Phf20&quot;, &quot;Phlda1&quot;, &quot;Pias4&quot;, &quot;Pkmyt1&quot;, &quot;Plk1&quot;, &quot;Plk4&quot;,
+&quot;Pmf1&quot;, &quot;Pola1&quot;, &quot;Pola2&quot;, &quot;Pold1&quot;, &quot;Pold2&quot;, &quot;Pold3&quot;, &quot;Pold4&quot;,
+&quot;Pole&quot;, &quot;Pole2&quot;, &quot;Pole3&quot;, &quot;Pole4&quot;, &quot;Pom121&quot;, &quot;Pot1a&quot;, &quot;Ppme1&quot;,
+&quot;Ppp1cb&quot;, &quot;Ppp1cc&quot;, &quot;Ppp1r12a&quot;, &quot;Ppp1r12b&quot;, &quot;Ppp2ca&quot;, &quot;Ppp2cb&quot;,
+&quot;Ppp2r1a&quot;, &quot;Ppp2r1b&quot;, &quot;Ppp2r2a&quot;, &quot;Ppp2r3d&quot;, &quot;Ppp2r5a&quot;, &quot;Ppp2r5b&quot;,
+&quot;Ppp2r5c&quot;, &quot;Ppp2r5d&quot;, &quot;Ppp2r5e&quot;, &quot;Ppp6c&quot;, &quot;Ppp6r3&quot;, &quot;Prim1&quot;,
+&quot;Prim2&quot;, &quot;Prkaca&quot;, &quot;Prkcb&quot;, &quot;Psma1&quot;, &quot;Psma2&quot;, &quot;Psma3&quot;, &quot;Psma4&quot;,
+&quot;Psma5&quot;, &quot;Psma6&quot;, &quot;Psma7&quot;, &quot;Psmb1&quot;, &quot;Psmb2&quot;, &quot;Psmb3&quot;, &quot;Psmb4&quot;,
+&quot;Psmb5&quot;, &quot;Psmb6&quot;, &quot;Psmb7&quot;, &quot;Psmc1&quot;, &quot;Psmc2&quot;, &quot;Psmc3&quot;, &quot;Psmc4&quot;,
+&quot;Psmc5&quot;, &quot;Psmc6&quot;, &quot;Psmd1&quot;, &quot;Psmd11&quot;, &quot;Psmd12&quot;, &quot;Psmd13&quot;, &quot;Psmd14&quot;,
+&quot;Psmd2&quot;, &quot;Psmd3&quot;, &quot;Psmd6&quot;, &quot;Psmd7&quot;, &quot;Psmd8&quot;, &quot;Pttg1&quot;, &quot;Rab1a&quot;,
+&quot;Rab1b&quot;, &quot;Rab2a&quot;, &quot;Rab8a&quot;, &quot;Rad1&quot;, &quot;Rad17&quot;, &quot;Rad21&quot;, &quot;Rad50&quot;,
+&quot;Rad51&quot;, &quot;Rad9a&quot;, &quot;Rad9b&quot;, &quot;Rae1&quot;, &quot;Ran&quot;, &quot;Ranbp2&quot;, &quot;Rangap1&quot;,
+&quot;Rb1&quot;, &quot;Rbbp4&quot;, &quot;Rbbp7&quot;, &quot;Rbbp8&quot;, &quot;Rbl1&quot;, &quot;Rbl2&quot;, &quot;Rbm39&quot;, &quot;Rbx1&quot;,
+&quot;Rcc1&quot;, &quot;Rcc2&quot;, &quot;Rfc1&quot;, &quot;Rfc2&quot;, &quot;Rfc3&quot;, &quot;Rfc4&quot;, &quot;Rfc5&quot;, &quot;Rhno1&quot;,
+&quot;Rmi1&quot;, &quot;Rmi2&quot;, &quot;Rnf168&quot;, &quot;Rnf8&quot;, &quot;Rpa1&quot;, &quot;Rpa2&quot;, &quot;Rpa3&quot;, &quot;Rsf1&quot;,
+&quot;Rtel1&quot;, &quot;Ruvbl1&quot;, &quot;Sdccag8&quot;, &quot;Sec13&quot;, &quot;Seh1l&quot;, &quot;Set&quot;, &quot;Sfi1&quot;,
+&quot;Sfn&quot;, &quot;Sgo1&quot;, &quot;Sgo2a&quot;, &quot;Shq1&quot;, &quot;Sirt2&quot;, &quot;Ska2&quot;, &quot;Skp2&quot;, &quot;Smarca5&quot;,
+&quot;Smc1a&quot;, &quot;Smc2&quot;, &quot;Smc3&quot;, &quot;Smc4&quot;, &quot;Spast&quot;, &quot;Spc24&quot;, &quot;Spc25&quot;, &quot;Spdl1&quot;,
+&quot;Src&quot;, &quot;Ssna1&quot;, &quot;Stag1&quot;, &quot;Stag2&quot;, &quot;Stn1&quot;, &quot;Sumo1&quot;, &quot;Taok1&quot;, &quot;Ten1&quot;,
+&quot;Terf1&quot;, &quot;Terf2&quot;, &quot;Terf2ip&quot;, &quot;Tert&quot;, &quot;Tfdp1&quot;, &quot;Top3a&quot;, &quot;Topbp1&quot;,
+&quot;Tpr&quot;, &quot;Tpx2&quot;, &quot;Trp53&quot;, &quot;Trp53bp1&quot;, &quot;Tuba1a&quot;, &quot;Tuba1b&quot;, &quot;Tuba1c&quot;,
+&quot;Tuba4a&quot;, &quot;Tuba8&quot;, &quot;Tubb2a&quot;, &quot;Tubb2b&quot;, &quot;Tubb3&quot;, &quot;Tubb4a&quot;, &quot;Tubb4b&quot;,
+&quot;Tubb5&quot;, &quot;Tubb6&quot;, &quot;Tubg1&quot;, &quot;Tubg2&quot;, &quot;Tubgcp2&quot;, &quot;Tubgcp3&quot;, &quot;Tubgcp4&quot;,
+&quot;Tubgcp5&quot;, &quot;Tubgcp6&quot;, &quot;Uba52&quot;, &quot;Ubb&quot;, &quot;Ubc&quot;, &quot;Ube2c&quot;, &quot;Ube2d1&quot;,
+&quot;Ube2e1&quot;, &quot;Ube2i&quot;, &quot;Ube2n&quot;, &quot;Ube2s&quot;, &quot;Ube2v2&quot;, &quot;Uimc1&quot;, &quot;Vps4a&quot;,
+&quot;Vrk1&quot;, &quot;Vrk2&quot;, &quot;Wapl&quot;, &quot;Wee1&quot;, &quot;Wrap53&quot;, &quot;Wrn&quot;, &quot;Xpo1&quot;, &quot;Ywhab&quot;,
+&quot;Ywhae&quot;, &quot;Ywhag&quot;, &quot;Ywhah&quot;, &quot;Ywhaq&quot;, &quot;Ywhaz&quot;, &quot;Zfp385a&quot;, &quot;Zw10&quot;,
+&quot;Zwilch&quot;, &quot;Zwint&quot;)
 F &lt;- ldf(fl_nmf,type = &quot;i&quot;)$F
-F &lt;- scale_cols(F)
-F &lt;- F[j,]
-rownames(F) &lt;- marker_genes
-colnames(F) &lt;- paste0(&quot;k&quot;,1:7)
-factors &lt;- paste0(&quot;k&quot;,c(4,7,3,5,2,6))
-annotation_heatmap(F[,factors],select_eatures = &quot;all&quot;,verbose = FALSE)</code></pre>
+rownames(F) &lt;- genes$symbol
+colnames(F) &lt;- paste0(&quot;k&quot;,1:13)
+sort(colSums(F[cell_cycle,]))
+#        k6       k13        k8        k5        k1       k11        k3        k4 
+#  4.572620  5.697999  7.211619  8.244211  9.451072 11.196086 11.865956 13.022190 
+#        k2        k9       k10        k7       k12 
+# 17.587821 21.151715 22.159905 73.938631 78.021005</code></pre>
+</div>
+<div id="closer-examination-of-the-topics-and-factors"
+class="section level2">
+<h2>Closer examination of the topics and factors</h2>
+<p>TO DO:</p>
+<ul>
+<li><p>Run de_analysis with lfc.stat = “vsnull” to “shrink” the topics
+for comparison with the factors in scatterplots.</p></li>
+<li><p>Compare topics and corresponding factors in scatterplots. See
+temp2.R.</p></li>
+<li><p>Show that the topics and factors are “cluster-like” in that they
+are strongly correlated with each other.</p></li>
+<li><p>Identify “distinctive” genes using de_analysis for topic model
+and with a custom function from the singlecelljamboreeR package for the
+factors.</p></li>
+<li><p>The cell cycle factors (k7, k12) are other examples where the
+factors are largely independent from the others.</p></li>
+<li><p>Create annotation plots for the topic model and the EBNMF
+model.</p></li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1505,7 +1543,7 @@ Session information
 <pre class="r"><code>sessionInfo()
 # R version 4.3.3 (2024-02-29)
 # Platform: aarch64-apple-darwin20 (64-bit)
-# Running under: macOS 15.4.1
+# Running under: macOS 15.5
 # 
 # Matrix products: default
 # BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
@@ -1521,43 +1559,45 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3             ggplot2_3.5.0            
-# [3] singlecelljamboreeR_0.1-3 flashier_1.0.55          
-# [5] ebnm_1.1-34               fastTopics_0.7-25        
-# [7] Matrix_1.6-5              workflowr_1.7.1          
+# [1] workflowr_1.7.1            cowplot_1.1.3             
+# [3] ggplot2_3.5.0              singlecelljamboreeR_0.1-15
+# [5] flashier_1.0.55            ebnm_1.1-34               
+# [7] NNLM_0.4.4                 fastTopics_0.7-25         
+# [9] Matrix_1.6-5              
 # 
 # loaded via a namespace (and not attached):
-#  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.1        
-#  [4] dplyr_1.1.4          fastmap_1.1.1        lazyeval_0.2.2      
-#  [7] promises_1.2.1       digest_0.6.34        lifecycle_1.0.4     
-# [10] processx_3.8.3       invgamma_1.1         magrittr_2.0.3      
-# [13] compiler_4.3.3       rlang_1.1.5          sass_0.4.9          
-# [16] progress_1.2.3       tools_4.3.3          utf8_1.2.4          
-# [19] yaml_2.3.8           data.table_1.17.4    knitr_1.45          
-# [22] labeling_0.4.3       prettyunits_1.2.0    htmlwidgets_1.6.4   
-# [25] scatterplot3d_0.3-44 RColorBrewer_1.1-3   plyr_1.8.9          
-# [28] Rtsne_0.17           withr_3.0.2          purrr_1.0.2         
-# [31] grid_4.3.3           fansi_1.0.6          git2r_0.33.0        
-# [34] colorspace_2.1-0     scales_1.3.0         gtools_3.9.5        
-# [37] cli_3.6.4            rmarkdown_2.26       crayon_1.5.2        
-# [40] generics_0.1.3       RcppParallel_5.1.10  rstudioapi_0.15.0   
-# [43] httr_1.4.7           reshape2_1.4.4       pbapply_1.7-2       
-# [46] cachem_1.0.8         stringr_1.5.1        splines_4.3.3       
-# [49] parallel_4.3.3       softImpute_1.4-1     vctrs_0.6.5         
-# [52] jsonlite_1.8.8       callr_3.7.5          hms_1.1.3           
-# [55] mixsqp_0.3-54        ggrepel_0.9.5        irlba_2.3.5.1       
-# [58] horseshoe_0.2.0      trust_0.1-8          plotly_4.10.4       
-# [61] jquerylib_0.1.4      tidyr_1.3.1          glue_1.8.0          
-# [64] codetools_0.2-19     ps_1.7.6             uwot_0.2.3          
-# [67] stringi_1.8.3        Polychrome_1.5.1     gtable_0.3.4        
-# [70] later_1.3.2          quadprog_1.5-8       munsell_0.5.0       
-# [73] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.8.1   
-# [76] truncnorm_1.0-9      R6_2.5.1             rprojroot_2.0.4     
-# [79] evaluate_1.0.3       lattice_0.22-5       highr_0.10          
-# [82] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-66         
-# [85] httpuv_1.6.14        bslib_0.6.1          Rcpp_1.0.12         
-# [88] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.42           
-# [91] fs_1.6.5             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
+#  [1] pbapply_1.7-2        rlang_1.1.5          magrittr_2.0.3      
+#  [4] git2r_0.33.0         horseshoe_0.2.0      matrixStats_1.2.0   
+#  [7] susieR_0.14.6        compiler_4.3.3       getPass_0.2-4       
+# [10] callr_3.7.5          vctrs_0.6.5          reshape2_1.4.4      
+# [13] quadprog_1.5-8       stringr_1.5.1        pkgconfig_2.0.3     
+# [16] crayon_1.5.2         fastmap_1.1.1        labeling_0.4.3      
+# [19] utf8_1.2.4           promises_1.2.1       rmarkdown_2.26      
+# [22] ps_1.7.6             purrr_1.0.2          xfun_0.42           
+# [25] cachem_1.0.8         trust_0.1-8          jsonlite_1.8.8      
+# [28] progress_1.2.3       highr_0.10           later_1.3.2         
+# [31] reshape_0.8.9        irlba_2.3.5.1        parallel_4.3.3      
+# [34] prettyunits_1.2.0    R6_2.5.1             bslib_0.6.1         
+# [37] stringi_1.8.3        RColorBrewer_1.1-3   SQUAREM_2021.1      
+# [40] jquerylib_0.1.4      Rcpp_1.0.12          knitr_1.45          
+# [43] httpuv_1.6.14        splines_4.3.3        tidyselect_1.2.1    
+# [46] rstudioapi_0.15.0    yaml_2.3.8           processx_3.8.3      
+# [49] lattice_0.22-5       tibble_3.2.1         plyr_1.8.9          
+# [52] withr_3.0.2          evaluate_1.0.3       Rtsne_0.17          
+# [55] RcppParallel_5.1.10  pillar_1.9.0         whisker_0.4.1       
+# [58] plotly_4.10.4        softImpute_1.4-1     generics_0.1.3      
+# [61] rprojroot_2.0.4      invgamma_1.1         truncnorm_1.0-9     
+# [64] hms_1.1.3            munsell_0.5.0        scales_1.3.0        
+# [67] ashr_2.2-66          gtools_3.9.5         RhpcBLASctl_0.23-42 
+# [70] glue_1.8.0           scatterplot3d_0.3-44 lazyeval_0.2.2      
+# [73] tools_4.3.3          data.table_1.17.4    fs_1.6.5            
+# [76] grid_4.3.3           tidyr_1.3.1          colorspace_2.1-0    
+# [79] deconvolveR_1.2-1    cli_3.6.4            Polychrome_1.5.1    
+# [82] fansi_1.0.6          mixsqp_0.3-54        viridisLite_0.4.2   
+# [85] dplyr_1.1.4          uwot_0.2.3           gtable_0.3.4        
+# [88] sass_0.4.9           digest_0.6.34        ggrepel_0.9.5       
+# [91] htmlwidgets_1.6.4    farver_2.1.1         htmltools_0.5.8.1   
+# [94] lifecycle_1.0.4      httr_1.4.7</code></pre>
 </div>
 </div>
 
