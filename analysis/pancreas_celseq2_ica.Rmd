@@ -319,6 +319,15 @@ fastica_update_tlc <- function(U, W, lambda = 1) {
   sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
 }
 
+# just uses the tilt x|x| from the tlc (no logcosh term)
+fastica_update_skew <- function(U, W) {
+  P  <- t(U) %*% W
+  G  <- 2 * abs(P)
+  G2 <- 2 * sign(P)
+  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
+  sweep(W, 2, sqrt(colSums(W^2)) + 1e-15, "/")
+}
+
 # Rank-r TLC update with polar orthogonalisation.
 fastica_update_tlc_rankr <- function(U, W, lambda = 1) {
   P  <- t(U) %*% W
@@ -360,6 +369,8 @@ fastica_update_logphi_rankr <- function(U, W, alpha = 2) {
 objective_logphi <- function(L, alpha = 2) {
   colMeans(pnorm(alpha * L, log.p = TRUE))
 }
+
+objective_skew <- function(L) colMeans(L * abs(L))
 ```
 
 ## Eigenvalue plots
@@ -575,7 +586,41 @@ for (i in seq_len(n_iter))
 Lhat_tlc    <- t(U_aug) %*% W
 Lhat_tlc.pc <- prune_and_count_cluster(Lhat_tlc)
 
-plot_Lhat_maxima(Lhat_tlc.pc, obj_threshold = -Inf)
+plot_Lhat_maxima(Lhat_tlc.pc, obj_threshold = -Inf, obj_fn = objective_tlc)
+```
+
+## Tilted log-cosh: no intercept
+
+Here I restrict tlc to zero-mean sources; I am hoping that this gets rid of any tendancy to combine sources.
+```{r}
+set.seed(1)
+n_iter = 50
+W <- matrix(rnorm(nrow(U) * n_starts), nrow(U), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update_tlc(U, W)
+
+Lhat_tlc0    <- t(U) %*% W
+Lhat_tlc0.pc <- prune_and_count_cluster(Lhat_tlc0)
+
+plot_Lhat_maxima(Lhat_tlc0.pc, obj_threshold = -Inf, obj_fn = objective_tlc)
+```
+
+## Tilt only (no log-cosh)
+
+Here I remove the log cosh part of tlc and restrict to zero-mean sources.
+```{r}
+set.seed(1)
+n_iter = 50
+W <- matrix(rnorm(nrow(U) * n_starts), nrow(U), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update_skew(U, W)
+
+Lhat_skew0    <- t(U) %*% W
+Lhat_skew0.pc <- prune_and_count_cluster(Lhat_skew0)
+
+plot_Lhat_maxima(Lhat_skew0.pc, obj_threshold = -Inf, obj_fn = objective_skew)
 ```
 
 
@@ -591,13 +636,17 @@ for (i in seq_len(n_iter))
   W_r_tlc <- fastica_update_tlc_rankr(U_aug, W_r_tlc)
 
 Lhat_r_tlc <- t(U_aug) %*% W_r_tlc
-plot_loadings_matrix(Lhat_r_tlc)
+plot_loadings_matrix(Lhat_r_tlc, obj_fn = objective_tlc)
 ```
 
 
 ## Log-Phi: 1000 random starts
 
-The log-Phi contrast $G(z) = \log\Phi(\alpha z)$ rewards large positive projections and is suited to one-sided sparse sources (cells that are "on" for a minority of observations). Here $\alpha = 2$. Using U_aug always converged to the intercept so I removed the intercept column for this contrast.
+The log-Phi contrast $G(z) = \log\Phi(\alpha z)$ rewards large positive projections and is suited to one-sided sparse sources (cells that are "on" for a minority of observations). This is a monotonically increasing contrast function, so including an intercept here will give the trivial solution; here it is essential to remove the intercept (use `U` instead of `U_aug`).
+
+All these results look pretty good. The contrast function was chosen to try to avoid combining groups, and indeed it seems to succeed here. The orthogonal results seem to find both specific cell types and some of the batch/donor effects revealed later. This contrast function deserves more investigation.
+
+### alpha = 1
 
 ```{r}
 set.seed(1)
@@ -605,30 +654,62 @@ n_iter = 50
 W <- matrix(rnorm(nrow(U) * n_starts), nrow(U), n_starts)
 W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
 for (i in seq_len(n_iter))
-  W <- fastica_update_logphi(U, W)
+  W <- fastica_update_logphi(U, W, alpha = 1)
+
+Lhat_lp1    <- t(U) %*% W
+Lhat_lp1.pc <- prune_and_count_cluster(Lhat_lp1)
+plot_Lhat_maxima(Lhat_lp1.pc, obj_threshold = -Inf,
+                 obj_fn = function(L) objective_logphi(L, alpha = 1))
+```
+
+### alpha = 2
+
+```{r}
+set.seed(1)
+n_iter = 50
+W <- matrix(rnorm(nrow(U) * n_starts), nrow(U), n_starts)
+W <- sweep(W, 2, sqrt(colSums(W^2)), "/")
+for (i in seq_len(n_iter))
+  W <- fastica_update_logphi(U, W, alpha = 2)
 
 Lhat_lp    <- t(U) %*% W
 Lhat_lp.pc <- prune_and_count_cluster(Lhat_lp)
-plot_Lhat_maxima(Lhat_lp.pc, obj_threshold = -Inf)
+plot_Lhat_maxima(Lhat_lp.pc, obj_threshold = -Inf, obj_fn = objective_logphi)
 ```
 
 
 ## Log-Phi: rank-r (r = 20)
 
+### alpha = 1
+
 ```{r}
-set.seed(1)
+set.seed(2)
+n_iter = 500
+W_r_lp1 <- polar(matrix(rnorm((n.comp) * r), n.comp, r))
+for (i in seq_len(n_iter))
+  W_r_lp1 <- fastica_update_logphi_rankr(U, W_r_lp1, alpha = 1)
+
+Lhat_r_lp1 <- t(U) %*% W_r_lp1
+plot_loadings_matrix(Lhat_r_lp1, obj_fn = function(L) objective_logphi(L, alpha = 1))
+```
+
+### alpha = 2
+
+```{r}
+set.seed(2)
 n_iter = 500
 W_r_lp <- polar(matrix(rnorm((n.comp) * r), n.comp, r))
 for (i in seq_len(n_iter))
-  W_r_lp <- fastica_update_logphi_rankr(U, W_r_lp)
+  W_r_lp <- fastica_update_logphi_rankr(U, W_r_lp, alpha = 2)
 
 Lhat_r_lp <- t(U) %*% W_r_lp
-plot_loadings_matrix(Lhat_r_lp)
+plot_loadings_matrix(Lhat_r_lp, obj_fn = objective_logphi)
 ```
 
 
 
-### Binary ICA
+
+## Binary ICA
 
 Now I try the binary version of ICA (from stephens999/misc/fastica_asymmetric_04.Rmd).
 
@@ -966,6 +1047,50 @@ lhat_ggplot(Lhat_gp.pc, idx=rep(TRUE, ncol(Lhat_gp.pc$pruned_matrix)),
             si=sample_info)
 ```
 
+### EBproj: 1000 goldenplus starts in 10 PCs, refitted in 25 PCs
+
+Here I run 1000 goldenplus fits using only the first 10 PCs, then use each resulting weight vector as a starting point for a fresh 25-PC EBproj fit. The 15 extra coordinates in $w$ are initialised to zero, so the starting direction lies entirely in the first 10-PC subspace and the full fit is free to adjust in all 25 directions.
+
+```{r ebproj-gp10-init25}
+n_comp10 <- 10
+U_eb10   <- Y.svd$u[, 1:n_comp10]   # n x 10
+b_eb10   <- n_comp10 / 2
+
+set.seed(3)
+n_starts_10 <- 1000
+fits_gp10   <- vector("list", n_starts_10)
+for (i in seq_len(n_starts_10)) {
+  fit.init      <- ebproj_init(U_eb10, b=b_eb10, c=c_golden, sigma2=c_golden)
+  fit_golden    <- suppressWarnings(ebproj_fit(fit.init, fix_tau=TRUE, g_update="g0", max_iter=200))
+  fits_gp10[[i]] <- suppressWarnings(ebproj_fit(fit_golden, max_iter=200))
+}
+
+obj_gp10      <- sapply(fits_gp10, ebproj_objective)
+Lhat_gp10     <- sapply(fits_gp10, ebproj_calc_x)
+Lhat_gp10.pc  <- prune_and_count_cluster(Lhat_gp10)
+
+# Refit each clustered representative in 25 PCs, padding w with zeros
+n_rep10  <- ncol(Lhat_gp10.pc$pruned_matrix)
+fits_25  <- vector("list", n_rep10)
+for (j in seq_len(n_rep10)) {
+  orig_fit <- fits_gp10[[Lhat_gp10.pc$kept_indices[j]]]
+  w_init   <- c(orig_fit$w, rep(0, n.comp - n_comp10))   # pad to length 25
+  fit.init <- ebproj_init(U_eb, b=b_eb, c=orig_fit$c, sigma2=1/orig_fit$tau, w=w_init)
+  fit_golden  <- suppressWarnings(ebproj_fit(fit.init, fix_tau=TRUE, g_update="g0", max_iter=200))
+  fits_25[[j]] <- suppressWarnings(ebproj_fit(fit_golden, max_iter=200))
+}
+
+Lhat_gp10_25    <- sapply(fits_25, ebproj_calc_x)
+obj_gp10_25     <- sapply(fits_25, ebproj_objective)
+Lhat_gp10_25.pc <- prune_and_count_cluster(Lhat_gp10_25)
+
+lhat_ggplot(Lhat_gp10_25.pc, idx=rep(TRUE, ncol(Lhat_gp10_25.pc$pruned_matrix)),
+            title="EBproj: 10-PC goldenplus → 25-PC refit",
+            obj_fn=function(L) obj_gp10_25[Lhat_gp10_25.pc$kept_indices],
+            si=sample_info)
+```
+
+
 ## Orthogonal EBproj approaches
 
 In this section I try multiple approaches that interleave EBproj updates with orthogonalization approaches (eg polar decomposition or Gram Schmidt). These are all very exploratory - I have not thought hard about the validity of these schemes, simply implementing them to see what happens.
@@ -1149,6 +1274,66 @@ obj_rankr_gs  <- sapply(fits_rankr_gs, ebproj_objective)
 plot_loadings_matrix(Lhat_rankr_gs, label_prefix="egs:",
                      obj_fn=function(L) obj_rankr_gs,
                      si=sample_info)
+
+
+```
+
+
+### Closer look at GS loadings 1, 4, 10 — colored by sample
+
+Loadings 1, 4, and 10 show structure that may reflect sample (batch/donor) effects rather than cell type. Here I re-plot them colored by two sample-level groupings derived from `sample_info$id` (format `D28-1_74`): the part before `_` (donor + batch, e.g. `D28-1`) and the part before `-` (donor only, e.g. `D28`).
+
+```{r gs-loadings-by-sample}
+# Columns 1, 4, 10 in the plot are ordered by increasing objective,
+# so recover the actual column indices from that ordering
+comp_idx <- order(obj_rankr_gs)[c(1, 4, 10)]
+
+donor_batch <- sub("_.*", "", sample_info$id)   # e.g. "D28-1"
+donor       <- sub("-.*", "", sample_info$id)   # e.g. "D28"
+
+cell_order <- seq_len(nrow(Lhat_rankr_gs))  # keep original cell order
+
+plot_ranks <- c(1, 4, 10)   # positions in the increasing-objective plot order
+comp_labels <- paste0("plot pos ", plot_ranks,
+                       " (obj:", round(obj_rankr_gs[comp_idx], 3), ")")
+
+df_gs <- do.call(rbind, lapply(seq_along(comp_idx), function(i) {
+  k <- comp_idx[i]
+  data.frame(
+    rank        = cell_order,
+    loading     = Lhat_rankr_gs[cell_order, k],
+    component   = comp_labels[i],
+    donor_batch = donor_batch[cell_order],
+    donor       = donor[cell_order]
+  )
+}))
+df_gs$component <- factor(df_gs$component, levels = comp_labels)
+
+p_batch <- ggplot(df_gs, aes(x=rank, y=loading, color=donor_batch)) +
+  geom_point(size=0.5, alpha=0.7) +
+  geom_hline(yintercept=0, linetype="dashed", linewidth=0.3) +
+  facet_wrap(~ component, ncol=3, scales="free_y") +
+  labs(title="GS loadings by donor+batch (before _)",
+       x=NULL, y="Loading", color="Donor+batch") +
+  theme_bw(base_size=10) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        legend.position="bottom",
+        legend.key.size=unit(1, "lines")) +
+  guides(color=guide_legend(override.aes=list(size=3, alpha=1)))
+print(p_batch)
+
+p_donor <- ggplot(df_gs, aes(x=rank, y=loading, color=donor)) +
+  geom_point(size=0.5, alpha=0.7) +
+  geom_hline(yintercept=0, linetype="dashed", linewidth=0.3) +
+  facet_wrap(~ component, ncol=3, scales="free_y") +
+  labs(title="GS loadings by donor (before -)",
+       x=NULL, y="Loading", color="Donor") +
+  theme_bw(base_size=10) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(),
+        legend.position="bottom",
+        legend.key.size=unit(1, "lines")) +
+  guides(color=guide_legend(override.aes=list(size=3, alpha=1)))
+print(p_donor)
 ```
 
 
@@ -1261,7 +1446,7 @@ plot_loadings_matrix(Lhat_lgs_gp, label_prefix="elgs_gp:",
 ```
 
 
-### EBproj initialized from cell type labels
+## EBproj initialized from cell type labels
 
 Here I initialize EBproj from binary (0/1) cell type indicator vectors, analogous to the "Initialize from known celltypes: binary" section above. For each cell type I project its indicator column into the whitened space to get a starting $w$, then run the two-stage EBproj fit.
 
