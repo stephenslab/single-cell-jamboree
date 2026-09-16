@@ -19,7 +19,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 A second look at ICA on the pancreas CEL-seq2 data, incorporating lessons from the first analysis (`pancreas_celseq2_ica.Rmd`). Key differences from the first analysis:
 
-- Data are **not centred** before whitening. The mean direction becomes one of the 25 components and can be explicitly examined.
+- Data are **centred** (column means subtracted) before whitening, as is standard for ICA.
 - We run **rank-$r$ (symmetric) fastICA with $r = 25$** rather than many rank-1 starts, which is faster and avoids the post-hoc deduplication step.
 - We compare three contrast functions chosen to favour one-sided/sparse sources: $x^3$ (kurtosis/skewness), $\log\Phi(\alpha x)$ (log-normal CDF), and $x|x|$ (the tilting term of TLC without the log-cosh).
 
@@ -43,10 +43,11 @@ counts <- counts[, j]
 a <- 1
 s <- rowSums(counts)
 s <- s / mean(s)
-Y <- MatrixExtra::mapSparse(counts / (a * s), log1p)   # NOT centred
+Y <- MatrixExtra::mapSparse(counts / (a * s), log1p)
+Y <- scale(Y, scale = FALSE)   # centre columns
 ```
 
-## Preprocessing: SVD of uncentered data
+## Preprocessing: SVD of centred data
 
 ```{r svd}
 n      <- nrow(Y)
@@ -54,10 +55,10 @@ n.comp <- 25
 r      <- n.comp
 
 Y.svd <- svd(Y, nu = n.comp, nv = 0)
-# U: n x n.comp, orthonormal columns (left singular vectors of uncentered Y)
-U_unc <- Y.svd$u[, 1:n.comp]
+# U: n x n.comp, orthonormal columns (left singular vectors of centred Y)
+U_c <- Y.svd$u[, 1:n.comp]
 # Whitened row space (n.comp x n, as used by rank-r fastICA)
-U_w   <- sqrt(n) * t(U_unc)
+U_w <- sqrt(n) * t(U_c)
 ```
 
 ## Helper functions
