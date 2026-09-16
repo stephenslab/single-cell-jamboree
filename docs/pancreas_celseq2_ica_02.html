@@ -465,16 +465,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreed3dbf5b36f5cd19cecd2016fb3316bcdf9b2523ftargetblankd3dbf5ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephenslab/single-cell-jamboree/tree/d3dbf5b36f5cd19cecd2016fb3316bcdf9b2523f" target="_blank">d3dbf5b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree360267682454064951fc4d1d2df3cecb771e464dtargetblank3602676a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephenslab/single-cell-jamboree/tree/360267682454064951fc4d1d2df3cecb771e464d" target="_blank">3602676</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetreed3dbf5b36f5cd19cecd2016fb3316bcdf9b2523ftargetblankd3dbf5ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree360267682454064951fc4d1d2df3cecb771e464dtargetblank3602676a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephenslab/single-cell-jamboree/tree/d3dbf5b36f5cd19cecd2016fb3316bcdf9b2523f" target="_blank">d3dbf5b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephenslab/single-cell-jamboree/tree/360267682454064951fc4d1d2df3cecb771e464d" target="_blank">3602676</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -537,6 +537,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/360267682454064951fc4d1d2df3cecb771e464d/analysis/pancreas_celseq2_ica_02.Rmd" target="_blank">3602676</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Add Gram-Schmidt versions of all three contrast functions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/ec41b4c99b3a62601445f210e39430bdd9e07f10/docs/pancreas_celseq2_ica_02.html" target="_blank">ec41b4c</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -786,7 +820,24 @@ fastica_update_skew_rankr &lt;- function(U, W) {
   W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
   polar(W)
 }
-objective_skew &lt;- function(L) colMeans(L * abs(L))</code></pre>
+objective_skew &lt;- function(L) colMeans(L * abs(L))
+
+# Gram-Schmidt reorthogonalization ordered by decreasing objective.
+# W: n.comp x r matrix with orthonormal columns.
+# L: n x r loadings matrix (= t(U_w) %*% W).
+# Returns W with orthonormal columns, best-objective direction first.
+gs_reorth_W &lt;- function(W, L, obj_fn) {
+  ord &lt;- order(obj_fn(L), decreasing = TRUE)
+  V   &lt;- W[, ord, drop = FALSE]
+  for (j in seq_len(ncol(V))) {
+    if (j &gt; 1)
+      for (l in seq_len(j - 1))
+        V[, j] &lt;- V[, j] - sum(V[, j] * V[, l]) * V[, l]
+    nrm &lt;- sqrt(sum(V[, j]^2))
+    if (nrm &gt; 1e-10) V[, j] &lt;- V[, j] / nrm
+  }
+  V
+}</code></pre>
 </div>
 <div id="rank-r-fastica-cubic-contrast-x3" class="section level2">
 <h2>Rank-r fastICA: cubic contrast (x^3)</h2>
@@ -822,6 +873,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ec41b4c99b3a62601445f210e39430bdd9e07f10/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-1.png" target="_blank">ec41b4c</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-09-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/single-cell-jamboree/blob/3d4592ef6fe554cf90a5cac8251e528211725026/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-1.png" target="_blank">3d4592e</a>
@@ -970,6 +1032,69 @@ Matthew Stephens
 </table>
 </div>
 </div>
+</div>
+<div id="gram-schmidt-versions" class="section level2">
+<h2>Gram-Schmidt versions</h2>
+<p>Each iteration applies the contrast update followed by Gram-Schmidt reorthogonalization (instead of polar). Components are ordered by decreasing objective before GS, so the best-objective direction is processed first and kept exactly; subsequent components are deflated against all preceding ones. After GS the columns remain orthonormal.</p>
+<div id="gs-cubic-contrast-x3" class="section level3">
+<h3>GS: cubic contrast (x^3)</h3>
+<pre class="r"><code>set.seed(1)
+n_iter &lt;- 500
+W_cubic_gs &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
+for (i in seq_len(n_iter)) {
+  P              &lt;- t(U_w) %*% W_cubic_gs
+  G              &lt;- 3 * P^2
+  G2             &lt;- 6 * P
+  W_cubic_gs     &lt;- U_w %*% G - sweep(W_cubic_gs, 2, colSums(G2), &quot;*&quot;)
+  L_tmp          &lt;- t(U_w) %*% W_cubic_gs
+  W_cubic_gs     &lt;- gs_reorth_W(W_cubic_gs, L_tmp, objective_cubic)
+}
+
+Lhat_cubic_gs &lt;- t(U_w) %*% W_cubic_gs
+plot_loadings_matrix(Lhat_cubic_gs, label_prefix = &quot;cub-gs:&quot;,
+                     obj_fn = objective_cubic)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-gs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="gs-log-phi-contrast-alpha-2" class="section level3">
+<h3>GS: log-Phi contrast (alpha = 2)</h3>
+<pre class="r"><code>set.seed(1)
+n_iter &lt;- 500
+alpha  &lt;- 2
+W_lp_gs &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
+for (i in seq_len(n_iter)) {
+  P       &lt;- t(U_w) %*% W_lp_gs
+  u       &lt;- alpha * P
+  h       &lt;- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+  G       &lt;- alpha * h
+  G2      &lt;- alpha^2 * (-u * h - h^2)
+  W_lp_gs &lt;- U_w %*% G - sweep(W_lp_gs, 2, colSums(G2), &quot;*&quot;)
+  L_tmp   &lt;- t(U_w) %*% W_lp_gs
+  W_lp_gs &lt;- gs_reorth_W(W_lp_gs, L_tmp, objective_logphi)
+}
+
+Lhat_lp_gs &lt;- t(U_w) %*% W_lp_gs
+plot_loadings_matrix(Lhat_lp_gs, label_prefix = &quot;lp-gs:&quot;,
+                     obj_fn = objective_logphi)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-logphi-gs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="gs-xx-contrast" class="section level3">
+<h3>GS: x|x| contrast</h3>
+<pre class="r"><code>set.seed(1)
+n_iter   &lt;- 500
+W_skew_gs &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
+for (i in seq_len(n_iter)) {
+  P         &lt;- t(U_w) %*% W_skew_gs
+  G         &lt;- 2 * abs(P)
+  G2        &lt;- 2 * sign(P)
+  W_skew_gs &lt;- U_w %*% G - sweep(W_skew_gs, 2, colSums(G2), &quot;*&quot;)
+  L_tmp     &lt;- t(U_w) %*% W_skew_gs
+  W_skew_gs &lt;- gs_reorth_W(W_skew_gs, L_tmp, objective_skew)
+}
+
+Lhat_skew_gs &lt;- t(U_w) %*% W_skew_gs
+plot_loadings_matrix(Lhat_skew_gs, label_prefix = &quot;sk-gs:&quot;,
+                     obj_fn = objective_skew)</code></pre>
+<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-skew-gs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1027,6 +1152,7 @@ loaded via a namespace (and not attached):
 [76] Rcpp_1.1.1           nlme_3.1-168         prodlim_2026.03.11  
 [79] whisker_0.4.1        xfun_0.56            fs_1.6.6            
 [82] pkgconfig_2.0.3      ModelMetrics_1.2.2.2</code></pre>
+</div>
 </div>
 </div>
 
