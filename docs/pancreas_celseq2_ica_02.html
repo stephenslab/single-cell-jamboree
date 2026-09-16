@@ -465,16 +465,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree360267682454064951fc4d1d2df3cecb771e464dtargetblank3602676a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephenslab/single-cell-jamboree/tree/360267682454064951fc4d1d2df3cecb771e464d" target="_blank">3602676</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree3c56a62587e450ace6c30db474d2ef49c4ed4f7ctargetblank3c56a62a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/stephenslab/single-cell-jamboree/tree/3c56a62587e450ace6c30db474d2ef49c4ed4f7c" target="_blank">3c56a62</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree360267682454064951fc4d1d2df3cecb771e464dtargetblank3602676a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabsinglecelljamboreetree3c56a62587e450ace6c30db474d2ef49c4ed4f7ctargetblank3c56a62a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/stephenslab/single-cell-jamboree/tree/360267682454064951fc4d1d2df3cecb771e464d" target="_blank">3602676</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/stephenslab/single-cell-jamboree/tree/3c56a62587e450ace6c30db474d2ef49c4ed4f7c" target="_blank">3c56a62</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -537,6 +537,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3c56a62587e450ace6c30db474d2ef49c4ed4f7c/analysis/pancreas_celseq2_ica_02.Rmd" target="_blank">3c56a62</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Add pancreas_celseq2_ica_02: compare contrasts and orthogonalization
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/single-cell-jamboree/blob/369b5dd1878dbc5980b889aa1244971c3192e383/analysis/pancreas_celseq2_ica_02.Rmd" target="_blank">369b5dd</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Add tabbed cell type/donor/donor+batch coloring to loading plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/single-cell-jamboree/d00107ae676ceced7d3118fb37ad1aebb098e7da/docs/pancreas_celseq2_ica_02.html" target="_blank">d00107a</a>
+</td>
+<td>
+Matthew Stephens
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -667,14 +718,12 @@ Add pancreas_celseq2_ica_02: rank-r ICA with cubic, logPhi, x|x|
 <h2>Introduction</h2>
 <p>A second look at ICA on the pancreas CEL-seq2 data, incorporating lessons from the first analysis (<code>pancreas_celseq2_ica.Rmd</code>). Key differences from the first analysis:</p>
 <ul>
-<li>Data are <strong>centred</strong> (column means subtracted) before whitening, as is standard for ICA.</li>
-<li>We run <strong>rank-<span class="math inline">\(r\)</span> (symmetric) fastICA with <span class="math inline">\(r = 25\)</span></strong> rather than many rank-1 starts, which is faster and avoids the post-hoc deduplication step.</li>
-<li>We compare three contrast functions chosen to favour one-sided/sparse sources: <span class="math inline">\(G(x) = x^3\)</span> (skewness), <span class="math inline">\(G(x) = \log\Phi(\alpha x)\)</span> (log-normal CDF), and <span class="math inline">\(G(x) = x|x|\)</span> (the tilting term of TLC without the log-cosh).</li>
+<li><p>We focus on contrast functions chosen to favour one-sided/sparse sources, and avoid combining groups. For example, <span class="math inline">\(G(x) = x^3\)</span> (skewness), <span class="math inline">\(G(x) = \log\Phi(\alpha x)\)</span> (log-normal CDF), and <span class="math inline">\(G(x) = x|x|\)</span> (the tilting term of TLC without the log-cosh). This means we can center the data without breaking things, so we no longer need to augment by an intercept.</p></li>
+<li><p>We focus on <strong>rank-<span class="math inline">\(r\)</span> fastICA</strong>, whitening to 30 PCs and keeping all <span class="math inline">\(r = 30\)</span> components.</p></li>
+<li><p>We use both polar and Gram Schmidt to do orthogonalization. In GS each iteration applies the contrast update followed by Gram-Schmidt reorthogonalization. Components are ordered by decreasing objective before GS, so the best-objective direction is processed first and kept exactly; subsequent components are deflated against all preceding ones. After GS the columns remain orthonormal.</p></li>
 </ul>
-<pre class="r"><code>library(fastICA)
-library(Matrix)
+<pre class="r"><code>library(Matrix)
 library(ggplot2)
-library(caret)
 
 load(&quot;../data/pancreas.RData&quot;)
 set.seed(1)
@@ -696,14 +745,15 @@ Y &lt;- scale(Y, scale = FALSE)   # centre columns</code></pre>
 <div id="preprocessing-svd-of-centred-data" class="section level2">
 <h2>Preprocessing: SVD of centred data</h2>
 <pre class="r"><code>n      &lt;- nrow(Y)
-n.comp &lt;- 25
-r      &lt;- n.comp
+n.comp &lt;- 30   # PCs retained for whitening
+r      &lt;- 30   # components extracted by ICA (r &lt;= n.comp)
 
 Y.svd &lt;- svd(Y, nu = n.comp, nv = 0)
 # U: n x n.comp, orthonormal columns (left singular vectors of centred Y)
 U_c &lt;- Y.svd$u[, 1:n.comp]
 # Whitened row space (n.comp x n, as used by rank-r fastICA)
 U_w &lt;- sqrt(n) * t(U_c)</code></pre>
+<p>Here 30 components are extracted from a 30-dimensional whitened space, so each <code>W</code> is square (30 <span class="math inline">\(\times\)</span> 30) with orthonormal columns and the components span the whole whitened space. Setting <code>r</code> below <code>n.comp</code> would instead let ICA keep only the most interesting directions and leave the remainder unmodelled.</p>
 </div>
 <div id="helper-functions" class="section level2">
 <h2>Helper functions</h2>
@@ -720,112 +770,37 @@ polar &lt;- function(W) {
                diag(1 / sqrt(pmax(eig$values, 1e-14))) %*%
                t(eig$vectors)
   W %*% Ainvhalf
-}
-
-prune_and_count_cluster &lt;- function(L, tau = 0.9) {
-  L        &lt;- L[, apply(L, 2, sd) &gt; 1e-10, drop = FALSE]
-  dist_mat &lt;- as.dist(1 - abs(cor(L)))
-  hc       &lt;- hclust(dist_mat, method = &quot;complete&quot;)
-  clusters &lt;- cutree(hc, h = 1 - tau)
-  kept_indices        &lt;- match(unique(clusters), clusters)
-  cluster_sizes_table &lt;- table(clusters)
-  kept_cluster_ids    &lt;- clusters[kept_indices]
-  cluster_sizes       &lt;- as.integer(cluster_sizes_table[as.character(kept_cluster_ids)])
-  list(pruned_matrix      = L[, kept_indices, drop = FALSE],
-       cluster_sizes      = cluster_sizes,
-       kept_indices       = kept_indices,
-       cluster_assignments = clusters)
-}
-
-plot_loadings_matrix &lt;- function(Lhat, label_prefix = &quot;c:&quot;, si = sample_info,
-                                  obj_fn = function(L) colMeans(L^4),
-                                  max_panels = 25, labels = NULL) {
-  obj    &lt;- obj_fn(Lhat)
-  n_comp &lt;- ncol(Lhat)
-  if (is.null(labels)) {
-    o           &lt;- order(obj)
-    Lhat        &lt;- Lhat[, o, drop = FALSE]
-    obj         &lt;- obj[o]
-    comp_labels &lt;- make.unique(paste0(label_prefix, seq_len(n_comp),
-                                      &quot; obj:&quot;, round(obj, 3)))
-  } else {
-    comp_labels &lt;- make.unique(paste0(labels, &quot; obj:&quot;, round(obj, 3)))
-  }
-  cell_order &lt;- order(si$celltype)
-  df &lt;- data.frame(
-    rank      = rep(seq_len(nrow(Lhat)), n_comp),
-    celltype  = rep(si$celltype[cell_order], n_comp),
-    loading   = as.vector(Lhat[cell_order, ]),
-    component = factor(rep(comp_labels, each = nrow(Lhat)),
-                       levels = comp_labels)
-  )
-  pages &lt;- split(comp_labels,
-                 ceiling(seq_along(comp_labels) / max_panels))
-  for (pg in seq_along(pages)) {
-    pg_labels &lt;- pages[[pg]]
-    df_pg     &lt;- df[df$component %in% pg_labels, ]
-    df_pg$component &lt;- factor(as.character(df_pg$component),
-                               levels = pg_labels)
-    pg_title &lt;- if (length(pages) &gt; 1)
-      paste0(&quot;page &quot;, pg, &quot;/&quot;, length(pages)) else &quot;&quot;
-    p &lt;- ggplot(df_pg, aes(x = rank, y = loading, color = celltype)) +
-      geom_point(size = 0.5, alpha = 0.7) +
-      geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.3) +
-      facet_wrap(~ component, ncol = 5, scales = &quot;free_y&quot;) +
-      scale_color_manual(values = celltype_palette) +
-      labs(x = NULL, y = &quot;Loading&quot;, color = &quot;Cell type&quot;, title = pg_title) +
-      theme_bw(base_size = 10) +
-      theme(axis.text.x  = element_blank(),
-            axis.ticks.x = element_blank(),
-            strip.text   = element_text(size = 7,
-                                        margin = margin(2, 0, 2, 0)),
-            strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
-            legend.position  = &quot;bottom&quot;)
-    print(p)
-  }
 }</code></pre>
 </div>
-<div id="contrast-functions" class="section level2">
-<h2>Contrast functions</h2>
-<pre class="r"><code># --- G(x) = x^3 (skewness) ---
-# g(x) = G&#39;(x) = 3x^2,  g&#39;(x) = G&#39;&#39;(x) = 6x
-fastica_update_cubic_rankr &lt;- function(U, W) {
-  P  &lt;- t(U) %*% W
-  G  &lt;- 3 * P^2
-  G2 &lt;- 6 * P
-  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
-  polar(W)
-}
-objective_cubic &lt;- function(L) colMeans(L^3)
-
-# --- log-Phi ---
-# G(x) = log Phi(alpha*x),  g = alpha*h,  g&#39; = alpha^2*(-alpha*x*h - h^2)
-fastica_update_logphi_rankr &lt;- function(U, W, alpha = 2) {
-  P  &lt;- t(U) %*% W
-  u  &lt;- alpha * P
-  h  &lt;- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
-  G  &lt;- alpha * h
-  G2 &lt;- alpha^2 * (-u * h - h^2)
-  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
-  polar(W)
-}
-objective_logphi &lt;- function(L, alpha = 2) colMeans(pnorm(alpha * L, log.p = TRUE))
-
-# --- x|x| (skew tilt, no log-cosh) ---
-# g(x) = 2|x|,  g&#39;(x) = 2*sign(x),  G(x) = x|x|
-fastica_update_skew_rankr &lt;- function(U, W) {
-  P  &lt;- t(U) %*% W
-  G  &lt;- 2 * abs(P)
-  G2 &lt;- 2 * sign(P)
-  W  &lt;- U %*% G - sweep(W, 2, colSums(G2), &quot;*&quot;)
-  polar(W)
-}
-objective_skew &lt;- function(L) colMeans(L * abs(L))
+<div id="contrast-functions-and-the-fastica-driver" class="section level2">
+<h2>Contrast functions and the fastICA driver</h2>
+<p>A contrast is specified by the function <span class="math inline">\(G\)</span> whose column mean the update maximizes. <code>deriv()</code> returns <span class="math inline">\(G&#39;\)</span> and <span class="math inline">\(G&#39;&#39;\)</span> evaluated at <span class="math inline">\(P = U^\top W\)</span> (the <code>G</code> and <code>G2</code> terms of the symmetric fastICA update) and <code>obj()</code> returns <span class="math inline">\(\mathrm{colMeans}(G(L))\)</span>.</p>
+<pre class="r"><code>contrast_defs &lt;- list(
+  # G(x) = x^3:  G&#39; = 3x^2,  G&#39;&#39; = 6x
+  cubic = list(
+    deriv = function(P) list(G = 3 * P^2, G2 = 6 * P),
+    obj   = function(L) colMeans(L^3)
+  ),
+  # G(x) = log Phi(alpha*x),  h = phi/Phi
+  logphi = list(
+    deriv = function(P, alpha = 2) {
+      u &lt;- alpha * P
+      h &lt;- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+      list(G = alpha * h, G2 = alpha^2 * (-u * h - h^2))
+    },
+    obj = function(L, alpha = 2) colMeans(pnorm(alpha * L, log.p = TRUE))
+  ),
+  # G(x) = x|x|:  G&#39; = 2|x|,  G&#39;&#39; = 2 sign(x)
+  skew = list(
+    deriv = function(P) list(G = 2 * abs(P), G2 = 2 * sign(P)),
+    obj   = function(L) colMeans(L * abs(L))
+  )
+)
 
 # Gram-Schmidt reorthogonalization ordered by decreasing objective.
-# W: n.comp x r matrix with orthonormal columns.
-# L: n x r loadings matrix (= t(U_w) %*% W).
-# Returns W with orthonormal columns, best-objective direction first.
+# W: n.comp x r with orthonormal columns; L: n x r loadings (= t(U) %*% W).
+# The best-objective direction is processed first and so is kept exactly;
+# each later column is deflated against all preceding ones.
 gs_reorth_W &lt;- function(W, L, obj_fn) {
   ord &lt;- order(obj_fn(L), decreasing = TRUE)
   V   &lt;- W[, ord, drop = FALSE]
@@ -837,264 +812,185 @@ gs_reorth_W &lt;- function(W, L, obj_fn) {
     if (nrm &gt; 1e-10) V[, j] &lt;- V[, j] / nrm
   }
   V
+}
+
+# Rank-r symmetric fastICA. contrast picks an entry of contrast_defs; orth is
+# the orthogonalization applied after each update, either the polar factor or
+# Gram-Schmidt ordered by objective. Returns the n x r loadings t(U) %*% W.
+run_fastica &lt;- function(U, contrast, orth = c(&quot;polar&quot;, &quot;gs&quot;),
+                        r = nrow(U), n_iter = 50, seed = 1) {
+  orth &lt;- match.arg(orth)
+  cf   &lt;- contrast_defs[[contrast]]
+  set.seed(seed)
+  W &lt;- polar(matrix(rnorm(nrow(U) * r), nrow(U), r))
+  for (i in seq_len(n_iter)) {
+    d &lt;- cf$deriv(t(U) %*% W)
+    W &lt;- U %*% d$G - sweep(W, 2, colSums(d$G2), &quot;*&quot;)
+    W &lt;- if (orth == &quot;polar&quot;) polar(W)
+         else gs_reorth_W(W, t(U) %*% W, cf$obj)
+  }
+  t(U) %*% W
 }</code></pre>
 </div>
-<div id="rank-r-fastica-cubic-contrast-x3" class="section level2">
-<h2>Rank-r fastICA: cubic contrast (x^3)</h2>
-<pre class="r"><code>set.seed(1)
-n_iter &lt;- 500
-W_cubic &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter))
-  W_cubic &lt;- fastica_update_cubic_rankr(U_w, W_cubic)
+<div id="running-all-six-methods" class="section level2">
+<h2>Running all six methods</h2>
+<p>Every method below is the same driver with a different <code>contrast</code> / <code>orth</code> pair, all from the same random start (<code>seed = 1</code>) and the same number of iterations.</p>
+<pre class="r"><code>method_spec &lt;- list(
+  &quot;cubic&quot;     = list(contrast = &quot;cubic&quot;,  orth = &quot;polar&quot;),
+  &quot;logphi&quot;    = list(contrast = &quot;logphi&quot;, orth = &quot;polar&quot;),
+  &quot;skew&quot;      = list(contrast = &quot;skew&quot;,   orth = &quot;polar&quot;),
+  &quot;cubic-GS&quot;  = list(contrast = &quot;cubic&quot;,  orth = &quot;gs&quot;),
+  &quot;logphi-GS&quot; = list(contrast = &quot;logphi&quot;, orth = &quot;gs&quot;),
+  &quot;skew-GS&quot;   = list(contrast = &quot;skew&quot;,   orth = &quot;gs&quot;)
+)
 
-Lhat_cubic &lt;- t(U_w) %*% W_cubic   # n x r
-plot_loadings_matrix(Lhat_cubic, label_prefix = &quot;cub:&quot;,
-                     obj_fn = objective_cubic)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ica-cubic-1">
-Past versions of ica-cubic-1.png
-</button>
-</p>
-<div id="fig-ica-cubic-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/ec41b4c99b3a62601445f210e39430bdd9e07f10/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-1.png" target="_blank">ec41b4c</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2026-09-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3d4592ef6fe554cf90a5cac8251e528211725026/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-1.png" target="_blank">3d4592e</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2026-09-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e748825caa62c5a1cc02333ced41ee9688a74115/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-1.png" target="_blank">e748825</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2026-09-16
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="rank-r-fastica-log-phi-contrast-alpha-2" class="section level2">
-<h2>Rank-r fastICA: log-Phi contrast (alpha = 2)</h2>
-<pre class="r"><code>set.seed(1)
-n_iter &lt;- 500
-W_lp &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter))
-  W_lp &lt;- fastica_update_logphi_rankr(U_w, W_lp, alpha = 2)
+methods_L &lt;- lapply(method_spec,
+                    function(m) run_fastica(U_w, m$contrast, m$orth,
+                                            r = r, n_iter = 50))
 
-Lhat_lp &lt;- t(U_w) %*% W_lp
-plot_loadings_matrix(Lhat_lp, label_prefix = &quot;lp:&quot;,
-                     obj_fn = objective_logphi)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-logphi-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ica-logphi-1">
-Past versions of ica-logphi-1.png
-</button>
-</p>
-<div id="fig-ica-logphi-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3d4592ef6fe554cf90a5cac8251e528211725026/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-logphi-1.png" target="_blank">3d4592e</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2026-09-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e748825caa62c5a1cc02333ced41ee9688a74115/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-logphi-1.png" target="_blank">e748825</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2026-09-16
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="rank-r-fastica-xx-contrast" class="section level2">
-<h2>Rank-r fastICA: x|x| contrast</h2>
-<pre class="r"><code>set.seed(1)
-n_iter &lt;- 500
-W_skew &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter))
-  W_skew &lt;- fastica_update_skew_rankr(U_w, W_skew)
+# Objective belonging to each method, for ordering and labelling its panels.
+obj_of &lt;- function(m) contrast_defs[[method_spec[[m]]$contrast]]$obj
 
-Lhat_skew &lt;- t(U_w) %*% W_skew
-plot_loadings_matrix(Lhat_skew, label_prefix = &quot;sk:&quot;,
-                     obj_fn = objective_skew)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-skew-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ica-skew-1">
-Past versions of ica-skew-1.png
-</button>
-</p>
-<div id="fig-ica-skew-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/3d4592ef6fe554cf90a5cac8251e528211725026/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-skew-1.png" target="_blank">3d4592e</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2026-09-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/single-cell-jamboree/blob/e748825caa62c5a1cc02333ced41ee9688a74115/docs/figure/pancreas_celseq2_ica_02.Rmd/ica-skew-1.png" target="_blank">e748825</a>
-</td>
-<td>
-Matthew Stephens
-</td>
-<td>
-2026-09-16
-</td>
-</tr>
-</tbody>
-</table>
+sapply(methods_L, dim)</code></pre>
+<pre><code>     cubic logphi skew cubic-GS logphi-GS skew-GS
+[1,]  2285   2285 2285     2285      2285    2285
+[2,]    30     30   30       30        30      30</code></pre>
 </div>
-</div>
-</div>
-<div id="gram-schmidt-versions" class="section level2">
-<h2>Gram-Schmidt versions</h2>
-<p>Each iteration applies the contrast update followed by Gram-Schmidt reorthogonalization (instead of polar). Components are ordered by decreasing objective before GS, so the best-objective direction is processed first and kept exactly; subsequent components are deflated against all preceding ones. After GS the columns remain orthonormal.</p>
-<div id="gs-cubic-contrast-x3" class="section level3">
-<h3>GS: cubic contrast (x^3)</h3>
-<pre class="r"><code>set.seed(1)
-n_iter &lt;- 500
-W_cubic_gs &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter)) {
-  P              &lt;- t(U_w) %*% W_cubic_gs
-  G              &lt;- 3 * P^2
-  G2             &lt;- 6 * P
-  W_cubic_gs     &lt;- U_w %*% G - sweep(W_cubic_gs, 2, colSums(G2), &quot;*&quot;)
-  L_tmp          &lt;- t(U_w) %*% W_cubic_gs
-  W_cubic_gs     &lt;- gs_reorth_W(W_cubic_gs, L_tmp, objective_cubic)
+<div id="comparing-methods-matched-factors" class="section level2 tabset">
+<h2 class="tabset">Comparing methods: matched factors</h2>
+<p>All six methods are aligned to a common reference, the polar cubic solution. For each method the factors are matched to the reference by maximizing the total absolute correlation (Hungarian algorithm), then sign-flipped so each matched factor correlates positively with its reference factor. (Sign flipping is probably unnecessary here because we are using asymmetric contrasts, but necessary in general.)</p>
+<p>Factors are then ordered by how well the methods agree on them: the <code>mean</code> column below is the average absolute correlation with the reference over the five non-reference methods, and rows are sorted by it, so the factors all methods recover go at the top and the contested ones at the bottom. Values near 1 mean a method recovers essentially the same factor as the reference; small values mean the factor has no good counterpart. The reference column is 1 by construction and is excluded from the mean.</p>
+<pre class="r"><code>ref_name &lt;- &quot;cubic&quot;
+Lc       &lt;- methods_L[[ref_name]]
+Lref     &lt;- Lc[, order(obj_of(ref_name)(Lc), decreasing = TRUE), drop = FALSE]
+
+# Match columns of L to those of Lref so as to maximize total |correlation|,
+# then flip signs so each matched factor correlates positively with reference.
+match_to_ref &lt;- function(L, Lref) {
+  C    &lt;- cor(Lref, L)
+  pr   &lt;- RcppHungarian::HungarianSolver(-abs(C))$pairs
+  perm &lt;- pr[order(pr[, 1]), 2]
+  cc   &lt;- C[cbind(seq_along(perm), perm)]
+  s    &lt;- sign(cc)
+  s[s == 0] &lt;- 1
+  list(L = sweep(L[, perm, drop = FALSE], 2, s, &quot;*&quot;), cor = abs(cc))
 }
 
-Lhat_cubic_gs &lt;- t(U_w) %*% W_cubic_gs
-plot_loadings_matrix(Lhat_cubic_gs, label_prefix = &quot;cub-gs:&quot;,
-                     obj_fn = objective_cubic)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-cubic-gs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="gs-log-phi-contrast-alpha-2" class="section level3">
-<h3>GS: log-Phi contrast (alpha = 2)</h3>
-<pre class="r"><code>set.seed(1)
-n_iter &lt;- 500
-alpha  &lt;- 2
-W_lp_gs &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter)) {
-  P       &lt;- t(U_w) %*% W_lp_gs
-  u       &lt;- alpha * P
-  h       &lt;- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
-  G       &lt;- alpha * h
-  G2      &lt;- alpha^2 * (-u * h - h^2)
-  W_lp_gs &lt;- U_w %*% G - sweep(W_lp_gs, 2, colSums(G2), &quot;*&quot;)
-  L_tmp   &lt;- t(U_w) %*% W_lp_gs
-  W_lp_gs &lt;- gs_reorth_W(W_lp_gs, L_tmp, objective_logphi)
-}
+aligned   &lt;- lapply(methods_L, match_to_ref, Lref = Lref)
+match_cor &lt;- sapply(aligned, `[[`, &quot;cor&quot;)
 
-Lhat_lp_gs &lt;- t(U_w) %*% W_lp_gs
-plot_loadings_matrix(Lhat_lp_gs, label_prefix = &quot;lp-gs:&quot;,
-                     obj_fn = objective_logphi)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-logphi-gs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="gs-xx-contrast" class="section level3">
-<h3>GS: x|x| contrast</h3>
-<pre class="r"><code>set.seed(1)
-n_iter   &lt;- 500
-W_skew_gs &lt;- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter)) {
-  P         &lt;- t(U_w) %*% W_skew_gs
-  G         &lt;- 2 * abs(P)
-  G2        &lt;- 2 * sign(P)
-  W_skew_gs &lt;- U_w %*% G - sweep(W_skew_gs, 2, colSums(G2), &quot;*&quot;)
-  L_tmp     &lt;- t(U_w) %*% W_skew_gs
-  W_skew_gs &lt;- gs_reorth_W(W_skew_gs, L_tmp, objective_skew)
-}
+# Reorder factors so the best-agreeing ones come first. Agreement is the mean
+# |cor| with the reference over the five non-reference methods (the reference
+# column is identically 1 and so carries no information).
+agree &lt;- rowMeans(match_cor[, setdiff(colnames(match_cor), ref_name),
+                            drop = FALSE])
+ord   &lt;- order(agree, decreasing = TRUE)
 
-Lhat_skew_gs &lt;- t(U_w) %*% W_skew_gs
-plot_loadings_matrix(Lhat_skew_gs, label_prefix = &quot;sk-gs:&quot;,
-                     obj_fn = objective_skew)</code></pre>
-<p><img src="figure/pancreas_celseq2_ica_02.Rmd/ica-skew-gs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+Lref      &lt;- Lref[, ord, drop = FALSE]
+aligned   &lt;- lapply(aligned, function(a)
+                    list(L = a$L[, ord, drop = FALSE], cor = a$cor[ord]))
+match_cor &lt;- match_cor[ord, , drop = FALSE]
+agree     &lt;- agree[ord]
+rownames(match_cor) &lt;- sprintf(&quot;f%02d&quot;, seq_len(nrow(match_cor)))
+round(cbind(match_cor, mean = agree), 3)</code></pre>
+<pre><code>    cubic logphi  skew cubic-GS logphi-GS skew-GS  mean
+f01     1  0.999 0.998    1.000     0.918   1.000 0.983
+f02     1  0.998 0.995    0.993     0.833   0.938 0.951
+f03     1  0.999 0.997    0.992     0.776   0.991 0.951
+f04     1  0.999 0.998    0.996     0.710   0.959 0.932
+f05     1  0.989 0.926    0.991     0.738   0.967 0.922
+f06     1  0.998 0.993    0.989     0.540   0.983 0.901
+f07     1  0.995 0.995    0.977     0.652   0.863 0.896
+f08     1  0.993 0.981    0.982     0.548   0.962 0.893
+f09     1  0.994 0.932    0.986     0.642   0.903 0.891
+f10     1  0.984 0.933    0.906     0.689   0.844 0.871
+f11     1  0.994 0.987    0.997     0.330   0.945 0.850
+f12     1  0.995 0.972    0.995     0.635   0.609 0.842
+f13     1  0.991 0.982    0.929     0.346   0.917 0.833
+f14     1  0.907 0.968    0.891     0.547   0.837 0.830
+f15     1  0.971 0.834    0.949     0.488   0.798 0.808
+f16     1  0.995 0.989    0.940     0.377   0.658 0.792
+f17     1  0.995 0.994    0.902     0.556   0.460 0.781
+f18     1  0.994 0.978    0.708     0.451   0.758 0.778
+f19     1  0.986 0.787    0.848     0.513   0.739 0.775
+f20     1  0.991 0.942    0.704     0.427   0.786 0.770
+f21     1  0.985 0.988    0.709     0.420   0.741 0.769
+f22     1  0.985 0.849    0.834     0.566   0.592 0.765
+f23     1  0.986 0.940    0.705     0.614   0.480 0.745
+f24     1  0.996 0.810    0.947     0.490   0.468 0.742
+f25     1  0.916 0.952    0.557     0.700   0.461 0.717
+f26     1  0.984 0.905    0.776     0.454   0.380 0.700
+f27     1  0.990 0.853    0.585     0.306   0.759 0.698
+f28     1  0.969 0.648    0.633     0.537   0.699 0.697
+f29     1  0.985 0.628    0.585     0.621   0.581 0.680
+f30     1  0.975 0.751    0.630     0.392   0.555 0.660</code></pre>
+<pre class="r"><code># Rows = factors, best-agreeing first; columns = methods. The number in each
+# panel is |cor| with the reference factor; the row strip carries the mean over
+# non-reference methods.
+plot_method_grid &lt;- function(aligned, match_cor, agree, si = sample_info,
+                             color_by = c(&quot;celltype&quot;, &quot;donor&quot;)) {
+  color_by &lt;- match.arg(color_by)
+  cvar  &lt;- switch(color_by,
+                  celltype = si$celltype,
+                  donor    = sub(&quot;-.*&quot;, &quot;&quot;, si$id))
+  cname &lt;- switch(color_by,
+                  celltype = &quot;Cell type&quot;,
+                  donor    = &quot;Donor&quot;)
+  cell_order &lt;- order(si$celltype)
+  nc &lt;- nrow(aligned[[1]]$L)
+  nf &lt;- ncol(aligned[[1]]$L)
+  mn &lt;- names(aligned)
+  flev &lt;- sprintf(&quot;f%02d (%.2f)&quot;, seq_len(nf), agree)
+
+  df &lt;- do.call(rbind, lapply(mn, function(m) {
+    data.frame(
+      rank    = rep(seq_len(nc), nf),
+      grp     = rep(cvar[cell_order], nf),
+      loading = as.vector(aligned[[m]]$L[cell_order, ]),
+      factor  = factor(rep(flev, each = nc), levels = flev),
+      method  = factor(m, levels = mn)
+    )
+  }))
+
+  lab &lt;- data.frame(
+    factor = factor(rep(flev, times = length(mn)), levels = flev),
+    method = factor(rep(mn, each = nf), levels = mn),
+    lab    = sprintf(&quot;%.2f&quot;, as.vector(match_cor))
+  )
+
+  p &lt;- ggplot(df, aes(x = rank, y = loading, color = grp)) +
+    geom_point(size = 0.45, alpha = 0.8) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, linewidth = 0.2) +
+    geom_text(data = lab, aes(x = -Inf, y = Inf, label = lab),
+              hjust = -0.15, vjust = 1.4, size = 1.9, color = &quot;grey20&quot;,
+              inherit.aes = FALSE) +
+    facet_grid(factor ~ method, scales = &quot;free_y&quot;) +
+    labs(x = NULL, y = &quot;Loading&quot;, color = cname) +
+    theme_bw(base_size = 9) +
+    theme(axis.text.x      = element_blank(),
+          axis.ticks.x     = element_blank(),
+          axis.text.y      = element_text(size = 5),
+          strip.text.x     = element_text(size = 8),
+          strip.text.y     = element_text(size = 6),
+          strip.background = element_rect(fill = &quot;grey90&quot;, color = NA),
+          panel.spacing    = grid::unit(0.15, &quot;lines&quot;),
+          legend.position  = &quot;bottom&quot;,
+          legend.title     = element_text(size = 11),
+          legend.text      = element_text(size = 10),
+          legend.key.size  = grid::unit(1.1, &quot;lines&quot;)) +
+    guides(color = guide_legend(override.aes = list(size = 4, alpha = 1),
+                                nrow = 2))
+  if (color_by == &quot;celltype&quot;)
+    p &lt;- p + scale_color_manual(values = celltype_palette)
+  p
+}</code></pre>
+<div id="cell-type" class="section level3">
+<h3>Cell type</h3>
+<p><img src="figure/pancreas_celseq2_ica_02.Rmd/method-compare-ct-1.png" alt="" style="display: block; margin: auto;" /></p>
+</div>
+<div id="donor" class="section level3">
+<h3>Donor</h3>
+<p><img src="figure/pancreas_celseq2_ica_02.Rmd/method-compare-d-1.png" alt="" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1121,37 +1017,27 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] caret_7.0-1    lattice_0.22-9 ggplot2_4.0.2  Matrix_1.7-4   fastICA_1.2-7 
+[1] ggplot2_4.0.2 Matrix_1.7-4 
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.2.1     timeDate_4052.112    dplyr_1.2.0         
- [4] farver_2.1.2         S7_0.2.1             fastmap_1.2.0       
- [7] pROC_1.19.0.1        promises_1.5.0       digest_0.6.39       
-[10] rpart_4.1.24         timechange_0.4.0     lifecycle_1.0.5     
-[13] survival_3.8-6       MatrixExtra_0.1.15   magrittr_2.0.4      
-[16] compiler_4.4.2       rlang_1.1.7          sass_0.4.10         
-[19] tools_4.4.2          yaml_2.3.12          data.table_1.18.2.1 
-[22] knitr_1.51           labeling_0.4.3       plyr_1.8.9          
-[25] RColorBrewer_1.1-3   workflowr_1.7.2      withr_3.0.2         
-[28] purrr_1.2.1          nnet_7.3-20          grid_4.4.2          
-[31] stats4_4.4.2         git2r_0.36.2         future_1.69.0       
-[34] globals_0.19.0       scales_1.4.0         iterators_1.0.14    
-[37] MASS_7.3-65          cli_3.6.5            rmarkdown_2.30      
-[40] generics_0.1.4       otel_0.2.0           future.apply_1.20.2 
-[43] reshape2_1.4.5       cachem_1.1.0         stringr_1.6.0       
-[46] splines_4.4.2        parallel_4.4.2       vctrs_0.7.2         
-[49] hardhat_1.4.2        jsonlite_2.0.0       listenv_0.10.0      
-[52] foreach_1.5.2        gower_1.0.2          jquerylib_0.1.4     
-[55] recipes_1.3.1        glue_1.8.0           parallelly_1.46.1   
-[58] codetools_0.2-20     lubridate_1.9.5      stringi_1.8.7       
-[61] gtable_0.3.6         later_1.4.6          tibble_3.3.1        
-[64] pillar_1.11.1        htmltools_0.5.9      float_0.3-3         
-[67] ipred_0.9-15         lava_1.8.2           R6_2.6.1            
-[70] rprojroot_2.1.1      evaluate_1.0.5       RhpcBLASctl_0.23-42 
-[73] httpuv_1.6.16        bslib_0.10.0         class_7.3-23        
-[76] Rcpp_1.1.1           nlme_3.1-168         prodlim_2026.03.11  
-[79] whisker_0.4.1        xfun_0.56            fs_1.6.6            
-[82] pkgconfig_2.0.3      ModelMetrics_1.2.2.2</code></pre>
+ [1] float_0.3-3         gtable_0.3.6        jsonlite_2.0.0     
+ [4] dplyr_1.2.0         compiler_4.4.2      promises_1.5.0     
+ [7] tidyselect_1.2.1    Rcpp_1.1.1          stringr_1.6.0      
+[10] git2r_0.36.2        parallel_4.4.2      later_1.4.6        
+[13] jquerylib_0.1.4     scales_1.4.0        RhpcBLASctl_0.23-42
+[16] yaml_2.3.12         fastmap_1.2.0       lattice_0.22-9     
+[19] RcppHungarian_0.3   R6_2.6.1            labeling_0.4.3     
+[22] generics_0.1.4      workflowr_1.7.2     knitr_1.51         
+[25] tibble_3.3.1        rprojroot_2.1.1     RColorBrewer_1.1-3 
+[28] bslib_0.10.0        pillar_1.11.1       rlang_1.1.7        
+[31] cachem_1.1.0        stringi_1.8.7       httpuv_1.6.16      
+[34] xfun_0.56           S7_0.2.1            fs_1.6.6           
+[37] sass_0.4.10         otel_0.2.0          MatrixExtra_0.1.15 
+[40] cli_3.6.5           withr_3.0.2         magrittr_2.0.4     
+[43] digest_0.6.39       grid_4.4.2          lifecycle_1.0.5    
+[46] vctrs_0.7.2         evaluate_1.0.5      glue_1.8.0         
+[49] farver_2.1.2        whisker_0.4.1       rmarkdown_2.30     
+[52] tools_4.4.2         pkgconfig_2.0.3     htmltools_0.5.9    </code></pre>
 </div>
 </div>
 </div>
@@ -1219,7 +1105,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
