@@ -21,7 +21,7 @@ A second look at ICA on the pancreas CEL-seq2 data, incorporating lessons from t
 
 - Data are **centred** (column means subtracted) before whitening, as is standard for ICA.
 - We run **rank-$r$ (symmetric) fastICA with $r = 25$** rather than many rank-1 starts, which is faster and avoids the post-hoc deduplication step.
-- We compare three contrast functions chosen to favour one-sided/sparse sources: $x^3$ (kurtosis/skewness), $\log\Phi(\alpha x)$ (log-normal CDF), and $x|x|$ (the tilting term of TLC without the log-cosh).
+- We compare three contrast functions chosen to favour one-sided/sparse sources: $G(x) = x^3$ (skewness), $G(x) = \log\Phi(\alpha x)$ (log-normal CDF), and $G(x) = x|x|$ (the tilting term of TLC without the log-cosh).
 
 ```{r load-data}
 library(fastICA)
@@ -146,16 +146,16 @@ plot_loadings_matrix <- function(Lhat, label_prefix = "c:", si = sample_info,
 ## Contrast functions
 
 ```{r contrasts}
-# --- x^3 (kurtosis/skewness) ---
-# g(x) = x^3,  g'(x) = 3x^2,  G(x) = x^4/4
+# --- G(x) = x^3 (skewness) ---
+# g(x) = G'(x) = 3x^2,  g'(x) = G''(x) = 6x
 fastica_update_cubic_rankr <- function(U, W) {
   P  <- t(U) %*% W
-  G  <- P^3
-  G2 <- 3 * P^2
+  G  <- 3 * P^2
+  G2 <- 6 * P
   W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
   polar(W)
 }
-objective_cubic <- function(L) colMeans(L^4)
+objective_cubic <- function(L) colMeans(L^3)
 
 # --- log-Phi ---
 # G(x) = log Phi(alpha*x),  g = alpha*h,  g' = alpha^2*(-alpha*x*h - h^2)
