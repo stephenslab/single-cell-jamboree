@@ -180,6 +180,23 @@ fastica_update_skew_rankr <- function(U, W) {
   polar(W)
 }
 objective_skew <- function(L) colMeans(L * abs(L))
+
+# Gram-Schmidt reorthogonalization ordered by decreasing objective.
+# W: n.comp x r matrix with orthonormal columns.
+# L: n x r loadings matrix (= t(U_w) %*% W).
+# Returns W with orthonormal columns, best-objective direction first.
+gs_reorth_W <- function(W, L, obj_fn) {
+  ord <- order(obj_fn(L), decreasing = TRUE)
+  V   <- W[, ord, drop = FALSE]
+  for (j in seq_len(ncol(V))) {
+    if (j > 1)
+      for (l in seq_len(j - 1))
+        V[, j] <- V[, j] - sum(V[, j] * V[, l]) * V[, l]
+    nrm <- sqrt(sum(V[, j]^2))
+    if (nrm > 1e-10) V[, j] <- V[, j] / nrm
+  }
+  V
+}
 ```
 
 ## Rank-r fastICA: cubic contrast (x^3)
@@ -221,5 +238,72 @@ for (i in seq_len(n_iter))
 
 Lhat_skew <- t(U_w) %*% W_skew
 plot_loadings_matrix(Lhat_skew, label_prefix = "sk:",
+                     obj_fn = objective_skew)
+```
+
+## Gram-Schmidt versions
+
+Each iteration applies the contrast update followed by Gram-Schmidt reorthogonalization (instead of polar). Components are ordered by decreasing objective before GS, so the best-objective direction is processed first and kept exactly; subsequent components are deflated against all preceding ones. After GS the columns remain orthonormal.
+
+### GS: cubic contrast (x^3)
+
+```{r ica-cubic-gs}
+set.seed(1)
+n_iter <- 500
+W_cubic_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
+for (i in seq_len(n_iter)) {
+  P              <- t(U_w) %*% W_cubic_gs
+  G              <- 3 * P^2
+  G2             <- 6 * P
+  W_cubic_gs     <- U_w %*% G - sweep(W_cubic_gs, 2, colSums(G2), "*")
+  L_tmp          <- t(U_w) %*% W_cubic_gs
+  W_cubic_gs     <- gs_reorth_W(W_cubic_gs, L_tmp, objective_cubic)
+}
+
+Lhat_cubic_gs <- t(U_w) %*% W_cubic_gs
+plot_loadings_matrix(Lhat_cubic_gs, label_prefix = "cub-gs:",
+                     obj_fn = objective_cubic)
+```
+
+### GS: log-Phi contrast (alpha = 2)
+
+```{r ica-logphi-gs}
+set.seed(1)
+n_iter <- 500
+alpha  <- 2
+W_lp_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
+for (i in seq_len(n_iter)) {
+  P       <- t(U_w) %*% W_lp_gs
+  u       <- alpha * P
+  h       <- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+  G       <- alpha * h
+  G2      <- alpha^2 * (-u * h - h^2)
+  W_lp_gs <- U_w %*% G - sweep(W_lp_gs, 2, colSums(G2), "*")
+  L_tmp   <- t(U_w) %*% W_lp_gs
+  W_lp_gs <- gs_reorth_W(W_lp_gs, L_tmp, objective_logphi)
+}
+
+Lhat_lp_gs <- t(U_w) %*% W_lp_gs
+plot_loadings_matrix(Lhat_lp_gs, label_prefix = "lp-gs:",
+                     obj_fn = objective_logphi)
+```
+
+### GS: x|x| contrast
+
+```{r ica-skew-gs}
+set.seed(1)
+n_iter   <- 500
+W_skew_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
+for (i in seq_len(n_iter)) {
+  P         <- t(U_w) %*% W_skew_gs
+  G         <- 2 * abs(P)
+  G2        <- 2 * sign(P)
+  W_skew_gs <- U_w %*% G - sweep(W_skew_gs, 2, colSums(G2), "*")
+  L_tmp     <- t(U_w) %*% W_skew_gs
+  W_skew_gs <- gs_reorth_W(W_skew_gs, L_tmp, objective_skew)
+}
+
+Lhat_skew_gs <- t(U_w) %*% W_skew_gs
+plot_loadings_matrix(Lhat_skew_gs, label_prefix = "sk-gs:",
                      obj_fn = objective_skew)
 ```
