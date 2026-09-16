@@ -141,6 +141,90 @@ plot_loadings_matrix <- function(Lhat, label_prefix = "c:", si = sample_info,
     print(p)
   }
 }
+
+# Tabbed version: Bootstrap 3 tabs with cell type / donor+batch / donor coloring.
+# Call from a chunk with results='asis'.
+plot_loadings_tabbed <- function(Lhat, label_prefix = "c:", si = sample_info,
+                                  obj_fn = function(L) colMeans(L^4),
+                                  max_panels = 25) {
+  donor_batch <- sub("_.*", "", si$id)
+  donor       <- sub("-.*", "", si$id)
+
+  obj    <- obj_fn(Lhat)
+  n_comp <- ncol(Lhat)
+  o      <- order(obj)
+  Lhat   <- Lhat[, o, drop = FALSE]
+  obj    <- obj[o]
+  comp_labels <- make.unique(paste0(label_prefix, seq_len(n_comp),
+                                    " obj:", round(obj, 3)))
+
+  cell_order <- order(si$celltype)
+  pages      <- split(seq_len(n_comp), ceiling(seq_len(n_comp) / max_panels))
+
+  for (pg in seq_along(pages)) {
+    pg_idx    <- pages[[pg]]
+    pg_labels <- comp_labels[pg_idx]
+    Lhat_pg   <- Lhat[, pg_idx, drop = FALSE]
+
+    pg_title <- if (length(pages) > 1)
+      paste0("page ", pg, "/", length(pages)) else ""
+    n_rows <- ceiling(length(pg_idx) / 5)
+    ph     <- max(3, 1.5 * n_rows + 1.5)
+
+    make_gg <- function(color_var, color_name, pal) {
+      df <- data.frame(
+        rank      = rep(seq_len(nrow(Lhat_pg)), length(pg_idx)),
+        color_var = rep(color_var[cell_order], length(pg_idx)),
+        loading   = as.vector(Lhat_pg[cell_order, ]),
+        component = factor(rep(pg_labels, each = nrow(Lhat_pg)),
+                           levels = pg_labels)
+      )
+      p <- ggplot(df, aes(x = rank, y = loading, color = color_var)) +
+        geom_point(size = 0.5, alpha = 0.7) +
+        geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
+        facet_wrap(~ component, ncol = 5, scales = "free_y") +
+        labs(x = NULL, y = "Loading", color = color_name, title = pg_title) +
+        theme_bw(base_size = 10) +
+        theme(axis.text.x  = element_blank(),
+              axis.ticks.x = element_blank(),
+              strip.text   = element_text(size = 7, margin = margin(2, 0, 2, 0)),
+              strip.background = element_rect(fill = "grey90", color = NA),
+              legend.position  = "bottom")
+      if (!is.null(pal))
+        p <- p + scale_color_manual(values = pal)
+      p
+    }
+
+    plots <- list(
+      "Cell type"   = make_gg(si$celltype, "Cell type",   celltype_palette),
+      "Donor+batch" = make_gg(donor_batch, "Donor+batch", NULL),
+      "Donor"       = make_gg(donor,       "Donor",       NULL)
+    )
+
+    tab_id <- paste0("tabset_", gsub("[^a-zA-Z0-9]", "", label_prefix),
+                     "_pg", pg)
+
+    nav_items <- vapply(seq_along(plots), function(i) {
+      paste0('<li', if (i == 1) ' class="active"' else "", '>',
+             '<a href="#', tab_id, '_', i, '" data-toggle="tab">',
+             names(plots)[i], '</a></li>')
+    }, character(1))
+
+    tab_panes <- vapply(seq_along(plots), function(i) {
+      tmp <- tempfile(fileext = ".png")
+      ggplot2::ggsave(tmp, plots[[i]], width = 10, height = ph, dpi = 120)
+      uri <- knitr::image_uri(tmp)
+      unlink(tmp)
+      paste0('<div class="tab-pane', if (i == 1) " active" else "",
+             '" id="', tab_id, '_', i, '">',
+             '<img src="', uri, '" style="width:100%;" /></div>')
+    }, character(1))
+
+    cat('<ul class="nav nav-tabs">', paste(nav_items, collapse = ""),
+        '</ul><div class="tab-content">', paste(tab_panes, collapse = ""),
+        '</div>\n\n')
+  }
+}
 ```
 
 ## Contrast functions
@@ -201,43 +285,43 @@ gs_reorth_W <- function(W, L, obj_fn) {
 
 ## Rank-r fastICA: cubic contrast (x^3)
 
-```{r ica-cubic}
+```{r ica-cubic, results='asis'}
 set.seed(1)
-n_iter <- 500
+n_iter <- 50
 W_cubic <- polar(matrix(rnorm(n.comp * r), n.comp, r))
 for (i in seq_len(n_iter))
   W_cubic <- fastica_update_cubic_rankr(U_w, W_cubic)
 
 Lhat_cubic <- t(U_w) %*% W_cubic   # n x r
-plot_loadings_matrix(Lhat_cubic, label_prefix = "cub:",
+plot_loadings_tabbed(Lhat_cubic, label_prefix = "cub:",
                      obj_fn = objective_cubic)
 ```
 
 ## Rank-r fastICA: log-Phi contrast (alpha = 2)
 
-```{r ica-logphi}
+```{r ica-logphi, results='asis'}
 set.seed(1)
-n_iter <- 500
+n_iter <- 50
 W_lp <- polar(matrix(rnorm(n.comp * r), n.comp, r))
 for (i in seq_len(n_iter))
   W_lp <- fastica_update_logphi_rankr(U_w, W_lp, alpha = 2)
 
 Lhat_lp <- t(U_w) %*% W_lp
-plot_loadings_matrix(Lhat_lp, label_prefix = "lp:",
+plot_loadings_tabbed(Lhat_lp, label_prefix = "lp:",
                      obj_fn = objective_logphi)
 ```
 
 ## Rank-r fastICA: x|x| contrast
 
-```{r ica-skew}
+```{r ica-skew, results='asis'}
 set.seed(1)
-n_iter <- 500
+n_iter <- 50
 W_skew <- polar(matrix(rnorm(n.comp * r), n.comp, r))
 for (i in seq_len(n_iter))
   W_skew <- fastica_update_skew_rankr(U_w, W_skew)
 
 Lhat_skew <- t(U_w) %*% W_skew
-plot_loadings_matrix(Lhat_skew, label_prefix = "sk:",
+plot_loadings_tabbed(Lhat_skew, label_prefix = "sk:",
                      obj_fn = objective_skew)
 ```
 
@@ -247,9 +331,9 @@ Each iteration applies the contrast update followed by Gram-Schmidt reorthogonal
 
 ### GS: cubic contrast (x^3)
 
-```{r ica-cubic-gs}
+```{r ica-cubic-gs, results='asis'}
 set.seed(1)
-n_iter <- 500
+n_iter <- 50
 W_cubic_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
 for (i in seq_len(n_iter)) {
   P              <- t(U_w) %*% W_cubic_gs
@@ -261,15 +345,15 @@ for (i in seq_len(n_iter)) {
 }
 
 Lhat_cubic_gs <- t(U_w) %*% W_cubic_gs
-plot_loadings_matrix(Lhat_cubic_gs, label_prefix = "cub-gs:",
+plot_loadings_tabbed(Lhat_cubic_gs, label_prefix = "cub-gs:",
                      obj_fn = objective_cubic)
 ```
 
 ### GS: log-Phi contrast (alpha = 2)
 
-```{r ica-logphi-gs}
+```{r ica-logphi-gs, results='asis'}
 set.seed(1)
-n_iter <- 500
+n_iter <- 50
 alpha  <- 2
 W_lp_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
 for (i in seq_len(n_iter)) {
@@ -284,13 +368,13 @@ for (i in seq_len(n_iter)) {
 }
 
 Lhat_lp_gs <- t(U_w) %*% W_lp_gs
-plot_loadings_matrix(Lhat_lp_gs, label_prefix = "lp-gs:",
+plot_loadings_tabbed(Lhat_lp_gs, label_prefix = "lp-gs:",
                      obj_fn = objective_logphi)
 ```
 
 ### GS: x|x| contrast
 
-```{r ica-skew-gs}
+```{r ica-skew-gs, results='asis'}
 set.seed(1)
 n_iter   <- 500
 W_skew_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
@@ -304,6 +388,6 @@ for (i in seq_len(n_iter)) {
 }
 
 Lhat_skew_gs <- t(U_w) %*% W_skew_gs
-plot_loadings_matrix(Lhat_skew_gs, label_prefix = "sk-gs:",
+plot_loadings_tabbed(Lhat_skew_gs, label_prefix = "sk-gs:",
                      obj_fn = objective_skew)
 ```
