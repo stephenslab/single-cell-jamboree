@@ -6,7 +6,7 @@ output:
   workflowr::wflow_html:
     toc: true
     toc_float: true
-    toc_depth: 3
+    toc_depth: 2
 editor_options:
   chunk_output_type: console
 ---
@@ -19,15 +19,18 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 A second look at ICA on the pancreas CEL-seq2 data, incorporating lessons from the first analysis (`pancreas_celseq2_ica.Rmd`). Key differences from the first analysis:
 
-- Data are **centred** (column means subtracted) before whitening, as is standard for ICA.
-- We run **rank-$r$ (symmetric) fastICA with $r = 25$** rather than many rank-1 starts, which is faster and avoids the post-hoc deduplication step.
-- We compare three contrast functions chosen to favour one-sided/sparse sources: $G(x) = x^3$ (skewness), $G(x) = \log\Phi(\alpha x)$ (log-normal CDF), and $G(x) = x|x|$ (the tilting term of TLC without the log-cosh).
+- We focus on contrast functions chosen to favour one-sided/sparse sources, and avoid combining groups. For example, 
+$G(x) = x^3$ (skewness), $G(x) = \log\Phi(\alpha x)$ (log-normal CDF), and $G(x) = x|x|$ (the tilting term of TLC without the log-cosh).
+This means we can center the data without breaking things, so we no longer need to augment by an intercept.
+
+- We focus on **rank-$r$ fastICA**, whitening to 30 PCs and keeping all $r = 30$ components.
+
+- We use both polar and Gram Schmidt to do orthogonalization.
+In GS each iteration applies the contrast update followed by Gram-Schmidt reorthogonalization. Components are ordered by decreasing objective before GS, so the best-objective direction is processed first and kept exactly; subsequent components are deflated against all preceding ones. After GS the columns remain orthonormal.
 
 ```{r load-data}
-library(fastICA)
 library(Matrix)
 library(ggplot2)
-library(caret)
 
 load("../data/pancreas.RData")
 set.seed(1)
@@ -51,8 +54,8 @@ Y <- scale(Y, scale = FALSE)   # centre columns
 
 ```{r svd}
 n      <- nrow(Y)
-n.comp <- 25
-r      <- n.comp
+n.comp <- 30   # PCs retained for whitening
+r      <- 30   # components extracted by ICA (r <= n.comp)
 
 Y.svd <- svd(Y, nu = n.comp, nv = 0)
 # U: n x n.comp, orthonormal columns (left singular vectors of centred Y)
@@ -60,6 +63,12 @@ U_c <- Y.svd$u[, 1:n.comp]
 # Whitened row space (n.comp x n, as used by rank-r fastICA)
 U_w <- sqrt(n) * t(U_c)
 ```
+
+Here `r r` components are extracted from a `r n.comp`-dimensional whitened
+space, so each `W` is square (`r n.comp` $\times$ `r r`) with orthonormal
+columns and the components span the whole whitened space. Setting `r` below
+`n.comp` would instead let ICA keep only the most interesting directions and
+leave the remainder unmodelled.
 
 ## Helper functions
 
@@ -78,197 +87,42 @@ polar <- function(W) {
                t(eig$vectors)
   W %*% Ainvhalf
 }
-
-prune_and_count_cluster <- function(L, tau = 0.9) {
-  L        <- L[, apply(L, 2, sd) > 1e-10, drop = FALSE]
-  dist_mat <- as.dist(1 - abs(cor(L)))
-  hc       <- hclust(dist_mat, method = "complete")
-  clusters <- cutree(hc, h = 1 - tau)
-  kept_indices        <- match(unique(clusters), clusters)
-  cluster_sizes_table <- table(clusters)
-  kept_cluster_ids    <- clusters[kept_indices]
-  cluster_sizes       <- as.integer(cluster_sizes_table[as.character(kept_cluster_ids)])
-  list(pruned_matrix      = L[, kept_indices, drop = FALSE],
-       cluster_sizes      = cluster_sizes,
-       kept_indices       = kept_indices,
-       cluster_assignments = clusters)
-}
-
-plot_loadings_matrix <- function(Lhat, label_prefix = "c:", si = sample_info,
-                                  obj_fn = function(L) colMeans(L^4),
-                                  max_panels = 25, labels = NULL) {
-  obj    <- obj_fn(Lhat)
-  n_comp <- ncol(Lhat)
-  if (is.null(labels)) {
-    o           <- order(obj)
-    Lhat        <- Lhat[, o, drop = FALSE]
-    obj         <- obj[o]
-    comp_labels <- make.unique(paste0(label_prefix, seq_len(n_comp),
-                                      " obj:", round(obj, 3)))
-  } else {
-    comp_labels <- make.unique(paste0(labels, " obj:", round(obj, 3)))
-  }
-  cell_order <- order(si$celltype)
-  df <- data.frame(
-    rank      = rep(seq_len(nrow(Lhat)), n_comp),
-    celltype  = rep(si$celltype[cell_order], n_comp),
-    loading   = as.vector(Lhat[cell_order, ]),
-    component = factor(rep(comp_labels, each = nrow(Lhat)),
-                       levels = comp_labels)
-  )
-  pages <- split(comp_labels,
-                 ceiling(seq_along(comp_labels) / max_panels))
-  for (pg in seq_along(pages)) {
-    pg_labels <- pages[[pg]]
-    df_pg     <- df[df$component %in% pg_labels, ]
-    df_pg$component <- factor(as.character(df_pg$component),
-                               levels = pg_labels)
-    pg_title <- if (length(pages) > 1)
-      paste0("page ", pg, "/", length(pages)) else ""
-    p <- ggplot(df_pg, aes(x = rank, y = loading, color = celltype)) +
-      geom_point(size = 0.5, alpha = 0.7) +
-      geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
-      facet_wrap(~ component, ncol = 5, scales = "free_y") +
-      scale_color_manual(values = celltype_palette) +
-      labs(x = NULL, y = "Loading", color = "Cell type", title = pg_title) +
-      theme_bw(base_size = 10) +
-      theme(axis.text.x  = element_blank(),
-            axis.ticks.x = element_blank(),
-            strip.text   = element_text(size = 7,
-                                        margin = margin(2, 0, 2, 0)),
-            strip.background = element_rect(fill = "grey90", color = NA),
-            legend.position  = "bottom")
-    print(p)
-  }
-}
-
-# Tabbed version: Bootstrap 3 tabs with cell type / donor+batch / donor coloring.
-# Call from a chunk with results='asis'.
-plot_loadings_tabbed <- function(Lhat, label_prefix = "c:", si = sample_info,
-                                  obj_fn = function(L) colMeans(L^4),
-                                  max_panels = 25) {
-  donor_batch <- sub("_.*", "", si$id)
-  donor       <- sub("-.*", "", si$id)
-
-  obj    <- obj_fn(Lhat)
-  n_comp <- ncol(Lhat)
-  o      <- order(obj)
-  Lhat   <- Lhat[, o, drop = FALSE]
-  obj    <- obj[o]
-  comp_labels <- make.unique(paste0(label_prefix, seq_len(n_comp),
-                                    " obj:", round(obj, 3)))
-
-  cell_order <- order(si$celltype)
-  pages      <- split(seq_len(n_comp), ceiling(seq_len(n_comp) / max_panels))
-
-  for (pg in seq_along(pages)) {
-    pg_idx    <- pages[[pg]]
-    pg_labels <- comp_labels[pg_idx]
-    Lhat_pg   <- Lhat[, pg_idx, drop = FALSE]
-
-    pg_title <- if (length(pages) > 1)
-      paste0("page ", pg, "/", length(pages)) else ""
-    n_rows <- ceiling(length(pg_idx) / 5)
-    ph     <- max(3, 1.5 * n_rows + 1.5)
-
-    make_gg <- function(color_var, color_name, pal) {
-      df <- data.frame(
-        rank      = rep(seq_len(nrow(Lhat_pg)), length(pg_idx)),
-        color_var = rep(color_var[cell_order], length(pg_idx)),
-        loading   = as.vector(Lhat_pg[cell_order, ]),
-        component = factor(rep(pg_labels, each = nrow(Lhat_pg)),
-                           levels = pg_labels)
-      )
-      p <- ggplot(df, aes(x = rank, y = loading, color = color_var)) +
-        geom_point(size = 0.5, alpha = 0.7) +
-        geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.3) +
-        facet_wrap(~ component, ncol = 5, scales = "free_y") +
-        labs(x = NULL, y = "Loading", color = color_name, title = pg_title) +
-        theme_bw(base_size = 10) +
-        theme(axis.text.x  = element_blank(),
-              axis.ticks.x = element_blank(),
-              strip.text   = element_text(size = 7, margin = margin(2, 0, 2, 0)),
-              strip.background = element_rect(fill = "grey90", color = NA),
-              legend.position  = "bottom")
-      if (!is.null(pal))
-        p <- p + scale_color_manual(values = pal)
-      p
-    }
-
-    plots <- list(
-      "Cell type"   = make_gg(si$celltype, "Cell type",   celltype_palette),
-      "Donor+batch" = make_gg(donor_batch, "Donor+batch", NULL),
-      "Donor"       = make_gg(donor,       "Donor",       NULL)
-    )
-
-    tab_id <- paste0("tabset_", gsub("[^a-zA-Z0-9]", "", label_prefix),
-                     "_pg", pg)
-
-    nav_items <- vapply(seq_along(plots), function(i) {
-      paste0('<li', if (i == 1) ' class="active"' else "", '>',
-             '<a href="#', tab_id, '_', i, '" data-toggle="tab">',
-             names(plots)[i], '</a></li>')
-    }, character(1))
-
-    tab_panes <- vapply(seq_along(plots), function(i) {
-      tmp <- tempfile(fileext = ".png")
-      ggplot2::ggsave(tmp, plots[[i]], width = 10, height = ph, dpi = 120)
-      uri <- knitr::image_uri(tmp)
-      unlink(tmp)
-      paste0('<div class="tab-pane', if (i == 1) " active" else "",
-             '" id="', tab_id, '_', i, '">',
-             '<img src="', uri, '" style="width:100%;" /></div>')
-    }, character(1))
-
-    cat('<ul class="nav nav-tabs">', paste(nav_items, collapse = ""),
-        '</ul><div class="tab-content">', paste(tab_panes, collapse = ""),
-        '</div>\n\n')
-  }
-}
 ```
 
-## Contrast functions
+## Contrast functions and the fastICA driver
 
-```{r contrasts}
-# --- G(x) = x^3 (skewness) ---
-# g(x) = G'(x) = 3x^2,  g'(x) = G''(x) = 6x
-fastica_update_cubic_rankr <- function(U, W) {
-  P  <- t(U) %*% W
-  G  <- 3 * P^2
-  G2 <- 6 * P
-  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
-  polar(W)
-}
-objective_cubic <- function(L) colMeans(L^3)
+A contrast is specified by the function $G$ whose column mean the update
+maximizes. `deriv()` returns $G'$ and $G''$ evaluated at $P = U^\top W$ (the
+`G` and `G2` terms of the symmetric fastICA update) and `obj()` returns
+$\mathrm{colMeans}(G(L))$.
 
-# --- log-Phi ---
-# G(x) = log Phi(alpha*x),  g = alpha*h,  g' = alpha^2*(-alpha*x*h - h^2)
-fastica_update_logphi_rankr <- function(U, W, alpha = 2) {
-  P  <- t(U) %*% W
-  u  <- alpha * P
-  h  <- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
-  G  <- alpha * h
-  G2 <- alpha^2 * (-u * h - h^2)
-  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
-  polar(W)
-}
-objective_logphi <- function(L, alpha = 2) colMeans(pnorm(alpha * L, log.p = TRUE))
-
-# --- x|x| (skew tilt, no log-cosh) ---
-# g(x) = 2|x|,  g'(x) = 2*sign(x),  G(x) = x|x|
-fastica_update_skew_rankr <- function(U, W) {
-  P  <- t(U) %*% W
-  G  <- 2 * abs(P)
-  G2 <- 2 * sign(P)
-  W  <- U %*% G - sweep(W, 2, colSums(G2), "*")
-  polar(W)
-}
-objective_skew <- function(L) colMeans(L * abs(L))
+```{r contrast-defs}
+contrast_defs <- list(
+  # G(x) = x^3:  G' = 3x^2,  G'' = 6x
+  cubic = list(
+    deriv = function(P) list(G = 3 * P^2, G2 = 6 * P),
+    obj   = function(L) colMeans(L^3)
+  ),
+  # G(x) = log Phi(alpha*x),  h = phi/Phi
+  logphi = list(
+    deriv = function(P, alpha = 2) {
+      u <- alpha * P
+      h <- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
+      list(G = alpha * h, G2 = alpha^2 * (-u * h - h^2))
+    },
+    obj = function(L, alpha = 2) colMeans(pnorm(alpha * L, log.p = TRUE))
+  ),
+  # G(x) = x|x|:  G' = 2|x|,  G'' = 2 sign(x)
+  skew = list(
+    deriv = function(P) list(G = 2 * abs(P), G2 = 2 * sign(P)),
+    obj   = function(L) colMeans(L * abs(L))
+  )
+)
 
 # Gram-Schmidt reorthogonalization ordered by decreasing objective.
-# W: n.comp x r matrix with orthonormal columns.
-# L: n x r loadings matrix (= t(U_w) %*% W).
-# Returns W with orthonormal columns, best-objective direction first.
+# W: n.comp x r with orthonormal columns; L: n x r loadings (= t(U) %*% W).
+# The best-objective direction is processed first and so is kept exactly;
+# each later column is deflated against all preceding ones.
 gs_reorth_W <- function(W, L, obj_fn) {
   ord <- order(obj_fn(L), decreasing = TRUE)
   V   <- W[, ord, drop = FALSE]
@@ -281,113 +135,176 @@ gs_reorth_W <- function(W, L, obj_fn) {
   }
   V
 }
+
+# Rank-r symmetric fastICA. contrast picks an entry of contrast_defs; orth is
+# the orthogonalization applied after each update, either the polar factor or
+# Gram-Schmidt ordered by objective. Returns the n x r loadings t(U) %*% W.
+run_fastica <- function(U, contrast, orth = c("polar", "gs"),
+                        r = nrow(U), n_iter = 50, seed = 1) {
+  orth <- match.arg(orth)
+  cf   <- contrast_defs[[contrast]]
+  set.seed(seed)
+  W <- polar(matrix(rnorm(nrow(U) * r), nrow(U), r))
+  for (i in seq_len(n_iter)) {
+    d <- cf$deriv(t(U) %*% W)
+    W <- U %*% d$G - sweep(W, 2, colSums(d$G2), "*")
+    W <- if (orth == "polar") polar(W)
+         else gs_reorth_W(W, t(U) %*% W, cf$obj)
+  }
+  t(U) %*% W
+}
 ```
 
-## Rank-r fastICA: cubic contrast (x^3)
+## Running all six methods
 
-```{r ica-cubic, results='asis'}
-set.seed(1)
-n_iter <- 50
-W_cubic <- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter))
-  W_cubic <- fastica_update_cubic_rankr(U_w, W_cubic)
+Every method below is the same driver with a different `contrast` / `orth`
+pair, all from the same random start (`seed = 1`) and the same number of
+iterations.
 
-Lhat_cubic <- t(U_w) %*% W_cubic   # n x r
-plot_loadings_tabbed(Lhat_cubic, label_prefix = "cub:",
-                     obj_fn = objective_cubic)
+```{r run-all}
+method_spec <- list(
+  "cubic"     = list(contrast = "cubic",  orth = "polar"),
+  "logphi"    = list(contrast = "logphi", orth = "polar"),
+  "skew"      = list(contrast = "skew",   orth = "polar"),
+  "cubic-GS"  = list(contrast = "cubic",  orth = "gs"),
+  "logphi-GS" = list(contrast = "logphi", orth = "gs"),
+  "skew-GS"   = list(contrast = "skew",   orth = "gs")
+)
+
+methods_L <- lapply(method_spec,
+                    function(m) run_fastica(U_w, m$contrast, m$orth,
+                                            r = r, n_iter = 50))
+
+# Objective belonging to each method, for ordering and labelling its panels.
+obj_of <- function(m) contrast_defs[[method_spec[[m]]$contrast]]$obj
+
+sapply(methods_L, dim)
 ```
 
-## Rank-r fastICA: log-Phi contrast (alpha = 2)
 
-```{r ica-logphi, results='asis'}
-set.seed(1)
-n_iter <- 50
-W_lp <- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter))
-  W_lp <- fastica_update_logphi_rankr(U_w, W_lp, alpha = 2)
+## Comparing methods: matched factors {.tabset}
 
-Lhat_lp <- t(U_w) %*% W_lp
-plot_loadings_tabbed(Lhat_lp, label_prefix = "lp:",
-                     obj_fn = objective_logphi)
-```
+All six methods are aligned to a common reference, the polar cubic solution. For
+each method the factors are matched to the reference by maximizing the total
+absolute correlation (Hungarian algorithm), then sign-flipped so each matched
+factor correlates positively with its reference factor. (Sign flipping is
+probably unnecessary here because we are using asymmetric contrasts, but necessary in general.)
 
-## Rank-r fastICA: x|x| contrast
+Factors are then ordered by how well the methods agree on them: the `mean`
+column below is the average absolute correlation with the reference over the
+five non-reference methods, and rows are sorted by it, so the factors all
+methods recover go at the top and the contested ones at the bottom. Values near
+1 mean a method recovers essentially the same factor as the reference; small
+values mean the factor has no good counterpart. The reference column is 1 by
+construction and is excluded from the mean.
 
-```{r ica-skew, results='asis'}
-set.seed(1)
-n_iter <- 50
-W_skew <- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter))
-  W_skew <- fastica_update_skew_rankr(U_w, W_skew)
+```{r method-compare-align}
+ref_name <- "cubic"
+Lc       <- methods_L[[ref_name]]
+Lref     <- Lc[, order(obj_of(ref_name)(Lc), decreasing = TRUE), drop = FALSE]
 
-Lhat_skew <- t(U_w) %*% W_skew
-plot_loadings_tabbed(Lhat_skew, label_prefix = "sk:",
-                     obj_fn = objective_skew)
-```
-
-## Gram-Schmidt versions
-
-Each iteration applies the contrast update followed by Gram-Schmidt reorthogonalization (instead of polar). Components are ordered by decreasing objective before GS, so the best-objective direction is processed first and kept exactly; subsequent components are deflated against all preceding ones. After GS the columns remain orthonormal.
-
-### GS: cubic contrast (x^3)
-
-```{r ica-cubic-gs, results='asis'}
-set.seed(1)
-n_iter <- 50
-W_cubic_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter)) {
-  P              <- t(U_w) %*% W_cubic_gs
-  G              <- 3 * P^2
-  G2             <- 6 * P
-  W_cubic_gs     <- U_w %*% G - sweep(W_cubic_gs, 2, colSums(G2), "*")
-  L_tmp          <- t(U_w) %*% W_cubic_gs
-  W_cubic_gs     <- gs_reorth_W(W_cubic_gs, L_tmp, objective_cubic)
+# Match columns of L to those of Lref so as to maximize total |correlation|,
+# then flip signs so each matched factor correlates positively with reference.
+match_to_ref <- function(L, Lref) {
+  C    <- cor(Lref, L)
+  pr   <- RcppHungarian::HungarianSolver(-abs(C))$pairs
+  perm <- pr[order(pr[, 1]), 2]
+  cc   <- C[cbind(seq_along(perm), perm)]
+  s    <- sign(cc)
+  s[s == 0] <- 1
+  list(L = sweep(L[, perm, drop = FALSE], 2, s, "*"), cor = abs(cc))
 }
 
-Lhat_cubic_gs <- t(U_w) %*% W_cubic_gs
-plot_loadings_tabbed(Lhat_cubic_gs, label_prefix = "cub-gs:",
-                     obj_fn = objective_cubic)
+aligned   <- lapply(methods_L, match_to_ref, Lref = Lref)
+match_cor <- sapply(aligned, `[[`, "cor")
+
+# Reorder factors so the best-agreeing ones come first. Agreement is the mean
+# |cor| with the reference over the five non-reference methods (the reference
+# column is identically 1 and so carries no information).
+agree <- rowMeans(match_cor[, setdiff(colnames(match_cor), ref_name),
+                            drop = FALSE])
+ord   <- order(agree, decreasing = TRUE)
+
+Lref      <- Lref[, ord, drop = FALSE]
+aligned   <- lapply(aligned, function(a)
+                    list(L = a$L[, ord, drop = FALSE], cor = a$cor[ord]))
+match_cor <- match_cor[ord, , drop = FALSE]
+agree     <- agree[ord]
+rownames(match_cor) <- sprintf("f%02d", seq_len(nrow(match_cor)))
+round(cbind(match_cor, mean = agree), 3)
 ```
 
-### GS: log-Phi contrast (alpha = 2)
+```{r method-compare-fn}
+# Rows = factors, best-agreeing first; columns = methods. The number in each
+# panel is |cor| with the reference factor; the row strip carries the mean over
+# non-reference methods.
+plot_method_grid <- function(aligned, match_cor, agree, si = sample_info,
+                             color_by = c("celltype", "donor")) {
+  color_by <- match.arg(color_by)
+  cvar  <- switch(color_by,
+                  celltype = si$celltype,
+                  donor    = sub("-.*", "", si$id))
+  cname <- switch(color_by,
+                  celltype = "Cell type",
+                  donor    = "Donor")
+  cell_order <- order(si$celltype)
+  nc <- nrow(aligned[[1]]$L)
+  nf <- ncol(aligned[[1]]$L)
+  mn <- names(aligned)
+  flev <- sprintf("f%02d (%.2f)", seq_len(nf), agree)
 
-```{r ica-logphi-gs, results='asis'}
-set.seed(1)
-n_iter <- 50
-alpha  <- 2
-W_lp_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter)) {
-  P       <- t(U_w) %*% W_lp_gs
-  u       <- alpha * P
-  h       <- exp(dnorm(u, log = TRUE) - pnorm(u, log.p = TRUE))
-  G       <- alpha * h
-  G2      <- alpha^2 * (-u * h - h^2)
-  W_lp_gs <- U_w %*% G - sweep(W_lp_gs, 2, colSums(G2), "*")
-  L_tmp   <- t(U_w) %*% W_lp_gs
-  W_lp_gs <- gs_reorth_W(W_lp_gs, L_tmp, objective_logphi)
+  df <- do.call(rbind, lapply(mn, function(m) {
+    data.frame(
+      rank    = rep(seq_len(nc), nf),
+      grp     = rep(cvar[cell_order], nf),
+      loading = as.vector(aligned[[m]]$L[cell_order, ]),
+      factor  = factor(rep(flev, each = nc), levels = flev),
+      method  = factor(m, levels = mn)
+    )
+  }))
+
+  lab <- data.frame(
+    factor = factor(rep(flev, times = length(mn)), levels = flev),
+    method = factor(rep(mn, each = nf), levels = mn),
+    lab    = sprintf("%.2f", as.vector(match_cor))
+  )
+
+  p <- ggplot(df, aes(x = rank, y = loading, color = grp)) +
+    geom_point(size = 0.45, alpha = 0.8) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.2) +
+    geom_text(data = lab, aes(x = -Inf, y = Inf, label = lab),
+              hjust = -0.15, vjust = 1.4, size = 1.9, color = "grey20",
+              inherit.aes = FALSE) +
+    facet_grid(factor ~ method, scales = "free_y") +
+    labs(x = NULL, y = "Loading", color = cname) +
+    theme_bw(base_size = 9) +
+    theme(axis.text.x      = element_blank(),
+          axis.ticks.x     = element_blank(),
+          axis.text.y      = element_text(size = 5),
+          strip.text.x     = element_text(size = 8),
+          strip.text.y     = element_text(size = 6),
+          strip.background = element_rect(fill = "grey90", color = NA),
+          panel.spacing    = grid::unit(0.15, "lines"),
+          legend.position  = "bottom",
+          legend.title     = element_text(size = 11),
+          legend.text      = element_text(size = 10),
+          legend.key.size  = grid::unit(1.1, "lines")) +
+    guides(color = guide_legend(override.aes = list(size = 4, alpha = 1),
+                                nrow = 2))
+  if (color_by == "celltype")
+    p <- p + scale_color_manual(values = celltype_palette)
+  p
 }
-
-Lhat_lp_gs <- t(U_w) %*% W_lp_gs
-plot_loadings_tabbed(Lhat_lp_gs, label_prefix = "lp-gs:",
-                     obj_fn = objective_logphi)
 ```
 
-### GS: x|x| contrast
+### Cell type
 
-```{r ica-skew-gs, results='asis'}
-set.seed(1)
-n_iter   <- 500
-W_skew_gs <- polar(matrix(rnorm(n.comp * r), n.comp, r))
-for (i in seq_len(n_iter)) {
-  P         <- t(U_w) %*% W_skew_gs
-  G         <- 2 * abs(P)
-  G2        <- 2 * sign(P)
-  W_skew_gs <- U_w %*% G - sweep(W_skew_gs, 2, colSums(G2), "*")
-  L_tmp     <- t(U_w) %*% W_skew_gs
-  W_skew_gs <- gs_reorth_W(W_skew_gs, L_tmp, objective_skew)
-}
+```{r method-compare-ct, echo=FALSE, fig.width=13, fig.height=41, dpi=100, fig.retina=1}
+plot_method_grid(aligned, match_cor, agree, color_by = "celltype")
+```
 
-Lhat_skew_gs <- t(U_w) %*% W_skew_gs
-plot_loadings_tabbed(Lhat_skew_gs, label_prefix = "sk-gs:",
-                     obj_fn = objective_skew)
+### Donor
+
+```{r method-compare-d, echo=FALSE, fig.width=13, fig.height=41, dpi=100, fig.retina=1}
+plot_method_grid(aligned, match_cor, agree, color_by = "donor")
 ```
